@@ -26,10 +26,14 @@ import {
   TagLeftIcon,
   TagLabel,
   Progress,
+  useDisclosure
 } from '@chakra-ui/react';
+import CreateTask from './CreateTask'
 
 export default function NavBar() {
   const { colorMode, toggleColorMode } = useColorMode();
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   return (
     <header>
       <TableContainer>
@@ -72,6 +76,9 @@ export default function NavBar() {
                   />
                   <Input variant="filled" placeholder="Find a Clan" />
                 </InputGroup>
+              </Th>
+              <Th>
+                <CreateTask />
               </Th>
             </Tr>
           </Thead>
