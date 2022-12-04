@@ -7,9 +7,16 @@ import {
     ModalBody,
     ModalCloseButton,
     useDisclosure,
-
+    FormLabel,
+    Input,
+    FormControl,
+    Button,
   } from '@chakra-ui/react'
+  import React from 'react'
+  import { useState } from 'react';
 
+
+  /*
   export default function(){
     const { isOpen, onOpen, onClose } = useDisclosure()
     return (
@@ -27,20 +34,20 @@ import {
         </Modal>
       </>
     )
-  }
+  }*/
 
-  /*export default function InitialFocus() {
+  export default function() {
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const [loading, setLoading] = useState(false);
+
   
     const initialRef = React.useRef(null)
     const finalRef = React.useRef(null)
   
     return (
       <>
-        <button onClick={onOpen}>Open Modal</button>
-        <button ml={4} ref={finalRef}>
-          I'll receive focus on close
-        </button>
+        <Button onClick={onOpen} colorScheme="blue" px="20" h="100%" type="submit" isLoading={loading} loadingText="Adding...">
+          Add</Button>
   
         <Modal
           initialFocusRef={initialRef}
@@ -51,7 +58,7 @@ import {
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Create your account</ModalHeader>
-            <ModalClosebutton />
+            <ModalCloseButton />
             <ModalBody pb={6}>
               <FormControl>
                 <FormLabel>First name</FormLabel>
@@ -74,4 +81,4 @@ import {
         </Modal>
       </>
     )
-  }*/
+  }
