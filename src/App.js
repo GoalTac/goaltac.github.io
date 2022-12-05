@@ -8,7 +8,6 @@ function App() {
   return (
     <VStack p={4} minH="100vh">
       <NavBar />
-      <AddTask />
       <CreateTask />
       <TaskList />
     </VStack>
