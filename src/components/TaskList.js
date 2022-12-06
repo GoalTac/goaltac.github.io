@@ -1,4 +1,5 @@
 import {
+  Heading,
   VStack,
   StackDivider,
   HStack,
@@ -71,12 +72,17 @@ export default function TaskList() {
         alignItems="stretch"
       >
         {tasks.map(task => (
-          <HStack key={task.id}>
+          <Box key={task.id}>
+            
+            <Heading as='h1' size='lg'>
+              {task.title}
+            </Heading>
+            <DeleteTask id={task.id}/>
             <Text w="100%" p="8px" borderRadius="lg">
               {task.text}
             </Text>
-            <DeleteTask id={task.id} />
-          </HStack>
+            
+          </Box>
         ))}
       </VStack>
 
