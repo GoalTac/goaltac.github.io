@@ -6,7 +6,7 @@ import supabase from '../supabase';
 export default function DeleteTask({ id }) {
   const [loading, setloading] = useState(false);
   const toast = new useToast();
-//just checkin somethin
+
   async function handleDelete() {
     setloading(true);
     const { data, error } = await supabase.from('todos').delete().eq('id', id);
