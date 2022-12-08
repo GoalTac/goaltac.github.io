@@ -1,7 +1,13 @@
 import AddTask from '../components/AddTask';
+import TaskList from '../components/TaskList';
 
 function HomePage() {
-  return <AddTask />;
+  return (
+    <div>
+      <AddTask />
+      <TaskList />
+    </div>
+  );
 }
 
 export default HomePage;

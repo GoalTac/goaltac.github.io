@@ -1,14 +1,17 @@
 import { VStack } from '@chakra-ui/react';
-import TaskList from './components/TaskList';
+import { Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
+import Login from './pages/Login';
 
 function App() {
   return (
     <VStack p={4} minH="100vh">
       <NavBar />
-      <HomePage />
-      <TaskList />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
     </VStack>
   );
 }
