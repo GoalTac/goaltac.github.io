@@ -2,7 +2,7 @@ import { VStack } from '@chakra-ui/react';
 import { Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
-import Login from './pages/Login';
+import LoginPage from './pages/LoginPage';
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
       <NavBar />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
     </VStack>
   );
