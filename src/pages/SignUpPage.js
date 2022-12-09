@@ -1,16 +1,3 @@
-// import { Stack, Input, Button } from '@chakra-ui/react';
-
-// export default function LoginPage() {
-//   return (
-//     <Stack p="4" w="400px" maxW="100%" mx="auto" align="center">
-//       <Input placeholder="Username" />
-//       <Input placeholder="Password" type="password" />
-//       <Button mt="4" variantColor="blue" type="submit">
-//         Login
-//       </Button>
-//     </Stack>
-//   );
-// }
 import { useState } from 'react';
 import {
   Flex,
@@ -27,13 +14,13 @@ import {
   FormHelperText,
   InputRightElement,
 } from '@chakra-ui/react';
-import { FaUserAlt, FaLock } from 'react-icons/fa';
+import { FaUserAlt, FaLock, ViewIcon, ViewOffIcon } from 'react-icons/fa';
 import supabase from '../supabase';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,10 +30,7 @@ export default function LoginPage() {
     event.preventDefault();
     console.log('submitting!');
     try {
-      const { data } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data } = await supabase.auth.signUp({ email, password });
       console.log(data);
       // Save the authentication token in local storage or a cookie
       // so that it can be used on subsequent requests
@@ -75,7 +59,7 @@ export default function LoginPage() {
           bgGradient="linear(to-l, teal.300, blue.500)"
           bgClip="text"
         >
-          GoalTac
+          GoalTac Sign Up
         </Heading>
         <Box>
           <form onSubmit={handleSubmit}>
@@ -120,9 +104,6 @@ export default function LoginPage() {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
-                <FormHelperText textAlign="right">
-                  <Link>forgot password?</Link>
-                </FormHelperText>
               </FormControl>
               <Button
                 borderRadius={5}
@@ -130,15 +111,12 @@ export default function LoginPage() {
                 variant="solid"
                 width="full"
               >
-                Login
+                Sign Up
               </Button>
             </Stack>
           </form>
         </Box>
       </Stack>
-      <Box>
-        New Here? <Link href="signup">Sign Up</Link>
-      </Box>
     </Flex>
   );
 }
