@@ -64,7 +64,9 @@ export default function AddTask() {
             <ModalContent>
               <ModalHeader>This is where something goes</ModalHeader>
               <ModalBody>
-              <VStack p='25px'>
+              <VStack 
+              as='form' //using the Vertical Stack as a form..? Hopefully avoids discrepancies 
+              p='25px'>
               <FormControl>
                 <FormLabel>Title</FormLabel>
                 <Input type='text' 
