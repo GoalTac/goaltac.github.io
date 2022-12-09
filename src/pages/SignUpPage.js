@@ -15,14 +15,30 @@ import {
   InputRightElement,
 } from '@chakra-ui/react';
 import { FaUserAlt, FaLock, ViewIcon, ViewOffIcon } from 'react-icons/fa';
+import supabase from '../supabase';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleShowClick = () => setShowPassword(!showPassword);
+  const handleSubmit = async event => {
+    event.preventDefault();
+    console.log('submitting!');
+    try {
+      const { data } = await supabase.auth.signUp({ email, password });
+      console.log(data);
+      // Save the authentication token in local storage or a cookie
+      // so that it can be used on subsequent requests
+    } catch (error) {
+      // Handle the error
+      console.log(error);
+    }
+  };
 
   return (
     <Flex
@@ -46,21 +62,25 @@ export default function SignUpPage() {
           GoalTac Sign Up
         </Heading>
         <Box>
-          <form>
+          <form onSubmit={handleSubmit}>
             <Stack
               spacing={4}
               p="1rem"
               backgroundColor="whiteAlpha.900"
               boxShadow="md"
             >
-              
               <FormControl>
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"
                     children={<CFaUserAlt color="gray.300" />}
                   />
-                  <Input type="email" placeholder="Email Address" />
+                  <Input
+                    type="email"
+                    placeholder="Email Address"
+                    value={email}
+                    onChange={event => setEmail(event.target.value)}
+                  />
                 </InputGroup>
               </FormControl>
               <FormControl>
@@ -73,10 +93,12 @@ export default function SignUpPage() {
                   <Input
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Password"
+                    value={password}
+                    onChange={event => setPassword(event.target.value)}
                   />
                   <InputRightElement width="4.5rem">
                     <Button h="1.75rem" size="sm" onClick={handleShowClick}>
-                        {/* <ViewIcon color="gray.300" />
+                      {/* <ViewIcon color="gray.300" />
                       <ViewOffIcon color="gray.300" /> */}
                       {showPassword ? 'hide' : 'show'}
                     </Button>
