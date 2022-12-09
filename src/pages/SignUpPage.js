@@ -1,16 +1,3 @@
-// import { Stack, Input, Button } from '@chakra-ui/react';
-
-// export default function LoginPage() {
-//   return (
-//     <Stack p="4" w="400px" maxW="100%" mx="auto" align="center">
-//       <Input placeholder="Username" />
-//       <Input placeholder="Password" type="password" />
-//       <Button mt="4" variantColor="blue" type="submit">
-//         Login
-//       </Button>
-//     </Stack>
-//   );
-// }
 import { useState } from 'react';
 import {
   Flex,
@@ -28,13 +15,11 @@ import {
   InputRightElement,
 } from '@chakra-ui/react';
 import { FaUserAlt, FaLock, ViewIcon, ViewOffIcon } from 'react-icons/fa';
-// import SignUpPage from './SignUpPage';
-
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleShowClick = () => setShowPassword(!showPassword);
@@ -58,7 +43,7 @@ export default function LoginPage() {
           bgGradient="linear(to-l, teal.300, blue.500)"
           bgClip="text"
         >
-          GoalTac
+          GoalTac Sign Up
         </Heading>
         <Box>
           <form>
@@ -68,6 +53,7 @@ export default function LoginPage() {
               backgroundColor="whiteAlpha.900"
               boxShadow="md"
             >
+              
               <FormControl>
                 <InputGroup>
                   <InputLeftElement
@@ -96,9 +82,6 @@ export default function LoginPage() {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
-                <FormHelperText textAlign="right">
-                  <Link>forgot password?</Link>
-                </FormHelperText>
               </FormControl>
               <Button
                 borderRadius={5}
@@ -106,15 +89,12 @@ export default function LoginPage() {
                 variant="solid"
                 width="full"
               >
-                Login
+                Sign Up
               </Button>
             </Stack>
           </form>
         </Box>
       </Stack>
-      <Box>
-        New Here? <Link href="signup">Sign Up</Link>
-      </Box>
     </Flex>
   );
 }
