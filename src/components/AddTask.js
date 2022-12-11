@@ -12,7 +12,10 @@ import {
   VStack,
   Button, 
   useDisclosure, 
-  useToast 
+  useToast, 
+  HStack,
+  RadioGroup,
+  Radio
 } from '@chakra-ui/react';
 import { useState } from 'react'
 import supabase from '../supabase'
@@ -59,22 +62,38 @@ export default function AddTask() {
     <>
         <Button onClick={onOpen} colorScheme='blue' p='10px'>Add Task</Button>
 
-        <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
+        <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false} size='xl'>
             <ModalOverlay>
             <ModalContent>
               <ModalHeader>This is where something goes</ModalHeader>
               <ModalBody>
               <VStack 
-              as='form' //using the Vertical Stack as a form..? Hopefully avoids discrepancies 
+              as='form'
               p='25px'>
-              <FormControl>
-                <FormLabel>Title</FormLabel>
-                <Input type='text' 
-                    value={title}
-                    onChange={e => setTask({...task, title: e.target.value})}
-                />
-                <FormHelperText>Choose a title that's fun and concise!</FormHelperText>
-              </FormControl>
+              <HStack justifyContent='space-between'> {/* Title and difficulty */}
+                <FormControl>
+                  <FormLabel>Title</FormLabel>
+                  <Input type='text' 
+                      value={title}
+                      onChange={e => setTask({...task, title: e.target.value})}
+                  />
+                  <FormHelperText>Choose a title that's fun and concise!</FormHelperText>
+                </FormControl>
+
+                    <FormControl>
+                      <FormLabel>Difficulty</FormLabel>
+                      <RadioGroup>
+                        <HStack>
+                          <Radio value='easy'>Easy</Radio>
+                          <Radio value='standard'>Standard</Radio>
+                          <Radio value='difficult'>Difficult</Radio>
+                        </HStack>
+                      </RadioGroup>
+                    </FormControl>
+                  
+
+              </HStack>
+
               <FormControl>
                 <FormLabel>Task Details</FormLabel>
                 <Input type='text' 
