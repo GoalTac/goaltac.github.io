@@ -77,7 +77,7 @@ export default function TaskList() {
             <Heading as='h1' size='lg'>
               {task.title}
             </Heading>
-            <DeleteTask id={task.id}/>
+            <DeleteTask id={task.id}/> 
             <Text w="100%" p="8px" borderRadius="lg">
               {task.text}
             </Text>
