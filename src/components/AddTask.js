@@ -15,7 +15,8 @@ import {
   useToast, 
   HStack,
   RadioGroup,
-  Radio
+  Radio,
+  Text
 } from '@chakra-ui/react';
 import { useState } from 'react'
 import supabase from '../supabase'
@@ -26,8 +27,8 @@ export default function AddTask() {
   
 
   //Page
-  const [task, setTask] = useState({title: "", text: ""})
-  const {title, text} = task
+  const [task, setTask] = useState({title: "", text: "", end_date: "9999-12-31", difficulty: '0'})
+  const {title, text, end_date, difficulty} = task
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
@@ -38,14 +39,14 @@ export default function AddTask() {
     const { error } = await supabase
         .from('todos') //Table name
         .insert([
-            {title, text} //Columns
+            {title, text, end_date, difficulty} //Columns
         ])
         console.log(task)
       
     
     //Finishing tasks
     setLoading(false);
-    setTask({title: "", text: ""})
+    setTask({title: "", text: "", end_date: "9999-12-31"})
 
     toast({
       title: error || 'task added',
@@ -62,7 +63,7 @@ export default function AddTask() {
     <>
         <Button onClick={onOpen} colorScheme='blue' p='10px'>Add Task</Button>
 
-        <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false} size='xl'>
+        <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
             <ModalOverlay>
             <ModalContent>
               <ModalHeader>This is where something goes</ModalHeader>
@@ -70,30 +71,39 @@ export default function AddTask() {
               <VStack 
               as='form'
               p='25px'>
-              <HStack justifyContent='space-between'> {/* Title and difficulty */}
-                <FormControl>
-                  <FormLabel>Title</FormLabel>
-                  <Input type='text' 
-                      value={title}
-                      onChange={e => setTask({...task, title: e.target.value})}
-                  />
-                  <FormHelperText>Choose a title that's fun and concise!</FormHelperText>
-                </FormControl>
+                {/* Title */}
+              <FormControl>
+                <FormLabel>Title</FormLabel>
+                <Input type='text' 
+                    value={title}
+                    onChange={e => setTask({...task, title: e.target.value})}
+                />
+                <FormHelperText>Choose a title that's fun and concise!</FormHelperText>
+              </FormControl>
 
-                    <FormControl>
-                      <FormLabel>Difficulty</FormLabel>
-                      <RadioGroup>
-                        <HStack>
-                          <Radio value='easy'>Easy</Radio>
-                          <Radio value='standard'>Standard</Radio>
-                          <Radio value='difficult'>Difficult</Radio>
-                        </HStack>
-                      </RadioGroup>
-                    </FormControl>
-                  
+              {/* Difficulty */}
+              <VStack>
+                <Text >Difficulty</Text>
+                <RadioGroup onChange={e => (setTask({...task, difficulty: e}))} value={difficulty}>
+                  <HStack>
+                    <Radio value='0' colorScheme='green'>Easy</Radio>
+                    <Radio value='1' colorScheme='yellow'>Standard</Radio>
+                    <Radio value='2' colorScheme='red'>Difficult</Radio>
+                  </HStack>
+                </RadioGroup>
+              </VStack>
 
-              </HStack>
+              {/* End Date */}
+              <FormControl>
+                <FormLabel>End Date</FormLabel>
+                <Input type='datetime'
+                onChange={ e => setTask({...task, end_date: e.target.value})}
+                placeholder='yyyy-mm-dd'
+                required={true}
+                />
+              </FormControl>
 
+              {/* Details */}
               <FormControl>
                 <FormLabel>Task Details</FormLabel>
                 <Input type='text' 
