@@ -1,6 +1,6 @@
-import { Center, Text, VStack } from '@chakra-ui/react';
+import { Button, Center, HStack, Text, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AddTask from '../components/AddTask';
 import TaskList from '../components/TaskList';
 import supabase from '../supabase';
@@ -11,24 +11,17 @@ function HomePage() {
 
   //React Router DOM
   const navigate = useNavigate()  
+  const {state} = useLocation()
 
   //Supabase
-  const [session, setSession] = useState(null)
+  const [session, setSession] = useState(state.session)
   const [user, setUser] = useState(undefined)
+
   
-  useEffect(()=>{
+  
+  useEffect(()=>{ 
 
-    const getUserData = async function(){
-      await supabase.auth.getSession().then((val)=>{
-        if (val.data.session){
-          setSession(val.data.session)
-        }
-      })
-    }
-    
-
-    getUserData()
-    if (session === undefined) {
+    if (!session) {
       navigate('/login')
     }
   },[user])
@@ -44,18 +37,31 @@ function HomePage() {
   //     navigate('/login')
   //   }
   // }
+
+  
     const whatAmIShowing = () =>{
+      // console.log(session)
       if (session){return(
         <>
-        
-        <AddTask key={session.user.id} session={session} /> 
+        {/* HStack is such that the two buttons are side by side */}
+        <HStack> 
+          <AddTask key={session.user.id} session={session} /> 
+          
+          <Button pr='15px' onClick={supabase.auth.signOut}>Sign Out</Button>
+
+        </HStack>
         <TaskList />
           
         </>
-      )}else{
-        return <><Text>Redirecting maybe</Text></>
-      }
+      )}
     }
+
+    const onSignOut = async function(){
+      const { error } = await supabase.auth.signOut()
+      navigate('/')
+    }
+
+
   return (
     <Center
     w='100vw'>

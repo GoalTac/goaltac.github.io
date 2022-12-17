@@ -43,13 +43,14 @@ export default function LoginPage() {
   const handleShowClick = () => setShowPassword(!showPassword);
   const handleSubmit = async event => {
     event.preventDefault();
-    console.log('submitting!');
+    // console.log('submitting!');
     try {
       const { data, err } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      navigate('/')
+      // console.log(data)
+      navigate('/', { state: {session: data.session}})
       // Save the authentication token in local storage or a cookie
       // so that it can be used on subsequent requests
     } catch (error) {
