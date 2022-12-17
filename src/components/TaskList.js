@@ -1,4 +1,5 @@
 import {
+  Heading,
   VStack,
   StackDivider,
   HStack,
@@ -13,10 +14,12 @@ import img from '../images/empty.svg';
 // import { useRealtime } from 'react-supabase';
 import { useEffect, useState } from 'react';
 import supabase from '../supabase'
+import TaskItem from './TaskListDetails/TaskItem';
 
 export default function TaskList() {
   // const [result, reexecute] = useRealtime('todos');
   // const { data: tasks, error, fetching } = result;
+
 
   const todos = supabase.channel('custom-all-channel')
   .on(
@@ -66,17 +69,12 @@ export default function TaskList() {
         borderWidth="2px"
         p="5"
         borderRadius="lg"
-        w="100%"
+        w="100vw"
         maxW={{ base: '90vw', sm: '80vw', lg: '50vw', xl: '30vw' }}
         alignItems="stretch"
       >
         {tasks.map(task => (
-          <HStack key={task.id}>
-            <Text w="100%" p="8px" borderRadius="lg">
-              {task.text}
-            </Text>
-            <DeleteTask id={task.id} />
-          </HStack>
+          <TaskItem key={task.id} title={task.title} end_date={task.end_date} difficulty={task.difficulty} text={task.text} id={task.id} />
         ))}
       </VStack>
 

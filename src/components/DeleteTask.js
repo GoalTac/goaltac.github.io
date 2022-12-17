@@ -23,6 +23,7 @@ export default function DeleteTask({ id }) {
   return (
     <IconButton
       isRound="true"
+      float='right'
       icon={<FiTrash2 />}
       onClick={handleDelete}
       isLoading={loading}
