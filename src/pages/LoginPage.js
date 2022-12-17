@@ -49,9 +49,7 @@ export default function LoginPage() {
         email,
         password,
       });
-      if (err) throw err
       navigate('/')
-      console.log(data);
       // Save the authentication token in local storage or a cookie
       // so that it can be used on subsequent requests
     } catch (error) {
