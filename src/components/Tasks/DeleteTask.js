@@ -1,7 +1,7 @@
 import { IconButton, useToast } from '@chakra-ui/react';
 import { useState } from 'react';
 import { FiTrash2 } from 'react-icons/fi';
-import supabase from '../supabase';
+import supabase from '../../supabase';
 
 export default function DeleteTask({ id }) {
   const [loading, setloading] = useState(false);

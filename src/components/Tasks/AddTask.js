@@ -19,7 +19,7 @@ import {
   Text
 } from '@chakra-ui/react';
 import { useState } from 'react'
-import supabase from '../supabase'
+import supabase from '../../supabase'
 
 export default function AddTask({session}) { //Session defined from HomePage.js (supabase.auth.getSession())
   //Database
@@ -61,7 +61,7 @@ export default function AddTask({session}) { //Session defined from HomePage.js 
 
   return (
     <>
-        <Button onClick={onOpen} colorScheme='blue' p='10px'>Add Task</Button>
+        <Button onClick={onOpen} colorScheme='blue' p='10px'>+ Task</Button>
 
         <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
             <ModalOverlay>

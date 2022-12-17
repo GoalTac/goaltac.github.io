@@ -1,5 +1,5 @@
 import { Flex, Button } from '@chakra-ui/react';
-import supabase from '../supabase';
+import supabase from '../../supabase';
 import { useState } from 'react';
 
 export default function ClearTasks() {

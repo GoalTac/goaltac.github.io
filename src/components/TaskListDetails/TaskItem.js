@@ -17,7 +17,7 @@ import {
     Heading,
     StackDivider
 } from "@chakra-ui/react";
-import DeleteTask from "../DeleteTask";
+import DeleteTask from "../Tasks/DeleteTask";
 
 
 

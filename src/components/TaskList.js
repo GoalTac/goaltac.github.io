@@ -8,8 +8,8 @@ import {
   Box,
   Skeleton,
 } from '@chakra-ui/react';
-import DeleteTask from './DeleteTask';
-import ClearTasks from './ClearTasks';
+import DeleteTask from './Tasks/DeleteTask';
+import ClearTasks from './Tasks/ClearTasks';
 import img from '../images/empty.svg';
 // import { useRealtime } from 'react-supabase';
 import { useEffect, useState } from 'react';

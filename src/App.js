@@ -11,7 +11,6 @@ function App() {
 
   return (
     <VStack p={4} minH="100vh">
-      <NavBar />
       <Routes>
 
         <Route path="/" element={<HomePage />} />

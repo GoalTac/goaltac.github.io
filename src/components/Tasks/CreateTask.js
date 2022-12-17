@@ -17,7 +17,7 @@ import {
   } from '@chakra-ui/react'
   import React from 'react'
   import { useState, FormGroup } from 'react';
-  import supabase from '../supabase';
+  import supabase from '../../supabase';
 
 
   /*

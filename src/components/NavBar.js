@@ -25,9 +25,11 @@ import {
   Tag,
   TagLeftIcon,
   TagLabel,
+  Icon,
   Progress,
+  HStack,
 } from '@chakra-ui/react';
-import CreateTask from './CreateTask'
+import Settings from './Settings';
 
 export default function NavBar() {
   const { colorMode, toggleColorMode } = useColorMode();

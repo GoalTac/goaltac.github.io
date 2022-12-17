@@ -1,9 +1,12 @@
 import { Button, Center, HStack, Text, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import AddTask from '../components/AddTask';
+import AddTask from '../components/Tasks/AddTask';
 import TaskList from '../components/TaskList';
 import supabase from '../supabase';
+import NavBar from '../components/NavBar';
+import { Routes, Route } from 'react-router-dom';
+import Settings from '../components/Settings';
 
 
 
@@ -70,7 +73,15 @@ function HomePage() {
           Passing session should there be a case in the future that involves it
       */}
 
-        <VStack>{whatAmIShowing()}</VStack>
+        <VStack>
+          <HStack>
+            <NavBar />
+
+            <Settings />
+          </HStack>
+          
+          {whatAmIShowing()}
+        </VStack>
       
 
     </Center>
