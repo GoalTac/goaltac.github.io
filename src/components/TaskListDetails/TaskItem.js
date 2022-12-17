@@ -26,7 +26,7 @@ export default function TaskItem(props){
     const {isOpen, onOpen, onClose} = useDisclosure() //Modal Stuff
     const endDate = new Date(props.end_date)
     const month = ["January","February","March","April","May","June","July","August","September","October","November","December"]
-    console.log(endDate)
+    // console.log(endDate)
     // console.log(props.lor)
     const difficultyBorder = (diff) => {        
         switch(diff){
