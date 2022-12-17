@@ -21,32 +21,32 @@ import {
 import { useState } from 'react'
 import supabase from '../supabase'
 
-export default function AddTask() {
+export default function AddTask({session}) { //Session defined from HomePage.js (supabase.auth.getSession())
   //Database
   const {isOpen, onOpen, onClose} = useDisclosure() //For the modal's open/close
   
 
   //Page
-  const [task, setTask] = useState({title: "", text: "", end_date: "9999-12-31", difficulty: '0'})
-  const {title, text, end_date, difficulty} = task
+  const [task, setTask] = useState({title: "", text: "", end_date: "9999-12-31", difficulty: '0', userid: session.user.id})
+  const {title, text, end_date, difficulty, user_id} = task
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
   async function saveTask(e) {
     e.preventDefault();
     setLoading(true);
-
+    
     const { error } = await supabase
         .from('todos') //Table name
         .insert([
-            {title, text, end_date, difficulty} //Columns
+            task //Columns
         ])
-        console.log(task)
+        // console.log(task)
       
     
     //Finishing tasks
     setLoading(false);
-    setTask({title: "", text: "", end_date: "9999-12-31"})
+    setTask({...task, title: "", text: "", end_date: "9999-12-31",})
 
     toast({
       title: error || 'task added',
@@ -66,7 +66,7 @@ export default function AddTask() {
         <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
             <ModalOverlay>
             <ModalContent>
-              <ModalHeader>This is where something goes</ModalHeader>
+              <ModalHeader>Create your new task</ModalHeader>
               <ModalBody>
               <VStack 
               as='form'

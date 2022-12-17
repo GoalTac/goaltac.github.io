@@ -21,16 +21,16 @@ export default function TaskList() {
   // const { data: tasks, error, fetching } = result;
 
 
-  // const todos = supabase.channel('custom-all-channel')
-  // .on(
-  //   'postgres_changes',
-  //   { event: '*', schema: 'public', table: 'todos' },
-  //   (payload) => {
-  //     fetchData()
-  //     console.log('Change received!', payload)
-  //   }
-  // )
-  // .subscribe()
+  const todos = supabase.channel('custom-all-channel')
+  .on(
+    'postgres_changes',
+    { event: '*', schema: 'public', table: 'todos' },
+    (payload) => {
+      fetchData()
+      console.log('Change received!', payload)
+    }
+  )
+  .subscribe()
 
   const [tasks, setTasks] = useState([]);
 
