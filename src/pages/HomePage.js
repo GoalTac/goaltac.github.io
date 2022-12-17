@@ -14,17 +14,12 @@ function HomePage() {
   const {state} = useLocation()
 
   //Supabase
-  const [session, setSession] = useState(state.session)
+  const [session, setSession] = useState()
   const [user, setUser] = useState(undefined)
 
   
   
-  useEffect(()=>{ 
 
-    if (!session) {
-      navigate('/login')
-    }
-  },[user])
 
 
   
@@ -38,16 +33,17 @@ function HomePage() {
   //   }
   // }
 
-  
     const whatAmIShowing = () =>{
-      // console.log(session)
-      if (session){return(
+      if (!state) {return(<>"No data :("</>)}
+
+      const sesh = state.session
+      if (sesh){return(
         <>
         {/* HStack is such that the two buttons are side by side */}
         <HStack> 
-          <AddTask key={session.user.id} session={session} /> 
+          <AddTask key={sesh.user.id} session={sesh} /> 
           
-          <Button pr='15px' onClick={supabase.auth.signOut}>Sign Out</Button>
+          <Button pr='15px' onClick={onSignOut}>Sign Out</Button>
 
         </HStack>
         <TaskList />
@@ -61,6 +57,11 @@ function HomePage() {
       navigate('/')
     }
 
+    useEffect(()=>{ 
+      if (!state) {
+        navigate('/login')
+      }
+    },[])
 
   return (
     <Center
