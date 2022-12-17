@@ -29,11 +29,13 @@ import {
 } from '@chakra-ui/react';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import supabase from '../supabase';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 export default function LoginPage() {
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,13 +43,14 @@ export default function LoginPage() {
   const handleShowClick = () => setShowPassword(!showPassword);
   const handleSubmit = async event => {
     event.preventDefault();
-    console.log('submitting!');
+    // console.log('submitting!');
     try {
-      const { data } = await supabase.auth.signInWithPassword({
+      const { data, err } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      console.log(data);
+      
+      navigate('/', { state: {session: data.session}})
       // Save the authentication token in local storage or a cookie
       // so that it can be used on subsequent requests
     } catch (error) {
