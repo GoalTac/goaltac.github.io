@@ -54,12 +54,17 @@ export default function TaskItem(props){
         <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
+
+          {/* Title */}
           <ModalHeader>{props.title}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+            {/* End Date */}
             <HStack divider={<StackDivider borderColor='gray.400' />}>
                     <Text fontSize='xl'>End: {month[endDate.getMonth()]} {endDate.getDate()}, {endDate.getFullYear()}</Text>
             </HStack>
+
+            {/* Task  */}
             <Text>{props.text}</Text>
           </ModalBody>
 
