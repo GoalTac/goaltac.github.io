@@ -61,14 +61,6 @@ export default function NavBar() {
                 </Tag>
               </Th>
               <Th>
-                <Avatar name="Adi C">
-                  <AvatarBadge boxSize="1.25em" bg="green.500" />
-                </Avatar>
-                <Badge colorScheme="purple">
-                  Lv 50 <Progress value={40} size="sm" />
-                </Badge>
-              </Th>
-              <Th>
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"

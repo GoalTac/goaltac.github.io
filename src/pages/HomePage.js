@@ -45,19 +45,11 @@ function HomePage() {
         {/* HStack is such that the two buttons are side by side */}
         <HStack> 
           <AddTask key={sesh.user.id} session={sesh} /> 
-          
-          <Button pr='15px' onClick={onSignOut}>Sign Out</Button>
-
         </HStack>
         <TaskList />
           
         </>
       )}
-    }
-
-    const onSignOut = async function(){
-      const { error } = await supabase.auth.signOut()
-      navigate('/')
     }
 
     useEffect(()=>{ 

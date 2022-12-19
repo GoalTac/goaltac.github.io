@@ -5,13 +5,18 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  HStack,
   MenuItemOption,
   MenuGroup,
   MenuOptionGroup,
   MenuDivider,
   Avatar, 
   AvatarBadge, 
-  AvatarGroup
+  AvatarGroup,
+  useColorMode,
+  DarkMode,
+  Badge,
+  Progress
 } from '@chakra-ui/react';
 import {
   FaTh,
@@ -20,18 +25,25 @@ import {
   FaRegChartBar,
   FaCommentAlt,
   FaShoppingBag,
-  FaThList
+  FaThList,
+  FaMoon,
+  FaLogOut,
+  FaSun,
+  FaQuestion
 }from "react-icons/fa";
+import { FiLogOut } from "react-icons/fi"
 import { SettingsIcon, HamburgerIcon } from '@chakra-ui/icons'
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import supabase from '../supabase';
 
 
 export default function Settings() { //Session defined from HomePage.js (supabase.auth.getSession())
   
   const[isOpen, setIsOpen] = useState(false);  
   const toggle = () => setIsOpen (!isOpen);
-
+  const { toggleColorMode, colorMode } = useColorMode();
+  const navigate = useNavigate() 
 
   return (
     <>
@@ -41,39 +53,52 @@ export default function Settings() { //Session defined from HomePage.js (supabas
               <MenuButton 
                 variant='outline'
                 colorScheme={isOpen ? 'green' : 'gray'}
-                isActive={isOpen} 
+                isActive={isOpen}
+                onClick={isOpen ? toggle : null}
                 as={Button}>
-                <HamburgerIcon/>
+                <Avatar name="Adi C">
+                  <AvatarBadge boxSize="1.25em" bg="green.500" />
+                </Avatar>
               </MenuButton>
+              
               <MenuList>
-                <MenuGroup title='Tool Bar'>
-                  <MenuItem>
-                    <NavLink to="/profile" className="profile" activeclassName="active">
-                        <div className="link" style={{display: isOpen ? "block" : "none"}}>
-                          {<Avatar bg='red' w='25px' h='25px' />} Profile
-                        </div>
-                    </NavLink>
-                  </MenuItem>
-                  <MenuItem>Payments </MenuItem>
+                <MenuGroup>
+                  <IconButton
+                    aria-label="change theme"
+                    rounded='full'
+                    size='xs'
+                    icon={colorMode === "dark" ? <FaSun /> : <FaMoon />} 
+                    colorScheme='gray'
+                    onClick={toggleColorMode}
+                    variant='outline'
+                  />
                 </MenuGroup>
                 <MenuDivider />
-                <MenuGroup title='Help'>
-                  <MenuItem>Docs</MenuItem>
-                  <MenuItem>FAQ</MenuItem>
+                <MenuGroup>
+                  <MenuItem
+                    icon={<FaQuestion />}
+                    onClick={()=> navigate('/faq')}>
+                    Help and Support
+                  </MenuItem>
+                  <MenuItem 
+                    onClick={()=> navigate('/settings')}
+                    icon={<SettingsIcon />}>
+                      Setting
+                  </MenuItem>
+                  <MenuItem
+                    icon={<FiLogOut />}
+                    onClick={async() =>{
+                      const { error } = await supabase.auth.signOut()
+                      navigate('/login')}}>
+                        Sign Out
+                  </MenuItem>
                 </MenuGroup>
-                <MenuItem>Download</MenuItem>
-                <MenuItem>
-                  <NavLink to="/setting" className="setting" activeclassName="active">
-                    <div className="link" style={{display: isOpen ? "block" : "none"}}>
-                      {<SettingsIcon />} Setting
-                    </div>
-                  </NavLink>
-                </MenuItem>
-                <MenuItem onClick={() => alert('MY PHUNG')}>Create a Copy</MenuItem>
+                
               </MenuList>
             </>
           )}
         </Menu>
     </>
+    
   );
 }
