@@ -15,7 +15,6 @@ function HomePage() {
   //React Router DOM
   const navigate = useNavigate()  
   const {state} = useLocation()
-
   //Supabase
   const [session, setSession] = useState()
   const [user, setUser] = useState(undefined)
@@ -68,7 +67,6 @@ function HomePage() {
         <VStack>
           <HStack>
             <NavBar />
-
             <Settings />
           </HStack>
           
