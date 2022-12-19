@@ -50,17 +50,6 @@ export default function NavBar() {
                 </Heading>
               </Th>
               <Th>
-                <Button onClick={toggleColorMode}>
-                  Toggle {colorMode === 'light' ? 'Dark' : 'Light'}
-                </Button>
-              </Th>
-              <Th>
-                <Tag size="lg" colorScheme="orange" borderRadius="full">
-                  <TagLeftIcon as={CircleIcon} />
-                  <Text>&nbsp;1508</Text>
-                </Tag>
-              </Th>
-              <Th>
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents="none"

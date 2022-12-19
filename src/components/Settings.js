@@ -1,40 +1,40 @@
 import {
-  IconButton,
   Button,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
-  HStack,
-  MenuItemOption,
   MenuGroup,
-  MenuOptionGroup,
   MenuDivider,
   Avatar, 
   AvatarBadge, 
-  AvatarGroup,
   useColorMode,
-  DarkMode,
-  Badge,
-  Progress
+  Switch,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Heading,
+  Text,
+  Divider,
+  Stack,
+  StackDivider,
+  Box,
+  HStack,
+  Tag,
+  TagLeftIcon
 } from '@chakra-ui/react';
 import {
-  FaTh,
-  FaBars,
-  FaUserAlt,
-  FaRegChartBar,
-  FaCommentAlt,
-  FaShoppingBag,
-  FaThList,
   FaMoon,
-  FaLogOut,
   FaSun,
   FaQuestion
 }from "react-icons/fa";
-import { FiLogOut } from "react-icons/fi"
-import { SettingsIcon, HamburgerIcon } from '@chakra-ui/icons'
+import { BiMessageError } from "react-icons/bi";
+import { FiLogOut } from "react-icons/fi";
+import { SettingsIcon } from '@chakra-ui/icons';
+import CircleIcon from './CircleIcon';
 import React, { useState } from 'react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import supabase from '../supabase';
 
 
@@ -51,39 +51,59 @@ export default function Settings() { //Session defined from HomePage.js (supabas
           {({ isOpen }) => (
             <>
               <MenuButton 
-                variant='outline'
-                colorScheme={isOpen ? 'green' : 'gray'}
+                variant='contained'
                 isActive={isOpen}
-                onClick={isOpen ? toggle : null}
                 as={Button}>
-                <Avatar name="Adi C">
+                <Avatar name="Adi C" bg={isOpen ? 'cyan' : null}>
                   <AvatarBadge boxSize="1.25em" bg="green.500" />
                 </Avatar>
               </MenuButton>
               
               <MenuList>
                 <MenuGroup>
-                  <IconButton
-                    aria-label="change theme"
-                    rounded='full'
-                    size='xs'
-                    icon={colorMode === "dark" ? <FaSun /> : <FaMoon />} 
-                    colorScheme='gray'
-                    onClick={toggleColorMode}
-                    variant='outline'
-                  />
+                  <HStack>
+                    <Box align='center' margin='10px'>
+                      <Avatar id='avatar' name='Adi C' bg='yellow'>
+                        <AvatarBadge boxSize="1.25em" bg="green.500" />
+                      </Avatar>
+                    </Box>
+                    <Card margin='20px' variant='elevated' size='sm' w='50%'>
+                      <CardBody>
+                        <Box>
+                        <Tag size="lg" colorScheme="orange" borderRadius="full">
+                          <TagLeftIcon as={CircleIcon} />
+                          <Text>&nbsp;1508</Text>
+                        </Tag>
+                        </Box>
+                      </CardBody>
+                    </Card>
+                  </HStack>
+                    
+                  <MenuDivider />
                 </MenuGroup>
-                <MenuDivider />
+
                 <MenuGroup>
+                  <MenuItem
+                    closeOnSelect={false}
+                    onClick={toggleColorMode}
+                    icon={colorMode === "dark" ? <FaSun /> : <FaMoon />}
+                    >
+                      Dark mode <Switch id='darkMode' isChecked={colorMode === "dark" ? true : false} />
+                  </MenuItem>
                   <MenuItem
                     icon={<FaQuestion />}
                     onClick={()=> navigate('/faq')}>
-                    Help and Support
+                      Help and support
+                  </MenuItem>
+                  <MenuItem
+                    icon={<BiMessageError />}
+                    onClick={()=> navigate('/faq')}>
+                      Give feedback
                   </MenuItem>
                   <MenuItem 
                     onClick={()=> navigate('/settings')}
                     icon={<SettingsIcon />}>
-                      Setting
+                      Settings
                   </MenuItem>
                   <MenuItem
                     icon={<FiLogOut />}
