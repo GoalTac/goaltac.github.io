@@ -20,7 +20,6 @@ import {
 
 import DeleteTask from './Tasks/DeleteTask';
 import ClearTasks from './Tasks/ClearTasks';
-import img from '../images/empty.svg';
 // import { useRealtime } from 'react-supabase';
 import { useEffect, useState } from 'react';
 import supabase from '../supabase'
@@ -62,12 +61,6 @@ export default function Calendar() {
   //   );
   // }
 
-  if (!tasks || !tasks.length) {
-    return (
-      <Box align="center">
-      </Box>
-    );
-  }
 
   return (
     <TableContainer>
