@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AddTask from '../components/Tasks/AddTask';
 import TaskList from '../components/TaskList';
+import Calendar from '../components/Calendar';
 import supabase from '../supabase';
 import NavBar from '../components/NavBar';
 import { Routes, Route } from 'react-router-dom';
@@ -46,7 +47,7 @@ function HomePage() {
           <AddTask key={sesh.user.id} session={sesh} /> 
         </HStack>
         <TaskList />
-          
+        <Calendar />
         </>
       )}
     }
