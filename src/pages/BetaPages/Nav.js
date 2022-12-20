@@ -7,6 +7,7 @@ import {
   useColorMode,
   useColorModeValue,
   useMediaQuery,
+  Heading,
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { FaAlignJustify } from 'react-icons/fa';
@@ -40,7 +41,13 @@ const Nav = ({ ref }) => {
       bg={navBg}
     >
       <Text fontSize="xl" fontWeight="bold">
-        Chakra Sample
+      <Heading
+        fontWeight="extrabold"
+        bgGradient="linear(to-l, teal.300, blue.500)"
+        bgClip="text"
+      >
+        GoalTac
+      </Heading>
       </Text>
 
       <Spacer />
