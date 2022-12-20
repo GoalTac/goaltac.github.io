@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AddTask from '../components/AddTask';
 import TaskList from '../components/TaskList';
+import Calendar from '../components/Calendar';
 import supabase from '../supabase';
 
 
@@ -47,7 +48,7 @@ function HomePage() {
 
         </HStack>
         <TaskList />
-          
+        <Calendar />
         </>
       )}
     }
