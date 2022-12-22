@@ -62,11 +62,6 @@ function HomePage() {
     w='100vw'>
       
         <VStack>
-          
-        <HStack>
-          <NavBar />
-          <Settings />
-        </HStack>
              
           {!(session === undefined) ? 
           <HStack>

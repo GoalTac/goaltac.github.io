@@ -5,7 +5,7 @@ import {
 export default function Today(){
 
     return(
-        <Box>
+        <Box bg='blackAlpha.300'>
             Today's Tasks
         </Box>
     )

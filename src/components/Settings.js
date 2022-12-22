@@ -46,7 +46,7 @@ export default function Settings() { //Session defined from HomePage.js (supabas
   const navigate = useNavigate() 
 
   return (
-    <>
+    <Box>
         <Menu>
           {({ isOpen }) => (
             <>
@@ -118,7 +118,6 @@ export default function Settings() { //Session defined from HomePage.js (supabas
             </>
           )}
         </Menu>
-    </>
-    
+    </Box>
   );
 }

@@ -28,40 +28,35 @@ import {
   Icon,
   Progress,
   HStack,
+  Center,
+  VStack,
 } from '@chakra-ui/react';
 import Settings from './Settings';
+import { Outlet } from 'react-router-dom';
 
 export default function NavBar() {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
-    <header>
-      <TableContainer>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>
-                <Heading
-                  fontWeight="extrabold"
-                  bgGradient="linear(to-l, teal.300, blue.500)"
-                  bgClip="text"
-                >
-                  GoalTac
-                </Heading>
-              </Th>
-              <Th>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    children={<SearchIcon color="gray.300" />}
-                  />
-                  <Input variant="filled" placeholder="Find a Clan" />
-                </InputGroup>
-              </Th>
-            </Tr>
-          </Thead>
-        </Table>
-      </TableContainer>
-    </header>
+    <VStack>
+      <HStack>
+        <Heading
+          fontWeight="extrabold"
+          bgGradient="linear(to-l, teal.300, blue.500)"
+          bgClip="text"
+        >
+          GoalTac
+        </Heading>
+        <InputGroup>
+          <InputLeftElement
+            pointerEvents="none"
+            children={<SearchIcon color="gray.300" />}
+          />
+          <Input w='30vw' variant="filled" placeholder="Find a Clan" />
+        </InputGroup>
+        <Settings />
+      </HStack>
+      <Outlet />
+    </VStack>
   );
 }
