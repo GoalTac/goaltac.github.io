@@ -33,36 +33,43 @@ function HomePage() {
   //   }
   // }
 
-    const whatAmIShowing = () =>{
-      if (!state) {return(<>"No data :("</>)}
+    const whatAmIShowing = function(){
+      supabase.auth.getSession().then((table)=>{
+        
+        if (!table.data?.session){
+          navigate('/login')
 
-      const sesh = state.session
-      if (sesh){return(
-        <>
-        {/* HStack is such that the two buttons are side by side */}
-        <HStack> 
-          <AddTask key={sesh.user.id} session={sesh} /> 
-          
-          <Button pr='15px' onClick={onSignOut}>Sign Out</Button>
-
-        </HStack>
-        <TaskList />
-          
-        </>
-      )}
+        }else{
+          setSession(table.data.session)
+        }
+      })
     }
 
     const onSignOut = async function(){
       const { error } = await supabase.auth.signOut()
-      navigate('/')
+      navigate('/login')
     }
 
-    useEffect(()=>{ 
-      if (!state) {
-        navigate('/login')
-      }
-    },[])
+    const getSession = async function(){
+      console.log("Entered")
+      await supabase.auth.getSession().then((table)=>{
+          if (!table.data?.session){
+              console.log("\nThere's no session")
+              navigate('/login')
+          }else{
+              setSession(table.data)
+          }
+          
+      })
+      
+      
+    }
 
+  useEffect(()=>{
+      
+      getSession()
+
+  }, [])
   return (
     <Center
     w='100vw'>
@@ -70,7 +77,21 @@ function HomePage() {
           Passing session should there be a case in the future that involves it
       */}
 
-        <VStack>{whatAmIShowing()}</VStack>
+        <VStack>
+            {/* HStack is such that the two buttons are side by side */}
+             
+              {!(session === undefined) ? 
+              <HStack>
+                <AddTask /> 
+                
+                <Button pr='15px' onClick={onSignOut}>Sign Out</Button>
+              </HStack> : 
+              <>"No data :("</>
+              }
+              
+
+            <TaskList />
+        </VStack>
       
 
     </Center>
