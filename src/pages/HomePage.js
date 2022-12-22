@@ -17,22 +17,6 @@ function HomePage() {
   const [session, setSession] = useState()
   const [user, setUser] = useState(undefined)
 
-  
-  
-
-
-
-  
-
-  // const shouldIStayOrShouldIGo = function(){
-  //   getUserData()
-  //   if (!user === undefined) {
-  //     navigate('/')
-  //   } else{
-  //     navigate('/login')
-  //   }
-  // }
-
     const whatAmIShowing = function(){
       supabase.auth.getSession().then((table)=>{
         
@@ -73,10 +57,6 @@ function HomePage() {
   return (
     <Center
     w='100vw'>
-      {/* Passing user in such that their id is accessible
-          Passing session should there be a case in the future that involves it
-      */}
-
         <VStack>
             {/* HStack is such that the two buttons are side by side */}
              
