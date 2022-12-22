@@ -18,19 +18,20 @@ import {
   Radio,
   Text
 } from '@chakra-ui/react';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import supabase from '../supabase'
 
-export default function AddTask({session}) { //Session defined from HomePage.js (supabase.auth.getSession())
+export default function AddTask() { //Session defined from HomePage.js (supabase.auth.getSession())
   //Database
   const {isOpen, onOpen, onClose} = useDisclosure() //For the modal's open/close
-  
 
   //Page
-  const [task, setTask] = useState({title: "", text: "", end_date: "9999-12-31", difficulty: '0', userid: session.user.id})
+  const [task, setTask] = useState({title: "", text: "", end_date: "9999-12-31", difficulty: '0', userid: null})
   const {title, text, end_date, difficulty, user_id} = task
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const navigate = useNavigate()
 
   async function saveTask(e) {
     e.preventDefault();
@@ -46,7 +47,7 @@ export default function AddTask({session}) { //Session defined from HomePage.js 
     
     //Finishing tasks
     setLoading(false);
-    setTask({...task, title: "", text: "", end_date: "9999-12-31",})
+    setTask({...task, title: "", text: "", end_date: "9999-12-31"})
 
     toast({
       title: error || 'task added',
@@ -59,6 +60,24 @@ export default function AddTask({session}) { //Session defined from HomePage.js 
     onClose();
   }
 
+  const getSession = async function(){
+      console.log("Entered")
+      await supabase.auth.getSession().then((table)=>{
+          if (!table.data?.session){
+              console.log("\nThere's no session")
+              navigate('/login')
+          }else{
+              setTask({...task, userid: table.data.session.user.id})
+          }
+          
+      })
+      
+      
+  }
+
+  useEffect(()=>{
+    getSession()
+  }, [])
   return (
     <>
         <Button onClick={onOpen} colorScheme='blue' p='10px'>Add Task</Button>
