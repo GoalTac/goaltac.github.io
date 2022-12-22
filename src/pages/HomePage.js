@@ -60,24 +60,25 @@ function HomePage() {
   return (
     <Center
     w='100vw'>
-      <HStack>
-        <NavBar />
-        <Settings />
-      </HStack>
+      
         <VStack>
-            {/* HStack is such that the two buttons are side by side */}
+          
+        <HStack>
+          <NavBar />
+          <Settings />
+        </HStack>
              
-              {!(session === undefined) ? 
-              <HStack>
-                <AddTask /> 
-                
-                <Button pr='15px' onClick={onSignOut}>Sign Out</Button>
-              </HStack> : 
-              <>"No data :("</>
-              }
-              
-
-            <TaskList />
+          {!(session === undefined) ? 
+          <HStack>
+            <AddTask /> 
+            
+            <Button pr='15px' onClick={onSignOut}>Sign Out</Button>
+          </HStack> : 
+          <>"No data :("</>
+          }
+            
+            
+          <TaskList />
 
           {whatAmIShowing()}
         </VStack>
