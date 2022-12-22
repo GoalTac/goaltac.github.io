@@ -32,14 +32,12 @@ export default function SignUpPage() {
     event.preventDefault();
     console.log('submitting!');
     try {
-      const { data } = await supabase.auth.signUp({ email, password });
+      const { data , error} = await supabase.auth.signUp({ email, password });
 
+      if (error) throw error
+      
       navigate('/')
 
-
-      console.log(data);
-      // Save the authentication token in local storage or a cookie
-      // so that it can be used on subsequent requests
     } catch (error) {
       // Handle the error
       console.log(error);
