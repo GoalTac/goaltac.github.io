@@ -25,11 +25,15 @@ import {
   Tag,
   TagLeftIcon,
   TagLabel,
+  Icon,
   Progress,
+  HStack,
 } from '@chakra-ui/react';
+import Settings from './Settings';
 
 export default function NavBar() {
   const { colorMode, toggleColorMode } = useColorMode();
+
   return (
     <header>
       <TableContainer>
@@ -44,25 +48,6 @@ export default function NavBar() {
                 >
                   GoalTac
                 </Heading>
-              </Th>
-              <Th>
-                <Button onClick={toggleColorMode}>
-                  Toggle {colorMode === 'light' ? 'Dark' : 'Light'}
-                </Button>
-              </Th>
-              <Th>
-                <Tag size="lg" colorScheme="orange" borderRadius="full">
-                  <TagLeftIcon as={CircleIcon} />
-                  <Text>&nbsp;1508</Text>
-                </Tag>
-              </Th>
-              <Th>
-                <Avatar name="Adi C">
-                  <AvatarBadge boxSize="1.25em" bg="green.500" />
-                </Avatar>
-                <Badge colorScheme="purple">
-                  Lv 50 <Progress value={40} size="sm" />
-                </Badge>
               </Th>
               <Th>
                 <InputGroup>

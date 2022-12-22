@@ -1,9 +1,13 @@
 import { Button, Center, HStack, Text, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import AddTask from '../components/AddTask';
+import AddTask from '../components/Tasks/AddTask';
 import TaskList from '../components/TaskList';
+import Calendar from '../components/Calendar';
 import supabase from '../supabase';
+import NavBar from '../components/NavBar';
+import { Routes, Route } from 'react-router-dom';
+import Settings from '../components/Settings';
 
 
 
@@ -12,7 +16,6 @@ function HomePage() {
   //React Router DOM
   const navigate = useNavigate()  
   const {state} = useLocation()
-
   //Supabase
   const [session, setSession] = useState()
   const [user, setUser] = useState(undefined)
@@ -57,6 +60,10 @@ function HomePage() {
   return (
     <Center
     w='100vw'>
+      <HStack>
+        <NavBar />
+        <Settings />
+      </HStack>
         <VStack>
             {/* HStack is such that the two buttons are side by side */}
              
@@ -71,6 +78,8 @@ function HomePage() {
               
 
             <TaskList />
+
+          {whatAmIShowing()}
         </VStack>
       
 

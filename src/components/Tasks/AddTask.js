@@ -80,7 +80,7 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
   }, [])
   return (
     <>
-        <Button onClick={onOpen} colorScheme='blue' p='10px'>Add Task</Button>
+        <Button onClick={onOpen} colorScheme='blue' p='10px'>+ Task</Button>
 
         <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
             <ModalOverlay>
