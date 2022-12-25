@@ -3,10 +3,7 @@ import {
   Text,
   Flex,
   Spacer,
-  IconButton,
   Button,
-  useColorMode,
-  useColorModeValue,
   useDisclosure,
   Img,
   Drawer,
@@ -18,14 +15,11 @@ import {
   DrawerFooter,
   Input,
 } from '@chakra-ui/react';
-import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import logo from '../../images/GoalTac_Logo.png';
 
 
 const Nav = () => {
   const [scroll, setScroll] = useState(false);
-  const { colorMode, toggleColorMode } = useColorMode();
-  const navBg = useColorModeValue('white', 'blackAlpha.200');
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = React.useRef()
 
@@ -45,18 +39,16 @@ const Nav = () => {
       top="0"
       zIndex="sticky"
       w="100%"
-      bg={navBg}
+      bg='blackAlpha.200'
+      opacity='0.9'
     >
       <Flex>
-        <Img src={logo} alt="logo" width="50%" height="50%"/>
+        <Img src={logo} alt="logo" width="60%" height="60%"/>
       </Flex>
 
       <Spacer />
       
       <Flex alignItems="center">
-        <IconButton mr={5} onClick={toggleColorMode}>
-          {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-        </IconButton>
 
         <Button ref={btnRef} mr={5} fontSize='xl' variant='contained' colorScheme='teal' onClick={onOpen}>
           About Us

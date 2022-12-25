@@ -11,7 +11,6 @@ import Hero from '../pages/BetaPages/Hero';
 import Nav from '../pages/BetaPages/Nav';
 import Services from '../pages/BetaPages/Services';
 import Testimonials from '../pages/BetaPages/Testimonials';
-import img from '../images/Background_Image.PNG';
 import blurredImg from '../images/Blurred_Background.png';
 
 
@@ -32,8 +31,7 @@ function BetaPage() {
                 <Services />
                 <Testimonials />
                 <ContactUs />
-                <Footer /> 
-=            
+                <Footer />            
         </Box>
     )
 }
