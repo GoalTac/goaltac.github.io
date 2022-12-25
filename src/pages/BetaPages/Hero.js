@@ -7,12 +7,11 @@ import {
     Input,
     useToast,
     Text,
-    Textarea,
+    Link,
     IconButton,
   } from '@chakra-ui/react';
   import React from 'react';
 import { FaDiscord } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
 
   const Hero = () => {
     const toast = useToast();
@@ -61,8 +60,7 @@ import { Link } from 'react-router-dom';
             </Flex>
             
           </FormControl>
-          <Link fontSize="sm" isExternal href="https://discord.gg/EzFPQDAKGf">
-            Join Discord {' '}
+          <Link isExternal href="https://discord.gg/EzFPQDAKGf">
             <IconButton mt={4} mb={2} variant="outlined" icon={<FaDiscord size="sm" color="rgba(114,137,218)" />}  />
           </Link>
         </Flex>
