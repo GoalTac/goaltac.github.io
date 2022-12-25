@@ -39,8 +39,9 @@ const Nav = () => {
       top="0"
       zIndex="sticky"
       w="100%"
-      bg='blackAlpha.200'
+      bg={scroll ? 'blackAlpha.400' : ''}
       opacity='0.9'
+      transitionDuration='500ms'
     >
       <Flex>
         <Img src={logo} alt="logo" width="60%" height="60%"/>
@@ -55,7 +56,7 @@ const Nav = () => {
         </Button>
         <Drawer
           isOpen={isOpen}
-          placement='right'
+          placement='top'
           onClose={onClose}
           finalFocusRef={btnRef}
         >
@@ -77,7 +78,7 @@ const Nav = () => {
           </DrawerContent>
         </Drawer>
 
-        <Text fontSize="xl" fontWeight="bold">
+        <Text fontSize="xl" mr={3}>
           Coming soon!
         </Text>
 

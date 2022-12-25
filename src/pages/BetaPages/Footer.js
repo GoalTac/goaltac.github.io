@@ -8,7 +8,7 @@ const Footer = () => {
       <Flex
         w="full"
         bg="blackAlpha.100"
-        minHeight="20vh"
+        minHeight="5vh"
         flexDirection="column"
         alignItems="center"
         textAlign="center"
@@ -16,10 +16,10 @@ const Footer = () => {
       >
           <Flex>
             <Link isExternal href="https://discord.gg/EzFPQDAKGf">
-              <IconButton mt={4} mb={5} variant="outlined" icon={<FaDiscord size="sm" color="rgba(114,137,218)" />}  />
+              <IconButton mt={4} mb={2} variant="outlined" icon={<FaDiscord size="sm" color="rgba(114,137,218)" />}  />
             </Link>
           </Flex>
-          <Text mb="10">
+          <Text mb="5">
             <Link mr={6} color="whiteAlpha.700" href="terms" isExternal>
               TERMS
             </Link>

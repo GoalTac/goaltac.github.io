@@ -2,65 +2,72 @@ import {
     Box,
     Button,
     Flex,
+    FormControl,
     Img,
-    Spacer,
+    Input,
+    useToast,
     Text,
-    useMediaQuery,
+    Textarea,
+    IconButton,
   } from '@chakra-ui/react';
   import React from 'react';
-  import chakraHero from '../../images/chakraHero.png';
+import { FaDiscord } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
   const Hero = () => {
-    const [isLargerThanLG] = useMediaQuery('(min-width: 62em)');
+    const toast = useToast();
+
+    const submitForm = () => {
+      
+      return toast({
+        title: 'Message sent!🚀',
+        description: 'Thank you for contacting us!',
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      });
+    };
     return (
-      <Flex
-        alignItems="center"
-        w="full"
-        px={isLargerThanLG ? '16' : '6'}
-        py="16"
-        minHeight="90vh"
-        justifyContent="space-between"
-        flexDirection={isLargerThanLG ? 'row' : 'column'}
-      >
-        <Box mr={isLargerThanLG ? '6' : '0'} w={isLargerThanLG ? '60%' : 'full'}>
-          <Text
-            fontSize={isLargerThanLG ? '5xl' : '4xl'}
-            fontWeight="bold"
-            mb="4"
-          >
-            {' '}
-            Chakra UI Sample
-          </Text>
-  
-          <Text mb="6" fontSize={isLargerThanLG ? 'lg' : 'base'} opacity={0.7}>
-            Sample Code for the blog article React MUI Components - Learn by Coding. The article explains how to code from scratch all components: 
-            navBar, hero section, app features, contact, and footer. 
-          </Text>
-  
-          <Button
-            w="200px"
-            colorScheme="blue"
-            variant="solid"
-            h="50px"
-            size={isLargerThanLG ? 'lg' : 'md'}
-            mb={isLargerThanLG ? '0' : '10'}
-            onClick={(e) => {
-              e.preventDefault();
-              window.location.href='https://blog.appseed.us/chakra-ui-react-coding-landing-page/';
-              }}
-          >
-            Read More
-          </Button>
-        </Box>
-        <Spacer />
+      <Flex>
         <Flex
-          w={isLargerThanLG ? '40%' : 'full'}
           alignItems="center"
-          justifyContent="center"
+          w="40%"
+          px='16'
+          py="16"
+          justifyContent="space-between"
+          flexDirection='column'
         >
-          <Img src={chakraHero} alt="Chakra UI" />
+          <Text>
+          Sign up for email updates and a chance to be selected for exclusive access!
+
+          </Text>
+
+          <FormControl>
+    
+            <Flex h="10%" marginTop={3}>      
+              <Button
+                colorScheme="gray"
+                textAlign="left"
+                width="30%"
+                type="submit"
+                fontSize="xs"
+                variant="solid"
+                onClick={submitForm}
+              >
+                Notify Me:
+              </Button>
+              <Input id="email" type="email" placeholder="Email" />
+             
+            </Flex>
+            
+          </FormControl>
+          <Link fontSize="sm" isExternal href="https://discord.gg/EzFPQDAKGf">
+            Join Discord {' '}
+            <IconButton mt={4} mb={2} variant="outlined" icon={<FaDiscord size="sm" color="rgba(114,137,218)" />}  />
+          </Link>
         </Flex>
       </Flex>
+      
     );
   };
   
