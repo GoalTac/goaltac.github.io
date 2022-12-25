@@ -9,7 +9,7 @@ import NavBar from './components/NavBar';
 
 function App() {
   return (
-    <VStack p={4}>
+    <VStack>
       <Routes>
 
         {/* Only add routes that would involve a signed in user. */}

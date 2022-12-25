@@ -4,22 +4,30 @@ import {
   Flex,
   Spacer,
   IconButton,
+  Button,
   useColorMode,
   useColorModeValue,
-  useMediaQuery,
-  Heading,
+  useDisclosure,
+  Img,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  DrawerHeader,
+  DrawerBody,
+  DrawerFooter,
+  Input,
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { FaAlignJustify } from 'react-icons/fa';
-import { Icon } from '@chakra-ui/react';
-import { useDisclosure } from '@chakra-ui/react'
+import logo from '../../images/GoalTac_Logo.png';
 
-const Nav = ({ ref }) => {
-  const { onOpen } = useDisclosure();
+
+const Nav = () => {
   const [scroll, setScroll] = useState(false);
   const { colorMode, toggleColorMode } = useColorMode();
   const navBg = useColorModeValue('white', 'blackAlpha.200');
-  const [isLargerThanMD] = useMediaQuery('(min-width: 48em)');
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const btnRef = React.useRef()
 
   const changeScroll = () =>
     document.body.scrollTop > 80 || document.documentElement.scrollTop > 80
@@ -30,44 +38,56 @@ const Nav = ({ ref }) => {
 
   return (
     <Flex
-      h="10vh"
+      h="10%"
       alignItems="center"
-      p="6"
       boxShadow={scroll ? 'base' : 'none'}
       position="sticky"
       top="0"
       zIndex="sticky"
-      w="full"
+      w="100%"
       bg={navBg}
     >
-      <Text fontSize="xl" fontWeight="bold">
-      <Heading
-        fontWeight="extrabold"
-        bgGradient="linear(to-l, teal.300, blue.500)"
-        bgClip="text"
-      >
-        GoalTac
-      </Heading>
-      </Text>
+      <Flex>
+        <Img src={logo} alt="logo" width="50%" height="50%"/>
+      </Flex>
 
       <Spacer />
       
       <Flex alignItems="center">
-        <IconButton mr="10" w={6} h={6} p={5} onClick={toggleColorMode}>
+        <IconButton mr={5} onClick={toggleColorMode}>
           {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
         </IconButton>
 
-        {isLargerThanMD ? (
-          <>
-            <a target="_blank" rel="noreferrer" href="https://appseed.us/apps/react/" fontSize="md" mr="10">
-              More Apps
-            </a>
-          </>
-        ) : (
-          <IconButton ref={ref} onClick={onOpen}>
-            <Icon as={FaAlignJustify} />
-          </IconButton>
-        )}
+        <Button ref={btnRef} mr={5} fontSize='xl' variant='contained' colorScheme='teal' onClick={onOpen}>
+          About Us
+        </Button>
+        <Drawer
+          isOpen={isOpen}
+          placement='right'
+          onClose={onClose}
+          finalFocusRef={btnRef}
+        >
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerCloseButton />
+            <DrawerHeader>Create your account</DrawerHeader>
+
+            <DrawerBody>
+              <Input placeholder='Type here...' />
+            </DrawerBody>
+
+            <DrawerFooter>
+              <Button variant='outline' mr={3} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button colorScheme='blue'>Save</Button>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+
+        <Text fontSize="xl" fontWeight="bold">
+          Coming soon!
+        </Text>
 
       </Flex>
     </Flex>

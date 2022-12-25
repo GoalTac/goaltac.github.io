@@ -1,29 +1,40 @@
+import {
+    Box,
+    Center,
+    Image,
+    VStack,
+  } from '@chakra-ui/react';
 import AboutUs from '../pages/BetaPages/AboutUs';
 import ContactUs from '../pages/BetaPages/ContactUs';
-import DrawerComponent from '../pages/BetaPages/DrawerComponent';
 import Footer from '../pages/BetaPages/Footer';
 import Hero from '../pages/BetaPages/Hero';
 import Nav from '../pages/BetaPages/Nav';
 import Services from '../pages/BetaPages/Services';
 import Testimonials from '../pages/BetaPages/Testimonials';
-import { useDisclosure, useRef } from 'react';
-import { Box, Center, VStack } from '@chakra-ui/react';
+import img from '../images/Background_Image.PNG';
+import blurredImg from '../images/Blurred_Background.png';
 
 
 function BetaPage() {
-    const btnRef = useRef();
     return (
-        <VStack>
-            <Nav ref={btnRef} />
-            <Hero />
-            <AboutUs />
-            <Services />
-            <Testimonials />
-            <ContactUs />
-            <Footer />
-    
-            <DrawerComponent btnRef={btnRef} />
-        </VStack>
-    );
+        <Box 
+            w="100%" 
+            h="100%"
+            backgroundImage={blurredImg}
+            backgroundAttachment="fixed"
+            backgroundRepeat="no-repeat"
+            backgroundPosition="center"
+            backgroundSize="100%"
+            >
+                <Nav />
+                <Hero />
+                <AboutUs />
+                <Services />
+                <Testimonials />
+                <ContactUs />
+                <Footer /> 
+=            
+        </Box>
+    )
 }
 export default BetaPage;
