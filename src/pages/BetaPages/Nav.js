@@ -14,14 +14,18 @@ import {
   DrawerBody,
   DrawerFooter,
   Input,
+  IconButton,
+  useColorMode,
 } from '@chakra-ui/react';
 import logo from '../../images/GoalTac_Logo.png';
+import { FaMoon, FaSun } from 'react-icons/fa';
 
 
 const Nav = () => {
   const [scroll, setScroll] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = React.useRef()
+  const { toggleColorMode, colorMode } = useColorMode();
 
   const changeScroll = () =>
     document.body.scrollTop > 80 || document.documentElement.scrollTop > 80
@@ -39,19 +43,25 @@ const Nav = () => {
       top="0"
       zIndex="sticky"
       w="100%"
-      bg={scroll ? 'blackAlpha.400' : ''}
+      bg={scroll ? 'blackAlpha.200' : ''}
       opacity='0.9'
       transitionDuration='500ms'
     >
-      <Flex>
-        <Img src={logo} alt="logo" width="60%" height="60%"/>
+      <Flex ml={30}>
+        <Img src={logo} alt="logo" width="40%" height="40%"/>
       </Flex>
 
       <Spacer />
       
       <Flex alignItems="center">
 
-        <Button ref={btnRef} mr={5} fontSize='xl' variant='contained' colorScheme='teal' onClick={onOpen}>
+        <IconButton
+          variant="unstyled"
+          onClick={toggleColorMode}
+          icon={colorMode === "dark" ? <FaSun /> : <FaMoon />}
+          />
+
+        <Button ref={btnRef} mr={5} fontSize='xl' variant='contained' onClick={onOpen}>
           About Us
         </Button>
         <Drawer

@@ -9,12 +9,15 @@ import {
     Text,
     Link,
     IconButton,
+    useColorMode,
   } from '@chakra-ui/react';
   import React from 'react';
-import { FaDiscord } from 'react-icons/fa';
+  import blurredImg from '../../images/Blurred_Background.png';
+  import { FaDiscord } from 'react-icons/fa';
 
   const Hero = () => {
     const toast = useToast();
+    const { colorMode } = useColorMode();
 
     const submitForm = () => {
       
@@ -27,42 +30,61 @@ import { FaDiscord } from 'react-icons/fa';
       });
     };
     return (
-      <Flex>
+      <Flex 
+        width='90%'
+        alignItems="center"
+        justifyContent="center"
+        textAlign="center"
+        mb='4'
+        marginLeft={30}
+        marginTop={50}
+        flexDirection="row"
+      >
         <Flex
           alignItems="center"
-          w="40%"
-          px='16'
-          py="16"
-          justifyContent="space-between"
           flexDirection='column'
+          marginX={5}
+          w="60%"
         >
-          <Text>
-          Sign up for email updates and a chance to be selected for exclusive access!
-
+          <Flex
+            alignItems="center"
+            marginTop={5}
+            marginBottom={5}
+            fontSize="2xl"
+            >
+            BETTER WORK ETHIC
+          </Flex>
+          <Text marginBottom={3}>
+            Sign up for a chance to be selected for exclusive access!
           </Text>
 
           <FormControl>
     
-            <Flex h="10%" marginTop={3}>      
+            <Flex flexDirection="column" textAlign="center" alignItems="center">
+              <Input id="email" type="email" placeholder=" Your Email" shadow="lg" py="2"
+                bgColor={colorMode === "dark" ? "gray.600" : "ThreeDFace"}
+                border="1px" variant="unstyled" borderRadius="none" />      
               <Button
-                colorScheme="gray"
-                textAlign="left"
-                width="30%"
+                width="40%"
                 type="submit"
                 fontSize="xs"
-                variant="solid"
+                border="1px"
+                borderRadius="none"
+                variant="outline"
+                marginTop={2}
                 onClick={submitForm}
               >
                 Notify Me:
               </Button>
-              <Input id="email" type="email" placeholder="Email" />
+              
              
             </Flex>
             
           </FormControl>
-          <Link isExternal href="https://discord.gg/EzFPQDAKGf">
-            <IconButton mt={4} mb={2} variant="outlined" icon={<FaDiscord size="sm" color="rgba(114,137,218)" />}  />
-          </Link>
+        </Flex>
+
+        <Flex>
+          <Img src={blurredImg} ml={70} w="70%" h="50%" />
         </Flex>
       </Flex>
       

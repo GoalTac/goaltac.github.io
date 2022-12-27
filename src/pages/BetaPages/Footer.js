@@ -4,31 +4,19 @@ import { FaDiscord } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <Flex>
       <Flex
-        w="full"
-        bg="blackAlpha.100"
-        minHeight="5vh"
+        bottom="0%"
+        bg="gray.700"
         flexDirection="column"
         alignItems="center"
         textAlign="center"
-        justifyContent="center"
       >
           <Flex>
             <Link isExternal href="https://discord.gg/EzFPQDAKGf">
               <IconButton mt={4} mb={2} variant="outlined" icon={<FaDiscord size="sm" color="rgba(114,137,218)" />}  />
             </Link>
-          </Flex>
-          <Text mb="5">
-            <Link mr={6} color="whiteAlpha.700" href="terms" isExternal>
-              TERMS
-            </Link>
-            <Link href="privacy" isExternal color="whiteAlpha.700">
-              PRIVACY
-            </Link>
-          </Text>      
+          </Flex>     
       </Flex>
-    </Flex>
     
   );
 };
