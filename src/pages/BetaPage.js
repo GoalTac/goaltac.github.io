@@ -11,6 +11,9 @@ import Hero from '../pages/BetaPages/Hero';
 import Nav from '../pages/BetaPages/Nav';
 
 import blurredImg from '../images/Blurred_Background.png';
+import img from '../images/Background_Image.PNG';
+import girlStudying from '../images/Girl_Studying.jpg';
+import book from '../images/book.jpg';
 
 
 function BetaPage() {
@@ -21,6 +24,7 @@ function BetaPage() {
             w="100%" 
             h="100%"
             bgColor={colorMode === "light" ? "whiteAlpha.100" : "gray.700"}
+            backgroundImage={book}
             backgroundAttachment="fixed"
             backgroundRepeat="no-repeat"
             backgroundPosition="center"
@@ -28,7 +32,7 @@ function BetaPage() {
             >
                 <Nav />
                 <Hero />
-                <AboutUs />
+                <Footer />
         </Box>
     )
 }

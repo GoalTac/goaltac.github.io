@@ -36,19 +36,18 @@ const Nav = () => {
 
   return (
     <Flex
-      h="10%"
       alignItems="center"
       boxShadow={scroll ? 'base' : 'none'}
       position="sticky"
       top="0"
       zIndex="sticky"
       w="100%"
-      bg={scroll ? 'blackAlpha.200' : ''}
+      bg={scroll ? 'whiteAlpha.500' : ''}
       opacity='0.9'
       transitionDuration='500ms'
     >
-      <Flex ml={30}>
-        <Img src={logo} alt="logo" width="40%" height="40%"/>
+      <Flex ml={20}>
+        <Img src={logo} alt="logo" width="50%" height="50%"/>
       </Flex>
 
       <Spacer />
@@ -60,37 +59,6 @@ const Nav = () => {
           onClick={toggleColorMode}
           icon={colorMode === "dark" ? <FaSun /> : <FaMoon />}
           />
-
-        <Button ref={btnRef} mr={5} fontSize='xl' variant='contained' onClick={onOpen}>
-          About Us
-        </Button>
-        <Drawer
-          isOpen={isOpen}
-          placement='top'
-          onClose={onClose}
-          finalFocusRef={btnRef}
-        >
-          <DrawerOverlay />
-          <DrawerContent>
-            <DrawerCloseButton />
-            <DrawerHeader>Create your account</DrawerHeader>
-
-            <DrawerBody>
-              <Input placeholder='Type here...' />
-            </DrawerBody>
-
-            <DrawerFooter>
-              <Button variant='outline' mr={3} onClick={onClose}>
-                Cancel
-              </Button>
-              <Button colorScheme='blue'>Save</Button>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
-
-        <Text fontSize="xl" mr={3}>
-          Coming soon!
-        </Text>
 
       </Flex>
     </Flex>
