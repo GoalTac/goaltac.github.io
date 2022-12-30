@@ -57,7 +57,7 @@ const Hero = () => {
   };
 
   return (
-    <Flex flexDirection="row" padding="50">
+    <Box padding="50">
       <Box>
         <Heading
                 fontWeight="extrabold"
@@ -117,7 +117,7 @@ const Hero = () => {
         <Image src={createTask} w="100%" h="100%" />
       </Box>
       
-    </Flex>
+    </Box>
   );
 };
 
