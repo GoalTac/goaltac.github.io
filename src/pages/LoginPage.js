@@ -124,7 +124,7 @@ export default function LoginPage() {
                   </InputRightElement>
                 </InputGroup>
                 <FormHelperText textAlign="right">
-                  <Link>forgot password?</Link>
+                  <Link href="resetpassword">Forgot password?</Link>
                 </FormHelperText>
               </FormControl>
               <Button
