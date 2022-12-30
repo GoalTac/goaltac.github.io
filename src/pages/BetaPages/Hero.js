@@ -1,67 +1,116 @@
 import {
-    Box,
-    Button,
-    Flex,
-    Img,
-    Spacer,
-    Text,
-    useMediaQuery,
-  } from '@chakra-ui/react';
-  import React from 'react';
-  import chakraHero from '../../images/chakraHero.png';
+  Heading,
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  Input,
+  useToast,
+  Text,
+  useColorMode,
+  Stack,
+} from '@chakra-ui/react';
+import React from 'react';
+import supabase from '../../supabase';
+import { useState } from 'react';
 
-  const Hero = () => {
-    const [isLargerThanLG] = useMediaQuery('(min-width: 62em)');
-    return (
-      <Flex
-        alignItems="center"
-        w="full"
-        px={isLargerThanLG ? '16' : '6'}
-        py="16"
-        minHeight="90vh"
-        justifyContent="space-between"
-        flexDirection={isLargerThanLG ? 'row' : 'column'}
-      >
-        <Box mr={isLargerThanLG ? '6' : '0'} w={isLargerThanLG ? '60%' : 'full'}>
-          <Text
-            fontSize={isLargerThanLG ? '5xl' : '4xl'}
-            fontWeight="bold"
-            mb="4"
-          >
-            {' '}
-            Chakra UI Sample
-          </Text>
-  
-          <Text mb="6" fontSize={isLargerThanLG ? 'lg' : 'base'} opacity={0.7}>
-            Sample Code for the blog article React MUI Components - Learn by Coding. The article explains how to code from scratch all components: 
-            navBar, hero section, app features, contact, and footer. 
-          </Text>
-  
-          <Button
-            w="200px"
-            colorScheme="blue"
-            variant="solid"
-            h="50px"
-            size={isLargerThanLG ? 'lg' : 'md'}
-            mb={isLargerThanLG ? '0' : '10'}
-            onClick={(e) => {
-              e.preventDefault();
-              window.location.href='https://blog.appseed.us/chakra-ui-react-coding-landing-page/';
-              }}
-          >
-            Read More
-          </Button>
-        </Box>
-        <Spacer />
-        <Flex
-          w={isLargerThanLG ? '40%' : 'full'}
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Img src={chakraHero} alt="Chakra UI" />
-        </Flex>
-      </Flex>
-    );
+const Hero = () => {
+  const toast = useToast();
+  const { colorMode } = useColorMode();
+  const [inputEmail, setEmail] = useState('');
+
+  const submitForm = async event => {
+    // checks whether the email is already in the database
+    try {
+      let { data: betaSignUp, error } = await supabase
+        .from('betaSignUp')
+        .select()
+        .eq('email', inputEmail);
+      
+      if (betaSignUp.length > 0) {
+        return toast({
+          title: 'You are already signed up 🚀',
+          description: 'Thank you for contacting us!',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        const { data, error } = await supabase
+          .from('betaSignUp')
+          .insert([{ email: inputEmail }]);
+        
+        console.log(error);
+        return toast({
+          title: 'Message sent!🚀',
+          description: 'Thank you for contacting us!',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
-  
-  export default Hero;
+
+  return (
+    <Box padding="50">
+      <Heading
+        fontWeight="extrabold"
+        fontSize={{ base: '2xl', sm: '3xl', md: '4xl' }}
+        bg={colorMode === 'dark' ? 'white' : 'gray.700'}
+        bgClip="text"
+      >
+        IMPROVE YOUR WORK ETHIC WITH
+      </Heading>
+
+      <Heading
+        fontWeight="extrabold"
+        bgGradient="linear(to-l, teal.300, blue.500)"
+        fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
+        bgClip="text"
+      >
+        GoalTac
+      </Heading>
+      <FormControl
+        marginTop="200"
+        width={{ base: '100%', sm: '100%', md: '50%' }}
+      >
+        <Flex flexDirection="row" textAlign="center" alignItems="center">
+          <Input
+            id="email"
+            type="email"
+            placeholder=" Email Address "
+            border="1px"
+            borderRadius="2"
+            marginRight="5"
+            padding="3"
+            _placeholder={{ color: 'inherit' }}
+            value={inputEmail}
+            onChange={event => setEmail(event.target.value)}
+          />
+          <Button
+            borderRadius={5}
+            width="30%"
+            type="submit"
+            fontSize="xs"
+            border="1px"
+            variant="solid"
+            onClick={submitForm}
+          >
+            Sign Up
+          </Button>
+        </Flex>
+        <Text color={colorMode === 'dark' ? 'white' : 'gray.700'} padding="3">
+          Sign up for a chance to be selected for exclusive access! <br />
+          <Button variant={'link'} colorScheme={'blue'} size={'sm'}>
+            Learn more
+          </Button>
+        </Text>
+      </FormControl>
+    </Box>
+  );
+};
+
+export default Hero;
