@@ -1,4 +1,4 @@
-import { HStack, VStack } from '@chakra-ui/react';
+import { VStack } from '@chakra-ui/react';
 import { Routes, Route } from 'react-router-dom';
 import BetaPage from './pages/BetaPage';
 import HomePage from './pages/HomePage';
@@ -24,7 +24,6 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/resetpassword" element={<ResetPasswordPage />} />
         <Route path="/updatepassword" element={<UpdatePasswordPage />} />
-
       </Routes>
     </VStack>
   );
