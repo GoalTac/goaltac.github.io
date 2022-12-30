@@ -11,23 +11,16 @@ import {
   Box,
   Link,
   FormControl,
+  useToast,
 } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
 import supabase from '../supabase';
-import { Navigate, useNavigate } from 'react-router-dom';
 
 const CFaUserAlt = chakra(FaUserAlt);
 
 export default function ResetPasswordPage() {
-
-  const navigate = useNavigate()
   const [email, setEmail] = useState('');
-
-  const handleSuccess = () => {
-    <> 
-      <p>Check your email for a password reset link from "supabase"!</p>
-    </>
-  };
+  const toast = useToast();
 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -36,11 +29,18 @@ export default function ResetPasswordPage() {
       const { data, err } = await supabase.auth.resetPasswordForEmail(
         email, { redirectTo: "http://localhost:3000/updatepassword" }
       );
-      handleSuccess();
 
+      return toast({
+        title: 'Reset link sent.',
+        description: "We've sent a password reset link to your email from supabase.io.",
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+    })
+  
     } catch (error) {
       // Handle the error
-      console.log(error);
+      console.log("Error is: ", error);
     }
   };
 
