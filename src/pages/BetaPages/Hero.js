@@ -1,110 +1,116 @@
 import {
-    Box,
-    Button,
-    Flex,
-    FormControl,
-    Img,
-    Input,
-    useToast,
-    Text,
-    Link,
-    IconButton,
-    useColorMode,
-    useMediaQuery
-  } from '@chakra-ui/react';
-  import React from 'react';
-  import blurredImg from '../../images/Blurred_Background.png';
-  import { FaDiscord } from 'react-icons/fa';
+  Heading,
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  Input,
+  useToast,
+  Text,
+  useColorMode,
+  Stack,
+} from '@chakra-ui/react';
+import React from 'react';
+import supabase from '../../supabase';
+import { useState } from 'react';
 
-  const Hero = () => {
-    const toast = useToast();
-    const { colorMode } = useColorMode();
-    const [isLargerThanMD] = useMediaQuery('(max-width: 75em)');
+const Hero = () => {
+  const toast = useToast();
+  const { colorMode } = useColorMode();
+  const [inputEmail, setEmail] = useState('');
 
-    const submitForm = () => {
+  const submitForm = async event => {
+    // checks whether the email is already in the database
+    try {
+      let { data: betaSignUp, error } = await supabase
+        .from('betaSignUp')
+        .select()
+        .eq('email', inputEmail);
       
-      return toast({
-        title: 'Message sent!🚀',
-        description: 'Thank you for contacting us!',
-        status: 'success',
-        duration: 9000,
-        isClosable: true,
-      });
-    };
-    return (
-      <Flex 
-        borderRadius={20}
-        width='100%'
-        height='50%'
-        alignItems="center"
-        marginTop={50}
-        marginBottom={20}
-      >
-        <Flex
-          alignItems="center"
-          flexDirection='column'
-          marginX={5}
-          w="100%"
-        >
-          <Flex
-            
-            alignItems="center"
-            marginTop={5}
-            fontSize="xxx-large"
-            fontFamily="heading"
-            fontWeight="bold"
-            textColor={colorMode === "light" ? "blackAlpha.900" : "whiteAlpha.900"}
-            textShadow={colorMode === "dark" ? "1px 1px 1px black" : "1px 1px 1px white"}
-            >
-            IMPROVE YOUR WORK ETHIC
-          </Flex>
-          <Flex
-            textAlign="center"
-            width="40%"
-            alignItems="center"
-            marginBottom={5}
-            fontSize="x-large"
-            fontFamily="bold"
-            textColor={colorMode === "dark" ? "whiteAlpha.800" : "white"}
-
-            >
-            Compete with others in a ladder-style game by accomplishing your goals
-          </Flex>
-
-          <FormControl w="x-large" bgColor="blackAlpha.500" mb={10} mx={20}>
-    
-            <Flex flexDirection="row" textAlign="center" alignItems="center" mt={5} mx={4} mb={5}>
-              <Input id="email" type="email" placeholder=" Email Address " py="2" w="80%"
-                bgColor={colorMode === "dark" ? "gray.600" : "ThreeDFace"}
-                border="1px" variant="unstyled" borderRadius="none" />      
-              <Button
-                borderRadius={5}
-                width="20%"
-                type="submit"
-                fontSize="xs"
-                border="1px"
-                variant="solid"
-                ml={3}
-                bgColor="azure"
-                textColor="black"
-                onClick={submitForm}
-              >
-                Sign Up
-              </Button>
-              
-             
-            </Flex>
-            <Text marginBottom={6} mx={3} textAlign="center" textColor="whiteAlpha.800">
-              Sign up for a chance to be selected for exclusive access!
-            </Text>
-          </FormControl>
-          
-        </Flex>
-
-  
-      </Flex>
-      
-    );
+      if (betaSignUp.length > 0) {
+        return toast({
+          title: 'You are already signed up 🚀',
+          description: 'Thank you for contacting us!',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        const { data, error } = await supabase
+          .from('betaSignUp')
+          .insert([{ email: inputEmail }]);
+        
+        console.log(error);
+        return toast({
+          title: 'Message sent!🚀',
+          description: 'Thank you for contacting us!',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
-  
-  export default Hero;
+
+  return (
+    <Box padding="50">
+      <Heading
+        fontWeight="extrabold"
+        fontSize={{ base: '2xl', sm: '3xl', md: '4xl' }}
+        bg={colorMode === 'dark' ? 'white' : 'gray.700'}
+        bgClip="text"
+      >
+        IMPROVE YOUR WORK ETHIC WITH
+      </Heading>
+
+      <Heading
+        fontWeight="extrabold"
+        bgGradient="linear(to-l, teal.300, blue.500)"
+        fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
+        bgClip="text"
+      >
+        GoalTac
+      </Heading>
+      <FormControl
+        marginTop="200"
+        width={{ base: '100%', sm: '100%', md: '50%' }}
+      >
+        <Flex flexDirection="row" textAlign="center" alignItems="center">
+          <Input
+            id="email"
+            type="email"
+            placeholder=" Email Address "
+            border="1px"
+            borderRadius="2"
+            marginRight="5"
+            padding="3"
+            _placeholder={{ color: 'inherit' }}
+            value={inputEmail}
+            onChange={event => setEmail(event.target.value)}
+          />
+          <Button
+            borderRadius={5}
+            width="30%"
+            type="submit"
+            fontSize="xs"
+            border="1px"
+            variant="solid"
+            onClick={submitForm}
+          >
+            Sign Up
+          </Button>
+        </Flex>
+        <Text color={colorMode === 'dark' ? 'white' : 'gray.700'} padding="3">
+          Sign up for a chance to be selected for exclusive access! <br />
+          <Button variant={'link'} colorScheme={'blue'} size={'sm'}>
+            Learn more
+          </Button>
+        </Text>
+      </FormControl>
+    </Box>
+  );
+};
+
+export default Hero;

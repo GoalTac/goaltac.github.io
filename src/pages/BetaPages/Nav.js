@@ -1,67 +1,39 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { FaDiscord } from 'react-icons/fa';
 import {
-  Text,
-  Flex,
-  Spacer,
   Button,
-  useDisclosure,
+  Box,
+  Spacer,
+  Link,
   Img,
-  Drawer,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  DrawerHeader,
-  DrawerBody,
-  DrawerFooter,
-  Input,
+  Stack,
   IconButton,
   useColorMode,
+  useColorModeValue,
 } from '@chakra-ui/react';
-import logo from '../../images/GoalTac_Logo.png';
-import { FaMoon, FaSun } from 'react-icons/fa';
-
+import logo from '../../images/logo.png';
+import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 
 const Nav = () => {
-  const [scroll, setScroll] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const btnRef = React.useRef()
   const { toggleColorMode, colorMode } = useColorMode();
 
-  const changeScroll = () =>
-    document.body.scrollTop > 80 || document.documentElement.scrollTop > 80
-      ? setScroll(true)
-      : setScroll(false);
-
-  window.addEventListener('scroll', changeScroll);
-
   return (
-    <Flex
-      alignItems="center"
-      boxShadow={scroll ? 'base' : 'none'}
-      position="sticky"
-      top="0"
-      zIndex="sticky"
-      w="100%"
-      bg={scroll ? 'whiteAlpha.500' : ''}
-      opacity='0.9'
-      transitionDuration='500ms'
-    >
-      <Flex ml={20}>
-        <Img src={logo} alt="logo" width="50%" height="50%"/>
-      </Flex>
-
-      <Spacer />
-      
-      <Flex alignItems="center">
-
-        <IconButton
-          variant="unstyled"
-          onClick={toggleColorMode}
-          icon={colorMode === "dark" ? <FaSun /> : <FaMoon />}
+    <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+      <Stack direction={'row'} spacing={7} padding={3}>
+        <Img src={logo} alt="logo" width="40px" height="40px" />
+        <Spacer />
+        <Link isExternal href="https://discord.gg/EzFPQDAKGf">
+          <IconButton
+            variant="outlined"
+            icon={<FaDiscord size="sm" color="rgba(114,137,218)" />}
           />
+        </Link>
 
-      </Flex>
-    </Flex>
+        <Button onClick={toggleColorMode}>
+          {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+        </Button>
+      </Stack>
+    </Box>
   );
 };
 

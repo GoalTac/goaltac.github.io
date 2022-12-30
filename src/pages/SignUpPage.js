@@ -9,12 +9,10 @@ import {
   InputLeftElement,
   chakra,
   Box,
-  Link,
   FormControl,
-  FormHelperText,
   InputRightElement,
 } from '@chakra-ui/react';
-import { FaUserAlt, FaLock, ViewIcon, ViewOffIcon } from 'react-icons/fa';
+import { FaUserAlt, FaLock } from 'react-icons/fa';
 import supabase from '../supabase';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,7 +20,7 @@ const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 export default function SignUpPage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,12 +30,11 @@ export default function SignUpPage() {
     event.preventDefault();
     console.log('submitting!');
     try {
-      const { data , error} = await supabase.auth.signUp({ email, password });
+      const { data, error } = await supabase.auth.signUp({ email, password });
 
-      if (error) throw error
-      
-      navigate('/')
+      if (error) throw error;
 
+      navigate('/');
     } catch (error) {
       // Handle the error
       console.log(error);
