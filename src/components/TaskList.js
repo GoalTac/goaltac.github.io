@@ -74,7 +74,7 @@ export default function TaskList() {
         alignItems="stretch"
       >
         {tasks.map(task => (
-          <TaskItem key={task.id} title={task.title} end_date={task.end_date} difficulty={task.difficulty} text={task.text} id={task.id} />
+          <TaskItem key={task.id} title={task.title} tag={task.tag} end_date={task.end_date} difficulty={task.difficulty} text={task.text} id={task.id} />
         ))}
       </VStack>
 

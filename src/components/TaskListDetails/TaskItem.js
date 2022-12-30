@@ -61,17 +61,17 @@ export default function TaskItem(props){
           <ModalCloseButton />
           <ModalBody>
 
-            //TODO This displays one day before the end-date
             {/* End Date */}
             <HStack divider={<StackDivider borderColor='gray.400' />}>
                     <Text fontSize='xl'>End: {month[endDate.getMonth()]} {endDate.getDate()}, {endDate.getFullYear()}</Text>
+                    
+                    {/* HashTag  */}
+              <Text>{props.tag}</Text>
             </HStack>
 
             {/* Task  */}
             <Text>{props.text}</Text>
 
-            {/* HashTag  */}
-            <Text>{props.tag}</Text>
           </ModalBody>
 
           <ModalFooter>
