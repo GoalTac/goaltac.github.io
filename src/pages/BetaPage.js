@@ -7,7 +7,7 @@ function BetaPage() {
   const { colorMode } = useColorMode();
 
   return (
-    <Box w="100%" h="100%" bg={colorMode === 'dark' ? 'black' : 'hite'}>
+    <Box w="100%" h="100%" bg={colorMode === 'dark' ? 'black' : 'white'}>
       <Nav />
       <Hero />
     </Box>

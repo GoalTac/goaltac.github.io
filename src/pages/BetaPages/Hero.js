@@ -11,19 +11,47 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import React from 'react';
+import supabase from '../../supabase';
+import { useState } from 'react';
 
 const Hero = () => {
   const toast = useToast();
   const { colorMode } = useColorMode();
+  const [inputEmail, setEmail] = useState('');
 
-  const submitForm = () => {
-    return toast({
-      title: 'Message sent!🚀',
-      description: 'Thank you for contacting us!',
-      status: 'success',
-      duration: 9000,
-      isClosable: true,
-    });
+  const submitForm = async event => {
+    // checks whether the email is already in the database
+    try {
+      let { data: betaSignUp, error } = await supabase
+        .from('betaSignUp')
+        .select()
+        .eq('email', inputEmail);
+      
+      if (betaSignUp.length > 0) {
+        return toast({
+          title: 'You are already signed up 🚀',
+          description: 'Thank you for contacting us!',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        const { data, error } = await supabase
+          .from('betaSignUp')
+          .insert([{ email: inputEmail }]);
+        
+        console.log(error);
+        return toast({
+          title: 'Message sent!🚀',
+          description: 'Thank you for contacting us!',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -31,7 +59,7 @@ const Hero = () => {
       <Heading
         fontWeight="extrabold"
         fontSize={{ base: '2xl', sm: '3xl', md: '4xl' }}
-        bg = {colorMode === 'dark' ? 'white' : 'gray.700'}
+        bg={colorMode === 'dark' ? 'white' : 'gray.700'}
         bgClip="text"
       >
         IMPROVE YOUR WORK ETHIC WITH
@@ -45,7 +73,10 @@ const Hero = () => {
       >
         GoalTac
       </Heading>
-      <FormControl marginTop="200">
+      <FormControl
+        marginTop="200"
+        width={{ base: '100%', sm: '100%', md: '50%' }}
+      >
         <Flex flexDirection="row" textAlign="center" alignItems="center">
           <Input
             id="email"
@@ -56,10 +87,12 @@ const Hero = () => {
             marginRight="5"
             padding="3"
             _placeholder={{ color: 'inherit' }}
+            value={inputEmail}
+            onChange={event => setEmail(event.target.value)}
           />
           <Button
             borderRadius={5}
-            width="20%"
+            width="30%"
             type="submit"
             fontSize="xs"
             border="1px"
@@ -69,20 +102,12 @@ const Hero = () => {
             Sign Up
           </Button>
         </Flex>
-        <Text
-          color={colorMode === 'dark' ? 'white' : 'gray.700'}
-          paddingLeft="1"
-        >
-          Sign up for a chance to be selected for exclusive access!
+        <Text color={colorMode === 'dark' ? 'white' : 'gray.700'} padding="3">
+          Sign up for a chance to be selected for exclusive access! <br />
+          <Button variant={'link'} colorScheme={'blue'} size={'sm'}>
+            Learn more
+          </Button>
         </Text>
-        <Button
-          variant={'link'}
-          colorScheme={'blue'}
-          size={'sm'}
-          paddingLeft="1"
-        >
-          Learn more
-        </Button>
       </FormControl>
     </Box>
   );
