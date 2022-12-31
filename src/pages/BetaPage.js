@@ -3,6 +3,7 @@ import { Box, useColorMode} from '@chakra-ui/react';
 import Hero from '../pages/BetaPages/Hero';
 import Nav from '../pages/BetaPages/Nav';
 import AboutUs from '../pages/BetaPages/AboutUs';
+import StaffProfiles from './BetaPages/StaffProfiles';
 
 function BetaPage() {
   const { colorMode } = useColorMode();
@@ -12,6 +13,7 @@ function BetaPage() {
       <Nav />
       <Hero />
       <AboutUs />
+      <StaffProfiles />
     </Box>
   );
 }
