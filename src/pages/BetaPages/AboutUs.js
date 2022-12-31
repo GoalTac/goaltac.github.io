@@ -8,7 +8,7 @@ const AboutUs = () => {
 
   return (
     <Center marginBottom={30}>
-      <Box bgColor={colorMode === 'dark' ? 'gray.900' : 'gray.100'} borderRadius={10} w="75%" >
+      <Box boxShadow={"2xl"} bgColor={colorMode === 'dark' ? 'gray.900' : 'gray.100'} borderRadius={10} w="75%" >
       <Center flexDirection="column" gap={3} margin={10}>
         <Heading>
         About Us

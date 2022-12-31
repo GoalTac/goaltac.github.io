@@ -42,7 +42,7 @@ import { FaDiscord } from 'react-icons/fa';
             px={3}>
             Entrepreneur, student, chess and guitar enthusiast. Chat with me on Discord @ Wrys#8935
           </Text>
-  
+          //Any way to condense the below together within the profile?
           <Stack align={'center'} justify={'center'} direction={'column'} mt={6}>
             <Badge
               px={2}
