@@ -11,6 +11,7 @@ import {
   Box,
   FormControl,
   InputRightElement,
+  useColorMode
 } from '@chakra-ui/react';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import supabase from '../supabase';
@@ -21,6 +22,7 @@ const CFaLock = chakra(FaLock);
 
 export default function SignUpPage() {
   const navigate = useNavigate();
+  const { colorMode } = useColorMode();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -67,7 +69,7 @@ export default function SignUpPage() {
             <Stack
               spacing={4}
               p="1rem"
-              backgroundColor="whiteAlpha.900"
+              backgroundColor={colorMode === 'light' ? 'whiteAlpha.900' : 'blackAlpha.300'}
               boxShadow="md"
             >
               <FormControl>

@@ -12,6 +12,7 @@ import {
   Link,
   FormControl,
   useToast,
+  useColorMode
 } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
 import supabase from '../supabase';
@@ -21,6 +22,7 @@ const CFaUserAlt = chakra(FaUserAlt);
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState('');
   const toast = useToast();
+  const { colorMode } = useColorMode();
 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -72,7 +74,7 @@ export default function ResetPasswordPage() {
             <Stack
               spacing={4}
               p="1rem"
-              backgroundColor="whiteAlpha.900"
+              backgroundColor={colorMode === 'light' ? 'whiteAlpha.900' : 'blackAlpha.300'}
               boxShadow="md"
             >
               <FormControl>

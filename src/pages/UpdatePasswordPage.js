@@ -11,6 +11,7 @@ import {
   Box,
   FormControl,
   InputRightElement,
+  useColorMode
 } from '@chakra-ui/react';
 import { FaLock, ViewIcon, ViewOffIcon } from 'react-icons/fa';
 import supabase from '../supabase';
@@ -21,6 +22,7 @@ const CFaLock = chakra(FaLock);
 export default function UpdatePasswordPage() {
 
     const navigate = useNavigate();
+    const { colorMode } = useColorMode();
     const {state} = useLocation();
     const [showPassword, setShowPassword] = useState(false);
     const [newPassword, setPassword] = useState('');
@@ -75,7 +77,7 @@ export default function UpdatePasswordPage() {
                 <Stack
                     spacing={4}
                     p="1rem"
-                    backgroundColor="whiteAlpha.900"
+                    backgroundColor={colorMode === 'light' ? 'whiteAlpha.900' : 'blackAlpha.300'}
                     boxShadow="md"
                 >
                     <FormControl>
