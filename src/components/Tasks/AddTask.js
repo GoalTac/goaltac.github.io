@@ -93,7 +93,7 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
                 {/* Title */}
               <FormControl>
                 <FormLabel>Title</FormLabel>
-                <Input type='text' 
+                <Input type='text' maxLength={24}
                     value={title}
                     onChange={e => setTask({...task, title: e.target.value})}
                 />
@@ -115,7 +115,7 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
               {/* Hashtag */}
               <FormControl>
                 <FormLabel>Hash Tag</FormLabel>
-                <Input type='text' 
+                <Input type='text' maxLength={16}
                     value={tag}
                     onChange={e => setTask({...task, tag: e.target.value})}
                 />
@@ -135,7 +135,7 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
               {/* Details */}
               <FormControl>
                 <FormLabel>Task Details</FormLabel>
-                <Input type='text' 
+                <Input type='text' maxLength={1024}
                     value={text}
                     onChange={e => setTask({...task, text: e.target.value})}
                 />
