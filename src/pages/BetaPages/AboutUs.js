@@ -54,8 +54,11 @@ const AboutUs = () => {
               being able to keep up with them anymore. That's not the problem.
               We need more than just a vessel to write our goals down to incite
               us to go after them. We need a combination of discipline and
-              motivation that is derived from being accountable and passionate
+              motivation that comes from being accountable and passionate
               for your responsibilities.
+            </Text>
+            <Text fontStyle={'italic'}>
+              ~ My Phung
             </Text>
           </Center>
         </Box>
