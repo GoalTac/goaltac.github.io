@@ -17,7 +17,7 @@ const AboutUs = () => {
           Mission
         </h1>
         <Text>
-          With a community, attack your goals today!
+          Build your community and attack your goals!
         </Text>
 
         <h2>
