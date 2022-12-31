@@ -71,7 +71,7 @@ const Hero = () => {
           bg={colorMode === 'dark' ? 'white' : 'gray.700'}
           bgClip="text"
         >
-          IMPROVE YOUR WORK ETHIC WITH
+          IMPROVE WORK ETHIC WITH
         </Heading>
 
         <Heading
