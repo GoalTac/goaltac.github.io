@@ -1,9 +1,9 @@
 import { Box, Flex, useColorMode } from '@chakra-ui/react';
 
-import Hero from '../pages/BetaPages/Hero';
-import Nav from '../pages/BetaPages/Nav';
-import AboutUs from '../pages/BetaPages/AboutUs';
-import StaffProfiles from './BetaPages/StaffProfiles';
+import Hero from '../components/BetaPages/Hero';
+import Nav from '../components/BetaPages/Nav';
+import AboutUs from '../components/BetaPages/AboutUs';
+import StaffProfiles from '../components/BetaPages/StaffProfiles';
 
 function BetaPage() {
   const { colorMode } = useColorMode();

@@ -5,7 +5,6 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import Schedule from './pages/Schedule';
-import NavBar from './components/NavBar';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import UpdatePasswordPage from './pages/UpdatePasswordPage';
 
@@ -14,8 +13,7 @@ function App() {
     <VStack>
       <Routes>
         {/* Only add routes that would involve a signed in user. */}
-        <Route path="/" element={<NavBar />}>
-          <Route index element={<HomePage />} />
+        <Route path="/" element={<HomePage />}>
           <Route path="/schedule" element={<Schedule />} />
         </Route>
 
