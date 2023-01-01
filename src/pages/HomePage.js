@@ -10,7 +10,6 @@ import { Routes, Route } from 'react-router-dom';
 import Settings from '../components/Settings';
 
 
-
 function HomePage() {
 
   //React Router DOM
@@ -68,10 +67,11 @@ function HomePage() {
             <AddTask /> 
             
             <Button pr='15px' onClick={onSignOut}>Sign Out</Button>
+
+
           </HStack> : 
           <>"No data :("</>
           }
-            
             
           <TaskList />
 
