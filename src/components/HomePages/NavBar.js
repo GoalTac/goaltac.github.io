@@ -3,18 +3,22 @@ import { FaDiscord, FaHome, FaUserFriends, FaStore } from 'react-icons/fa';
 import HomePage from '../../pages/HomePage';
 
 import {
-  useColorMode,
+  Icon,
   Box,
   Spacer,
-  Link,
+  TabPanel,
   Img,
   Stack,
   IconButton,
   useColorModeValue,
+  Tabs,
+  TabList,
+  Tab,
 } from '@chakra-ui/react';
 import Settings from './Settings';
 import logo from '../../images/logo.png';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet, Link } from 'react-router-dom';
+import BetaPage from '../../pages/BetaPage';
 
 export default function NavBar() {
   const navigate = useNavigate()
@@ -23,37 +27,32 @@ export default function NavBar() {
     <Box bg={useColorModeValue('gray.100', 'gray.900')} opacity='0.9' px={4} top='0' zIndex={'99999'} position='sticky'>
       <Stack direction={'row'} spacing={12} padding={3}>
 
-        <Img src={logo} alt="logo" width="40px" height="40px" />
-        <IconButton 
-          variant="unstyled"
-          onClick={()=>{
-            //direct user to home page
-            //put dark bar underneath icon
-          }}
-          icon={<FaHome size={40}/>} />
-        
-        <IconButton 
-          variant="unstyled"
-          onClick={()=>{
-            //direct user to home page
-            //put dark bar underneath icon
-          }}
-          icon={<FaUserFriends size={40}/>} />
+        //NEED HELP
+        // How do I redirect users to different pages using tabs???
 
-        <IconButton 
-          variant="unstyled"
-          onClick={()=>{
-            //direct user to home page
-            //put dark bar underneath icon
-          }}
-          icon={<FaStore size={40}/>} />
+        <Img src={logo} alt="logo" width="40px" height="40px" />
+        <Tabs defaultIndex={0} size={'lg'} >
+          <TabList>
+            <Tab>
+               <FaHome size={40}/>
+            </Tab>
+
+            <Tab>
+              <FaUserFriends size={40}/>
+            </Tab>
+
+            <Tab>
+              <FaStore size={40}/>
+            </Tab>
+          </TabList>
+          
+        </Tabs>
+        
+        
+        
+
+        
         <Spacer />
-        <Link isExternal href="https://discord.gg/EzFPQDAKGf">
-          <IconButton
-            variant="outlined"
-            icon={<FaDiscord size="sm" color="rgba(114,137,218)" />}
-          />
-        </Link>
 
         <Settings />
       </Stack>
