@@ -5,8 +5,6 @@ import AddTask from '../components/Tasks/AddTask';
 import TaskList from '../components/TaskList';
 import supabase from '../supabase';
 import NavBar from '../components/HomePages/NavBar';
-import { Routes, Route } from 'react-router-dom';
-import Settings from '../components/HomePages/Settings';
 
 function HomePage() {
   //React Router DOM
@@ -64,6 +62,8 @@ function HomePage() {
               Sign Out
             </Button>
           </HStack>
+
+
           <TaskList />
 
         </Box>
