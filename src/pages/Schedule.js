@@ -1,10 +1,12 @@
 import { 
+    Grid,
+    GridItem,
     HStack
  } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import supabase from "../supabase"
-import ThisWeek from './schedule/ThisWeek'
+import Calendar from './schedule/Calendar'
 import Today from './schedule/Today'
 
 
@@ -21,7 +23,6 @@ export default function Schedule(){
         setTasks(tasks)
     }
     const getSession = async function(){
-        console.log("Entered")
         await supabase.auth.getSession().then((table)=>{
             if (!table.data?.session){
                 console.log("\nThere's no session")
@@ -43,8 +44,10 @@ export default function Schedule(){
     }, [])
 
     return (
-        <HStack>
-            <Today /> <ThisWeek />
-        </HStack>
+        <Grid
+        templateColumns='repeat(8, fr)'>
+            <GridItem colSpan={1}><Today /></GridItem>
+            <GridItem colSpan={7}><Calendar /></GridItem>
+        </Grid>
     )
 }
