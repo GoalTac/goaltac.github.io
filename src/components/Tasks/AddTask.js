@@ -21,13 +21,15 @@ import {
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import supabase from '../../supabase'
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'
 
 export default function AddTask() { //Session defined from HomePage.js (supabase.auth.getSession())
   //Database
   const {isOpen, onOpen, onClose} = useDisclosure() //For the modal's open/close
 
   //Page
-  const [task, setTask] = useState({title: "", text: "", tag: "", end_date: "9999-12-31", difficulty: '0', userid: null})
+  const [task, setTask] = useState({title: "", text: "", tag: "", end_date: new Date, difficulty: '0', userid: null})
   const {title, text, tag, end_date, difficulty, user_id} = task
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -47,7 +49,7 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
     
     //Finishing tasks
     setLoading(false);
-    setTask({...task, title: "", text: "", tag: "", end_date: "9999-12-31"})
+    setTask({...task, title: "", text: "", tag: "", end_date: new Date})
 
     toast({
       title: error || 'task added',
@@ -82,7 +84,7 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
     <>
         <Button onClick={onOpen} colorScheme='blue' p='10px'>+ Task</Button>
 
-        <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
+        <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false} size='xl'>
             <ModalOverlay>
             <ModalContent>
               <ModalHeader>Create your new task</ModalHeader>
@@ -125,11 +127,12 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
               {/* End Date */}
               <FormControl>
                 <FormLabel>End Date</FormLabel>
-                <Input type='datetime'
+                <DatePicker selected={end_date} onChange={(date) => setTask({...task, end_date: date})} />
+                {/* <Input type='datetime-local'
                 onChange={ e => setTask({...task, end_date: e.target.value})}
                 placeholder='yyyy-mm-dd'
                 required={true}
-                />
+                /> */}
               </FormControl>
 
               {/* Details */}
