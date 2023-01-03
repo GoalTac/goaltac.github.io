@@ -45,9 +45,10 @@ export default function Schedule(){
 
     return (
         <Grid
-        templateColumns='repeat(8, fr)'>
-            <GridItem colSpan={1}><Today /></GridItem>
-            <GridItem colSpan={7}><Calendar /></GridItem>
+        mt='10vh'
+        templateColumns='repeat(8, 1fr)'>
+            <GridItem colSpan={1} rowSpan={2}><Today /></GridItem>
+            <GridItem colSpan={7} ><Calendar /></GridItem>
         </Grid>
     )
 }
