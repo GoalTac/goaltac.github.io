@@ -34,7 +34,7 @@ export default function Today(){
     }, [])
 
     return(
-        <VStack alignItems='start' onMouseDown={console.log('a click')}>
+        <VStack alignItems='start'>
             <h1>Make a nice today label here</h1>
             {tasks.map(task =>(
                 // create a checklist with checkboxes

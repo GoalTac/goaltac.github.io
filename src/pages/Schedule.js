@@ -22,6 +22,23 @@ export default function Schedule(){
         let {data: tasks, error} = await supabase.from('todos').select() //check supabase filters for what can apply
         setTasks(tasks)
     }
+
+    const getTasks = async function(){
+        function formatDate(){ //This is to match it to supabase's 'yyyy-mm-dd' format
+            const date = new Date()
+            let fdate = ''
+            fdate += date.getFullYear() + '-'
+            fdate += (date.getMonth() > 9 ? date.getMonth()+1 : '0' + (date.getMonth()+1)) + '-' //Thx js for letting me do this
+            fdate += (date.getDate() > 9 ? date.getDate() : '0' + date.getDate())
+            return fdate
+        }
+        const fdate = formatDate()
+        // console.log(fdate)
+        let { data: tasks } = await supabase.from('todos').select('*').eq('end_date', fdate)
+        setTasks(tasks)
+        // console.log(tasks)
+    }
+
     const getSession = async function(){
         await supabase.auth.getSession().then((table)=>{
             if (!table.data?.session){
@@ -29,7 +46,7 @@ export default function Schedule(){
                 navigate('/login')
             }else{
                 setSession(table.data)
-                fetchTasks()
+                getTasks()
             }
             
         })
@@ -47,7 +64,7 @@ export default function Schedule(){
         <Grid
         mt='10vh'
         templateColumns='repeat(8, 1fr)'>
-            <GridItem colSpan={1} rowSpan={2}><Today /></GridItem>
+            <GridItem colSpan={1} rowSpan={2}><Today tasks={tasks}/></GridItem>
             <GridItem colSpan={7} ><Calendar /></GridItem>
         </Grid>
     )
