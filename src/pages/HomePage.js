@@ -1,9 +1,8 @@
-import { Button, Center, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, HStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AddTask from '../components/Tasks/AddTask';
 import TaskList from '../components/TaskList';
-import Calendar from '../components/Calendar';
 import supabase from '../supabase';
 import NavBar from '../components/NavBar';
 import { Routes, Route } from 'react-router-dom';
@@ -54,10 +53,18 @@ function HomePage() {
   useEffect(() => {
     getSession();
   }, []);
+
+  
   return (
-    <Center w="100vw">
-      <VStack>
-        {!(session === undefined) ? (
+    <>
+      {whatAmIShowing()}
+      {(session === undefined) ? (
+        <>"No data :("</>
+      ) : (
+        <Box w="100%" h="100%">
+          <NavBar />
+
+
           <HStack>
             <AddTask />
 
@@ -70,15 +77,14 @@ function HomePage() {
               Sign Out
             </Button>
           </HStack>
-        ) : (
-          <>"No data :("</>
-        )}
 
-        <TaskList />
 
-        {whatAmIShowing()}
-      </VStack>
-    </Center>
+          <TaskList />
+
+        </Box>
+      )}
+    </>
+    
   );
 }
 

@@ -15,7 +15,8 @@ import {
     useDisclosure,
     VStack, 
     Heading,
-    StackDivider
+    StackDivider,
+    Spacer
 } from "@chakra-ui/react";
 import DeleteTask from "../Tasks/DeleteTask";
 
@@ -59,13 +60,18 @@ export default function TaskItem(props){
           <ModalHeader>{props.title}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+
             {/* End Date */}
             <HStack divider={<StackDivider borderColor='gray.400' />}>
                     <Text fontSize='xl'>End: {month[endDate.getMonth()]} {endDate.getDate()}, {endDate.getFullYear()}</Text>
+                    
+                    {/* HashTag  */}
+              <Text>{props.tag}</Text>
             </HStack>
 
             {/* Task  */}
             <Text>{props.text}</Text>
+
           </ModalBody>
 
           <ModalFooter>

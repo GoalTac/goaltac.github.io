@@ -11,14 +11,9 @@ import {
   useColorMode,
   Switch,
   Card,
-  CardHeader,
   CardBody,
-  CardFooter,
-  Heading,
   Text,
-  Divider,
-  Stack,
-  StackDivider,
+  Icon,
   Box,
   HStack,
   Tag,
@@ -27,15 +22,15 @@ import {
 import {
   FaMoon,
   FaSun,
-  FaQuestion
+  FaQuestion,
+  FaHome
 }from "react-icons/fa";
 import { BiMessageError } from "react-icons/bi";
 import { FiLogOut } from "react-icons/fi";
 import { SettingsIcon } from '@chakra-ui/icons';
-import CircleIcon from './CircleIcon';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import supabase from '../supabase';
+import supabase from '../../supabase';
 
 
 export default function Settings() { //Session defined from HomePage.js (supabase.auth.getSession())
@@ -71,7 +66,6 @@ export default function Settings() { //Session defined from HomePage.js (supabas
                       <CardBody>
                         <Box>
                         <Tag size="lg" colorScheme="orange" borderRadius="full">
-                          <TagLeftIcon as={CircleIcon} />
                           <Text>&nbsp;1508</Text>
                         </Tag>
                         </Box>
@@ -92,7 +86,7 @@ export default function Settings() { //Session defined from HomePage.js (supabas
                   </MenuItem>
                   <MenuItem
                     icon={<FaQuestion />}
-                    onClick={()=> navigate('/faq')}>
+                    onClick={()=> navigate('/help')}>
                       Help and support
                   </MenuItem>
                   <MenuItem
