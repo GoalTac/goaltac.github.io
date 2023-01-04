@@ -8,6 +8,7 @@ import supabase from '../supabase';
 import NavBar from '../components/NavBar';
 import { Routes, Route } from 'react-router-dom';
 import Settings from '../components/Settings';
+import { CSVDownload, CSVLink } from 'react-csv';
 
 function HomePage() {
   //React Router DOM
@@ -16,6 +17,7 @@ function HomePage() {
   //Supabase
   const [session, setSession] = useState();
   const [user, setUser] = useState(undefined);
+  const [exportTasks, setExportTasks] = useState([]);
 
   const whatAmIShowing = function () {
     supabase.auth.getSession().then(table => {
@@ -33,7 +35,6 @@ function HomePage() {
   };
 
   const getSession = async function () {
-    console.log('Entered');
     await supabase.auth.getSession().then(table => {
       if (!table.data?.session) {
         console.log("\nThere's no session");
@@ -42,6 +43,12 @@ function HomePage() {
         setSession(table.data);
       }
     });
+  };
+
+  const handleTaskExport = async () => {
+    let { data: tasks, error } = await supabase.from('todos').select('*');
+    console.log(tasks);
+    setExportTasks(tasks);
   };
 
   useEffect(() => {
@@ -54,6 +61,11 @@ function HomePage() {
           <HStack>
             <AddTask />
 
+            <Button>
+              <CSVLink data={exportTasks} onClick={handleTaskExport}>
+                Export
+              </CSVLink>
+            </Button>
             <Button pr="15px" onClick={onSignOut}>
               Sign Out
             </Button>
