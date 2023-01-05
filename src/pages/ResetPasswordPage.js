@@ -9,35 +9,38 @@ import {
   InputLeftElement,
   chakra,
   Box,
+  Link,
   FormControl,
-  InputRightElement,
+  useToast,
 } from '@chakra-ui/react';
-import { FaUserAlt, FaLock } from 'react-icons/fa';
+import { FaUserAlt } from 'react-icons/fa';
 import supabase from '../supabase';
-import { useNavigate } from 'react-router-dom';
 
 const CFaUserAlt = chakra(FaUserAlt);
-const CFaLock = chakra(FaLock);
 
-export default function SignUpPage() {
-  const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
+export default function ResetPasswordPage() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const toast = useToast();
 
-  const handleShowClick = () => setShowPassword(!showPassword);
   const handleSubmit = async event => {
     event.preventDefault();
-    console.log('submitting!');
+
     try {
-      const { data, error } = await supabase.auth.signUp({ email, password });
+      const { data, err } = await supabase.auth.resetPasswordForEmail(
+        email, { redirectTo: "http://localhost:3000/updatepassword" }
+      );
 
-      if (error) throw error;
-
-      navigate('/');
+      return toast({
+        title: 'Reset link sent.',
+        description: "We've sent a password reset link to your email from supabase.io.",
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+    })
+  
     } catch (error) {
       // Handle the error
-      console.log(error);
+      console.log("Error is: ", error);
     }
   };
 
@@ -60,8 +63,10 @@ export default function SignUpPage() {
           bgGradient="linear(to-l, teal.300, blue.500)"
           bgClip="text"
         >
-          GoalTac Sign Up
+          GoalTac
         </Heading>
+        <p>Enter the email address for your GoalTac account, </p>
+        <p>and we'll email you a link to reset your password.</p>
         <Box>
           <form onSubmit={handleSubmit}>
             <Stack
@@ -84,40 +89,21 @@ export default function SignUpPage() {
                   />
                 </InputGroup>
               </FormControl>
-              <FormControl>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    color="gray.300"
-                    children={<CFaLock color="gray.300" />}
-                  />
-                  <Input
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Password"
-                    value={password}
-                    onChange={event => setPassword(event.target.value)}
-                  />
-                  <InputRightElement width="4.5rem">
-                    <Button h="1.75rem" size="sm" onClick={handleShowClick}>
-                      {/* <ViewIcon color="gray.300" />
-                      <ViewOffIcon color="gray.300" /> */}
-                      {showPassword ? 'hide' : 'show'}
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-              </FormControl>
               <Button
                 borderRadius={5}
                 type="submit"
                 variant="solid"
                 width="full"
               >
-                Sign Up
+                Reset
               </Button>
             </Stack>
           </form>
         </Box>
       </Stack>
+      <Box>
+        Remember your password? <Link href="login">Back to Login</Link>
+      </Box>
     </Flex>
   );
 }

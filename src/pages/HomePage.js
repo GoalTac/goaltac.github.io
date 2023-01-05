@@ -11,58 +11,47 @@ import Settings from '../components/Settings';
 
 
 function HomePage() {
-
   //React Router DOM
-  const navigate = useNavigate()  
-  const {state} = useLocation()
+  const navigate = useNavigate();
+  const { state } = useLocation();
   //Supabase
-  const [session, setSession] = useState()
-  const [user, setUser] = useState(undefined)
+  const [session, setSession] = useState();
+  const [user, setUser] = useState(undefined);
 
-    const whatAmIShowing = function(){
-      supabase.auth.getSession().then((table)=>{
-        
-        if (!table.data?.session){
-          navigate('/login')
+  const whatAmIShowing = function () {
+    supabase.auth.getSession().then(table => {
+      if (!table.data?.session) {
+        navigate('/login');
+      } else {
+        setSession(table.data.session);
+      }
+    });
+  };
 
-        }else{
-          setSession(table.data.session)
-        }
-      })
-    }
+  const onSignOut = async function () {
+    const { error } = await supabase.auth.signOut();
+    navigate('/login');
+  };
 
-    const onSignOut = async function(){
-      const { error } = await supabase.auth.signOut()
-      navigate('/login')
-    }
+  const getSession = async function () {
+    console.log('Entered');
+    await supabase.auth.getSession().then(table => {
+      if (!table.data?.session) {
+        console.log("\nThere's no session");
+        navigate('/login');
+      } else {
+        setSession(table.data);
+      }
+    });
+  };
 
-    const getSession = async function(){
-      console.log("Entered")
-      await supabase.auth.getSession().then((table)=>{
-          if (!table.data?.session){
-              console.log("\nThere's no session")
-              navigate('/login')
-          }else{
-              setSession(table.data)
-          }
-          
-      })
-      
-      
-    }
-
-  useEffect(()=>{
-      
-      getSession()
-
-  }, [])
+  useEffect(() => {
+    getSession();
+  }, []);
   return (
-    <Center
-    w='100vw'>
-      
-        <VStack>
-             
-          {!(session === undefined) ? 
+    <Center w="100vw">
+      <VStack>
+        {!(session === undefined) ? (
           <HStack>
             <AddTask /> 
             
@@ -75,10 +64,8 @@ function HomePage() {
             
           <TaskList />
 
-          {whatAmIShowing()}
-        </VStack>
-      
-
+        {whatAmIShowing()}
+      </VStack>
     </Center>
   );
 }

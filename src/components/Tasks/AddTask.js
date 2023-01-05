@@ -31,8 +31,8 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
   const {isOpen, onOpen, onClose} = useDisclosure() //For the modal's open/close
 
   //Page
-  const [task, setTask] = useState({title: "", text: "", end_date: new Date, difficulty: '0', userid: null})
-  const {title, text, end_date, difficulty, user_id} = task
+  const [task, setTask] = useState({title: "", text: "", tag: "", end_date: new Date, difficulty: '0', userid: null})
+  const {title, text, tag, end_date, difficulty, user_id} = task
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate()
@@ -51,7 +51,7 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
     
     //Finishing tasks
     setLoading(false);
-    setTask({...task, title: "", text: "", end_date: new Date})
+    setTask({...task, title: "", text: "", tag: "", end_date: new Date})
 
     toast({
       title: error || 'task added',
@@ -116,6 +116,16 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
                 </RadioGroup>
               </VStack>
               
+              {/* Hashtag */}
+              <FormControl>
+                <FormLabel>Hash Tag</FormLabel>
+                <Input type='text' 
+                    value={tag}
+                    onChange={e => setTask({...task, tag: e.target.value})}
+                />
+                <FormHelperText>Type a hashtag in</FormHelperText>
+              </FormControl>
+
               {/* End Date */}
               <FormControl>
                 <FormLabel>End Date</FormLabel>

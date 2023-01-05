@@ -1,76 +1,39 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { FaDiscord } from 'react-icons/fa';
 import {
-  Text,
-  Flex,
+  Button,
+  Box,
   Spacer,
+  Link,
+  Img,
+  Stack,
   IconButton,
   useColorMode,
   useColorModeValue,
-  useMediaQuery,
-  Heading,
 } from '@chakra-ui/react';
+import logo from '../../images/logo.png';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { FaAlignJustify } from 'react-icons/fa';
-import { Icon } from '@chakra-ui/react';
-import { useDisclosure } from '@chakra-ui/react'
 
-const Nav = ({ ref }) => {
-  const { onOpen } = useDisclosure();
-  const [scroll, setScroll] = useState(false);
-  const { colorMode, toggleColorMode } = useColorMode();
-  const navBg = useColorModeValue('white', 'blackAlpha.200');
-  const [isLargerThanMD] = useMediaQuery('(min-width: 48em)');
-
-  const changeScroll = () =>
-    document.body.scrollTop > 80 || document.documentElement.scrollTop > 80
-      ? setScroll(true)
-      : setScroll(false);
-
-  window.addEventListener('scroll', changeScroll);
+const Nav = () => {
+  const { toggleColorMode, colorMode } = useColorMode();
 
   return (
-    <Flex
-      h="10vh"
-      alignItems="center"
-      p="6"
-      boxShadow={scroll ? 'base' : 'none'}
-      position="sticky"
-      top="0"
-      zIndex="sticky"
-      w="full"
-      bg={navBg}
-    >
-      <Text fontSize="xl" fontWeight="bold">
-      <Heading
-        fontWeight="extrabold"
-        bgGradient="linear(to-l, teal.300, blue.500)"
-        bgClip="text"
-      >
-        GoalTac
-      </Heading>
-      </Text>
+    <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+      <Stack direction={'row'} spacing={7} padding={3}>
+        <Img src={logo} alt="logo" width="40px" height="40px" />
+        <Spacer />
+        <Link isExternal href="https://discord.gg/EzFPQDAKGf">
+          <IconButton
+            variant="outlined"
+            icon={<FaDiscord size="sm" color="rgba(114,137,218)" />}
+          />
+        </Link>
 
-      <Spacer />
-      
-      <Flex alignItems="center">
-        <IconButton mr="10" w={6} h={6} p={5} onClick={toggleColorMode}>
+        <Button onClick={toggleColorMode}>
           {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-        </IconButton>
-
-        {isLargerThanMD ? (
-          <>
-            <a target="_blank" rel="noreferrer" href="https://appseed.us/apps/react/" fontSize="md" mr="10">
-              More Apps
-            </a>
-          </>
-        ) : (
-          <IconButton ref={ref} onClick={onOpen}>
-            <Icon as={FaAlignJustify} />
-          </IconButton>
-        )}
-
-      </Flex>
-    </Flex>
+        </Button>
+      </Stack>
+    </Box>
   );
 };
 
