@@ -4,10 +4,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import AddTask from '../components/Tasks/AddTask';
 import TaskList from '../components/TaskList';
 import supabase from '../supabase';
-import NavBar from '../components/NavBar';
-import { Routes, Route } from 'react-router-dom';
-import Settings from '../components/Settings';
-import { CSVDownload, CSVLink } from 'react-csv';
+import NavBar from '../components/HomePages/NavBar';
+import { CSVLink } from 'react-csv';
 
 function HomePage() {
   //React Router DOM
