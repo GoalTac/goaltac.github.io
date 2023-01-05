@@ -15,7 +15,7 @@ import { FaDiscord } from 'react-icons/fa';
 
 export default function StaffProfiles() {
   return (
-    <Center py={6}>
+    <Flex py={6} alignItems={'center'} flexDirection={'column'}>
       <Box
         maxW={'320px'}
         w={'full'}
@@ -186,7 +186,7 @@ export default function StaffProfiles() {
             aditya.chandraker@uconn.edu
           </Link>
         </Stack>
-      </Box>
-    </Center>
+      </Box> 
+    </Flex>
   );
 }
