@@ -134,6 +134,7 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
                 required={true}
                 /> */}
               </FormControl>
+              <Input type='datetime-local'></Input>
 
               {/* Details */}
               <FormControl>

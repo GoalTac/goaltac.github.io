@@ -84,7 +84,6 @@ const Hero = () => {
         </Heading>
         <FormControl
           marginTop="200"
-          width={{ base: '100%', sm: '100%', md: '50%' }}
         >
           <Flex flexDirection="row" textAlign="center" alignItems="center">
             <Input

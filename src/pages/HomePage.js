@@ -1,11 +1,10 @@
-import { Box, Button, HStack } from '@chakra-ui/react';
+import { Box, Button, HStack, VStack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AddTask from '../components/Tasks/AddTask';
 import TaskList from '../components/TaskList';
 import supabase from '../supabase';
 import NavBar from '../components/HomePages/NavBar';
-import { CSVLink } from 'react-csv';
 
 function HomePage() {
   //React Router DOM
@@ -14,7 +13,6 @@ function HomePage() {
   //Supabase
   const [session, setSession] = useState();
   const [user, setUser] = useState(undefined);
-  const [exportTasks, setExportTasks] = useState([]);
 
   const whatAmIShowing = function () {
     supabase.auth.getSession().then(table => {
@@ -24,11 +22,6 @@ function HomePage() {
         setSession(table.data.session);
       }
     });
-  };
-
-  const onSignOut = async function () {
-    const { error } = await supabase.auth.signOut();
-    navigate('/login');
   };
 
   const getSession = async function () {
@@ -42,47 +35,27 @@ function HomePage() {
     });
   };
 
-  const handleTaskExport = async () => {
-    let { data: tasks, error } = await supabase.from('todos').select('*');
-    console.log(tasks);
-    setExportTasks(tasks);
-  };
 
   useEffect(() => {
     getSession();
   }, []);
 
-  
   return (
     <>
       {whatAmIShowing()}
-      {(session === undefined) ? (
+      {session === undefined ? (
         <>"No data :("</>
       ) : (
         <Box w="100%" h="100%">
           <NavBar />
 
-
-          <HStack>
+          <VStack p={4}>
             <AddTask />
-
-            <Button>
-              <CSVLink data={exportTasks} onClick={handleTaskExport}>
-                Export
-              </CSVLink>
-            </Button>
-            <Button pr="15px" onClick={onSignOut}>
-              Sign Out
-            </Button>
-          </HStack>
-
-
-          <TaskList />
-
+            <TaskList />
+          </VStack>
         </Box>
       )}
     </>
-    
   );
 }
 
