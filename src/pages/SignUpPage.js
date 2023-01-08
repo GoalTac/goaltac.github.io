@@ -11,7 +11,7 @@ import {
   Box,
   FormControl,
   InputRightElement,
-  useColorMode
+  useColorMode,
 } from '@chakra-ui/react';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import supabase from '../supabase';
@@ -69,7 +69,9 @@ export default function SignUpPage() {
             <Stack
               spacing={4}
               p="1rem"
-              backgroundColor={colorMode === 'light' ? 'whiteAlpha.900' : 'blackAlpha.300'}
+              backgroundColor={
+                colorMode === 'light' ? 'whiteAlpha.900' : 'blackAlpha.300'
+              }
               boxShadow="md"
             >
               <FormControl>

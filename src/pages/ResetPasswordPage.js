@@ -12,7 +12,7 @@ import {
   Link,
   FormControl,
   useToast,
-  useColorMode
+  useColorMode,
 } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
 import supabase from '../supabase';
@@ -28,21 +28,21 @@ export default function ResetPasswordPage() {
     event.preventDefault();
 
     try {
-      const { data, err } = await supabase.auth.resetPasswordForEmail(
-        email, { redirectTo: "http://localhost:3000/updatepassword" }
-      );
+      const { data, err } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: 'http://localhost:3000/updatepassword',
+      });
 
       return toast({
         title: 'Reset link sent.',
-        description: "We've sent a password reset link to your email from supabase.io.",
+        description:
+          "We've sent a password reset link to your email from supabase.io.",
         status: 'success',
         duration: 5000,
         isClosable: true,
-    })
-  
+      });
     } catch (error) {
       // Handle the error
-      console.log("Error is: ", error);
+      console.log('Error is: ', error);
     }
   };
 
@@ -74,7 +74,9 @@ export default function ResetPasswordPage() {
             <Stack
               spacing={4}
               p="1rem"
-              backgroundColor={colorMode === 'light' ? 'whiteAlpha.900' : 'blackAlpha.300'}
+              backgroundColor={
+                colorMode === 'light' ? 'whiteAlpha.900' : 'blackAlpha.300'
+              }
               boxShadow="md"
             >
               <FormControl>
@@ -104,7 +106,7 @@ export default function ResetPasswordPage() {
         </Box>
       </Stack>
       <Box>
-        Remember your password? <Link href="login">Back to Login</Link>
+        Remember your password? <Link href="/#/login">Back to Login</Link>
       </Box>
     </Flex>
   );
