@@ -34,7 +34,6 @@ function HomePage() {
   };
 
   const getSession = async function () {
-    console.log('Entered');
     await supabase.auth.getSession().then(table => {
       if (!table.data?.session) {
         console.log("\nThere's no session");
@@ -51,7 +50,7 @@ function HomePage() {
   return (
     <Center w="100vw">
       <VStack>
-        {!(session === undefined) ? (
+        {!(session === undefined) ? 
           <HStack>
             <AddTask /> 
             

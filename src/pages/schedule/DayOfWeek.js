@@ -1,7 +1,6 @@
 import {
     Text
 } from '@chakra-ui/react'
-import { useEffect } from 'react'
 
 export default function DayOfWeek(props){
 
