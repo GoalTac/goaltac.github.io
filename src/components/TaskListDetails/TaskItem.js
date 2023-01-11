@@ -16,7 +16,8 @@ import DeleteTask from "../Tasks/DeleteTask";
 import EditTask from "../Tasks/EditTask";
 import supabase from "../../supabase";
 import { useEffect, useState } from "react";
-import TaskTitle from "./TaskTitle";
+import Title from "./TaskParts/Title";
+import DueDate from "./TaskParts/DueDate";
 
 
 
@@ -36,10 +37,10 @@ export default function TaskItem(props){
               return 'green.400';
           
           case 1:
-              return 'yellow.400';
+              return 'orange.400';
   
           case 2:
-              return 'red.400';
+              return 'blue.400';
       }
   
   }
@@ -54,10 +55,21 @@ export default function TaskItem(props){
   }, [done])
 
   return(
-      <HStack>
+      <HStack maxW='100%'>
       <Checkbox size='lg' isChecked={done} onChange={(e)=> {setDone(e.target.checked); setCompleted()}} />
-      <Button justifyContent='left' onClick={onOpen} p={props.p} w={props.w} h={props.h} overflow='hidden'>   
-          <Heading fontSize={props.heading_font_size} color={difficultyBorder(task.difficulty)}>{task.title}</Heading>
+      <Button 
+          maxW='100%'
+          justifyContent='left' 
+          onClick={onOpen} p={props.p} 
+          w={props.w} h={props.h} 
+          overflow='hidden'
+          >   
+          <Heading
+          fontSize={props.heading_font_size} 
+          color={difficultyBorder(task.difficulty)}
+          >
+            {task.title}
+          </Heading>
       </Button>                                                                                               
                                                                                                               
       <Modal isOpen={isOpen} onClose={onClose} size={props.size}>                                                               
@@ -69,8 +81,10 @@ export default function TaskItem(props){
         {/* Title, Difficulty */}                                                                                         
         <HStack mt='1em'>
 
-          <TaskTitle task={task}/>
+          <Title title={task.title} diff={task.difficulty} />
           
+          <DueDate date={task.end_date} month={month} size='3xl' />
+
         </HStack>                                                              
                                                                                                               
         <ModalBody>                                                                                           

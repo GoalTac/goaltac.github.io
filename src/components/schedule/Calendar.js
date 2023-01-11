@@ -5,8 +5,8 @@ import {
     Stack
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import TaskList from "../../components/TaskList";
-import TaskItem from "../../components/TaskListDetails/TaskItem";
+import TaskList from "../TaskList";
+import TaskItem from "../TaskListDetails/TaskItem";
 import DayOfWeek from "./DayOfWeek";
 
 
@@ -57,7 +57,7 @@ export default function Calendar(props){
             {/* Days of the week */}
             {weekdays.map(weekday =>(
                 //DayOfWeek requires a background color (bg), text color (color), and a border color (borderColor) 
-                <Stack key={weekday} overflow={'scroll'}>
+                <Stack key={weekday} overflow='hidden'>
                     <DayOfWeek
                         bg={day.substr(0, 3) === weekday.substr(0, 3) ? 'cyan.300' : 'white'} 
                         color='black'

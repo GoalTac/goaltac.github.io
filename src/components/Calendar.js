@@ -8,13 +8,6 @@ import {
     Td,
     TableCaption,
     TableContainer,
-    VStack,
-    StackDivider,
-    HStack,
-    Text,
-    Image,
-    Box,
-    Skeleton,
   } from '@chakra-ui/react';
   
 

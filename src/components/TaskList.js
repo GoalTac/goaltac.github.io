@@ -74,11 +74,9 @@ export default function TaskList() {
         alignItems="center"
       >
         {tasks.map(task => (
-          <TaskItem key={task.id} task={task} p='5px' w='auto' h='7vh' heading_font_size='lg'size='2xl'/>
+          <TaskItem key={task.id} task={task} p='5px' w='auto' h='7vh' heading_font_size='lg'/>
         ))}
       </VStack>
-
-      <ClearTasks />
     </>
   );
 }

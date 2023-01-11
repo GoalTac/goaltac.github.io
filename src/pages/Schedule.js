@@ -5,8 +5,8 @@ import {
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import supabase from "../supabase"
-import Calendar from './schedule/Calendar'
-import Today from './schedule/Today'
+import Calendar from "../components/schedule/Calendar"
+import Today from '../components/schedule/Today'
 
 
 

@@ -1,37 +1,74 @@
 import { ModalHeader } from "@chakra-ui/react"
 
-export default function Title(props){
-    const task = props.task
+export default function Title({title, diff}){
+    
     const titleBackground = function(){        
-        switch(task.difficulty){
+        switch(diff){
             case 0:
                 return 'green.300';
             
             case 1:
-                return 'yellow.300';
+                return 'orange.300';
     
             case 2:
-                return 'red.300';
+                return 'blue.300';
         }
     
     }
+
+    const harmonizedBorder = function(){
+        switch (diff){
+            case 0:
+                return '#68aad3';
+            
+            case 1:
+                return '#8ad368';
+    
+            case 2:
+                return '#8ad368';
+        }
+    }
+
+    const fixTitle = function(){
+        const z = title.split(' ') //Split title into an array of it's individual words
+        let fixedTitle = '';
+
+        for (let g in z){ ; //Index
+            const x = z[g]; //Word
+            if (x.length > 1){
+                let remake = '';
+                remake += x.charAt(0).toUpperCase();
+                remake += x.substring(1) + " ";
+                fixedTitle += remake;
+            }else{
+                fixedTitle += x + " ";
+            }
+            
+        }
+
+        return fixedTitle;
+    }
+
     return(
         <ModalHeader
+            className='task-modal-header'
+            fontSize='3xl'
             whiteSpace='nowrap'
+            pr='3px'
             pt='0px'
             pb='1.5em'
             overflowX='scroll'
             overflowY='hidden'
             bg={titleBackground}
-            borderColor='cyan.700' 
+            borderColor={harmonizedBorder}
             borderRightWidth='0.3vw'
             borderTopWidth='0.3vw'
             borderBottomWidth='0.3vw'
             borderRightRadius={50}
-            minH='2.1em' maxH='2.1em'
+            minH='2em' maxH='2em'
             minW='60%' maxW='60%'
         >
-            {task.title}
+            {fixTitle()}
         </ModalHeader>
         )
 }

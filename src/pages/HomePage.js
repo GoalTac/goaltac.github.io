@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import AddTask from '../components/Tasks/AddTask';
 import TaskList from '../components/TaskList';
 import supabase from '../supabase';
+import ClearTasks from '../components/Tasks/ClearTasks';
 
 
 function HomePage() {
@@ -43,23 +44,25 @@ function HomePage() {
     getSession();
   }, []);
   return (
-    <Center w="100vw">
-      <VStack>
-        {!(session === undefined) ? 
+    <>
+      {!(session === undefined) ? 
+        <Center w="100vw">
           
-          <AddTask />
-          
-          : //Other case starts here
+          <VStack>
+            <AddTask />
 
-          <>"No data :("</>
-
-        }
+            <VStack  overflow='hidden' overflowY='scroll' maxH='75vh'>
+              <TaskList />
+            </VStack>
             
-          <TaskList />
+            <ClearTasks />
+          </VStack>
+        </Center>
+        : //Other case starts here
 
-        {whatAmIShowing()}
-      </VStack>
-    </Center>
+        <>"No data :("</>
+
+      }</>
   );
 }
 
