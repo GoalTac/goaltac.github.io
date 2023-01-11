@@ -1,0 +1,30 @@
+
+
+html {
+    /* Firefox way to mod scrollbars, otherwise it looks jank */
+    scrollbar-color: red lightgreen; 
+    scrollbar-width: thin;
+}
+
+/* width */
+html ::-webkit-scrollbar {
+    width: 0.5vw;
+    height: 0.5vw;
+}
+
+/* Track */
+html ::-webkit-scrollbar-track {
+    margin-inline: 0.5em;
+    border-radius: 100vw;
+}
+
+/* Handle */
+html ::-webkit-scrollbar-thumb {
+    background: rgba(10, 244, 189, 0.743);
+    border-radius: 100vw;
+}
+
+/* Handle on hover */
+html ::-webkit-scrollbar-thumb:hover {
+    background: rgb(255, 247, 0);
+}

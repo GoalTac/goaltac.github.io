@@ -94,11 +94,13 @@ export default function LoginPage() {
                     pointerEvents="none"
                     children={<CFaUserAlt color="gray.300" />}
                   />
+                  {/* Email */}
                   <Input
                     type="email"
                     placeholder="Email Address"
                     value={email}
                     onChange={event => setEmail(event.target.value)}
+                    _autofill={true}
                   />
                 </InputGroup>
               </FormControl>
@@ -109,6 +111,7 @@ export default function LoginPage() {
                     color="gray.300"
                     children={<CFaLock color="gray.300" />}
                   />
+                  {/* Password */}
                   <Input
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Password"

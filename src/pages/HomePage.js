@@ -3,20 +3,15 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AddTask from '../components/Tasks/AddTask';
 import TaskList from '../components/TaskList';
-import Calendar from '../components/Calendar';
 import supabase from '../supabase';
-import NavBar from '../components/NavBar';
-import { Routes, Route } from 'react-router-dom';
-import Settings from '../components/Settings';
 
 
 function HomePage() {
   //React Router DOM
   const navigate = useNavigate();
-  const { state } = useLocation();
+
   //Supabase
   const [session, setSession] = useState();
-  const [user, setUser] = useState(undefined);
 
   const whatAmIShowing = function () {
     supabase.auth.getSession().then(table => {
@@ -51,15 +46,14 @@ function HomePage() {
     <Center w="100vw">
       <VStack>
         {!(session === undefined) ? 
-          <HStack>
-            <AddTask /> 
-            
-            <Button pr='15px' onClick={onSignOut}>Sign Out</Button>
+          
+          <AddTask />
+          
+          : //Other case starts here
 
-
-          </HStack> : 
           <>"No data :("</>
-          }
+
+        }
             
           <TaskList />
 
