@@ -1,5 +1,6 @@
 import { ModalHeader } from "@chakra-ui/react"
-export default function TaskTitle(props){
+
+export default function Title(props){
     const task = props.task
     const titleBackground = function(){        
         switch(task.difficulty){
