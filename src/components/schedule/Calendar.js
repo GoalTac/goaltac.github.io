@@ -4,8 +4,6 @@ import {
     Text,
     Stack
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import TaskList from "../TaskList";
 import TaskItem from "../TaskListDetails/TaskItem";
 import DayOfWeek from "./DayOfWeek";
 
@@ -20,8 +18,8 @@ export default function Calendar(props){
     const month = months[current_date.getMonth()-1]
     const day = weekdays[current_date.getDay()] //Get day gets the day of the week, returns 0-6
     const ms_in_hour = 3600000;
-    const ms_in_day = 86400000;
-    const startOfDay = Math.floor(current_date / ms_in_day) * ms_in_day - (19 * ms_in_hour)
+    const ms_in_day = 86400000; // eslint-disable-next-line
+    const startOfDay = Math.floor(current_date / ms_in_day) * ms_in_day - (19 * ms_in_hour) //The point was to use getTime, find the start of today, and find tasks for today, collab on it cuz it fell short
 
     function ProcessTask(props){
         const task = props.task

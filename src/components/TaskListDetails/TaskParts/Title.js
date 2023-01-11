@@ -12,6 +12,9 @@ export default function Title({title, diff}){
     
             case 2:
                 return 'blue.300';
+            
+            default:
+                return 'black.100';
         }
     
     }
@@ -26,6 +29,8 @@ export default function Title({title, diff}){
     
             case 2:
                 return '#8ad368';
+            default:
+                return 'black.100';
         }
     }
 
@@ -54,7 +59,7 @@ export default function Title({title, diff}){
             className='task-modal-header'
             fontSize='3xl'
             whiteSpace='nowrap'
-            pr='3px'
+            pr=''
             pt='0px'
             pb='1.5em'
             overflowX='scroll'

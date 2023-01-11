@@ -7,7 +7,6 @@ import {
     ModalCloseButton, 
     ModalContent, 
     ModalFooter,
-    ModalHeader,
     ModalOverlay,
     useDisclosure,
     Heading,
@@ -28,7 +27,6 @@ export default function TaskItem(props){
   
   const task = props.task
   const [done, setDone] = useState(task.completed)
-  const endDate = new Date(task.end_date)
   const month = ["January","February","March","April","May","June","July","August","September","October","November","December"]
   
   const difficultyBorder = function(){        
@@ -41,6 +39,9 @@ export default function TaskItem(props){
   
           case 2:
               return 'blue.400';
+          
+          default:
+            return 'black.100';
       }
   
   }
@@ -66,7 +67,7 @@ export default function TaskItem(props){
           >   
           <Heading
           fontSize={props.heading_font_size} 
-          color={difficultyBorder(task.difficulty)}
+          color={difficultyBorder}
           >
             {task.title}
           </Heading>
