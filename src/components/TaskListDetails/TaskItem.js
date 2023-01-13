@@ -1,84 +1,108 @@
-// Needs to display: Title, Difficulty (subtle representation), End Date, and Details
-
 import { 
     Button,
-    Box, 
+    Checkbox,
     HStack, 
     Modal, 
     ModalBody,
     ModalCloseButton, 
     ModalContent, 
     ModalFooter,
-    ModalHeader,
     ModalOverlay,
-    Text,
     useDisclosure,
-    VStack, 
     Heading,
-    StackDivider,
-    Spacer
 } from "@chakra-ui/react";
 import DeleteTask from "../Tasks/DeleteTask";
-
+import EditTask from "../Tasks/EditTask";
+import supabase from "../../supabase";
+import { useEffect, useState } from "react";
+import Title from "./TaskParts/Title";
+import DueDate from "./TaskParts/DueDate";
 
 
 
 export default function TaskItem(props){
-    const {isOpen, onOpen, onClose} = useDisclosure() //Modal Stuff
-    const endDate = new Date(props.end_date)
-    const month = ["January","February","March","April","May","June","July","August","September","October","November","December"]
-    // console.log(endDate)
-    // console.log(props.lor)
-    const difficultyBorder = (diff) => {        
-        switch(diff){
-            case 0:
-                return 'green.600';
-                break;
-            
-            case 1:
-                return 'yellow.400';
-                break;
-    
-            case 2:
-                return 'red.600';
-                break;
-        }
-    
-    }
 
-    return(
-        <>
-        <Button justifyContent='center' onClick={onOpen} p='30px'>
-            <Heading color={difficultyBorder(props.difficulty)}>{props.title}</Heading>
-        </Button>
-        
-        <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
+  //ChakraUI
+  const {isOpen, onOpen, onClose} = useDisclosure() //Modal Stuff
+  
+  const task = props.task
+  const [done, setDone] = useState(task.completed)
+  const month = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+  
+  const difficultyBorder = function(){        
+      switch(task.difficulty){
+          case 0:
+              return 'green.400';
+          
+          case 1:
+              return 'orange.400';
+  
+          case 2:
+              return 'blue.400';
+          
+          default:
+            return 'black.100';
+      }
+  
+  }
 
-          {/* Title */}
-          <ModalHeader>{props.title}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
+  const setCompleted = async function(){
+    const { err } = await supabase.from('todos').update({ completed: done }).eq('id', task.id)
+    if (err) console.log(err)
+  }
 
-            {/* End Date */}
-            <HStack divider={<StackDivider borderColor='gray.400' />}>
-                    <Text fontSize='xl'>End: {month[endDate.getMonth()]} {endDate.getDate()}, {endDate.getFullYear()}</Text>
-                    
-                    {/* HashTag  */}
-              <Text>{props.tag}</Text>
-            </HStack>
+  useEffect(()=>{
+    setCompleted()// eslint-disable-next-line
+  }, [done])
 
-            {/* Task  */}
-            <Text>{props.text}</Text>
+  return(
+      <HStack maxW='100%'>
+      <Checkbox size='lg' isChecked={done} onChange={(e)=> {setDone(e.target.checked); setCompleted()}} />
+      <Button 
+          maxW='100%'
+          justifyContent='left' 
+          onClick={onOpen} p={props.p} 
+          w={props.w} h={props.h} 
+          overflow='hidden'
+          >   
+          <Heading
+          fontSize={props.heading_font_size} 
+          color={difficultyBorder}
+          >
+            {task.title}
+          </Heading>
+      </Button>                                                                                               
+                                                                                                              
+      <Modal isOpen={isOpen} onClose={onClose} size={props.size}>                                                               
+      <ModalOverlay /> 
+                                                                                             
+      <ModalContent borderColor={difficultyBorder} borderWidth='3px'>                                                                                          
+        <ModalCloseButton />      
 
-          </ModalBody>
+        {/* Title, Difficulty */}                                                                                         
+        <HStack mt='1em'>
 
-          <ModalFooter>
-            <DeleteTask id={props.id} />
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-        </>
-    )
+          <Title title={task.title} diff={task.difficulty} />
+          
+          <DueDate date={task.end_date} month={month} size='3xl' />
+
+        </HStack>                                                              
+                                                                                                              
+        <ModalBody>                                                                                           
+                                                                                                              
+                                                                                                              
+                                                                                                              
+        </ModalBody>                                                                                          
+                                                                                                              
+        <ModalFooter>              
+
+          <EditTask id={task.id} />    
+          &nbsp;
+          <DeleteTask id={task.id}/>
+          
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+      </HStack>
+  )
 }

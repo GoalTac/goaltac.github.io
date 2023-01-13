@@ -69,14 +69,12 @@ export default function TaskList() {
         borderRadius="lg"
         w="100vw"
         maxW={{ base: '90vw', sm: '80vw', lg: '50vw', xl: '30vw' }}
-        alignItems="stretch"
+        alignItems="center"
       >
         {tasks.map(task => (
-          <TaskItem key={task.id} title={task.title} tag={task.tag} end_date={task.end_date} difficulty={task.difficulty} text={task.text} id={task.id} />
+          <TaskItem key={task.id} task={task} p='5px' w='auto' h='7vh' heading_font_size='lg' size='3xl'/>
         ))}
       </VStack>
-
-      <ClearTasks />
     </>
   );
 }
