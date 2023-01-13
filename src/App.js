@@ -10,7 +10,7 @@ import UpdatePasswordPage from './pages/UpdatePasswordPage';
 
 function App() {
   return (
-    <VStack pt="4">
+    <VStack>
       <Routes>
         {/* Only add routes that would involve a signed in user. */}
         <Route path="/" element={<HomePage />}>
