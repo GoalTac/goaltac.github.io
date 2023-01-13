@@ -13,33 +13,34 @@ import ClearTasks from './Tasks/ClearTasks';
 import img from '../images/empty.svg';
 // import { useRealtime } from 'react-supabase';
 import { useEffect, useState } from 'react';
-import supabase from '../supabase'
+import supabase from '../supabase';
 import TaskItem from './TaskListDetails/TaskItem';
 
 export default function TaskList() {
-
-  const todos = supabase.channel('custom-all-channel')
-  .on(
-    'postgres_changes',
-    { event: '*', schema: 'public', table: 'todos' },
-    (payload) => {
-      fetchData()
-      console.log('Change received!', payload)
-    }
-  )
-  .subscribe()
+  useEffect(() => {
+    const todos = supabase
+      .channel('custom-all-channel')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'todos' },
+        payload => {
+          fetchData();
+          console.log('Change received!', payload);
+        }
+      )
+      .subscribe();
+  }, []);
 
   const [tasks, setTasks] = useState([]);
 
   async function fetchData() {
-    let { data: tasks, error} = await supabase.from('todos').select('*');
+    let { data: tasks, error } = await supabase.from('todos').select('*');
     setTasks(tasks);
   }
 
   useEffect(() => {
     fetchData();
   }, []);
-
 
   // if (fetching) {
   //   return (
@@ -72,7 +73,15 @@ export default function TaskList() {
         alignItems="center"
       >
         {tasks.map(task => (
-          <TaskItem key={task.id} task={task} p='5px' w='auto' h='7vh' heading_font_size='lg' size='3xl'/>
+          <TaskItem
+            key={task.id}
+            task={task}
+            p="5px"
+            w="auto"
+            h="7vh"
+            heading_font_size="lg"
+            size="3xl"
+          />
         ))}
       </VStack>
     </>
