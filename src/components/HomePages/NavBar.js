@@ -14,14 +14,18 @@ import {
 } from '@chakra-ui/react';
 import Settings from './Settings';
 import logo from '../../images/logo.png';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import Nav from '../BetaPages/Nav';
+import {useEffect} from 'react'
 
 export default function NavBar() {
   const navigate = useNavigate();
+  const locate = useLocation();
+  const colorModeV = useColorModeValue('gray.100', 'gray.900');
 
-  return (
-    <Box
-      bg={useColorModeValue('gray.100', 'gray.900')}
+  const GeneralNavBar = function(){
+    return(<Box
+      bg={colorModeV}
       opacity="0.9"
       px={4}
       top="0"
@@ -41,6 +45,27 @@ export default function NavBar() {
         <Spacer />
         <Settings />
       </Stack>
-    </Box>
+    </Box>)
+  }
+
+  const Display = function(){
+    // if (!(locate.pathname === '/beta')) return <GeneralNavBar />;
+    // return <Nav />
+
+    switch (locate.pathname){
+      case '/beta':
+        return <Nav />;
+      
+      default:
+        return <GeneralNavBar />
+    }
+    
+  }
+  
+  useEffect(()=>{
+    console.log(locate)
+  }, [])
+  return (
+    <Display />
   );
 }
