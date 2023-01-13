@@ -48,7 +48,6 @@ function HomePage() {
       ) : (
         <Box w="100%" h="100%">
           <NavBar />
-
           <VStack p={4}>
             <AddTask />
             <TaskList />

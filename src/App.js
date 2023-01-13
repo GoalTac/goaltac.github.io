@@ -1,4 +1,4 @@
-import { VStack } from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
 import { Routes, Route } from 'react-router-dom';
 import BetaPage from './pages/BetaPage';
 import HomePage from './pages/HomePage';
@@ -7,10 +7,12 @@ import SignUpPage from './pages/SignUpPage';
 import Schedule from './pages/Schedule';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import UpdatePasswordPage from './pages/UpdatePasswordPage';
+import NavBar from './components/HomePages/NavBar';
 import './App.css';
 function App() {
   return (
-    <VStack>
+    <Stack>
+      <NavBar />
       <Routes>
         {/* Only add routes that would involve a signed in user. */}
         <Route path="/" element={<HomePage />}>
@@ -24,7 +26,7 @@ function App() {
         <Route path="/resetpassword" element={<ResetPasswordPage />} />
         <Route path="/updatepassword" element={<UpdatePasswordPage />} />
       </Routes>
-    </VStack>
+    </Stack>
   );
 }
 
