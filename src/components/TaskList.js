@@ -13,29 +13,28 @@ import ClearTasks from './Tasks/ClearTasks';
 import img from '../images/empty.svg';
 // import { useRealtime } from 'react-supabase';
 import { useEffect, useState } from 'react';
-import supabase from '../supabase'
+import supabase from '../supabase';
 import TaskItem from './TaskListDetails/TaskItem';
 
 export default function TaskList() {
-  // const [result, reexecute] = useRealtime('todos');
-  // const { data: tasks, error, fetching } = result;
-
-
-  const todos = supabase.channel('custom-all-channel')
-  .on(
-    'postgres_changes',
-    { event: '*', schema: 'public', table: 'todos' },
-    (payload) => {
-      fetchData()
-      console.log('Change received!', payload)
-    }
-  )
-  .subscribe()
+  useEffect(() => {
+    const todos = supabase
+      .channel('custom-all-channel')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'todos' },
+        payload => {
+          fetchData();
+          console.log('Change received!', payload);
+        }
+      )
+      .subscribe();
+  }, []);
 
   const [tasks, setTasks] = useState([]);
 
   async function fetchData() {
-    let { data: tasks, error} = await supabase.from('todos').select('*');
+    let { data: tasks, error } = await supabase.from('todos').select('*');
     setTasks(tasks);
   }
 
@@ -71,14 +70,20 @@ export default function TaskList() {
         borderRadius="lg"
         w="100vw"
         maxW={{ base: '90vw', sm: '80vw', lg: '50vw', xl: '30vw' }}
-        alignItems="stretch"
+        alignItems="center"
       >
         {tasks.map(task => (
-          <TaskItem key={task.id} title={task.title} tag={task.tag} end_date={task.end_date} difficulty={task.difficulty} text={task.text} id={task.id} />
+          <TaskItem
+            key={task.id}
+            task={task}
+            p="5px"
+            w="auto"
+            h="7vh"
+            heading_font_size="lg"
+            size="3xl"
+          />
         ))}
       </VStack>
-
-      <ClearTasks />
     </>
   );
 }

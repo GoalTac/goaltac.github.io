@@ -26,6 +26,7 @@ import {
   FormControl,
   FormHelperText,
   InputRightElement,
+  useColorMode,
 } from '@chakra-ui/react';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import supabase from '../supabase';
@@ -35,7 +36,8 @@ const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 export default function LoginPage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { colorMode } = useColorMode();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -49,8 +51,8 @@ export default function LoginPage() {
         email,
         password,
       });
-      
-      navigate('/', { state: {session: data.session}})
+
+      navigate('/', { state: { session: data.session } });
       // Save the authentication token in local storage or a cookie
       // so that it can be used on subsequent requests
     } catch (error) {
@@ -85,7 +87,9 @@ export default function LoginPage() {
             <Stack
               spacing={4}
               p="1rem"
-              backgroundColor="whiteAlpha.900"
+              backgroundColor={
+                colorMode === 'light' ? 'whiteAlpha.900' : 'blackAlpha.300'
+              }
               boxShadow="md"
             >
               <FormControl>
@@ -94,11 +98,13 @@ export default function LoginPage() {
                     pointerEvents="none"
                     children={<CFaUserAlt color="gray.300" />}
                   />
+                  {/* Email */}
                   <Input
                     type="email"
                     placeholder="Email Address"
                     value={email}
                     onChange={event => setEmail(event.target.value)}
+                    _autofill={true}
                   />
                 </InputGroup>
               </FormControl>
@@ -109,6 +115,7 @@ export default function LoginPage() {
                     color="gray.300"
                     children={<CFaLock color="gray.300" />}
                   />
+                  {/* Password */}
                   <Input
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Password"
@@ -124,7 +131,7 @@ export default function LoginPage() {
                   </InputRightElement>
                 </InputGroup>
                 <FormHelperText textAlign="right">
-                  <Link href="resetpassword">Forgot password?</Link>
+                  <Link href="/#/resetpassword">Forgot password?</Link>
                 </FormHelperText>
               </FormControl>
               <Button
@@ -140,7 +147,7 @@ export default function LoginPage() {
         </Box>
       </Stack>
       <Box>
-        New Here? <Link href="signup">Sign Up</Link>
+        New Here? <Link href="/#/signup">Sign Up</Link>
       </Box>
     </Flex>
   );
