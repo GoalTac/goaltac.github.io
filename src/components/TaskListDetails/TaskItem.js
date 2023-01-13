@@ -1,8 +1,5 @@
-// Needs to display: Title, Difficulty (subtle representation), End Date, and Details
-
 import { 
     Button,
-    Box, 
     Checkbox,
     HStack, 
     Modal, 
@@ -10,18 +7,16 @@ import {
     ModalCloseButton, 
     ModalContent, 
     ModalFooter,
-    ModalHeader,
     ModalOverlay,
-    Text,
     useDisclosure,
-    VStack, 
     Heading,
-    StackDivider,
-    Spacer
 } from "@chakra-ui/react";
 import DeleteTask from "../Tasks/DeleteTask";
+import EditTask from "../Tasks/EditTask";
 import supabase from "../../supabase";
 import { useEffect, useState } from "react";
+import Title from "./TaskParts/Title";
+import DueDate from "./TaskParts/DueDate";
 
 
 
@@ -32,22 +27,21 @@ export default function TaskItem(props){
   
   const task = props.task
   const [done, setDone] = useState(task.completed)
-  const endDate = new Date(task.end_date)
   const month = ["January","February","March","April","May","June","July","August","September","October","November","December"]
   
-  const difficultyBorder = (diff) => {        
-      switch(diff){
+  const difficultyBorder = function(){        
+      switch(task.difficulty){
           case 0:
-              return 'green.600';
-              break;
+              return 'green.400';
           
           case 1:
-              return 'yellow.400';
-              break;
+              return 'orange.400';
   
           case 2:
-              return 'red.600';
-              break;
+              return 'blue.400';
+          
+          default:
+            return 'black.100';
       }
   
   }
@@ -58,39 +52,54 @@ export default function TaskItem(props){
   }
 
   useEffect(()=>{
-    setCompleted()
+    setCompleted()// eslint-disable-next-line
   }, [done])
 
   return(
-      <HStack>
+      <HStack maxW='100%'>
       <Checkbox size='lg' isChecked={done} onChange={(e)=> {setDone(e.target.checked); setCompleted()}} />
-      <Button justifyContent='left' onClick={onOpen} p={props.p} w={props.w} h={props.h} overflow='hidden'>
-          <Heading fontSize={props.heading_font_size} color={difficultyBorder(task.difficulty)}>{task.title}</Heading>
-      </Button>
-      
-      <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
+      <Button 
+          maxW='100%'
+          justifyContent='left' 
+          onClick={onOpen} p={props.p} 
+          w={props.w} h={props.h} 
+          overflow='hidden'
+          >   
+          <Heading
+          fontSize={props.heading_font_size} 
+          color={difficultyBorder}
+          >
+            {task.title}
+          </Heading>
+      </Button>                                                                                               
+                                                                                                              
+      <Modal isOpen={isOpen} onClose={onClose} size={props.size}>                                                               
+      <ModalOverlay /> 
+                                                                                             
+      <ModalContent borderColor={difficultyBorder} borderWidth='3px'>                                                                                          
+        <ModalCloseButton />      
 
-        {/* Title */}
-        <ModalHeader>{task.title}</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
+        {/* Title, Difficulty */}                                                                                         
+        <HStack mt='1em'>
 
-          {/* End Date */}
-          <HStack divider={<StackDivider borderColor='gray.400' />}>
-                  <Text fontSize='xl'>End: {month[endDate.getMonth()]} {endDate.getDate()}, {endDate.getFullYear()}</Text>
-                    
-                    {/* HashTag  */}
-              <Text>{task.tag}</Text>
-          </HStack>
+          <Title title={task.title} diff={task.difficulty} />
+          
+          <DueDate date={task.end_date} month={month} size='3xl' />
 
-          {/* Task  */}
-          <Text>{task.text}</Text>
-        </ModalBody>
+        </HStack>                                                              
+                                                                                                              
+        <ModalBody>                                                                                           
+                                                                                                              
+                                                                                                              
+                                                                                                              
+        </ModalBody>                                                                                          
+                                                                                                              
+        <ModalFooter>              
 
-        <ModalFooter>
-          <DeleteTask id={task.id} />
+          <EditTask id={task.id} />    
+          &nbsp;
+          <DeleteTask id={task.id}/>
+          
         </ModalFooter>
       </ModalContent>
     </Modal>

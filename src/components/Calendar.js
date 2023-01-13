@@ -8,13 +8,6 @@ import {
     Td,
     TableCaption,
     TableContainer,
-    VStack,
-    StackDivider,
-    HStack,
-    Text,
-    Image,
-    Box,
-    Skeleton,
   } from '@chakra-ui/react';
   
 
@@ -102,3 +95,5 @@ export default function Calendar() {
     </TableContainer>
   );
 }
+
+// This file is uneeded it seems

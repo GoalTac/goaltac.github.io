@@ -29,27 +29,28 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
   const {isOpen, onOpen, onClose} = useDisclosure() //For the modal's open/close
 
   //Page
-  const [task, setTask] = useState({title: "", text: "", tag: "", end_date: new Date, difficulty: '0', userid: null})
+  
+  const [task, setTask] = useState({title: "", text: "", tag: "", end_date: new Date(), difficulty: '0', userid: null})
   const {title, text, tag, end_date, difficulty, user_id} = task
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate()
 
   async function saveTask(e) {
+    console.log(task.end_date)
     e.preventDefault();
     setLoading(true);
-    
+
+    // console.log(formatDate(end_date))
     const { error } = await supabase
         .from('todos') //Table name
-        .insert([
-            task //Columns
-        ])
-        // console.log(task)
+        .insert(task)
+    console.log(task)
       
     
     //Finishing tasks
     setLoading(false);
-    setTask({...task, title: "", text: "", tag: "", end_date: new Date})
+    setTask({...task, title: "", text: "", tag: "", end_date: new Date()})
 
     toast({
       title: error || 'task added',
@@ -63,7 +64,6 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
   }
 
   const getSession = async function(){
-      console.log("Entered")
       await supabase.auth.getSession().then((table)=>{
           if (!table.data?.session){
               console.log("\nThere's no session")
@@ -78,7 +78,7 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
   }
 
   useEffect(()=>{
-    getSession()
+    getSession()// eslint-disable-next-line
   }, [])
   return (
     <>
@@ -126,7 +126,7 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
               {/* End Date */}
               <FormControl>
                 <FormLabel>End Date</FormLabel>
-                <DatePicker selected={end_date} onChange={(date) => setTask({...task, end_date: date})} />
+                <DatePicker selected={end_date} onChange={e => setTask({...task, end_date: e})} />
                 {/* <Input type='datetime-local'
                 onChange={ e => setTask({...task, end_date: e.target.value})}
                 placeholder='yyyy-mm-dd'
