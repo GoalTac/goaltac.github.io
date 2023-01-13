@@ -17,9 +17,6 @@ import supabase from '../supabase'
 import TaskItem from './TaskListDetails/TaskItem';
 
 export default function TaskList() {
-  // const [result, reexecute] = useRealtime('todos');
-  // const { data: tasks, error, fetching } = result;
-
 
   const todos = supabase.channel('custom-all-channel')
   .on(
@@ -42,6 +39,7 @@ export default function TaskList() {
   useEffect(() => {
     fetchData();
   }, []);
+
 
   // if (fetching) {
   //   return (

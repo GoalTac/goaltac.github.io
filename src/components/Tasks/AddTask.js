@@ -19,14 +19,12 @@ import {
   Text
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react'
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css'
 import { useNavigate } from 'react-router-dom';
 import supabase from '../../supabase'
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'
 
 export default function AddTask() { //Session defined from HomePage.js (supabase.auth.getSession())
-
-
   //Database
   const {isOpen, onOpen, onClose} = useDisclosure() //For the modal's open/close
 
@@ -97,7 +95,7 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
                 {/* Title */}
               <FormControl>
                 <FormLabel>Title</FormLabel>
-                <Input type='text' 
+                <Input type='text' maxLength={24}
                     value={title}
                     onChange={e => setTask({...task, title: e.target.value})}
                 />
@@ -115,11 +113,10 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
                   </HStack>
                 </RadioGroup>
               </VStack>
-              
               {/* Hashtag */}
               <FormControl>
                 <FormLabel>Hash Tag</FormLabel>
-                <Input type='text' 
+                <Input type='text' maxLength={16}
                     value={tag}
                     onChange={e => setTask({...task, tag: e.target.value})}
                 />
@@ -136,11 +133,12 @@ export default function AddTask() { //Session defined from HomePage.js (supabase
                 required={true}
                 /> */}
               </FormControl>
+              <Input type='datetime-local'></Input>
 
               {/* Details */}
               <FormControl>
                 <FormLabel>Task Details</FormLabel>
-                <Input type='text' 
+                <Input type='text' maxLength={1024}
                     value={text}
                     onChange={e => setTask({...task, text: e.target.value})}
                 />
