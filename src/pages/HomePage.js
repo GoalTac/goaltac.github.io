@@ -20,6 +20,7 @@ function HomePage() {
         navigate('/login');
       } else {
         setSession(table.data.session);
+
       }
     });
   };
@@ -47,7 +48,6 @@ function HomePage() {
         <>"No data :("</>
       ) : (
         <Box w="100%" h="100%">
-          
           <VStack p={4}>
             <AddTask />
             <TaskList />
