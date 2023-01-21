@@ -84,6 +84,7 @@ export default function SignUpPage() {
                   {/* Username */}
                   <Input
                     type="text"
+                    id="userName"
                     placeholder="Username"
                     value={userName}
                     onChange={event => setUserName(event.target.value)}
@@ -99,6 +100,7 @@ export default function SignUpPage() {
                   {/* Email */}
                   <Input
                     type="email"
+                    id="email"
                     placeholder="Email Address"
                     value={email}
                     onChange={event => setEmail(event.target.value)}
@@ -116,6 +118,7 @@ export default function SignUpPage() {
                   <Input
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Password"
+                    id="password"
                     value={password}
                     onChange={event => setPassword(event.target.value)}
                   />
