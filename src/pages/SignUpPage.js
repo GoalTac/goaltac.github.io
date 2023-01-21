@@ -26,6 +26,7 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [userName, setUserName] = useState('');
 
   const handleShowClick = () => setShowPassword(!showPassword);
   const handleSubmit = async event => {
@@ -65,7 +66,7 @@ export default function SignUpPage() {
           GoalTac Sign Up
         </Heading>
         <Box>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} _autofill={false}>
             <Stack
               spacing={4}
               p="1rem"
@@ -80,13 +81,27 @@ export default function SignUpPage() {
                     pointerEvents="none"
                     children={<CFaUserAlt color="gray.300" />}
                   />
+                  {/* Username */}
+                  <Input
+                    type="text"
+                    placeholder="Username"
+                    value={userName}
+                    onChange={event => setUserName(event.target.value)}
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    children={<CFaUserAlt color="gray.300" />}
+                  />
                   {/* Email */}
                   <Input
                     type="email"
                     placeholder="Email Address"
                     value={email}
                     onChange={event => setEmail(event.target.value)}
-                    _autofill={true}
                   />
                 </InputGroup>
               </FormControl>
