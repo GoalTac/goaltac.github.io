@@ -25,6 +25,7 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/resetpassword" element={<ResetPasswordPage />} />
         <Route path="/updatepassword" element={<UpdatePasswordPage />} />
+        <Route path="/*" element={<HomePage />} />
       </Routes>
     </Stack>
   );
