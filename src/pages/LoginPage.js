@@ -131,7 +131,7 @@ export default function LoginPage() {
                   </InputRightElement>
                 </InputGroup>
                 <FormHelperText textAlign="right">
-                  <Link href="/#/resetpassword">Forgot password?</Link>
+                  <Link href="/resetpassword">Forgot password?</Link>
                 </FormHelperText>
               </FormControl>
               <Button
@@ -147,7 +147,7 @@ export default function LoginPage() {
         </Box>
       </Stack>
       <Box>
-        New Here? <Link href="/#/signup">Sign Up</Link>
+        New Here? <Link href="/signup">Sign Up</Link>
       </Box>
     </Flex>
   );
