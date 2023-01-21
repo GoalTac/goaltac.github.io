@@ -106,7 +106,7 @@ export default function ResetPasswordPage() {
         </Box>
       </Stack>
       <Box>
-        Remember your password? <Link href="/#/login">Back to Login</Link>
+        Remember your password? <Link href="/login">Back to Login</Link>
       </Box>
     </Flex>
   );
