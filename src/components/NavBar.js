@@ -15,7 +15,7 @@ import {
 import Settings from './HomePages/Settings';
 import logo from '../images/logo.png';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import Nav from '../BetaPages/Nav';
+import Nav from './BetaPages/Nav';
 import { useEffect } from 'react';
 
 export default function NavBar() {
