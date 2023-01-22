@@ -48,22 +48,22 @@ export default function ResetPasswordPage() {
 
   return (
     <Flex
-      flexDirection="column"
-      width="100wh"
-      height="100vh"
-      justifyContent="center"
-      alignItems="center"
+      flexDirection='column'
+      width='100wh'
+      height='100vh'
+      justifyContent='center'
+      alignItems='center'
     >
       <Stack
-        flexDir="column"
-        mb="2"
-        justifyContent="center"
-        alignItems="center"
+        flexDir='column'
+        mb='2'
+        justifyContent='center'
+        alignItems='center'
       >
         <Heading
-          fontWeight="extrabold"
-          bgGradient="linear(to-l, teal.300, blue.500)"
-          bgClip="text"
+          fontWeight='extrabold'
+          bgGradient='linear(to-l, teal.300, blue.500)'
+          bgClip='text'
         >
           GoalTac
         </Heading>
@@ -73,21 +73,21 @@ export default function ResetPasswordPage() {
           <form onSubmit={handleSubmit}>
             <Stack
               spacing={4}
-              p="1rem"
+              p='1rem'
               backgroundColor={
                 colorMode === 'light' ? 'whiteAlpha.900' : 'blackAlpha.300'
               }
-              boxShadow="md"
+              boxShadow='md'
             >
               <FormControl>
                 <InputGroup>
                   <InputLeftElement
-                    pointerEvents="none"
-                    children={<CFaUserAlt color="gray.300" />}
+                    pointerEvents='none'
+                    children={<CFaUserAlt color='gray.300' />}
                   />
                   <Input
-                    type="email"
-                    placeholder="Email Address"
+                    type='email'
+                    placeholder='Email Address'
                     value={email}
                     onChange={event => setEmail(event.target.value)}
                   />
@@ -95,9 +95,9 @@ export default function ResetPasswordPage() {
               </FormControl>
               <Button
                 borderRadius={5}
-                type="submit"
-                variant="solid"
-                width="full"
+                type='submit'
+                variant='solid'
+                width='full'
               >
                 Reset
               </Button>
@@ -106,7 +106,7 @@ export default function ResetPasswordPage() {
         </Box>
       </Stack>
       <Box>
-        Remember your password? <Link href="/login">Back to Login</Link>
+        Remember your password? <Link to='/login'>Back to Login</Link>
       </Box>
     </Flex>
   );

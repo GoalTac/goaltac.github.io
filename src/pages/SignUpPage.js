@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import {
+  Text,
+  Center,
   Flex,
   Heading,
   Input,
@@ -14,6 +16,7 @@ import {
   useColorMode,
   useToast, 
 } from '@chakra-ui/react';
+import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import supabase from '../supabase';
 import { useNavigate } from 'react-router-dom';
@@ -109,22 +112,22 @@ export default function SignUpPage() {
 
   return (
     <Flex
-      flexDirection="column"
-      width="100wh"
-      height="100vh"
-      justifyContent="center"
-      alignItems="center"
+      flexDirection='column'
+      width='100wh'
+      height='100vh'
+      justifyContent='center'
+      alignItems='center'
     >
       <Stack
-        flexDir="column"
-        mb="2"
-        justifyContent="center"
-        alignItems="center"
+        flexDir='column'
+        mb='2'
+        justifyContent='center'
+        alignItems='center'
       >
         <Heading
-          fontWeight="extrabold"
-          bgGradient="linear(to-l, teal.300, blue.500)"
-          bgClip="text"
+          fontWeight='extrabold'
+          bgGradient='linear(to-l, teal.300, blue.500)'
+          bgClip='text'
         >
           GoalTac Sign Up
         </Heading>
@@ -132,17 +135,17 @@ export default function SignUpPage() {
           <form onSubmit={handleSubmit}>
             <Stack
               spacing={4}
-              p="1rem"
+              p='1rem'
               backgroundColor={
                 colorMode === 'light' ? 'whiteAlpha.900' : 'blackAlpha.300'
               }
-              boxShadow="md"
+              boxShadow='md'
             >
               <FormControl>
                 <InputGroup>
                   <InputLeftElement
-                    pointerEvents="none"
-                    children={<CFaUserAlt color="gray.300" />}
+                    pointerEvents='none'
+                    children={<CFaUserAlt color='gray.300' />}
                   />
                   {/* Username */}
                   <Input
@@ -173,9 +176,9 @@ export default function SignUpPage() {
               <FormControl>
                 <InputGroup>
                   <InputLeftElement
-                    pointerEvents="none"
-                    color="gray.300"
-                    children={<CFaLock color="gray.300" />}
+                    pointerEvents='none'
+                    color='gray.300'
+                    children={<CFaLock color='gray.300' />}
                   />
                   {/* Password */}
                   <Input
@@ -185,8 +188,8 @@ export default function SignUpPage() {
                     value={password}
                     onChange={event => setPassword(event.target.value)}
                   />
-                  <InputRightElement width="4.5rem">
-                    <Button h="1.75rem" size="sm" onClick={handleShowClick}>
+                  <InputRightElement width='4.5rem'>
+                    <Button h='1.75rem' size='sm' onClick={handleShowClick}>
                       {/* <ViewIcon color="gray.300" />
                       <ViewOffIcon color="gray.300" /> */}
                       {showPassword ? 'hide' : 'show'}
@@ -196,11 +199,21 @@ export default function SignUpPage() {
               </FormControl>
               <Button
                 borderRadius={5}
-                type="submit"
-                variant="solid"
-                width="full"
+                type='submit'
+                variant='solid'
+                width='full'
               >
                 Sign Up
+              </Button>
+              <Button
+                w={'full'}
+                maxW={'md'}
+                variant={'outline'}
+                leftIcon={<FcGoogle />}
+              >
+                <Center>
+                  <Text>Sign up with Google</Text>
+                </Center>
               </Button>
             </Stack>
           </form>

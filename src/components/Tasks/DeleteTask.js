@@ -18,11 +18,11 @@ export default function DeleteTask({ id }) {
       status: error ? 'error' : 'success',
       duration: 2000,
       isClosable: true,
-    })
+    });
   }
   return (
     <IconButton
-      isRound="true"
+      isRound='true'
       float='right'
       icon={<FiTrash2 />}
       onClick={handleDelete}

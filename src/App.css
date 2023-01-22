@@ -1,34 +1,32 @@
-
-
-.task-modal-header{
-    box-shadow: 0px 5px 10px rgba(0,0,0, 0.22);
+.task-modal-header {
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.22);
 }
 
 html {
-    /* Firefox way to mod scrollbars, otherwise it looks jank */
-    scrollbar-color: gray black; 
-    scrollbar-width: thin;
-    scroll-behavior: smooth;
+  /* Firefox way to mod scrollbars, otherwise it looks jank */
+  scrollbar-color: gray black;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
 }
 
 /* width */
 html ::-webkit-scrollbar {
-    width: 0.5vw;
-    height: 0.5vh;
+  width: 0.5vw;
+  height: 0.5vh;
 }
 
 /* Track */
 html ::-webkit-scrollbar-track {
-    margin-left: 0.25em;
-    margin-right: 1em;
-    margin-top: 0.25em;
-    border-radius: 100vw;
+  margin-left: 0.25em;
+  margin-right: 1em;
+  margin-top: 0.25em;
+  border-radius: 100vw;
 }
 
 /* Handle */
 html ::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.743);
-    border-radius: 100vw;
+  background: rgba(0, 0, 0, 0.743);
+  border-radius: 100vw;
 }
 
 /* Handle on hover

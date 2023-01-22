@@ -9,45 +9,40 @@ import {
   InputLeftElement,
   chakra,
   Box,
+  Link,
   FormControl,
+  FormHelperText,
   InputRightElement,
   useColorMode,
 } from '@chakra-ui/react';
-import { FaLock, ViewIcon, ViewOffIcon } from 'react-icons/fa';
-import supabase from '../supabase';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 
+const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
-export default function UpdatePasswordPage() {
+export default function LoginPage() {
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
-  const { state } = useLocation();
   const [showPassword, setShowPassword] = useState(false);
-  const [newPassword, setPassword] = useState('');
-  const [session, setSession] = useState();
-  const [user, setUser] = useState(undefined);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleShowClick = () => setShowPassword(!showPassword);
   const handleSubmit = async event => {
     event.preventDefault();
-
+    // console.log('submitting!');
     try {
-      const { data, err } = await supabase.auth.updateUser({
-        password: newPassword,
+      const { data, err } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-      console.log(data);
-      console.log('After calling supabase.updateUser');
 
-      navigate('/login', { state: { session: data.session } });
+      navigate('/', { state: { session: data.session } });
       // Save the authentication token in local storage or a cookie
       // so that it can be used on subsequent requests
     } catch (error) {
       // Handle the error
-      console.log('The try-catch has an error: ');
       console.log(error);
     }
-    console.log('Did it succeed?');
   };
 
   return (
@@ -69,7 +64,7 @@ export default function UpdatePasswordPage() {
           bgGradient='linear(to-l, teal.300, blue.500)'
           bgClip='text'
         >
-          GoalTac Reset Password
+          GoalTac
         </Heading>
         <Box>
           <form onSubmit={handleSubmit}>
@@ -85,23 +80,43 @@ export default function UpdatePasswordPage() {
                 <InputGroup>
                   <InputLeftElement
                     pointerEvents='none'
+                    children={<CFaUserAlt color='gray.300' />}
+                  />
+                  {/* Email */}
+                  <Input
+                    type='email'
+                    placeholder='Email Address'
+                    value={email}
+                    onChange={event => setEmail(event.target.value)}
+                    _autofill={true}
+                  />
+                </InputGroup>
+              </FormControl>
+              <FormControl>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents='none'
                     color='gray.300'
                     children={<CFaLock color='gray.300' />}
                   />
+                  {/* Password */}
                   <Input
                     type={showPassword ? 'text' : 'password'}
-                    placeholder='New Password'
-                    value={newPassword}
+                    placeholder='Password'
+                    value={password}
                     onChange={event => setPassword(event.target.value)}
                   />
                   <InputRightElement width='4.5rem'>
                     <Button h='1.75rem' size='sm' onClick={handleShowClick}>
                       {/* <ViewIcon color="gray.300" />
-                            <ViewOffIcon color="gray.300" /> */}
+                      <ViewOffIcon color="gray.300" /> */}
                       {showPassword ? 'hide' : 'show'}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
+                <FormHelperText textAlign='right'>
+                  <Link to='/resetpassword'>Forgot password?</Link>
+                </FormHelperText>
               </FormControl>
               <Button
                 borderRadius={5}
@@ -109,12 +124,15 @@ export default function UpdatePasswordPage() {
                 variant='solid'
                 width='full'
               >
-                Update
+                Login
               </Button>
             </Stack>
           </form>
         </Box>
       </Stack>
+      <Box>
+        New Here? <Link href='/signup'>Sign Up</Link>
+      </Box>
     </Flex>
   );
 }

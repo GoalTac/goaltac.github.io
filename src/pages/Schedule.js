@@ -29,7 +29,7 @@ export default function Schedule() {
       });
     };
 
-    getSession(); //eslint-disable-next-line
+    // getSession(); //eslint-disable-next-line
   }, []);
 
   let todays = (function () {
@@ -57,7 +57,7 @@ export default function Schedule() {
   })();
 
   return (
-    <Grid mt="10vh" templateColumns="repeat(8, 1fr)">
+    <Grid mt='10vh' templateColumns='repeat(8, 1fr)'>
       <GridItem colSpan={1} rowSpan={2}>
         <Today tasks={todays} />
       </GridItem>

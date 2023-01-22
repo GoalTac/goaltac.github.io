@@ -18,14 +18,20 @@ const Nav = () => {
   const { toggleColorMode, colorMode } = useColorMode();
 
   return (
-    <Box bg={useColorModeValue('gray.100', 'gray.900')} opacity='0.9' px={4} top='0' position='sticky'>
+    <Box
+      bg={useColorModeValue('gray.100', 'gray.900')}
+      opacity='0.9'
+      px={4}
+      top='0'
+      position='sticky'
+    >
       <Stack direction={'row'} spacing={7} padding={3}>
-        <Img src={logo} alt="logo" width="40px" height="40px" />
+        <Img src={logo} alt='logo' width='40px' height='40px' />
         <Spacer />
-        <Link isExternal href="https://discord.gg/EzFPQDAKGf">
+        <Link isExternal href='https://discord.gg/EzFPQDAKGf'>
           <IconButton
-            variant="outlined"
-            icon={<FaDiscord size="sm" color="rgba(114,137,218)" />}
+            variant='outlined'
+            icon={<FaDiscord size='sm' color='rgba(114,137,218)' />}
           />
         </Link>
 

@@ -16,22 +16,22 @@ const AboutUs = () => {
   const { colorMode } = useColorMode();
 
   return (
-    <section id="about">
+    <section id='about'>
       <Center marginBottom={30}>
         <Box
           boxShadow={'2xl'}
           bgColor={colorMode === 'dark' ? 'gray.900' : 'gray.100'}
           borderRadius={10}
-          w="75%"
+          w='75%'
         >
-          <Center flexDirection="column" gap={3} margin={10}>
+          <Center flexDirection='column' gap={3} margin={10}>
             <Heading>About Us</Heading>
-            <Heading as="h4" size="md">
+            <Heading as='h4' size='md'>
               Mission
             </Heading>
             <Text>Build your community and attack your goals! </Text>
 
-            <Heading as="h4" size="md">
+            <Heading as='h4' size='md'>
               Values
             </Heading>
             <Text>
@@ -43,7 +43,7 @@ const AboutUs = () => {
               together!
             </Text>
 
-            <Heading as="h4" size="md">
+            <Heading as='h4' size='md'>
               Story
             </Heading>
             <Text>
@@ -54,12 +54,10 @@ const AboutUs = () => {
               being able to keep up with them anymore. That's not the problem.
               We need more than just a vessel to write our goals down to incite
               us to go after them. We need a combination of discipline and
-              motivation that comes from being accountable and passionate
-              for your responsibilities.
+              motivation that comes from being accountable and passionate for
+              your responsibilities.
             </Text>
-            <Text fontStyle={'italic'}>
-              ~ My Phung
-            </Text>
+            <Text fontStyle={'italic'}>~ My Phung</Text>
           </Center>
         </Box>
       </Center>
