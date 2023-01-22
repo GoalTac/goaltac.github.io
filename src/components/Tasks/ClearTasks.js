@@ -25,14 +25,14 @@ export default function ClearTasks() {
   return (
     <Flex>
       <Button
-        colorScheme="gray"
-        px="8"
-        h="45"
-        color="gray.500"
-        mt="10"
+        colorScheme='gray'
+        px='8'
+        h='45'
+        color='gray.500'
+        mt='10'
         onClick={handleClear}
         isLoading={loading}
-        loadingText="clearing"
+        loadingText='clearing'
       >
         Clear Tasks
       </Button>

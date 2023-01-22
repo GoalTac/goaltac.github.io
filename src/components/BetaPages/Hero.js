@@ -59,68 +59,66 @@ const Hero = () => {
 
   return (
     <Flex
-      padding="50"
+      padding='50'
       gap={15}
-      justifyContent="space-between"
-      alignItems="center"
+      justifyContent='space-between'
+      alignItems='center'
       flexWrap={'wrap'}
     >
       <Box>
         <Heading
-          fontWeight="extrabold"
+          fontWeight='extrabold'
           fontSize={{ base: '2xl', sm: '3xl', md: '4xl' }}
           bg={colorMode === 'dark' ? 'white' : 'gray.700'}
-          bgClip="text"
+          bgClip='text'
         >
           IMPROVE WORK ETHIC WITH
         </Heading>
 
         <Heading
-          fontWeight="extrabold"
-          bgGradient="linear(to-l, teal.300, blue.500)"
+          fontWeight='extrabold'
+          bgGradient='linear(to-l, teal.300, blue.500)'
           fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
-          bgClip="text"
+          bgClip='text'
         >
           GoalTac
         </Heading>
-        <FormControl
-          marginTop="200"
-        >
-          <Flex flexDirection="row" textAlign="center" alignItems="center">
+        <FormControl marginTop='200'>
+          <Flex flexDirection='row' textAlign='center' alignItems='center'>
             <Input
-              id="email"
-              type="email"
-              placeholder=" Email Address "
-              border="1px"
-              borderRadius="2"
-              marginRight="5"
-              padding="3"
+              id='email'
+              type='email'
+              placeholder=' Email Address '
+              border='1px'
+              borderRadius='2'
+              marginRight='5'
+              padding='3'
               _placeholder={{ color: 'inherit' }}
               value={inputEmail}
               onChange={event => setEmail(event.target.value)}
             />
             <Button
               borderRadius={5}
-              width="30%"
-              type="submit"
-              fontSize="xs"
-              border="1px"
-              variant="solid"
+              width='30%'
+              type='submit'
+              fontSize='xs'
+              border='1px'
+              variant='solid'
               onClick={submitForm}
             >
               Sign Up
             </Button>
           </Flex>
-          <Text color={colorMode === 'dark' ? 'white' : 'gray.700'} padding="3">
+          <Text color={colorMode === 'dark' ? 'white' : 'gray.700'} padding='3'>
             Sign up for a chance to be selected for exclusive access! <br />
             <Button variant={'link'} colorScheme={'blue'} size={'sm'}>
-              <Link to="/about"> Learn more</Link>
+              <Link to='/about'> Learn more</Link>
             </Button>
           </Text>
         </FormControl>
       </Box>
       <Box maxWidth={450} maxHeight={350}>
-        <Image src={createTask} boxShadow={'2xl'} borderRadius="lg" />
+        <Image src={createTask} boxShadow={'2xl'} borderRadius='lg' />
       </Box>
     </Flex>
   );

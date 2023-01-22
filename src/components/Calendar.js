@@ -1,42 +1,42 @@
 import {
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
-  } from '@chakra-ui/react';
-  
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+} from '@chakra-ui/react';
 
 import DeleteTask from './Tasks/DeleteTask';
 import ClearTasks from './Tasks/ClearTasks';
 // import { useRealtime } from 'react-supabase';
 import { useEffect, useState } from 'react';
-import supabase from '../supabase'
+import supabase from '../supabase';
 import TaskItem from './TaskListDetails/TaskItem';
 
 export default function Calendar() {
-      // const [result, reexecute] = useRealtime('todos');
+  // const [result, reexecute] = useRealtime('todos');
   // const { data: tasks, error, fetching } = result;
 
-  const todos = supabase.channel('custom-all-channel')
-  .on(
-    'postgres_changes',
-    { event: '*', schema: 'public', table: 'todos' },
-    (payload) => {
-      fetchData()
-      console.log('Change received!', payload)
-    }
-  )
-  .subscribe()
+  const todos = supabase
+    .channel('custom-all-channel')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'todos' },
+      payload => {
+        fetchData();
+        console.log('Change received!', payload);
+      }
+    )
+    .subscribe();
 
   const [tasks, setTasks] = useState([]);
 
   async function fetchData() {
-    let { data: tasks, error} = await supabase.from('todos').select('*');
+    let { data: tasks, error } = await supabase.from('todos').select('*');
     setTasks(tasks);
   }
 
@@ -54,11 +54,10 @@ export default function Calendar() {
   //   );
   // }
 
-
   return (
     <TableContainer>
       <Table variant='striped'>
-        <TableCaption placement="Top">Calendar: January 2023</TableCaption>
+        <TableCaption placement='Top'>Calendar: January 2023</TableCaption>
         <Thead>
           <Tr>
             <Th>Sunday</Th>
@@ -82,14 +81,21 @@ export default function Calendar() {
           </Tr>
           <Tr>
             {tasks.map(task => (
-                <Td><TaskItem key={task.id} title={task.title} end_date={task.end_date} difficulty={task.difficulty} text={task.text} id={task.id} /></Td>
+              <Td>
+                <TaskItem
+                  key={task.id}
+                  title={task.title}
+                  end_date={task.end_date}
+                  difficulty={task.difficulty}
+                  text={task.text}
+                  id={task.id}
+                />
+              </Td>
             ))}
           </Tr>
         </Tbody>
         <Tfoot>
-          <Tr>
-
-          </Tr>
+          <Tr></Tr>
         </Tfoot>
       </Table>
     </TableContainer>

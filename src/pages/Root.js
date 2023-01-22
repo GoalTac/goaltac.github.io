@@ -7,15 +7,15 @@ import { Outlet } from 'react-router';
 // TODO: create universalish nav bar
 
 export default function Root() {
-    return (
-        <>
-            <ChakraProvider>
-                <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-                <Stack>
-                    <NavBar />
-                    <Outlet />
-                </Stack>
-            </ChakraProvider>
-        </>
-    );
+  return (
+    <>
+      <ChakraProvider>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+        <Stack>
+          <NavBar />
+          <Outlet />
+        </Stack>
+      </ChakraProvider>
+    </>
+  );
 }

@@ -43,7 +43,7 @@ export default function StaffProfiles() {
         <Flex
           flexWrap={'wrap'}
           justifyItems={'center'}
-          alignContent="center"
+          alignContent='center'
           columnGap={2}
           rowGap={1}
           p={3}
@@ -130,7 +130,7 @@ export default function StaffProfiles() {
         <Flex
           flexWrap={'wrap'}
           justifyItems={'center'}
-          alignContent="center"
+          alignContent='center'
           columnGap={2}
           rowGap={1}
           p={3}
@@ -186,7 +186,7 @@ export default function StaffProfiles() {
             aditya.chandraker@uconn.edu
           </Link>
         </Stack>
-      </Box> 
+      </Box>
     </Flex>
   );
 }

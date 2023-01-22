@@ -10,24 +10,34 @@ import {
   ModalOverlay,
   useDisclosure,
   Heading,
-} from "@chakra-ui/react";
-import DeleteTask from "../Tasks/DeleteTask";
-import EditTask from "../Tasks/EditTask";
-import supabase from "../../supabase";
-import { useEffect, useState } from "react";
-import Title from "./TaskParts/Title";
-import DueDate from "./TaskParts/DueDate";
-
-
+} from '@chakra-ui/react';
+import DeleteTask from '../Tasks/DeleteTask';
+import EditTask from '../Tasks/EditTask';
+import supabase from '../../supabase';
+import { useEffect, useState } from 'react';
+import Title from './TaskParts/Title';
+import DueDate from './TaskParts/DueDate';
 
 export default function TaskItem(props) {
-
   //ChakraUI
-  const { isOpen, onOpen, onClose } = useDisclosure() //Modal Stuff
+  const { isOpen, onOpen, onClose } = useDisclosure(); //Modal Stuff
 
-  const task = props.task
-  const [done, setDone] = useState(task.completed)
-  const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  const task = props.task;
+  const [done, setDone] = useState(task.completed);
+  const month = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
 
   const difficultyBorder = function () {
     switch (task.difficulty) {
@@ -43,32 +53,40 @@ export default function TaskItem(props) {
       default:
         return 'black.100';
     }
-
-  }
+  };
 
   const setCompleted = async function () {
-    const { err } = await supabase.from('todos').update({ completed: done }).eq('id', task.id)
-    if (err) console.log(err)
-  }
+    const { err } = await supabase
+      .from('todos')
+      .update({ completed: done })
+      .eq('id', task.id);
+    if (err) console.log(err);
+  };
 
   useEffect(() => {
-    setCompleted()// eslint-disable-next-line
-  }, [done])
+    setCompleted(); // eslint-disable-next-line
+  }, [done]);
 
   return (
     <HStack maxW='100%'>
-      <Checkbox size='lg' isChecked={done} onChange={(e) => { setDone(e.target.checked); setCompleted() }} />
+      <Checkbox
+        size='lg'
+        isChecked={done}
+        onChange={e => {
+          setDone(e.target.checked);
+          setCompleted();
+        }}
+      />
       <Button
         maxW='100%'
         justifyContent='left'
-        onClick={onOpen} p={props.p}
-        w={props.w} h={props.h}
+        onClick={onOpen}
+        p={props.p}
+        w={props.w}
+        h={props.h}
         overflow='hidden'
       >
-        <Heading
-          fontSize={props.heading_font_size}
-          color={difficultyBorder}
-        >
+        <Heading fontSize={props.heading_font_size} color={difficultyBorder}>
           {task.title}
         </Heading>
       </Button>
@@ -81,28 +99,20 @@ export default function TaskItem(props) {
 
           {/* Title, Difficulty */}
           <HStack mt='1em'>
-
             <Title title={task.title} diff={task.difficulty} />
 
             <DueDate date={task.end_date} month={month} size='3xl' />
-
           </HStack>
 
-          <ModalBody>
-
-
-
-          </ModalBody>
+          <ModalBody></ModalBody>
 
           <ModalFooter>
-
             <EditTask id={task.id} />
             &nbsp;
             <DeleteTask id={task.id} />
-
           </ModalFooter>
         </ModalContent>
       </Modal>
     </HStack>
-  )
+  );
 }

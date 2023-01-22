@@ -13,11 +13,9 @@ function HomePage({ session }) {
   //Supabase
   const [user, setUser] = useState(undefined);
 
-
   return (
     <>
-
-      <Box w="100%" h="100%">
+      <Box w='100%' h='100%'>
         <VStack p={4}>
           <AddTask />
           <TaskList />

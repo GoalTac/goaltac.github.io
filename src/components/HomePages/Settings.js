@@ -48,22 +48,22 @@ export default function Settings() {
       <Menu>
         {({ isOpen }) => (
           <>
-            <MenuButton variant="contained" isActive={isOpen} as={Button}>
-              <Avatar name="Adi C" bg={isOpen ? 'cyan' : null}>
-                <AvatarBadge boxSize="1.25em" bg="green.500" />
+            <MenuButton variant='contained' isActive={isOpen} as={Button}>
+              <Avatar name='Adi C' bg={isOpen ? 'cyan' : null}>
+                <AvatarBadge boxSize='1.25em' bg='green.500' />
               </Avatar>
             </MenuButton>
 
             <MenuList>
               <MenuGroup>
                 <HStack>
-                  <Box align="center" margin="10px">
-                    <Avatar id="avatar" name="Adi C" bg="yellow">
-                      <AvatarBadge boxSize="1.25em" bg="green.500" />
+                  <Box align='center' margin='10px'>
+                    <Avatar id='avatar' name='Adi C' bg='yellow'>
+                      <AvatarBadge boxSize='1.25em' bg='green.500' />
                     </Avatar>
                   </Box>
 
-                  <Tag size="lg" colorScheme="orange" borderRadius="full">
+                  <Tag size='lg' colorScheme='orange' borderRadius='full'>
                     <Text>&nbsp;1508</Text>
                   </Tag>
                 </HStack>
@@ -79,7 +79,7 @@ export default function Settings() {
                 >
                   Dark mode{' '}
                   <Switch
-                    id="darkMode"
+                    id='darkMode'
                     isChecked={colorMode === 'dark' ? true : false}
                   />
                 </MenuItem>
