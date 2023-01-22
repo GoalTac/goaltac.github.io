@@ -29,7 +29,7 @@ export default function Schedule() {
       });
     };
 
-    getSession(); //eslint-disable-next-line
+    // getSession(); //eslint-disable-next-line
   }, []);
 
   let todays = (function () {

@@ -52,7 +52,7 @@ export default function LoginPage() {
         password,
       });
 
-      navigate('/', { state: { session: data.session } });
+      navigate('/beta', { state: { session: data.session } });
       // Save the authentication token in local storage or a cookie
       // so that it can be used on subsequent requests
     } catch (error) {
@@ -147,7 +147,7 @@ export default function LoginPage() {
         </Box>
       </Stack>
       <Box>
-        New Here? <Link href="/signup">Sign Up</Link>
+        New Here? <Link to="/signup">Sign Up</Link>
       </Box>
     </Flex>
   );
