@@ -12,6 +12,13 @@ import LoginPage from './pages/LoginPage';
 import Schedule from './pages/Schedule';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import UpdatePasswordPage from './pages/UpdatePasswordPage';
+import SettingsPage from './pages/SettingsPage';
+import MarketPage from './pages/MarketPage';
+import HelpPage from './pages/HelpPage';
+
+import SocialPage from './pages/SocialPage';
+
+import NavBar from './components/NavBar';
 import './App.css';
 import React, { useEffect, useState } from 'react';
 import supabase from './supabase';

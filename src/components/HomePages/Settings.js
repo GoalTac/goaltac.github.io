@@ -55,7 +55,7 @@ export default function Settings() {
             </MenuButton>
 
             <MenuList>
-              <MenuGroup>
+              {/* <MenuGroup>
                 <HStack>
                   <Box align='center' margin='10px'>
                     <Avatar id='avatar' name='Adi C' bg='yellow'>
@@ -69,7 +69,7 @@ export default function Settings() {
                 </HStack>
 
                 <MenuDivider />
-              </MenuGroup>
+              </MenuGroup> */}
 
               <MenuGroup>
                 <MenuItem

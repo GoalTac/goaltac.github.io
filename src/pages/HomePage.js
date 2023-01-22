@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import AddTask from '../components/Tasks/AddTask';
 import TaskList from '../components/TaskList';
 import supabase from '../supabase';
-import NavBar from '../components/HomePages/NavBar';
+import NavBar from '../components/NavBar';
 
 function HomePage({ session }) {
   //React Router DOM

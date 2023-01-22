@@ -13,6 +13,8 @@
 // }
 import { useState } from 'react';
 import {
+  Text,
+  Center,
   Flex,
   Heading,
   Input,
@@ -28,6 +30,7 @@ import {
   InputRightElement,
   useColorMode,
 } from '@chakra-ui/react';
+import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import supabase from '../supabase';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -141,6 +144,16 @@ export default function LoginPage() {
                 width='full'
               >
                 Login
+              </Button>
+              <Button
+                w={'full'}
+                maxW={'md'}
+                variant={'outline'}
+                leftIcon={<FcGoogle />}
+              >
+                <Center>
+                  <Text>Sign in with Google</Text>
+                </Center>
               </Button>
             </Stack>
           </form>

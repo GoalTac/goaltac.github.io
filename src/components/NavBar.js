@@ -12,8 +12,8 @@ import {
   TabList,
   Tab,
 } from '@chakra-ui/react';
-import Settings from './Settings';
-import logo from '../../images/logo.png';
+import Settings from './HomePages/Settings';
+import logo from '../images/logo.png';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import Nav from '../BetaPages/Nav';
 import { useEffect } from 'react';
