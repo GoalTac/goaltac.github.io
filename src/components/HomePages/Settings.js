@@ -89,7 +89,7 @@ export default function Settings() {
                 >
                   Help and support
                 </MenuItem>
-                <MenuItem> 
+                <MenuItem>
                   <CSVLink data={exportTasks} onClick={handleTaskExport}>
                     📁&nbsp;Export Data as CSV
                   </CSVLink>

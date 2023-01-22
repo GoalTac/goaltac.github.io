@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import supabase from '../../supabase';
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import createTask from '../../images/CreateTask.png';
 
@@ -113,7 +114,7 @@ const Hero = () => {
           <Text color={colorMode === 'dark' ? 'white' : 'gray.700'} padding="3">
             Sign up for a chance to be selected for exclusive access! <br />
             <Button variant={'link'} colorScheme={'blue'} size={'sm'}>
-              <a href="#about"> Learn more</a>
+              <Link to="/about"> Learn more</Link>
             </Button>
           </Text>
         </FormControl>

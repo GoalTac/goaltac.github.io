@@ -36,7 +36,7 @@ export default function SignUpPage() {
 
       if (error) throw error;
 
-      navigate('/');
+      navigate('/beta');
     } catch (error) {
       // Handle the error
       console.log(error);
