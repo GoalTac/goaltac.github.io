@@ -39,8 +39,8 @@ export default function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path='/' element={<Root session={session} />}>
-        <Route path='home' element={<HomePage session={session} />} />
-        <Route path='schedule' element={<Schedule />} />
+        <Route index element={<HomePage session={session} />} />
+        <Route path='schedule' element={<Schedule session={session}/>} />
         <Route path='beta' element={<BetaPage />} />
         <Route path='login' element={<LoginPage />} />
         <Route path='signup' element={<SignUpPage />} />
