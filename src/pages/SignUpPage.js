@@ -44,27 +44,26 @@ export default function SignUpPage() {
   const handleSubmit = async event => {
     event.preventDefault();
     console.log('submitting!');
-    isValidUserName();
     
     try {
       const { data, error } = await supabase.auth.signUp({ email, password });
-      console.log("Auth.signup returns: ", data, error);
+      // console.log("Auth.signup returns: ", data, error);
+      if (error) throw error; // the word "error" is a variable name, not a code-breaking error
 
       if (isValidUserName()) {
           //add profile data to the profiles table
       }
-
-      //Display that an email for authentication has been sent to their email
-
-      if (error) throw error;
-      return toast({
-        title: 'Account being created',
-        description:
-          "We've sent a verification link to your email from supabase.io.",
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
+      else {
+        //Display that an email for authentication has been sent to their email
+        return toast({
+          title: 'Account being created',
+          description:
+            "We've sent a verification link to your email from supabase.io.",
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+    }
 
     } catch (error) {
 
@@ -94,17 +93,46 @@ export default function SignUpPage() {
   }
 
   const isValidUserName = async event => {
-    let { data: userNameQuery, error } = await supabase
-      .from('profiles')
+    let { data, error } = await supabase
+      .from('usernames')
       .select()
       .eq('username', userName);
-    console.log(userNameQuery)
+    console.log("userNameQuery returns: ", data)
+
+  
+    //Throw a toast if username is too long or too short
+    if (userName.length < 8 && userName.length > 20) {
+      toast({
+        title: 'Authentication Error',
+        description: "Username must be between 8 and 20 characters",
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
+      return false;
+    }
 
     //Throw a toast if username does not pass char checks
+    if (!(/^[A-Za-z0-9]*$/.test(userName))) {
+      toast({
+        title: 'Authentication Error',
+        description: "Usernames can only contain alphanumeric characters",
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });  
+      return false;
+    }
+
     //Throw a toast if username already exists
-    //Throw a toast if username is too long or too short
-    if (userNameQuery.length > 0) {
-      console.log("Caught returning user!");
+    if (data.length > 0) {
+      toast({
+        title: 'Authentication Error',
+        description: "This username is already taken",
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
       return false;
     }
     return true;
