@@ -27,14 +27,14 @@ export default function NavBar() {
     return (
       <Box bg={colorModeV} opacity='0.9' px={4} top='0' position='sticky'>
         <Stack direction={'row'} spacing={12} padding={3}>
-          <Link as={Link} to='/beta'>
+          <Link as={Link} to=''>
             {/*insert link in the "" */}
             <Img src={logo} alt='logo' width='40px' height='40px' />
           </Link>
-          <Link as={Link} to=''>
+          <Link as={Link} to='social'>
             <Icon as={FaUserFriends} boxSize={9} />
           </Link>
-          <Link as={Link} to=''>
+          <Link as={Link} to='market'>
             <Icon as={FaStore} boxSize={9} />
           </Link>
           <Spacer />
@@ -51,6 +51,9 @@ export default function NavBar() {
     switch (locate.pathname) {
       case '/beta':
         return <Nav />;
+
+      case '/login':
+        return <></>;
 
       default:
         return <GeneralNavBar />;
