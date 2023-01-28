@@ -24,7 +24,7 @@ import {
   InputLeftElement,
   chakra,
   Box,
-  Link,
+  // Link,
   FormControl,
   FormHelperText,
   InputRightElement,
@@ -33,7 +33,7 @@ import {
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import supabase from '../supabase';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, Link } from 'react-router-dom';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -134,7 +134,7 @@ export default function LoginPage() {
                   </InputRightElement>
                 </InputGroup>
                 <FormHelperText textAlign='right'>
-                  <Link href='/resetpassword'>Forgot password?</Link>
+                  <Link as={Link} to='/resetpassword'>Forgot password?</Link>
                 </FormHelperText>
               </FormControl>
               <Button
@@ -160,7 +160,7 @@ export default function LoginPage() {
         </Box>
       </Stack>
       <Box>
-        New Here? <Link to='/signup'>Sign Up</Link>
+        New Here? <Link as={Link} to='/signup'>Sign Up</Link>
       </Box>
     </Flex>
   );
