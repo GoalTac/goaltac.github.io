@@ -9,13 +9,13 @@ import {
   InputLeftElement,
   chakra,
   Box,
-  Link,
   FormControl,
   useToast,
   useColorMode,
 } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
 import supabase from '../supabase';
+import { Link, } from 'react-router-dom'
 
 const CFaUserAlt = chakra(FaUserAlt);
 

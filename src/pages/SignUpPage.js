@@ -19,7 +19,7 @@ import {
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import supabase from '../supabase';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AuthApiError } from '@supabase/supabase-js';
 
 const CFaUserAlt = chakra(FaUserAlt);
@@ -217,6 +217,9 @@ export default function SignUpPage() {
               </Button>
             </Stack>
           </form>
+        </Box>
+        <Box>
+          Already signed up? <Link to='/login'>Back to Login</Link>
         </Box>
       </Stack>
     </Flex>
