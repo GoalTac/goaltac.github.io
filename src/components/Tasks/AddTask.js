@@ -24,7 +24,9 @@ import supabase from '../../supabase';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-export default function AddTask() {
+import { Link } from 'react-router-dom';
+
+export default function AddTask({ session }) {
   //Session defined from HomePage.js (supabase.auth.getSession())
   //Database
   const { isOpen, onOpen, onClose } = useDisclosure(); //For the modal's open/close
@@ -70,25 +72,23 @@ export default function AddTask() {
     onClose();
   }
 
-  const getSession = async function () {
-    await supabase.auth.getSession().then(table => {
-      if (!table.data?.session) {
-        console.log("\nThere's no session");
-        navigate('/login');
-      } else {
-        setTask({ ...task, userid: table.data.session.user.id });
-      }
-    });
-  };
-
   useEffect(() => {
-    getSession(); // eslint-disable-next-line
+    if (!session) {
+      console.log("\nThere's no session");
+      navigate('/login');
+    } else {
+      setTask({ ...task, userid: session.user.id });
+    }
   }, []);
+
   return (
     <>
       <Button onClick={onOpen} colorScheme='blue' p='10px'>
         + Task
       </Button>
+      <Link as={Link} to='/schedule'>
+        weekly
+      </Link>
 
       <Modal
         isOpen={isOpen}

@@ -17,7 +17,7 @@ function HomePage({ session }) {
     <>
       <Box w='100%' h='100%'>
         <VStack p={4}>
-          <AddTask />
+          <AddTask session={session} />
           <TaskList />
         </VStack>
       </Box>
