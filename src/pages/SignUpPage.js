@@ -14,7 +14,7 @@ import {
   FormControl,
   InputRightElement,
   useColorMode,
-  useToast, 
+  useToast,
 } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
@@ -36,7 +36,6 @@ export default function SignUpPage() {
 
   const handleShowClick = () => setShowPassword(!showPassword);
 
-
   //Check for an existing userName
   //Pass the email and password into Supabase Signup Method
   //-- Display any issues with sign up to the user
@@ -51,7 +50,7 @@ export default function SignUpPage() {
       if (error) throw error; // the word "error" is a variable name, not a code-breaking error
 
       if (isValidUserName()) {
-          //add profile data to the profiles table
+        //add profile data to the profiles table
       }
       else {
         //Display that an email for authentication has been sent to their email
@@ -66,8 +65,6 @@ export default function SignUpPage() {
     }
 
     } catch (error) {
-
-
       console.log(error);
       return toast({
         title: 'Authentication Error',
@@ -78,19 +75,19 @@ export default function SignUpPage() {
       });
     }
   };
-  
+
   const isValidSignUp = async event => {
     let { data: emailQuery, error } = await supabase
       .from('users')
       .select()
       .eq('email', email);
-    console.log(emailQuery)
+    console.log(emailQuery);
 
     //Display a toast if email already exists
     if (emailQuery != null) {
-      console.log("Caught returning user!");
+      console.log('Caught returning user!');
     }
-  }
+  };
 
   const isValidUserName = async event => {
     let { data, error } = await supabase
@@ -136,7 +133,7 @@ export default function SignUpPage() {
       return false;
     }
     return true;
-  }
+  };
 
   return (
     <Flex
@@ -177,9 +174,9 @@ export default function SignUpPage() {
                   />
                   {/* Username */}
                   <Input
-                    type="text"
-                    id="userName"
-                    placeholder="Username"
+                    type='text'
+                    id='userName'
+                    placeholder='Username'
                     value={userName}
                     onChange={event => setUserName(event.target.value)}
                   />
@@ -188,14 +185,14 @@ export default function SignUpPage() {
               <FormControl>
                 <InputGroup>
                   <InputLeftElement
-                    pointerEvents="none"
-                    children={<CFaUserAlt color="gray.300" />}
+                    pointerEvents='none'
+                    children={<CFaUserAlt color='gray.300' />}
                   />
                   {/* Email */}
                   <Input
-                    type="email"
-                    id="email"
-                    placeholder="Email Address"
+                    type='email'
+                    id='email'
+                    placeholder='Email Address'
                     value={email}
                     onChange={event => setEmail(event.target.value)}
                   />
@@ -211,8 +208,8 @@ export default function SignUpPage() {
                   {/* Password */}
                   <Input
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Password"
-                    id="password"
+                    placeholder='Password'
+                    id='password'
                     value={password}
                     onChange={event => setPassword(event.target.value)}
                   />
@@ -233,6 +230,7 @@ export default function SignUpPage() {
               >
                 Sign Up
               </Button>
+              <Center>Or</Center>
               <Button
                 w={'full'}
                 maxW={'md'}
@@ -246,9 +244,9 @@ export default function SignUpPage() {
             </Stack>
           </form>
         </Box>
-        <Box>
-          Already signed up? <Link to='/login'>Back to Login</Link>
-        </Box>
+        <Link as={Link} to='/login'>
+          Back to Login
+        </Link>
       </Stack>
     </Flex>
   );

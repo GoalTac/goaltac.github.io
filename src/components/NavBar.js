@@ -52,6 +52,9 @@ export default function NavBar() {
       case '/beta':
         return <Nav />;
 
+      case '/updatepassword':
+      case '/resetpassword':
+      case '/signup':
       case '/login':
         return <></>;
 

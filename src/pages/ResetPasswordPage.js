@@ -15,7 +15,9 @@ import {
 } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
 import supabase from '../supabase';
-import { Link, } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+
+import { Link } from 'react-router-dom';
 
 const CFaUserAlt = chakra(FaUserAlt);
 
@@ -106,7 +108,10 @@ export default function ResetPasswordPage() {
         </Box>
       </Stack>
       <Box>
-        Remember your password? <Link to='/login'>Back to Login</Link>
+        Remember your password?{' '}
+        <Link as={Link} to='/login'>
+          Back to Login
+        </Link>
       </Box>
     </Flex>
   );

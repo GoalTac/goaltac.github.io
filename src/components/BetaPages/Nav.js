@@ -4,7 +4,6 @@ import {
   Button,
   Box,
   Spacer,
-  Link,
   Img,
   Stack,
   IconButton,
@@ -13,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import logo from '../../images/logo.png';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { Link } from 'react-router-dom';
 
 const Nav = () => {
   const { toggleColorMode, colorMode } = useColorMode();
@@ -38,6 +38,10 @@ const Nav = () => {
         <Button onClick={toggleColorMode}>
           {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
         </Button>
+
+        <Link as={Link} to='/login'>
+          login/signup
+        </Link>
       </Stack>
     </Box>
   );
