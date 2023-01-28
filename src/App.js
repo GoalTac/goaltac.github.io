@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   Route,
-  createBrowserRouter,
   createMemoryRouter,
   createRoutesFromElements,
   RouterProvider,
@@ -16,7 +15,6 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import UpdatePasswordPage from './pages/UpdatePasswordPage';
 import SettingsPage from './pages/SettingsPage';
 import HelpPage from './pages/HelpPage';
-import Profile from './pages/Profile';
 import MarketPage from './pages/MarketPage';
 import SocialPage from './pages/SocialPage';
 import './App.css';
@@ -41,7 +39,6 @@ export default function App() {
     createRoutesFromElements(
       <Route path='/' element={<Root session={session} />}>
         <Route index element={<HomePage session={session} />} />
-        <Route path='profile' element={<Profile session={session} />} />
         <Route path='schedule' element={<Schedule session={session} />} />
         <Route path='social' element={<SocialPage />} />
         <Route path='market' element={<MarketPage />} />
