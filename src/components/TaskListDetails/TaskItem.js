@@ -11,108 +11,98 @@ import {
   useDisclosure,
   Heading,
 } from '@chakra-ui/react';
-import DeleteTask from '../Tasks/DeleteTask';
-import EditTask from '../Tasks/EditTask';
+
 import supabase from '../../supabase';
 import { useEffect, useState } from 'react';
-import Title from './TaskParts/Title';
-import DueDate from './TaskParts/DueDate';
 
+import EditTaskModal from './EditTaskModal';
+
+import TaskModal from './TaskParts/TaskModal';
+
+// Recieves: p, w, h, task, heading_font_size, size (for modal it opens)
 export default function TaskItem(props) {
   //ChakraUI
   const { isOpen, onOpen, onClose } = useDisclosure(); //Modal Stuff
 
+  // For display and edit mode
+  const [edit, setEdit] = useState(false);
   const task = props.task;
-  const [done, setDone] = useState(task.completed);
-  const month = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-
-  const difficultyBorder = function () {
-    switch (task.difficulty) {
-      case 0:
-        return 'green.400';
-
-      case 1:
-        return 'orange.400';
-
-      case 2:
-        return 'blue.400';
-
-      default:
-        return 'black.100';
-    }
+  const toggleEdit = function () {
+    setEdit(!edit);
+    console.log(edit);
   };
-
-  const setCompleted = async function () {
-    const { err } = await supabase
-      .from('todos')
-      .update({ completed: done })
-      .eq('id', task.id);
-    if (err) console.log(err);
+  const passToModals = {
+    toggleEdit: toggleEdit,
+    task: task,
+    isOpen: isOpen,
+    onClose: onClose,
+    month: month,
+    difficultyBorder: difficultyBorder(task.difficulty),
+    size: props.size,
   };
-
-  useEffect(() => {
-    setCompleted(); // eslint-disable-next-line
-  }, [done]);
 
   return (
     <HStack maxW='100%'>
-      <Checkbox
-        size='lg'
-        isChecked={done}
-        onChange={e => {
-          setDone(e.target.checked);
-          setCompleted();
-        }}
-      />
       <Button
+        minW='40%'
         maxW='100%'
-        justifyContent='left'
+        justifyContent='center'
         onClick={onOpen}
         p={props.p}
         w={props.w}
         h={props.h}
         overflow='hidden'
       >
-        <Heading fontSize={props.heading_font_size} color={difficultyBorder}>
+        <Heading
+          fontSize={props.heading_font_size}
+          color={difficultyBorder(task.difficulty)}
+        >
           {task.title}
         </Heading>
       </Button>
-
-      <Modal isOpen={isOpen} onClose={onClose} size={props.size}>
-        <ModalOverlay />
-
-        <ModalContent borderColor={difficultyBorder} borderWidth='3px'>
-          <ModalCloseButton />
-
-          {/* Title, Difficulty */}
-          <HStack mt='1em'>
-            <Title title={task.title} diff={task.difficulty} />
-
-            <DueDate date={task.end_date} month={month} size='3xl' />
-          </HStack>
-
-          <ModalBody></ModalBody>
-
-          <ModalFooter>
-            <EditTask id={task.id} />
-            &nbsp;
-            <DeleteTask id={task.id} />
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      {/* <p style={{color: 'red'}}>Due: {new Date(task.end_date).toDateString()}</p> */}
+      {edit ? (
+        <EditTaskModal props={passToModals} />
+      ) : (
+        <TaskModal props={passToModals} />
+      )}
     </HStack>
   );
 }
+
+// const An = function({props}){ //This was for testing how I can pass down pops a little neater
+//   console.log(props)
+//   return(<></>)
+// }
+
+// I threw these below so I can see better, was getting too confusing
+const month = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+const difficultyBorder = function (diff) {
+  switch (diff) {
+    case 0:
+      return 'green.400';
+
+    case 1:
+      return 'orange.400';
+
+    case 2:
+      return 'blue.400';
+
+    default:
+      return 'black.100';
+  }
+};

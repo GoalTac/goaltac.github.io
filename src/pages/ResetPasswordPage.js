@@ -17,8 +17,6 @@ import { FaUserAlt } from 'react-icons/fa';
 import supabase from '../supabase';
 import { Link } from 'react-router-dom';
 
-import { Link } from 'react-router-dom';
-
 const CFaUserAlt = chakra(FaUserAlt);
 
 export default function ResetPasswordPage() {
