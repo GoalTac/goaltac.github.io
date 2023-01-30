@@ -1,3 +1,4 @@
+// This pops open the AddTask Modal
 import {
   Modal,
   ModalOverlay,
@@ -105,6 +106,7 @@ export default function CreateTask() {
           <ModalFooter>
             <HStack my='4' h='45'>
               <button
+                aria-label='Create a new task'
                 onClick={handleSubmit}
                 colorScheme='blue'
                 px='10'

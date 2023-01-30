@@ -17,7 +17,6 @@ import Title from './Title';
 // To allow for swap between edit mode and view
 
 const TaskModal = function ({ props }) {
-  console.log(props);
   return (
     //No way I forgot the return this whole time
     <Modal isOpen={props.isOpen} onClose={props.onClose} size={props.size}>

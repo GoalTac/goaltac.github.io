@@ -5,9 +5,9 @@ import supabase from '../supabase';
 import Calendar from '../components/schedule/Calendar';
 import Today from '../components/schedule/Today';
 
-export default function Schedule() {
+export default function Schedule(props) {
   const [tasks, setTasks] = useState([]); //eslint-disable-next-line
-  const [session, setSession] = useState(undefined);
+  const [session, setSession] = useState(props.session);
   const navigate = useNavigate();
 
   const getTasks = async function () {
@@ -17,19 +17,10 @@ export default function Schedule() {
   };
 
   useEffect(() => {
-    const getSession = async function () {
-      await supabase.auth.getSession().then(table => {
-        if (!table.data?.session) {
-          console.log("\nThere's no session");
-          navigate('/login');
-        } else {
-          setSession(table.data);
-          getTasks();
-        }
-      });
-    };
-
-    // getSession(); //eslint-disable-next-line
+    console.log(session);
+    if (session == null) {
+      navigate('/login');
+    }
   }, []);
 
   let todays = (function () {

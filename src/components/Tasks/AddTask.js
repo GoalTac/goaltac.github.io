@@ -1,3 +1,4 @@
+// This is the file that actually sends data to supabase
 import {
   Modal,
   ModalOverlay,
@@ -26,7 +27,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import { Link } from 'react-router-dom';
 
-export default function AddTask({ session }) {
+export default function AddTask({ userid }) {
   //Session defined from HomePage.js (supabase.auth.getSession())
   //Database
   const { isOpen, onOpen, onClose } = useDisclosure(); //For the modal's open/close
@@ -39,7 +40,7 @@ export default function AddTask({ session }) {
     tag: '',
     end_date: new Date(),
     difficulty: '0',
-    userid: null,
+    userid: userid,
   });
   const { title, text, tag, end_date, difficulty, user_id } = task;
   const [loading, setLoading] = useState(false);
@@ -71,15 +72,6 @@ export default function AddTask({ session }) {
 
     onClose();
   }
-
-  useEffect(() => {
-    if (!session) {
-      console.log("\nThere's no session");
-      navigate('/login');
-    } else {
-      setTask({ ...task, userid: session.user.id });
-    }
-  }, []);
 
   return (
     <>

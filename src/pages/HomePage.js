@@ -11,13 +11,20 @@ function HomePage({ session }) {
   const navigate = useNavigate();
   const { state } = useLocation();
   //Supabase
-  const [user, setUser] = useState(undefined);
+  const [user, setUser] = useState(undefined); //sets user ID not user list
 
+  useEffect(() => {
+    if (session == null) {
+      navigate('/login');
+    } else {
+      setUser(session.user.id);
+    }
+  }, []);
   return (
     <>
       <Box w='100%' h='100%'>
         <VStack p={4}>
-          <AddTask session={session} />
+          <AddTask userid={user} />
           <TaskList />
         </VStack>
       </Box>

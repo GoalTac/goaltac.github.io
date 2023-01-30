@@ -65,6 +65,6 @@ export default function NavBar() {
 
   useEffect(() => {
     console.log(locate);
-  }, []);
+  }, [locate]);
   return <Display />;
 }
