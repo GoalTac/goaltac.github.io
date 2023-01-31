@@ -11,7 +11,7 @@ function HomePage({ session }) {
   const navigate = useNavigate();
   const { state } = useLocation();
   //Supabase
-  const [user, setUser] = useState(undefined); //sets user ID not user list
+  const [user, setUser] = useState(null); //sets user ID not user list
 
   useEffect(() => {
     if (session == null) {
@@ -19,7 +19,7 @@ function HomePage({ session }) {
     } else {
       setUser(session.user.id);
     }
-  }, []);
+  }, [user]);
   return (
     <>
       <Box w='100%' h='100%'>

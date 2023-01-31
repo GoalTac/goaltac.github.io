@@ -27,7 +27,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import { Link } from 'react-router-dom';
 
-export default function AddTask({ userid }) {
+export default function AddTask(props) {
   //Session defined from HomePage.js (supabase.auth.getSession())
   //Database
   const { isOpen, onOpen, onClose } = useDisclosure(); //For the modal's open/close
@@ -40,9 +40,9 @@ export default function AddTask({ userid }) {
     tag: '',
     end_date: new Date(),
     difficulty: '0',
-    userid: userid,
+    userid: props.userid,
   });
-  const { title, text, tag, end_date, difficulty, user_id } = task;
+  const { title, text, tag, end_date, difficulty, userid } = task;
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
@@ -61,6 +61,7 @@ export default function AddTask({ userid }) {
     //Finishing tasks
     setLoading(false);
     setTask({ ...task, title: '', text: '', tag: '', end_date: new Date() });
+    console.log(task);
 
     toast({
       title: error || 'task added',
@@ -73,9 +74,17 @@ export default function AddTask({ userid }) {
     onClose();
   }
 
+  function tempOnOpen() {
+    onOpen();
+  }
+
+  // Keep this so that the add task knows the user's id as it loads LAST in HomePage.js
+  useEffect(() => {
+    setTask({ ...task, userid: props.userid });
+  }, [props.userid]);
   return (
     <>
-      <Button onClick={onOpen} colorScheme='blue' p='10px'>
+      <Button onClick={tempOnOpen} colorScheme='blue' p='10px'>
         + Task
       </Button>
       <Link as={Link} to='/schedule'>
