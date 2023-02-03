@@ -48,9 +48,9 @@ export default function SignUpPage() {
       // first check if the username is valid
       if (isValidUserName()) {
         // then run Supabase.Auth's signUp() 
-        const { data, error } = await supabase.auth.signUp({ email, password });
-        // console.log("Auth.signup returns: ", data, error);
-        if (error) throw error; // the word "error" is a variable name, not a code-breaking error
+        const { data, err } = await supabase.auth.signUp({ email, password });
+        // console.log("Auth.signup returns: ", data, err);
+        if (err) throw err; // the word "err" is a variable name, not a code-breaking error
   
         //add profile data to the profiles table
 
@@ -69,13 +69,13 @@ export default function SignUpPage() {
         console.log('signup failed isValidUserName(). Did it run Supabase.auth signup() anyway?')
       }
 
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
       return toast({
         title: 'Authentication Error',
-        description: error.message,
+        description: err.message,
         status: 'error',
-        duration: 9000,
+        duration: 5000,
         isClosable: true,
       });
     }
@@ -83,7 +83,7 @@ export default function SignUpPage() {
 
   // Placeholder function. We're only using isValidUserName() as of now
   const isValidSignUp = async event => {
-    let { data: emailQuery, error } = await supabase
+    let { data: emailQuery, err } = await supabase
       .from('users')
       .select()
       .eq('email', email);
@@ -96,7 +96,7 @@ export default function SignUpPage() {
   };
 
   const isValidUserName = async event => {
-    let { data, error } = await supabase
+    let { data, err } = await supabase
       .from('usernames')
       .select()
       .eq('username', userName);
@@ -109,7 +109,7 @@ export default function SignUpPage() {
         title: 'Authentication Error',
         description: "Username must be between 8 and 20 characters",
         status: 'error',
-        duration: 9000,
+        duration: 5000,
         isClosable: true,
       });
       return false;
@@ -121,7 +121,7 @@ export default function SignUpPage() {
         title: 'Authentication Error',
         description: "Usernames can only contain alphanumeric characters",
         status: 'error',
-        duration: 9000,
+        duration: 5000,
         isClosable: true,
       });  
       return false;
@@ -133,7 +133,7 @@ export default function SignUpPage() {
         title: 'Authentication Error',
         description: "This username is already taken",
         status: 'error',
-        duration: 9000,
+        duration: 5000,
         isClosable: true,
       });
       return false;

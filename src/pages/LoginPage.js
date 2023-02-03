@@ -29,6 +29,7 @@ import {
   FormHelperText,
   InputRightElement,
   useColorMode,
+  useToast,
 } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
@@ -44,23 +45,46 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const toast = useToast();
 
   const handleShowClick = () => setShowPassword(!showPassword);
   const handleSubmit = async event => {
     event.preventDefault();
-    // console.log('submitting!');
+    // console.log('submitting login!');
+
     try {
-      const { data, err } = await supabase.auth.signInWithPassword({
+      const { data, err } = await supabase.auth.signInWithPassword({ // this returns data.session = null if incorrect email or password 
         email,
         password,
       });
+      if (err) throw err; // the word "err" is a variable name, not a code-breaking error
+      // console.log("Auth.signIn returns: ", data, err);
 
-      navigate('/beta', { state: { session: data.session } });
+      // Check if the login was successful
+      if (data.session == null) {
+        return toast({
+          title: 'Authentication Error',
+          description: "Username or password not accepted. Try again",
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });  
+      }
+
+      navigate('/', { state: { session: data.session } });
       // Save the authentication token in local storage or a cookie
       // so that it can be used on subsequent requests
-    } catch (error) {
+    } catch (err) {
       // Handle the error
-      console.log(error);
+      console.log(err);
+      return toast({
+        title: 'Authentication Error',
+        description: err.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+
     }
   };
 
