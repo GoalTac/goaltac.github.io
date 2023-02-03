@@ -42,17 +42,18 @@ export default function SignUpPage() {
   //(Must check that account has been made) Insert username and other data into profiles table
   const handleSubmit = async event => {
     event.preventDefault();
-    console.log('submitting!');
+    console.log('submitting signup!');
     
     try {
-      const { data, error } = await supabase.auth.signUp({ email, password });
-      // console.log("Auth.signup returns: ", data, error);
-      if (error) throw error; // the word "error" is a variable name, not a code-breaking error
-
+      // first check if the username is valid
       if (isValidUserName()) {
+        // then run Supabase.Auth's signUp() 
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        // console.log("Auth.signup returns: ", data, error);
+        if (error) throw error; // the word "error" is a variable name, not a code-breaking error
+  
         //add profile data to the profiles table
-      }
-      else {
+
         //Display that an email for authentication has been sent to their email
         return toast({
           title: 'Account being created',
@@ -62,7 +63,11 @@ export default function SignUpPage() {
           duration: 5000,
           isClosable: true,
         });
-    }
+
+      }
+      else {
+        console.log('signup failed isValidUserName(). Did it run Supabase.auth signup() anyway?')
+      }
 
     } catch (error) {
       console.log(error);
@@ -76,6 +81,7 @@ export default function SignUpPage() {
     }
   };
 
+  // Placeholder function. We're only using isValidUserName() as of now
   const isValidSignUp = async event => {
     let { data: emailQuery, error } = await supabase
       .from('users')
