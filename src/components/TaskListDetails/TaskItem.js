@@ -12,6 +12,8 @@ import {
   Heading,
 } from '@chakra-ui/react';
 
+import { difficultyBorder } from '../TaskBasedBorderColors/TaskBasedBorder';
+
 import supabase from '../../supabase';
 import { useEffect, useState } from 'react';
 
@@ -90,19 +92,3 @@ const month = [
   'November',
   'December',
 ];
-
-const difficultyBorder = function (diff) {
-  switch (diff) {
-    case 0:
-      return 'green.400';
-
-    case 1:
-      return 'orange.400';
-
-    case 2:
-      return 'blue.400';
-
-    default:
-      return 'black.100';
-  }
-};

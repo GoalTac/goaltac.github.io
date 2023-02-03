@@ -1,5 +1,6 @@
 import {
   Button,
+  Divider,
   Heading,
   HStack,
   Input,
@@ -13,12 +14,15 @@ import {
   RadioGroup,
 } from '@chakra-ui/react';
 
+import './EditTaskModal.css';
+import { difficultyBorder } from '../TaskBasedBorderColors/TaskBasedBorder';
+
 import Title from './TaskParts/Title';
 import DeleteTask from '../Tasks/DeleteTask';
 import EditTask from '../Tasks/EditTask';
 import DueDate from './TaskParts/DueDate';
 import ConfirmEdits from '../Tasks/ConfirmEdits';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const EditTaskModal = function ({ props }) {
   //Sets edit mode back to false so that view mode shows for other tasks
@@ -30,7 +34,6 @@ const EditTaskModal = function ({ props }) {
   };
 
   const [task, setTask] = useState(props.task);
-  // console.log(new Date(task.end_date).toISOString().slice(0, 16))
 
   return (
     <Modal isOpen={props.isOpen} onClose={newClose} size={props.size}>
@@ -38,13 +41,17 @@ const EditTaskModal = function ({ props }) {
       <ModalContent>
         <ModalCloseButton />
 
-        <ModalBody>
+        <ModalBody
+          border='20px'
+          borderColor={difficultyBorder(task.difficulty)}
+        >
           {/* Title */}
-          <HStack mt='2em' maxH='2em' alignContent={'left'}>
+          <HStack m='2em 0' maxH='2em' alignContent={'left'}>
             <Heading w='25%' size='xl' ml='1em'>
               Title:
             </Heading>
             <Input
+              variant='filled'
               justifySelf={'left'}
               w='65%' //Account for the space by the x
               type='text'
@@ -52,22 +59,10 @@ const EditTaskModal = function ({ props }) {
               onChange={e => setTask({ ...task, title: e.target.value })}
             />
           </HStack>
-
-          {/* Due Date */}
-          <HStack mt='2em' minW='5em' maxH='2em'>
-            <Heading w='25%' size='xl' ml='1em'>
-              Due:
-            </Heading>
-            <Input
-              w='65%' //Account for the space by the x
-              type='datetime-local'
-              value={new Date(task.end_date).toISOString().slice(0, 16)}
-              onChange={e => setTask({ ...task, end_date: e.target.value })}
-            />
-          </HStack>
+          <Divider w='75%' margin='auto' />
 
           {/* Difficulty */}
-          <HStack mt='2em' minW='5em' maxH='2em'>
+          <HStack m='2em 0' minW='5em' maxH='2em'>
             <Heading w='25%' size='xl' ml='1em'>
               Difficulty:
             </Heading>
@@ -89,17 +84,50 @@ const EditTaskModal = function ({ props }) {
               </HStack>
             </RadioGroup>
           </HStack>
+          <Divider w='75%' margin='auto' />
 
           {/* Tags */}
-          <HStack mt='2em' minW='5em' maxH='2em'>
+          <HStack m='2em 0' minW='5em' maxH='2em'>
             <Heading w='25%' size='xl' ml='1em'>
               Tags:
             </Heading>
             <Input
+              variant='filled'
               w='65%' //Account for the space by the x
               type='text'
               value={task.tag}
               onChange={e => setTask({ ...task, tag: e.target.value })}
+            />
+          </HStack>
+          <Divider w='75%' margin='auto' />
+
+          {/* Due Date */}
+          <HStack m='2em 0' minW='5em' maxH='2em'>
+            <Heading w='25%' size='xl' ml='1em'>
+              Due:
+            </Heading>
+            <Input
+              variant='filled'
+              w='65%' //Account for the space by the x
+              type='datetime-local'
+              value={new Date(task.end_date).toISOString().slice(0, 16)}
+              onChange={e => setTask({ ...task, end_date: e.target.value })}
+            />
+          </HStack>
+          <Divider w='75%' margin='auto' />
+
+          {/* Description */}
+          <HStack m='2em 0' maxH='5em' alignContent={'left'}>
+            <Heading w='30%' my='1em' size='xl' ml='1em'>
+              Description:
+            </Heading>
+            <Input
+              variant='filled'
+              w='60%' //Account for the space by the x
+              maxW='60%'
+              type='text'
+              value={task.text}
+              onChange={e => setTask({ ...task, text: e.target.value })}
             />
           </HStack>
         </ModalBody>
