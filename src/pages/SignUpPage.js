@@ -52,7 +52,15 @@ export default function SignUpPage() {
         // console.log("Auth.signup returns: ", data, err);
         if (err) throw err; // the word "err" is a variable name, not a code-breaking error
   
-        //add profile data to the profiles table
+        //add profile data to the profiles table (userid, name, biography)
+        //what does data return if user successfully signs in?
+        if (!data.isEmpty()) {
+          const { data: { user } } = await supabase.auth.getUser();
+
+        }
+        
+
+
 
         //Display that an email for authentication has been sent to their email
         return toast({
