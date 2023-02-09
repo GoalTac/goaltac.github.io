@@ -14,8 +14,8 @@ import {
   RadioGroup,
 } from '@chakra-ui/react';
 
-import './EditTaskModal.css';
-import { difficultyBorder } from '../TaskBasedBorderColors/TaskBasedBorder';
+// import './EditTaskModal.css';
+// import { difficultyBorder } from '../TaskBasedBorderColors/TaskBasedBorder';
 
 import Title from './TaskParts/Title';
 import DeleteTask from '../Tasks/DeleteTask';
@@ -43,7 +43,7 @@ const EditTaskModal = function ({ props }) {
 
         <ModalBody
           border='20px'
-          borderColor={difficultyBorder(task.difficulty)}
+          // borderColor={difficultyBorder(task.difficulty)}
         >
           {/* Title */}
           <HStack m='2em 0' maxH='2em' alignContent={'left'}>

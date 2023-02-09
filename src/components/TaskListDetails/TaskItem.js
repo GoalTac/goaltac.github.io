@@ -12,7 +12,7 @@ import {
   Heading,
 } from '@chakra-ui/react';
 
-import { difficultyBorder } from '../TaskBasedBorderColors/TaskBasedBorder';
+// import { difficultyBorder } from '../TaskBasedBorderColors/TaskBasedBorder';
 
 import supabase from '../../supabase';
 import { useEffect, useState } from 'react';
@@ -39,7 +39,7 @@ export default function TaskItem(props) {
     isOpen: isOpen,
     onClose: onClose,
     month: month,
-    difficultyBorder: difficultyBorder(task.difficulty),
+    // difficultyBorder: difficultyBorder(task.difficulty),
     size: props.size,
   };
 
@@ -57,7 +57,7 @@ export default function TaskItem(props) {
       >
         <Heading
           fontSize={props.heading_font_size}
-          color={difficultyBorder(task.difficulty)}
+          /*color={difficultyBorder(task.difficulty)}*/
         >
           {task.title}
         </Heading>
