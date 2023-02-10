@@ -6,6 +6,7 @@ import {
   MenuItem,
   MenuGroup,
   MenuDivider,
+  Link,
   Avatar,
   AvatarBadge,
   useColorMode,
@@ -24,11 +25,11 @@ import { BiMessageError } from 'react-icons/bi';
 import { FiLogOut } from 'react-icons/fi';
 import { SettingsIcon } from '@chakra-ui/icons';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import supabase from '../../supabase';
 import { CSVLink } from 'react-csv';
 
-export default function Settings() {
+export default function Settings({ session }) {
   //Session defined from HomePage.js (supabase.auth.getSession())
 
   const [isOpen, setIsOpen] = useState(false);
@@ -45,12 +46,18 @@ export default function Settings() {
 
   return (
     <Box>
+      <Link as={ReactRouterLink} to='/profiles/Test2333'>
+        Go to profile test
+      </Link>
       <Menu>
         {({ isOpen }) => (
           <>
             <MenuButton variant='contained' isActive={isOpen} as={Button}>
               <Avatar name='Adi C' bg={isOpen ? 'cyan' : null}>
-                <AvatarBadge boxSize='1.25em' bg='green.500' />
+                <AvatarBadge
+                  boxSize='1.25em'
+                  bg={session ? 'green.500' : 'red.500'}
+                />
               </Avatar>
             </MenuButton>
 

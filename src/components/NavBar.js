@@ -18,7 +18,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import Nav from './BetaPages/Nav';
 import { useEffect } from 'react';
 
-export default function NavBar() {
+export default function NavBar({ session }) {
   const navigate = useNavigate();
   const locate = useLocation();
   const colorModeV = useColorModeValue('gray.100', 'gray.900');
@@ -38,12 +38,11 @@ export default function NavBar() {
             <Icon as={FaStore} boxSize={9} />
           </Link>
           <Spacer />
-          <Settings />
+          <Settings session={session} />
         </Stack>
       </Box>
     );
   };
-
   const Display = function () {
     // if (!(locate.pathname === '/beta')) return <GeneralNavBar />;
     // return <Nav />

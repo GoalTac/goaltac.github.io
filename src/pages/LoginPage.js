@@ -34,7 +34,7 @@ import {
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import supabase from '../supabase';
-import { Navigate, useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -48,12 +48,14 @@ export default function LoginPage() {
   const toast = useToast();
 
   const handleShowClick = () => setShowPassword(!showPassword);
+
   const handleSubmit = async event => {
     event.preventDefault();
     // console.log('submitting login!');
 
     try {
-      const { data, err } = await supabase.auth.signInWithPassword({ // this returns data.session = null if incorrect email or password 
+      const { data, err } = await supabase.auth.signInWithPassword({
+        // this returns data.session = null if incorrect email or password
         email,
         password,
       });
@@ -64,11 +66,11 @@ export default function LoginPage() {
       if (data.session == null) {
         return toast({
           title: 'Authentication Error',
-          description: "Username or password not accepted. Try again",
+          description: 'Username or password not accepted. Try again',
           status: 'error',
           duration: 5000,
           isClosable: true,
-        });  
+        });
       }
 
       navigate('/', { state: { session: data.session } });
@@ -84,7 +86,6 @@ export default function LoginPage() {
         duration: 5000,
         isClosable: true,
       });
-
     }
   };
 
@@ -158,7 +159,9 @@ export default function LoginPage() {
                   </InputRightElement>
                 </InputGroup>
                 <FormHelperText textAlign='right'>
-                  <Link as={Link} to='/resetpassword'>Forgot password?</Link>
+                  <Link as={Link} to='/resetpassword'>
+                    Forgot password?
+                  </Link>
                 </FormHelperText>
               </FormControl>
               <Button
@@ -184,7 +187,10 @@ export default function LoginPage() {
         </Box>
       </Stack>
       <Box>
-        New Here? <Link as={Link} to='/signup'>Sign Up</Link>
+        New Here?{' '}
+        <Link as={Link} to='/signup'>
+          Sign Up
+        </Link>
       </Box>
     </Flex>
   );

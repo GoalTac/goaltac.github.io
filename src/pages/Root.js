@@ -6,13 +6,13 @@ import { Stack } from '@chakra-ui/react';
 import { Outlet } from 'react-router';
 // TODO: create universalish nav bar
 
-export default function Root() {
+export default function Root({ session }) {
   return (
     <>
       <ChakraProvider>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <Stack>
-          <NavBar />
+          <NavBar session={session} />
           <Outlet />
         </Stack>
       </ChakraProvider>
