@@ -8,7 +8,7 @@ import {
   Img,
   Stack,
   useColorModeValue,
-  Tabs,
+  Tooltip,
   TabList,
   Tab,
 } from '@chakra-ui/react';
@@ -27,16 +27,24 @@ export default function NavBar({ session }) {
     return (
       <Box bg={colorModeV} opacity='0.9' px={4} top='0' position='sticky'>
         <Stack direction={'row'} spacing={12} padding={3}>
-          <Link as={Link} to=''>
-            {/*insert link in the "" */}
-            <Img src={logo} alt='logo' width='40px' height='40px' />
-          </Link>
-          <Link as={Link} to='social'>
-            <Icon as={FaUserFriends} boxSize={9} />
-          </Link>
-          <Link as={Link} to='market'>
-            <Icon as={FaStore} boxSize={9} />
-          </Link>
+          <Tooltip label='Home'>
+            <Link as={Link} to=''>
+              {/*insert link in the "" */}
+              <Img src={logo} alt='logo' width='40px' height='40px' />
+            </Link>
+          </Tooltip>
+
+          <Tooltip label='Social'>
+            <Link as={Link} to='social'>
+              <Icon as={FaUserFriends} boxSize={9} />
+            </Link>
+          </Tooltip>
+
+          <Tooltip label='Market'>
+            <Link as={Link} to='market'>
+              <Icon as={FaStore} boxSize={9} />
+            </Link>
+          </Tooltip>
           <Spacer />
           <Settings session={session} />
         </Stack>
