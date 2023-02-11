@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaUserFriends, FaStore } from 'react-icons/fa';
+import { RiMessage2Fill } from 'react-icons/ri';
 
 import {
   Icon,
@@ -9,8 +10,6 @@ import {
   Stack,
   useColorModeValue,
   Tooltip,
-  TabList,
-  Tab,
 } from '@chakra-ui/react';
 import Settings from './HomePages/Settings';
 import logo from '../images/logo.png';
@@ -45,7 +44,18 @@ export default function NavBar({ session }) {
               <Icon as={FaStore} boxSize={9} />
             </Link>
           </Tooltip>
+
           <Spacer />
+
+          <Tooltip label='Messages'>
+            <Link as={Link} to='messages'>
+              <Icon as={RiMessage2Fill} boxSize={9} />
+            </Link>
+          </Tooltip>
+
+          <Link as={Link} to='/profiles/Test2333'>
+            Profile test
+          </Link>
           <Settings session={session} />
         </Stack>
       </Box>
