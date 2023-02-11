@@ -72,7 +72,14 @@ export default function LoginPage() {
           isClosable: true,
         });
       }
-
+      
+      toast({
+        title: 'Authentication Success',
+        description: "Loading...",
+        status: 'success',
+        duration: 10000,
+        isClosable: true,
+      });
       navigate('/', { state: { session: data.session } });
       // Save the authentication token in local storage or a cookie
       // so that it can be used on subsequent requests
