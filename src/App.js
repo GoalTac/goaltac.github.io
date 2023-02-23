@@ -11,6 +11,7 @@ import HelpPage from './pages/HelpPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import MarketPage from './pages/MarketPage';
+import Messages from './pages/Messages';
 import Profile from './pages/Profile';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import Root from './pages/Root';
@@ -66,6 +67,7 @@ export default function App() {
         <Route path='signup' element={<SignUpPage />} />
         <Route path='resetpassword' element={<ResetPasswordPage />} />
         <Route path='updatepassword' element={<UpdatePasswordPage />} />
+        <Route path='messages' element={<Messages />} />
       </Route>
     )
   );
