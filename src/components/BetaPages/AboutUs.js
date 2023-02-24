@@ -1,16 +1,4 @@
-import {
-  Box,
-  Center,
-  Divider,
-  Flex,
-  Heading,
-  Spacer,
-  Text,
-  useColorMode,
-} from '@chakra-ui/react';
-import { Icon } from '@chakra-ui/react';
-import { FaTools, FaHandshake, FaStar } from 'react-icons/fa';
-import React from 'react';
+import { Box, Center, Heading, Text, useColorMode } from '@chakra-ui/react';
 
 const AboutUs = () => {
   const { colorMode } = useColorMode();

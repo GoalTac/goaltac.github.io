@@ -13,7 +13,6 @@ export default function Schedule(props) {
   const getTasks = async function () {
     let { data: tasks } = await supabase.from('todos').select('*');
     setTasks(tasks);
-    // console.log(tasks)
   };
 
   useEffect(() => {
@@ -33,8 +32,6 @@ export default function Schedule(props) {
       const startOfDay =
         Math.floor(new Date() / ms_in_day) * ms_in_day - 19 * ms_in_hour;
 
-      // console.log(date + ': ' + (date.getTime() < startOfDay && date.getTime() < startOfDay+ms_in_day));
-
       if (
         date.getTime() > startOfDay &&
         date.getTime() < startOfDay + ms_in_day
@@ -43,7 +40,6 @@ export default function Schedule(props) {
         todays_tasks.push(tasks[x]);
       }
     }
-    // console.log(todays_tasks);
     return todays_tasks;
   })();
 

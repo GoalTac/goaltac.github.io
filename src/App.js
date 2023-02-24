@@ -6,6 +6,7 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 import './App.css';
+import Calendar from './components/schedule/Calendar';
 import BetaPage from './pages/BetaPage';
 import HelpPage from './pages/HelpPage';
 import HomePage from './pages/HomePage';
@@ -68,6 +69,7 @@ export default function App() {
         <Route path='resetpassword' element={<ResetPasswordPage />} />
         <Route path='updatepassword' element={<UpdatePasswordPage />} />
         <Route path='messages' element={<Messages />} />
+        <Route path='calendar' element={<Calendar />} />
       </Route>
     )
   );

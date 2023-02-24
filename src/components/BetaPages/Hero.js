@@ -8,10 +8,8 @@ import {
   useToast,
   Text,
   useColorMode,
-  Stack,
   Image,
 } from '@chakra-ui/react';
-import React from 'react';
 import supabase from '../../supabase';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';

@@ -81,10 +81,9 @@ export default function ResetPasswordPage() {
             >
               <FormControl>
                 <InputGroup>
-                  <InputLeftElement
-                    pointerEvents='none'
-                    children={<CFaUserAlt color='gray.300' />}
-                  />
+                  <InputLeftElement pointerEvents='none'>
+                    <CFaUserAlt color='gray.300' />
+                  </InputLeftElement>
                   <Input
                     type='email'
                     placeholder='Email Address'

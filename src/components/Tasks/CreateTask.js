@@ -20,26 +20,6 @@ import React from 'react';
 import { useState, FormGroup } from 'react';
 import supabase from '../../supabase';
 
-/*
-  export default function(){
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    return (
-      <>
-        <button onClick={onOpen}>Open Modal</button>
-  
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalContent >
-            <ModalHeader>Modal Title</ModalHeader>
-            <ModalCloseButton />
-            
-  
-            
-          </ModalContent>
-        </Modal>
-      </>
-    )
-  }*/
-
 export default function CreateTask() {
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);

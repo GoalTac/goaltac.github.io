@@ -1,17 +1,5 @@
-import {
-  Heading,
-  VStack,
-  StackDivider,
-  HStack,
-  Text,
-  Image,
-  Box,
-  Skeleton,
-} from '@chakra-ui/react';
-import DeleteTask from './Tasks/DeleteTask';
-import ClearTasks from './Tasks/ClearTasks';
+import { VStack, StackDivider, Image, Box } from '@chakra-ui/react';
 import img from '../images/empty.svg';
-// import { useRealtime } from 'react-supabase';
 import { useEffect, useState } from 'react';
 import supabase from '../supabase';
 import TaskItem from './TaskListDetails/TaskItem';
@@ -41,16 +29,6 @@ export default function TaskList() {
   useEffect(() => {
     fetchData();
   }, []);
-
-  // if (fetching) {
-  //   return (
-  //     <Skeleton
-  //       width={{ base: '90vw', sm: '80vw', lg: '50vw', xl: '30vw' }}
-  //       height="300px"
-  //       rounded="md"
-  //     />
-  //   );
-  // }
 
   if (!tasks || !tasks.length) {
     return (

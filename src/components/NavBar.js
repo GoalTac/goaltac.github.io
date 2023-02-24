@@ -74,14 +74,16 @@ export default function NavBar({ session }) {
             Profile test
           </Link>
           <Settings session={session} />
+
+          <Link as={Link} to='/calendar'>
+            Calendar test
+          </Link>
         </Stack>
       </Box>
     );
   };
-  const Display = function () {
-    // if (!(locate.pathname === '/beta')) return <GeneralNavBar />;
-    // return <Nav />
 
+  const Display = function () {
     switch (locate.pathname) {
       case '/beta':
         return <Nav />;
