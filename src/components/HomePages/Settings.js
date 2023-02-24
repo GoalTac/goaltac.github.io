@@ -46,9 +46,6 @@ export default function Settings({ session }) {
 
   return (
     <Box>
-      <Link as={ReactRouterLink} to='/profiles/Test2333'>
-        Go to profile test
-      </Link>
       <Menu>
         {({ isOpen }) => (
           <>
