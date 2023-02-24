@@ -1,4 +1,6 @@
 import { FaUserFriends, FaStore } from 'react-icons/fa';
+import { RiMessage2Fill } from 'react-icons/ri';
+
 import {
   Icon,
   Box,
@@ -6,9 +8,7 @@ import {
   Img,
   Stack,
   useColorModeValue,
-  Tabs,
-  TabList,
-  Tab,
+  Tooltip,
 } from '@chakra-ui/react';
 import Settings from './HomePages/Settings';
 import logo from '../images/logo.png';
@@ -43,23 +43,36 @@ export default function NavBar({ session }) {
     return (
       <Box bg={colorModeV} opacity='0.9' px={4} top='0' position='sticky'>
         <Stack direction={'row'} spacing={12} padding={3}>
-          <Link as={Link} to=''>
-            {/*insert link in the "" */}
-            <Img src={logo} alt='logo' width='40px' height='40px' />
-          </Link>
-          <Link as={Link} to='social'>
-            <Icon as={FaUserFriends} boxSize={9} />
-          </Link>
-          <Link as={Link} to='market'>
-            <Icon as={FaStore} boxSize={9} />
-          </Link>
-          <Link as={Link} to='beta'>
-            Beta Page
-          </Link>
-          <Link as={Link} to={'profiles/' + username}>
-            Edit Profile
-          </Link>
+          <Tooltip label='Home'>
+            <Link as={Link} to=''>
+              {/*insert link in the "" */}
+              <Img src={logo} alt='logo' width='40px' height='40px' />
+            </Link>
+          </Tooltip>
+
+          <Tooltip label='Social'>
+            <Link as={Link} to='social'>
+              <Icon as={FaUserFriends} boxSize={9} />
+            </Link>
+          </Tooltip>
+
+          <Tooltip label='Market'>
+            <Link as={Link} to='market'>
+              <Icon as={FaStore} boxSize={9} />
+            </Link>
+          </Tooltip>
+
           <Spacer />
+
+          <Tooltip label='Messages'>
+            <Link as={Link} to='messages'>
+              <Icon as={RiMessage2Fill} boxSize={9} />
+            </Link>
+          </Tooltip>
+
+          <Link as={Link} to='/profiles/Test2333'>
+            Profile test
+          </Link>
           <Settings session={session} />
         </Stack>
       </Box>
