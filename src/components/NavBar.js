@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaUserFriends, FaStore } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
 
@@ -15,12 +14,30 @@ import Settings from './HomePages/Settings';
 import logo from '../images/logo.png';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import Nav from './BetaPages/Nav';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import supabase from '../supabase';
 
 export default function NavBar({ session }) {
   const navigate = useNavigate();
   const locate = useLocation();
   const colorModeV = useColorModeValue('gray.100', 'gray.900');
+  const [username, setUsername] = useState(null);
+
+  useEffect(() => {
+    async function getUsername() {
+      const { data, error } = await supabase
+        .from('usernames')
+        .select('username')
+        .eq('userid', session.user.id)
+        .limit(1)
+        .single();
+      console.log(session.user.id);
+      console.log(data);
+      setUsername(data.username);
+    }
+
+    getUsername();
+  }, []);
 
   const GeneralNavBar = function () {
     return (
