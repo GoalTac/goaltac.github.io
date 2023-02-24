@@ -23,6 +23,7 @@ import EditTask from '../Tasks/EditTask';
 import DueDate from './TaskParts/DueDate';
 import ConfirmEdits from '../Tasks/ConfirmEdits';
 import { useEffect, useState } from 'react';
+import supabase from '../../supabase';
 
 const EditTaskModal = function ({ props }) {
   //Sets edit mode back to false so that view mode shows for other tasks
@@ -31,6 +32,13 @@ const EditTaskModal = function ({ props }) {
     props.toggleEdit();
     // useDisclosure via TaskItem.js
     props.onClose();
+  };
+
+  const confirmEdits = async function () {
+    const { error } = await supabase
+      .from('todos')
+      .update(task)
+      .eq('id', task.id);
   };
 
   const [task, setTask] = useState(props.task);
@@ -133,7 +141,7 @@ const EditTaskModal = function ({ props }) {
         </ModalBody>
 
         <ModalFooter>
-          <ConfirmEdits confirm={() => console.log('Nice.')} />
+          <ConfirmEdits confirm={() => confirmEdits()} />
           &nbsp;
           <DeleteTask id={props.task.id} />
           &nbsp;
