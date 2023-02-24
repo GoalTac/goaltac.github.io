@@ -72,10 +72,10 @@ export default function LoginPage() {
           isClosable: true,
         });
       }
-      
+
       toast({
         title: 'Authentication Success',
-        description: "Loading...",
+        description: 'Loading...',
         status: 'success',
         duration: 10000,
         isClosable: true,

@@ -15,5 +15,4 @@ const ConfirmEdits = function ({ confirm }) {
     />
   );
 };
-
 export default ConfirmEdits;

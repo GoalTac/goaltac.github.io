@@ -55,16 +55,15 @@ export default function Profile({ session }) {
       .update({
         biography: profile.biography,
       })
-      .eq('id', profile.id);
+      .eq('id', profile.id)
+      .then(setEditMode(false));
   };
 
-  const onChangeBiography = e => {
-    const val = e.target.value;
-    setProfile(prevState => ({
-      ...prevState,
-      biography: val,
+  const onChangeHandler = e =>
+    setProfile(prevProfile => ({
+      ...prevProfile,
+      [e.target.name]: e.target.value,
     }));
-  };
 
   const onClickEdit = () => {
     setEditMode(!editMode);
@@ -107,7 +106,8 @@ export default function Profile({ session }) {
           {editMode ? (
             <Textarea
               value={profile.biography}
-              onChange={onChangeBiography}
+              name='biography'
+              onChange={onChangeHandler}
               placeholder='Write an interesting bio!'
               size='sm'
             />
@@ -123,7 +123,7 @@ export default function Profile({ session }) {
           _hover={{
             bg: 'blue.500',
           }}
-          visibility={editMode}
+          visibility={editMode ? 'visible' : 'hidden'}
         >
           Submit
         </Button>
