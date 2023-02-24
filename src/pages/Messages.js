@@ -26,19 +26,43 @@ import { FaSearch, FaUserCircle } from 'react-icons/fa';
 // import { MsgHistory } from '../components/MessagerPages/MsgHistory';
 
 export default function Messages() {
-    const state = useState();
-    const [contacts, setContacts] = useState([]);
-    console.log('Messages has loaded.');
+  const [contacts, setContacts] = useState([]);
+  console.log('Messages has loaded.');
+
+  // Get message history data from Supabase
+  async function fetchData() {
+    // let { data: contacts, error } = await supabase.from('profiles').select('*');
+    // setContacts(contacts);
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // If the user has no messages, display something different
+//   if (!contacts || !contacts.length) {
+//     return (
+//       <Box align='center'>
+//         <Text>No messages yet!</Text>
+//       </Box>
+//     );
+//   }
 
   return (
     <>
-      <Flex>
-        <Box w='100%' h='100%'>
+      <Flex p='5' alignItems='center'>
+        <Box >
           <Heading>Messages</Heading>
-
-                    <HStack>
-                        {/* <MsgSidebar /> 
-                        <MsgHistory /> */}
+          <HStack
+            divider={<StackDivider />}
+            borderColor='gray.100'
+            borderWidth='2px'
+            p='5'
+            borderRadius='lg'
+            alignItems='center'
+          >
+            {/* <MsgSidebar /> 
+             <MsgHistory /> */}
             <VStack>
               <FormControl>
                 <InputGroup>
@@ -64,13 +88,11 @@ export default function Messages() {
             </VStack>
 
             <VStack>
+              <Heading size='sm'> 
+                <Icon as={FaUserCircle} boxSize={5} />
+                Person X
+              </Heading>
               <Card size='lg'>
-                <CardHeader>
-                  <Heading size='sm'> 
-                    <Icon as={FaUserCircle} boxSize={5} />
-                    Person X
-                  </Heading>
-                </CardHeader>
                 <CardBody>
                   (message history with person)
                   <Text>Newer message</Text>
@@ -79,6 +101,7 @@ export default function Messages() {
                   <FormControl>
                     <InputGroup>
                       <Input placeholder='send message' />
+                      <Button>Send</Button>
                     </InputGroup>
                   </FormControl>
                 </CardFooter>
