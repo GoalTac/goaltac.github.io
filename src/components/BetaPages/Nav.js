@@ -29,7 +29,7 @@ const Nav = () => {
         <Spacer />
         <Link isExternal href='https://discord.gg/EzFPQDAKGf'>
           <IconButton
-            variant='outlined'
+            variant='unstyled'
             icon={<FaDiscord size='sm' color='rgba(114,137,218)' />}
           />
         </Link>
@@ -38,9 +38,11 @@ const Nav = () => {
           {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
         </Button>
 
-        <Link as={Link} to='/login'>
-          login/signup
-        </Link>
+        <Button variant='solid' bgGradient='linear(to-l, teal.300, blue.500)'>
+          <Link as={Link} to='/login'>
+            Login
+          </Link>
+        </Button>
       </Stack>
     </Box>
   );

@@ -11,7 +11,7 @@ function HomePage({ session }) {
 
   useEffect(() => {
     if (session == null) {
-      navigate('/login');
+      navigate('/beta');
     } else {
       setUser(session.user.id);
     }
