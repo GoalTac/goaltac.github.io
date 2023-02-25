@@ -2,16 +2,13 @@ import {
   Heading,
   Avatar,
   Box,
-  Center,
   Text,
   Stack,
   Link,
   Badge,
   useColorModeValue,
-  IconButton,
   Flex,
 } from '@chakra-ui/react';
-import { FaDiscord } from 'react-icons/fa';
 
 export default function StaffProfiles() {
   return (

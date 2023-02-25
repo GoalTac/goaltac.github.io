@@ -28,7 +28,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Link } from 'react-router-dom';
 
 export default function AddTask(props) {
-  //Session defined from HomePage.js (supabase.auth.getSession())
   //Database
   const { isOpen, onOpen, onClose } = useDisclosure(); //For the modal's open/close
 

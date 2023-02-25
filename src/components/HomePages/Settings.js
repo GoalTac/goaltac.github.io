@@ -5,26 +5,16 @@ import {
   MenuList,
   MenuItem,
   MenuGroup,
-  MenuDivider,
-  Link,
   Avatar,
+  Box,
   AvatarBadge,
   useColorMode,
   Switch,
-  Card,
-  CardBody,
-  Text,
-  Icon,
-  Box,
-  HStack,
-  Tag,
-  TagLeftIcon,
 } from '@chakra-ui/react';
 import { FaMoon, FaSun, FaQuestion, FaHome } from 'react-icons/fa';
-import { BiMessageError } from 'react-icons/bi';
 import { FiLogOut } from 'react-icons/fi';
 import { SettingsIcon } from '@chakra-ui/icons';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import supabase from '../../supabase';
 import { CSVLink } from 'react-csv';
@@ -59,22 +49,6 @@ export default function Settings({ session }) {
             </MenuButton>
 
             <MenuList>
-              {/* <MenuGroup>
-                <HStack>
-                  <Box align='center' margin='10px'>
-                    <Avatar id='avatar' name='Adi C' bg='yellow'>
-                      <AvatarBadge boxSize='1.25em' bg='green.500' />
-                    </Avatar>
-                  </Box>
-
-                  <Tag size='lg' colorScheme='orange' borderRadius='full'>
-                    <Text>&nbsp;1508</Text>
-                  </Tag>
-                </HStack>
-
-                <MenuDivider />
-              </MenuGroup> */}
-
               <MenuGroup>
                 <MenuItem
                   closeOnSelect={false}

@@ -20,7 +20,6 @@ import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import supabase from '../supabase';
 import { useNavigate, Link } from 'react-router-dom';
-import { AuthApiError } from '@supabase/supabase-js';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);

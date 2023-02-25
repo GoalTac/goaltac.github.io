@@ -12,14 +12,6 @@ export default function ClearTasks() {
       .delete()
       .not('text', 'eq', 'Do NOt deleTe m3');
     setloading(false);
-
-    // toast({
-    //   title: error || 'task deleted',
-    //   position: 'top',
-    //   status: error ? 'error' : 'success',
-    //   duration: 2000,
-    //   isClosable: true,
-    // });
   }
 
   return (

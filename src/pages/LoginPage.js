@@ -1,16 +1,3 @@
-// import { Stack, Input, Button } from '@chakra-ui/react';
-
-// export default function LoginPage() {
-//   return (
-//     <Stack p="4" w="400px" maxW="100%" mx="auto" align="center">
-//       <Input placeholder="Username" />
-//       <Input placeholder="Password" type="password" />
-//       <Button mt="4" variantColor="blue" type="submit">
-//         Login
-//       </Button>
-//     </Stack>
-//   );
-// }
 import { useState } from 'react';
 import {
   Text,
@@ -24,7 +11,6 @@ import {
   InputLeftElement,
   chakra,
   Box,
-  // Link,
   FormControl,
   FormHelperText,
   InputRightElement,
@@ -51,7 +37,6 @@ export default function LoginPage() {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    // console.log('submitting login!');
 
     try {
       const { data, err } = await supabase.auth.signInWithPassword({
@@ -59,8 +44,7 @@ export default function LoginPage() {
         email,
         password,
       });
-      if (err) throw err; // the word "err" is a variable name, not a code-breaking error
-      // console.log("Auth.signIn returns: ", data, err);
+      if (err) throw err;
 
       // Check if the login was successful
       if (data.session == null) {
@@ -84,7 +68,6 @@ export default function LoginPage() {
       // Save the authentication token in local storage or a cookie
       // so that it can be used on subsequent requests
     } catch (err) {
-      // Handle the error
       console.log(err);
       return toast({
         title: 'Authentication Error',
@@ -145,11 +128,9 @@ export default function LoginPage() {
               </FormControl>
               <FormControl>
                 <InputGroup>
-                  <InputLeftElement
-                    pointerEvents='none'
-                    color='gray.300'
-                    children={<CFaLock color='gray.300' />}
-                  />
+                  <InputLeftElement pointerEvents='none' color='gray.300'>
+                    <CFaLock color='gray.300' />
+                  </InputLeftElement>
                   {/* Password */}
                   <Input
                     type={showPassword ? 'text' : 'password'}
