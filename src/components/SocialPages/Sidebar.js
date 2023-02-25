@@ -16,7 +16,7 @@ import {
 
 export default function Sidebar() {
   return (
-    <Card maxW='15%'>
+    <Card maxW='225px'>
       <CardHeader>
         <Heading size='md'>Manage my Social</Heading>
       </CardHeader>

@@ -41,7 +41,14 @@ export default function NavBar({ session }) {
 
   const GeneralNavBar = function () {
     return (
-      <Box bg={colorModeV} opacity='0.9' px={4} top='0' position='sticky'>
+      <Box
+        zIndex={999}
+        bg={colorModeV}
+        opacity='0.9'
+        px={4}
+        top='0'
+        position='sticky'
+      >
         <Stack direction={'row'} spacing={12} padding={3}>
           <Tooltip label='Home'>
             <Link as={Link} to=''>
