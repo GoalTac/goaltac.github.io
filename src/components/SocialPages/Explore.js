@@ -32,10 +32,6 @@ export default function Explore() {
   useEffect(() => {
     async function getTasks() {
       const { data: tasks, error } = await supabase.from('todos').select('*');
-
-      console.log(tasks);
-      setTaskList(tasks);
-      console.log(taskList);
     }
     getTasks();
   }, []);
@@ -58,9 +54,6 @@ export default function Explore() {
         rowGap={5}
         p={3}
       >
-        {taskList.map(task => {
-          <CardMaker task={task} />;
-        })}
         {/*
           Iterates through all the task ids and adds them into the container above
         */}
