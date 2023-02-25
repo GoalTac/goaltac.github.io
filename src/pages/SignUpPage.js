@@ -32,6 +32,15 @@ export default function SignUpPage() {
   const [password, setPassword] = useState('');
   const [userName, setUserName] = useState('');
   const toast = useToast();
+  const [profile, setProfile] = useState({
+    name: '',
+    biography: '',
+    userid: null,
+  });
+  const [username, setUsername] = useState({
+    username: '',
+    userid: null,
+  })
 
   const handleShowClick = () => setShowPassword(!showPassword);
 
@@ -51,10 +60,20 @@ export default function SignUpPage() {
         //add profile data to the profiles table (userid, name, biography)
         //what does data return if user successfully signs in?
         if (!data.isEmpty()) {
-          const {
-            data: { user },
-          } = await supabase.auth.getUser();
+          const { data: { user } } = await supabase.auth.getUser();
+          setProfile({name: userName, biography:'', userid: data.user.id})
+          setUsername({username: userName, userid: data.user.id})
+          
+          const { err2 } = await supabase
+            .from('profiles') //Table name
+            .insert(profile); 
+          const { err3 } = await supabase
+          .from('usernames') //Table name
+          .insert(username); 
         }
+        
+
+
 
         //Display that an email for authentication has been sent to their email
         return toast({
@@ -82,27 +101,8 @@ export default function SignUpPage() {
     }
   };
 
-  // Placeholder function. We're only using isValidUserName() as of now
-  const isValidSignUp = async event => {
-    let { data: emailQuery, err } = await supabase
-      .from('users')
-      .select()
-      .eq('email', email);
-    console.log(emailQuery);
-
-    //Display a toast if email already exists
-    if (emailQuery != null) {
-      console.log('Caught returning user!');
-    }
-  };
 
   const isValidUserName = async event => {
-    let { data, err } = await supabase
-      .from('usernames')
-      .select()
-      .eq('username', userName);
-    console.log('userNameQuery returns: ', data);
-
     //Throw a toast if username is too long or too short
     if (userName.length < 8 && userName.length > 20) {
       toast({
@@ -128,6 +128,12 @@ export default function SignUpPage() {
     }
 
     //Throw a toast if username already exists
+    let { data, err } = await supabase
+      .from('usernames')
+      .select()
+      .eq('username', userName);
+    console.log('userNameQuery returns: ', data);
+  
     if (data.length > 0) {
       toast({
         title: 'Authentication Error',

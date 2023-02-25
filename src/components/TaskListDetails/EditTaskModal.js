@@ -39,6 +39,9 @@ const EditTaskModal = function ({ props }) {
       .from('todos')
       .update(task)
       .eq('id', task.id);
+
+    props.onClose();
+    props.toggleEdit();
   };
 
   const [task, setTask] = useState(props.task);
