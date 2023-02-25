@@ -1,16 +1,3 @@
-// import { Stack, Input, Button } from '@chakra-ui/react';
-
-// export default function LoginPage() {
-//   return (
-//     <Stack p="4" w="400px" maxW="100%" mx="auto" align="center">
-//       <Input placeholder="Username" />
-//       <Input placeholder="Password" type="password" />
-//       <Button mt="4" variantColor="blue" type="submit">
-//         Login
-//       </Button>
-//     </Stack>
-//   );
-// }
 import { useState } from 'react';
 import {
   Text,
@@ -24,16 +11,16 @@ import {
   InputLeftElement,
   chakra,
   Box,
-  Link,
   FormControl,
   FormHelperText,
   InputRightElement,
   useColorMode,
+  useToast,
 } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import supabase from '../supabase';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -44,23 +31,51 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const toast = useToast();
 
   const handleShowClick = () => setShowPassword(!showPassword);
+
   const handleSubmit = async event => {
     event.preventDefault();
-    // console.log('submitting!');
+
     try {
       const { data, err } = await supabase.auth.signInWithPassword({
+        // this returns data.session = null if incorrect email or password
         email,
         password,
       });
+      if (err) throw err;
 
-      navigate('/beta', { state: { session: data.session } });
+      // Check if the login was successful
+      if (data.session == null) {
+        return toast({
+          title: 'Authentication Error',
+          description: 'Username or password not accepted. Try again',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+
+      toast({
+        title: 'Authentication Success',
+        description: 'Loading...',
+        status: 'success',
+        duration: 10000,
+        isClosable: true,
+      });
+      navigate('/', { state: { session: data.session } });
       // Save the authentication token in local storage or a cookie
       // so that it can be used on subsequent requests
-    } catch (error) {
-      // Handle the error
-      console.log(error);
+    } catch (err) {
+      console.log(err);
+      return toast({
+        title: 'Authentication Error',
+        description: err.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
@@ -113,11 +128,9 @@ export default function LoginPage() {
               </FormControl>
               <FormControl>
                 <InputGroup>
-                  <InputLeftElement
-                    pointerEvents='none'
-                    color='gray.300'
-                    children={<CFaLock color='gray.300' />}
-                  />
+                  <InputLeftElement pointerEvents='none' color='gray.300'>
+                    <CFaLock color='gray.300' />
+                  </InputLeftElement>
                   {/* Password */}
                   <Input
                     type={showPassword ? 'text' : 'password'}
@@ -134,7 +147,9 @@ export default function LoginPage() {
                   </InputRightElement>
                 </InputGroup>
                 <FormHelperText textAlign='right'>
-                  <Link href='/resetpassword'>Forgot password?</Link>
+                  <Link as={Link} to='/resetpassword'>
+                    Forgot password?
+                  </Link>
                 </FormHelperText>
               </FormControl>
               <Button
@@ -160,7 +175,10 @@ export default function LoginPage() {
         </Box>
       </Stack>
       <Box>
-        New Here? <Link to='/signup'>Sign Up</Link>
+        New Here?{' '}
+        <Link as={Link} to='/signup'>
+          Sign Up
+        </Link>
       </Box>
     </Flex>
   );

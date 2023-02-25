@@ -1,3 +1,4 @@
+// This pops open the AddTask Modal
 import {
   Modal,
   ModalOverlay,
@@ -18,26 +19,6 @@ import {
 import React from 'react';
 import { useState, FormGroup } from 'react';
 import supabase from '../../supabase';
-
-/*
-  export default function(){
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    return (
-      <>
-        <button onClick={onOpen}>Open Modal</button>
-  
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalContent >
-            <ModalHeader>Modal Title</ModalHeader>
-            <ModalCloseButton />
-            
-  
-            
-          </ModalContent>
-        </Modal>
-      </>
-    )
-  }*/
 
 export default function CreateTask() {
   const [text, setText] = useState('');
@@ -105,6 +86,7 @@ export default function CreateTask() {
           <ModalFooter>
             <HStack my='4' h='45'>
               <button
+                aria-label='Create a new task'
                 onClick={handleSubmit}
                 colorScheme='blue'
                 px='10'

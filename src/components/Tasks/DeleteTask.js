@@ -22,6 +22,7 @@ export default function DeleteTask({ id }) {
   }
   return (
     <IconButton
+      aria-label='Delete current task'
       isRound='true'
       float='right'
       icon={<FiTrash2 />}

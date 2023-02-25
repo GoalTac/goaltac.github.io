@@ -5,30 +5,21 @@ import {
   MenuList,
   MenuItem,
   MenuGroup,
-  MenuDivider,
   Avatar,
+  Box,
   AvatarBadge,
   useColorMode,
   Switch,
-  Card,
-  CardBody,
-  Text,
-  Icon,
-  Box,
-  HStack,
-  Tag,
-  TagLeftIcon,
 } from '@chakra-ui/react';
 import { FaMoon, FaSun, FaQuestion, FaHome } from 'react-icons/fa';
-import { BiMessageError } from 'react-icons/bi';
 import { FiLogOut } from 'react-icons/fi';
 import { SettingsIcon } from '@chakra-ui/icons';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import supabase from '../../supabase';
 import { CSVLink } from 'react-csv';
 
-export default function Settings() {
+export default function Settings({ session }) {
   //Session defined from HomePage.js (supabase.auth.getSession())
 
   const [isOpen, setIsOpen] = useState(false);
@@ -50,27 +41,14 @@ export default function Settings() {
           <>
             <MenuButton variant='contained' isActive={isOpen} as={Button}>
               <Avatar name='Adi C' bg={isOpen ? 'cyan' : null}>
-                <AvatarBadge boxSize='1.25em' bg='green.500' />
+                <AvatarBadge
+                  boxSize='1.25em'
+                  bg={session ? 'green.500' : 'red.500'}
+                />
               </Avatar>
             </MenuButton>
 
             <MenuList>
-              {/* <MenuGroup>
-                <HStack>
-                  <Box align='center' margin='10px'>
-                    <Avatar id='avatar' name='Adi C' bg='yellow'>
-                      <AvatarBadge boxSize='1.25em' bg='green.500' />
-                    </Avatar>
-                  </Box>
-
-                  <Tag size='lg' colorScheme='orange' borderRadius='full'>
-                    <Text>&nbsp;1508</Text>
-                  </Tag>
-                </HStack>
-
-                <MenuDivider />
-              </MenuGroup> */}
-
               <MenuGroup>
                 <MenuItem
                   closeOnSelect={false}

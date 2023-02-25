@@ -1,3 +1,4 @@
+// This is the file that actually sends data to supabase
 import {
   Modal,
   ModalOverlay,
@@ -24,8 +25,9 @@ import supabase from '../../supabase';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-export default function AddTask() {
-  //Session defined from HomePage.js (supabase.auth.getSession())
+import { Link } from 'react-router-dom';
+
+export default function AddTask(props) {
   //Database
   const { isOpen, onOpen, onClose } = useDisclosure(); //For the modal's open/close
 
@@ -37,9 +39,9 @@ export default function AddTask() {
     tag: '',
     end_date: new Date(),
     difficulty: '0',
-    userid: null,
+    userid: props.userid,
   });
-  const { title, text, tag, end_date, difficulty, user_id } = task;
+  const { title, text, tag, end_date, difficulty, userid } = task;
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
@@ -58,6 +60,7 @@ export default function AddTask() {
     //Finishing tasks
     setLoading(false);
     setTask({ ...task, title: '', text: '', tag: '', end_date: new Date() });
+    console.log(task);
 
     toast({
       title: error || 'task added',
@@ -70,25 +73,22 @@ export default function AddTask() {
     onClose();
   }
 
-  const getSession = async function () {
-    await supabase.auth.getSession().then(table => {
-      if (!table.data?.session) {
-        console.log("\nThere's no session");
-        navigate('/login');
-      } else {
-        setTask({ ...task, userid: table.data.session.user.id });
-      }
-    });
-  };
+  function tempOnOpen() {
+    onOpen();
+  }
 
+  // Keep this so that the add task knows the user's id as it loads LAST in HomePage.js
   useEffect(() => {
-    getSession(); // eslint-disable-next-line
-  }, []);
+    setTask({ ...task, userid: props.userid });
+  }, [props.userid]);
   return (
     <>
-      <Button onClick={onOpen} colorScheme='blue' p='10px'>
+      <Button onClick={tempOnOpen} colorScheme='blue' p='10px'>
         + Task
       </Button>
+      <Link as={Link} to='/schedule'>
+        weekly
+      </Link>
 
       <Modal
         isOpen={isOpen}

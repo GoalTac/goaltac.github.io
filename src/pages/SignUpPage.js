@@ -14,13 +14,12 @@ import {
   FormControl,
   InputRightElement,
   useColorMode,
-  useToast, 
+  useToast,
 } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import supabase from '../supabase';
-import { useNavigate } from 'react-router-dom';
-import { AuthApiError } from '@supabase/supabase-js';
+import { useNavigate, Link } from 'react-router-dom';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -33,9 +32,17 @@ export default function SignUpPage() {
   const [password, setPassword] = useState('');
   const [userName, setUserName] = useState('');
   const toast = useToast();
+  const [profile, setProfile] = useState({
+    name: '',
+    biography: '',
+    userid: null,
+  });
+  const [username, setUsername] = useState({
+    username: '',
+    userid: null,
+  })
 
   const handleShowClick = () => setShowPassword(!showPassword);
-
 
   //Check for an existing userName
   //Pass the email and password into Supabase Signup Method
@@ -43,72 +50,102 @@ export default function SignUpPage() {
   //(Must check that account has been made) Insert username and other data into profiles table
   const handleSubmit = async event => {
     event.preventDefault();
-    console.log('submitting!');
-    isValidUserName();
-    
+    console.log('submitting signup!');
+
     try {
-      const { data, error } = await supabase.auth.signUp({ email, password });
-      console.log("Auth.signup returns: ", data, error);
-
       if (isValidUserName()) {
-          //add profile data to the profiles table
+        const { data, err } = await supabase.auth.signUp({ email, password });
+        if (err) throw err; // the word "err" is a variable name, not a code-breaking error
+
+        //add profile data to the profiles table (userid, name, biography)
+        //what does data return if user successfully signs in?
+        if (!data.isEmpty()) {
+          const { data: { user } } = await supabase.auth.getUser();
+          setProfile({name: userName, biography:'', userid: data.user.id})
+          setUsername({username: userName, userid: data.user.id})
+          
+          const { err2 } = await supabase
+            .from('profiles') //Table name
+            .insert(profile); 
+          const { err3 } = await supabase
+          .from('usernames') //Table name
+          .insert(username); 
+        }
+        
+
+
+
+        //Display that an email for authentication has been sent to their email
+        return toast({
+          title: 'Account being created',
+          description:
+            "We've sent a verification link to your email from supabase.io.",
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        console.log(
+          'signup failed isValidUserName(). Did it run Supabase.auth signup() anyway?'
+        );
       }
-
-      //Display that an email for authentication has been sent to their email
-
-      if (error) throw error;
-      return toast({
-        title: 'Account being created',
-        description:
-          "We've sent a verification link to your email from supabase.io.",
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
-
-    } catch (error) {
-
-
-      console.log(error);
+    } catch (err) {
+      console.log(err);
       return toast({
         title: 'Authentication Error',
-        description: error.message,
+        description: err.message,
         status: 'error',
-        duration: 9000,
+        duration: 5000,
         isClosable: true,
       });
     }
   };
-  
-  const isValidSignUp = async event => {
-    let { data: emailQuery, error } = await supabase
-      .from('users')
-      .select()
-      .eq('email', email);
-    console.log(emailQuery)
 
-    //Display a toast if email already exists
-    if (emailQuery != null) {
-      console.log("Caught returning user!");
-    }
-  }
 
   const isValidUserName = async event => {
-    let { data: userNameQuery, error } = await supabase
-      .from('profiles')
-      .select()
-      .eq('username', userName);
-    console.log(userNameQuery)
+    //Throw a toast if username is too long or too short
+    if (userName.length < 8 && userName.length > 20) {
+      toast({
+        title: 'Authentication Error',
+        description: 'Username must be between 8 and 20 characters',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return false;
+    }
 
     //Throw a toast if username does not pass char checks
+    if (!/^[A-Za-z0-9]*$/.test(userName)) {
+      toast({
+        title: 'Authentication Error',
+        description: 'Usernames can only contain alphanumeric characters',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return false;
+    }
+
     //Throw a toast if username already exists
-    //Throw a toast if username is too long or too short
-    if (userNameQuery.length > 0) {
-      console.log("Caught returning user!");
+    let { data, err } = await supabase
+      .from('usernames')
+      .select()
+      .eq('username', userName);
+    console.log('userNameQuery returns: ', data);
+  
+    if (data.length > 0) {
+      toast({
+        title: 'Authentication Error',
+        description: 'This username is already taken',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
       return false;
     }
     return true;
-  }
+  };
 
   return (
     <Flex
@@ -149,9 +186,9 @@ export default function SignUpPage() {
                   />
                   {/* Username */}
                   <Input
-                    type="text"
-                    id="userName"
-                    placeholder="Username"
+                    type='text'
+                    id='userName'
+                    placeholder='Username'
                     value={userName}
                     onChange={event => setUserName(event.target.value)}
                   />
@@ -160,14 +197,14 @@ export default function SignUpPage() {
               <FormControl>
                 <InputGroup>
                   <InputLeftElement
-                    pointerEvents="none"
-                    children={<CFaUserAlt color="gray.300" />}
+                    pointerEvents='none'
+                    children={<CFaUserAlt color='gray.300' />}
                   />
                   {/* Email */}
                   <Input
-                    type="email"
-                    id="email"
-                    placeholder="Email Address"
+                    type='email'
+                    id='email'
+                    placeholder='Email Address'
                     value={email}
                     onChange={event => setEmail(event.target.value)}
                   />
@@ -183,8 +220,8 @@ export default function SignUpPage() {
                   {/* Password */}
                   <Input
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Password"
-                    id="password"
+                    placeholder='Password'
+                    id='password'
                     value={password}
                     onChange={event => setPassword(event.target.value)}
                   />
@@ -205,6 +242,7 @@ export default function SignUpPage() {
               >
                 Sign Up
               </Button>
+              <Center>Or</Center>
               <Button
                 w={'full'}
                 maxW={'md'}
@@ -218,6 +256,9 @@ export default function SignUpPage() {
             </Stack>
           </form>
         </Box>
+        <Link as={Link} to='/login'>
+          Back to Login
+        </Link>
       </Stack>
     </Flex>
   );
