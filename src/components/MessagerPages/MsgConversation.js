@@ -7,7 +7,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-export default function MsgHistory() {
+export default function MsgConversation() {
   return (
     <>
       <Flex>
