@@ -1,13 +1,16 @@
 import {
   Box,
-  Center,
+  Flex,
   Heading,
   Text,
   Stack,
   Avatar,
   useColorModeValue,
   Image,
+  Card,
 } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import supabase from '../../supabase';
 
 /*
     Creates an empty template from which data will be drawn from the database to fill each
@@ -18,46 +21,67 @@ import {
 export default function Explore() {
   //loading icon while taking data from the database (prevents lag)
 
-  //list of posts (25 initially)
+  //list of taskIDs (25 initially)
 
   //loops through list and creates a new card for each one
 
   //When the user hits the bottom of the page, call the function again
 
-  const taskIDs = [1, 2]; //take the most recent 25 task IDs
+  const [taskList, setTaskList] = useState([]);
+
+  useEffect(() => {
+    async function getTasks() {
+      const { data: tasks, error } = await supabase.from('todos').select('*');
+    }
+    getTasks();
+  }, []);
 
   return (
-    <Box>
-      <Box
-        maxW={'445px'}
-        w={'full'}
-        bg={useColorModeValue('white', 'gray.900')}
-        boxShadow={'2xl'}
-        rounded={'md'}
-        p={6}
-        overflow={'hidden'}
+    //box containing all the tasks
+    <Box
+      w={'100%'}
+      bg={useColorModeValue('white', 'gray.900')}
+      boxShadow={'2xl'}
+    >
+      {/*
+        Will wrap all the boxes of cardmaker to format into the above container
+      */}
+      <Flex
+        flexWrap={'wrap'}
+        justifyItems={'center'}
+        alignContent='center'
+        columnGap={5}
+        rowGap={5}
+        p={3}
       >
-        {taskIDs.map(id => (
-          <CardMaker taskID={id} />
-        ))}
-      </Box>
+        {/*
+          Iterates through all the task ids and adds them into the container above
+        */}
+      </Flex>
     </Box>
   );
 }
 
-//creates a card given a task ID
-function CardMaker({ taskID }) {
+//creates a card given a task
+function CardMaker({ task }) {
   return (
-    <Box>
-      <Box h={'310px'} bg={'gray.100'} mt={-6} mx={-6} mb={6} pos={'relative'}>
+    <Box
+      bg='gray.100'
+      boxShadow='lg'
+      w='250px'
+      borderRadius='xl'
+      borderColor='black'
+    >
+      <Box pos='relative'>
         <Image
+          borderTopRadius='xl'
           src={
             'https://st.depositphotos.com/1909871/5015/i/600/depositphotos_50152811-stock-photo-parkour-men.jpg'
           }
           layout={'fill'}
         />
       </Box>
-      <Stack>
+      <Stack marginX='4' mt='2'>
         <Text
           color={'green.500'}
           textTransform={'uppercase'}
@@ -69,18 +93,18 @@ function CardMaker({ taskID }) {
         </Text>
         <Heading
           color={useColorModeValue('gray.700', 'white')}
-          fontSize={'2xl'}
+          fontSize={'lg'}
           fontFamily={'body'}
         >
-          6 Month Progress Update
+          {task.title}
         </Heading>
-        <Text color={'gray.500'}>
+        <Text color={'gray.500'} fontSize='sm'>
           If I told myself that I would be able to do a backflip in 6 months, I
           wouldn't have believed myself. But here I am, 6 months later, and I
           can do a backflip. I'm so proud of myself.
         </Text>
       </Stack>
-      <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
+      <Stack mt={1} direction={'row'} align={'center'} margin='2'>
         <Avatar
           src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
           alt={'Author'}
