@@ -25,15 +25,17 @@ export default function NavBar({ session }) {
 
   useEffect(() => {
     async function getUsername() {
-      const { data, error } = await supabase
-        .from('usernames')
-        .select('username')
-        .eq('userid', session.user.id)
-        .limit(1)
-        .single();
-      console.log(session.user.id);
-      console.log(data);
-      setUsername(data.username);
+      try {
+        const { data, error } = await supabase
+          .from('usernames')
+          .select('username')
+          .eq('userid', session.user.id)
+          .limit(1)
+          .single();
+        console.log(session.user.id);
+        console.log(data);
+        setUsername(data.username);
+      } catch {}
     }
 
     getUsername();
@@ -58,13 +60,13 @@ export default function NavBar({ session }) {
           </Tooltip>
 
           <Tooltip label='Social'>
-            <Link as={Link} to='social'>
+            <Link as={Link} to='/social'>
               <Icon as={FaUserFriends} boxSize={9} />
             </Link>
           </Tooltip>
 
           <Tooltip label='Market'>
-            <Link as={Link} to='market'>
+            <Link as={Link} to='/market'>
               <Icon as={FaStore} boxSize={9} />
             </Link>
           </Tooltip>
@@ -72,7 +74,7 @@ export default function NavBar({ session }) {
           <Spacer />
 
           <Tooltip label='Messages'>
-            <Link as={Link} to='messages'>
+            <Link as={Link} to='/messages'>
               <Icon as={RiMessage2Fill} boxSize={9} />
             </Link>
           </Tooltip>

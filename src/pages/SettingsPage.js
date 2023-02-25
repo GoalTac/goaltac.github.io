@@ -38,7 +38,7 @@ function SettingsPage({ session }) {
 
       setFieldState(prevState => ({
         ...prevState,
-        username: data[0].username,
+        username: data.length < 1 ? '' : data[0].username,
       }));
     }
     fetchData();
