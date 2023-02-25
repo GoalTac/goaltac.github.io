@@ -13,7 +13,6 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
     "framer-motion": "^8.5.0",
-    "prettier": "^2.8.3",
     "react": "^18.2.0",
     "react-csv": "^2.2.2",
     "react-datepicker": "^4.8.0",
@@ -31,9 +30,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "pretty": "prettier --write \"./**/*.{js,jsx,json}\"",
-    "prepare": "husky install"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -51,12 +48,6 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^5.0.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.1.0",
-    "prettier": "^2.8.3"
-  },
-  "lint-staged": {
-    "*.{js,css,md}": "prettier --write"
+    "gh-pages": "^5.0.0"
   }
 }
