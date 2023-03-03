@@ -15,6 +15,7 @@ import {
   InputRightElement,
   useColorMode,
   useToast,
+  Spinner,
 } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
@@ -40,7 +41,12 @@ export default function SignUpPage() {
   const [username, setUsername] = useState({
     username: '',
     userid: null,
-  })
+  });
+  const [isLoading, setIsLoading] = useState(false); //for login loading
+  const loading = () => {
+    setIsLoading(true);
+    console.log(isLoading);
+  };
 
   const handleShowClick = () => setShowPassword(!showPassword);
 
@@ -59,21 +65,21 @@ export default function SignUpPage() {
 
         //add profile data to the profiles table (userid, name, biography)
         //what does data return if user successfully signs in?
-        if (!data.isEmpty()) {
-          const { data: { user } } = await supabase.auth.getUser();
-          setProfile({name: userName, biography:'', userid: data.user.id})
-          setUsername({username: userName, userid: data.user.id})
-          
+        console.log(data);
+        if (!(data.length < 1)) {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+          setProfile({ name: userName, biography: '', userid: data.user.id });
+          setUsername({ username: userName, userid: data.user.id });
+
           const { err2 } = await supabase
             .from('profiles') //Table name
-            .insert(profile); 
+            .insert(profile);
           const { err3 } = await supabase
-          .from('usernames') //Table name
-          .insert(username); 
+            .from('usernames') //Table name
+            .insert(username);
         }
-        
-
-
 
         //Display that an email for authentication has been sent to their email
         return toast({
@@ -100,7 +106,6 @@ export default function SignUpPage() {
       });
     }
   };
-
 
   const isValidUserName = async event => {
     //Throw a toast if username is too long or too short
@@ -133,7 +138,7 @@ export default function SignUpPage() {
       .select()
       .eq('username', userName);
     console.log('userNameQuery returns: ', data);
-  
+
     if (data.length > 0) {
       toast({
         title: 'Authentication Error',
@@ -256,8 +261,8 @@ export default function SignUpPage() {
             </Stack>
           </form>
         </Box>
-        <Link as={Link} to='/login'>
-          Back to Login
+        <Link onClick={loading} as={Link} to='/login'>
+          {isLoading == true ? <Spinner /> : 'Back to Login'}
         </Link>
       </Stack>
     </Flex>

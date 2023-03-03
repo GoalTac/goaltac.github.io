@@ -16,6 +16,7 @@ import {
   InputRightElement,
   useColorMode,
   useToast,
+  Spinner,
 } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
@@ -32,6 +33,11 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const toast = useToast();
+  const [isLoading, setIsLoading] = useState(false); //for login loading
+  const loading = () => {
+    setIsLoading(true);
+    console.log(isLoading);
+  };
 
   const handleShowClick = () => setShowPassword(!showPassword);
 
@@ -157,8 +163,9 @@ export default function LoginPage() {
                 type='submit'
                 variant='solid'
                 width='full'
+                onClick={loading}
               >
-                Login
+                {isLoading == true ? <Spinner /> : 'Login'}
               </Button>
               <Button
                 w={'full'}
