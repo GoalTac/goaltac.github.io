@@ -14,12 +14,13 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
-import supabase from '../supabase';
 import { Link } from 'react-router-dom';
+import { useSession } from '../hooks/SessionProvider';
 
 const CFaUserAlt = chakra(FaUserAlt);
 
 export default function ResetPasswordPage() {
+  const { supabase: supabase } = useSession();
   const [email, setEmail] = useState('');
   const toast = useToast();
   const { colorMode } = useColorMode();
@@ -106,8 +107,8 @@ export default function ResetPasswordPage() {
       </Stack>
       <Box>
         Remember your password?{' '}
-        <Link as={Link} to='/login'>
-          Back to Login
+        <Link as={Link} to='/signin'>
+          Back to Sign In
         </Link>
       </Box>
     </Flex>

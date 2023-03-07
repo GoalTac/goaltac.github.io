@@ -12,8 +12,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { Link as ReactRouterLink, useParams } from 'react-router-dom';
-import supabase from '../supabase';
-
+import { useSupabaseClient } from '../hooks/SessionProvider';
 export default function Profile({ session }) {
   const { username } = useParams();
   const [editMode, setEditMode] = useState(false);

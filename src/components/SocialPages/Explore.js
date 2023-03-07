@@ -9,8 +9,8 @@ import {
   Image,
   Card,
 } from '@chakra-ui/react';
+import { useSupabaseClient } from '../../hooks/SessionProvider';
 import { useEffect, useState } from 'react';
-import supabase from '../../supabase';
 
 /*
     Creates an empty template from which data will be drawn from the database to fill each
@@ -19,33 +19,29 @@ import supabase from '../../supabase';
   */
 
 export default function Explore() {
-  //loading icon while taking data from the database (prevents lag)
-
-  //list of taskIDs (25 initially)
-
-  //loops through list and creates a new card for each one
-
-  //When the user hits the bottom of the page, call the function again
-
-  const [taskList, setTaskList] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const supabase = useSupabaseClient();
 
   useEffect(() => {
     async function getTasks() {
-      const { data: tasks, error } = await supabase.from('todos').select('*');
+      const { data: taskList, error } = await supabase
+        .from('todos')
+        .select('*');
+      setTasks(taskList);
     }
     getTasks();
   }, []);
 
   return (
-    //box containing all the tasks
     <Box
       w={'100%'}
       bg={useColorModeValue('white', 'gray.900')}
       boxShadow={'2xl'}
     >
-      {/*
-        Will wrap all the boxes of cardmaker to format into the above container
-      */}
+      {console.log(tasks)}
+      {tasks?.map(task => {
+        return <CardMaker key={task.id} task={task} />;
+      })}
       <Flex
         flexWrap={'wrap'}
         justifyItems={'center'}
@@ -53,17 +49,13 @@ export default function Explore() {
         columnGap={5}
         rowGap={5}
         p={3}
-      >
-        {/*
-          Iterates through all the task ids and adds them into the container above
-        */}
-      </Flex>
+      ></Flex>
     </Box>
   );
 }
 
 //creates a card given a task
-function CardMaker({ task }) {
+export function CardMaker({ task }) {
   return (
     <Box
       bg='gray.100'

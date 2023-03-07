@@ -23,9 +23,10 @@ import EditTask from '../Tasks/EditTask';
 import DueDate from './TaskParts/DueDate';
 import ConfirmEdits from '../Tasks/ConfirmEdits';
 import { useEffect, useState } from 'react';
-import supabase from '../../supabase';
+import { useSession } from '../../hooks/SessionProvider';
 
 const EditTaskModal = function ({ props }) {
+  const { supabase: supabase } = useSession();
   //Sets edit mode back to false so that view mode shows for other tasks
   const newClose = () => {
     //Self made toggle via TaskItem.js

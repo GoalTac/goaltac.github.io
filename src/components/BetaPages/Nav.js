@@ -39,8 +39,8 @@ const Nav = () => {
         </Button>
 
         <Button variant='solid' bgGradient='linear(to-l, teal.300, blue.500)'>
-          <Link as={Link} to='/login'>
-            Login
+          <Link as={Link} to='/signin'>
+            Sign In
           </Link>
         </Button>
       </Stack>

@@ -18,13 +18,14 @@ import {
 } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
-import supabase from '../supabase';
 import { useNavigate, Link } from 'react-router-dom';
+import { useSession } from '../hooks/SessionProvider';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 export default function SignUpPage() {
+  const { supabase: supabase } = useSession();
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
   const [showPassword, setShowPassword] = useState(false);
@@ -40,7 +41,7 @@ export default function SignUpPage() {
   const [username, setUsername] = useState({
     username: '',
     userid: null,
-  })
+  });
 
   const handleShowClick = () => setShowPassword(!showPassword);
 
@@ -60,20 +61,19 @@ export default function SignUpPage() {
         //add profile data to the profiles table (userid, name, biography)
         //what does data return if user successfully signs in?
         if (!data.isEmpty()) {
-          const { data: { user } } = await supabase.auth.getUser();
-          setProfile({name: userName, biography:'', userid: data.user.id})
-          setUsername({username: userName, userid: data.user.id})
-          
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+          setProfile({ name: userName, biography: '', userid: data.user.id });
+          setUsername({ username: userName, userid: data.user.id });
+
           const { err2 } = await supabase
             .from('profiles') //Table name
-            .insert(profile); 
+            .insert(profile);
           const { err3 } = await supabase
-          .from('usernames') //Table name
-          .insert(username); 
+            .from('usernames') //Table name
+            .insert(username);
         }
-        
-
-
 
         //Display that an email for authentication has been sent to their email
         return toast({
@@ -100,7 +100,6 @@ export default function SignUpPage() {
       });
     }
   };
-
 
   const isValidUserName = async event => {
     //Throw a toast if username is too long or too short
@@ -133,7 +132,7 @@ export default function SignUpPage() {
       .select()
       .eq('username', userName);
     console.log('userNameQuery returns: ', data);
-  
+
     if (data.length > 0) {
       toast({
         title: 'Authentication Error',
@@ -256,8 +255,8 @@ export default function SignUpPage() {
             </Stack>
           </form>
         </Box>
-        <Link as={Link} to='/login'>
-          Back to Login
+        <Link as={Link} to='/signin'>
+          Back to Sign In
         </Link>
       </Stack>
     </Flex>

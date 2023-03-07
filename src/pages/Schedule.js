@@ -1,11 +1,12 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import supabase from '../supabase';
 import Calendar from '../components/schedule/Calendar';
 import Today from '../components/schedule/Today';
+import { useSession } from '../hooks/SessionProvider';
 
 export default function Schedule(props) {
+  const { supabase: supabase } = useSession();
   const [tasks, setTasks] = useState([]); //eslint-disable-next-line
   const [session, setSession] = useState(props.session);
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export default function Schedule(props) {
   useEffect(() => {
     console.log(session);
     if (session == null) {
-      navigate('/login');
+      navigate('/signin');
     }
   }, []);
 

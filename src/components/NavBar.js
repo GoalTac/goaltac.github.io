@@ -15,27 +15,27 @@ import logo from '../images/logo.png';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import Nav from './BetaPages/Nav';
 import { useEffect, useState } from 'react';
-import supabase from '../supabase';
+import { useSupabaseClient, useSession } from '../hooks/SessionProvider';
 
-export default function NavBar({ session }) {
+export default function NavBar() {
+  const session = useSession();
   const navigate = useNavigate();
+  const supabase = useSupabaseClient();
   const locate = useLocation();
   const colorModeV = useColorModeValue('gray.100', 'gray.900');
   const [username, setUsername] = useState(null);
 
   useEffect(() => {
     async function getUsername() {
-      try {
-        const { data, error } = await supabase
-          .from('usernames')
-          .select('username')
-          .eq('userid', session.user.id)
-          .limit(1)
-          .single();
-        console.log(session.user.id);
-        console.log(data);
-        setUsername(data.username);
-      } catch {}
+      const { data, error } = await supabase
+        .from('usernames')
+        .select('username')
+        .eq('userid', session.user.id)
+        .limit(1)
+        .single();
+      console.log(session.user.id);
+      console.log(data);
+      setUsername(data.username);
     }
 
     getUsername();
@@ -79,7 +79,7 @@ export default function NavBar({ session }) {
             </Link>
           </Tooltip>
 
-          <Link as={Link} to='/profiles/Test2333'>
+          <Link as={Link} to='/profile/Test2333'>
             Profile test
           </Link>
           <Settings session={session} />
@@ -100,7 +100,7 @@ export default function NavBar({ session }) {
       case '/updatepassword':
       case '/resetpassword':
       case '/signup':
-      case '/login':
+      case '/signin':
         return <></>;
 
       default:
@@ -110,6 +110,6 @@ export default function NavBar({ session }) {
 
   useEffect(() => {
     console.log(locate);
-  }, [locate]);
+  }, []);
   return <Display />;
 }

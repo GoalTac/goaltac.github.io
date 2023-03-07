@@ -4,17 +4,20 @@ import '../App.css';
 import theme from '../components/theme';
 import { Stack } from '@chakra-ui/react';
 import { Outlet } from 'react-router';
-// TODO: create universalish nav bar
+import { supabaseClient } from '../supabaseClient';
+import { SessionProvider } from '../hooks/SessionProvider';
 
-export default function Root({ session }) {
+export default function Root() {
   return (
     <>
       <ChakraProvider>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-        <Stack>
-          <NavBar session={session} />
-          <Outlet />
-        </Stack>
+        <SessionProvider supabase={supabaseClient}>
+          <Stack>
+            <NavBar />
+            <Outlet />
+          </Stack>
+        </SessionProvider>
       </ChakraProvider>
     </>
   );

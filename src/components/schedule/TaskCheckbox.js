@@ -1,10 +1,11 @@
 import { Button, Checkbox, HStack, Text } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import supabase from '../../supabase';
+import { useSession } from '../../hooks/SessionProvider';
 
 //No longer need this file
 
 export default function TaskCheckbox(props) {
+  const { supabase: supabase } = useSession();
   //For me
   const [task, setTask] = useState(props.task);
 
