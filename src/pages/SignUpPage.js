@@ -15,6 +15,7 @@ import {
   InputRightElement,
   useColorMode,
   useToast,
+  Spinner,
 } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
@@ -42,6 +43,11 @@ export default function SignUpPage() {
     username: '',
     userid: null,
   });
+  const [isLoading, setIsLoading] = useState(false); //for login loading
+  const loading = () => {
+    setIsLoading(true);
+    console.log(isLoading);
+  };
 
   const handleShowClick = () => setShowPassword(!showPassword);
 
@@ -60,7 +66,8 @@ export default function SignUpPage() {
 
         //add profile data to the profiles table (userid, name, biography)
         //what does data return if user successfully signs in?
-        if (!data.isEmpty()) {
+        console.log(data);
+        if (!(data.length < 1)) {
           const {
             data: { user },
           } = await supabase.auth.getUser();
@@ -255,8 +262,8 @@ export default function SignUpPage() {
             </Stack>
           </form>
         </Box>
-        <Link as={Link} to='/signin'>
-          Back to Sign In
+        <Link onClick={loading} as={Link} to='/signin'>
+          {isLoading == true ? <Spinner /> : 'Back to Sign In'}
         </Link>
       </Stack>
     </Flex>

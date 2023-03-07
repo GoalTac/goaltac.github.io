@@ -19,39 +19,34 @@ import {
 } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
+import supabase from '../supabase';
 import { useNavigate, Link } from 'react-router-dom';
-import { useSupabaseClient } from '../hooks/SessionProvider';
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
-export default function SignInPage() {
+export default function LoginPage() {
   const navigate = useNavigate();
-  const toast = useToast();
-  const supabase = useSupabaseClient();
   const { colorMode } = useColorMode();
-
   const [showPassword, setShowPassword] = useState(false);
-
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const toast = useToast();
 
   const handleShowClick = () => setShowPassword(!showPassword);
-
-  const onChangeHandler = e =>
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      [e.target.name]: e.target.value,
-    }));
 
   const handleSubmit = async event => {
     event.preventDefault();
 
     try {
-      const { data, err } = await supabase.auth.signInWithPassword(formData);
+      const { data, err } = await supabase.auth.signInWithPassword({
+        // this returns data.session = null if incorrect email or password
+        email,
+        password,
+      });
       if (err) throw err;
+
+      // Check if the login was successful
       if (data.session == null) {
         return toast({
           title: 'Authentication Error',
@@ -69,7 +64,9 @@ export default function SignInPage() {
         duration: 10000,
         isClosable: true,
       });
-      navigate('/');
+      navigate('/', { state: { session: data.session } });
+      // Save the authentication token in local storage or a cookie
+      // so that it can be used on subsequent requests
     } catch (err) {
       console.log(err);
       return toast({
@@ -122,9 +119,9 @@ export default function SignInPage() {
                   {/* Email */}
                   <Input
                     type='email'
-                    name='email'
                     placeholder='Email Address'
-                    onChange={onChangeHandler}
+                    value={email}
+                    onChange={event => setEmail(event.target.value)}
                     _autofill={true}
                   />
                 </InputGroup>
@@ -137,9 +134,9 @@ export default function SignInPage() {
                   {/* Password */}
                   <Input
                     type={showPassword ? 'text' : 'password'}
-                    name='password'
                     placeholder='Password'
-                    onChange={onChangeHandler}
+                    value={password}
+                    onChange={event => setPassword(event.target.value)}
                   />
                   <InputRightElement width='4.5rem'>
                     <Button h='1.75rem' size='sm' onClick={handleShowClick}>
@@ -161,7 +158,7 @@ export default function SignInPage() {
                 variant='solid'
                 width='full'
               >
-                Sign In
+                Login
               </Button>
               <Button
                 w={'full'}
