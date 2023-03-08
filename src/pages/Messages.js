@@ -1,6 +1,5 @@
 import MsgSidebar from '../components/MessagerPages/MsgSidebar';
 import MsgConversation from '../components/MessagerPages/MsgConversation';
-import supabase from '../supabase';
 import { useEffect, useState } from 'react';
 import { Flex, HStack, Divider } from '@chakra-ui/react';
 

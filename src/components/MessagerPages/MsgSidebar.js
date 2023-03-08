@@ -1,4 +1,3 @@
-import supabase from '../../supabase';
 import { useEffect, useState } from 'react';
 import {
   VStack,
