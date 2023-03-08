@@ -14,12 +14,13 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import { FaLock, ViewIcon, ViewOffIcon } from 'react-icons/fa';
-import supabase from '../supabase';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { useSession } from '../hooks/SessionProvider';
 
 const CFaLock = chakra(FaLock);
 
 export default function UpdatePasswordPage() {
+  const { supabase: supabase } = useSession();
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
   const { state } = useLocation();
@@ -39,7 +40,7 @@ export default function UpdatePasswordPage() {
       console.log(data);
       console.log('After calling supabase.updateUser');
 
-      navigate('/login', { state: { session: data.session } });
+      navigate('/signin', { state: { session: data.session } });
       // Save the authentication token in local storage or a cookie
       // so that it can be used on subsequent requests
     } catch (error) {

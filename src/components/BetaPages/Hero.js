@@ -10,12 +10,13 @@ import {
   useColorMode,
   Image,
 } from '@chakra-ui/react';
-import supabase from '../../supabase';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { useSession } from '../../hooks/SessionProvider';
 import createTask from '../../images/CreateTask.png';
 
 const Hero = () => {
+  const { supabase: supabase } = useSession();
   const toast = useToast();
   const { colorMode } = useColorMode();
   const [inputEmail, setEmail] = useState('');

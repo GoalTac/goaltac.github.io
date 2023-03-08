@@ -1,10 +1,12 @@
 import { VStack, StackDivider, Image, Box } from '@chakra-ui/react';
 import img from '../images/empty.svg';
 import { useEffect, useState } from 'react';
-import supabase from '../supabase';
 import TaskItem from './TaskListDetails/TaskItem';
+import { useSupabaseClient } from '../hooks/SessionProvider';
 
 export default function TaskList() {
+  const supabase = useSupabaseClient();
+
   useEffect(() => {
     const todos = supabase
       .channel('custom-all-channel')

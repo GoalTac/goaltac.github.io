@@ -14,8 +14,8 @@ import {
 
 // import { difficultyBorder } from '../TaskBasedBorderColors/TaskBasedBorder';
 
-import supabase from '../../supabase';
 import { useEffect, useState } from 'react';
+import { useSession } from '../../hooks/SessionProvider';
 
 import EditTaskModal from './EditTaskModal';
 
@@ -23,6 +23,7 @@ import TaskModal from './TaskParts/TaskModal';
 
 // Recieves: p, w, h, task, heading_font_size, size (for modal it opens)
 export default function TaskItem(props) {
+  const { supabase: supabase } = useSession();
   //ChakraUI
   const { isOpen, onOpen, onClose } = useDisclosure(); //Modal Stuff
 

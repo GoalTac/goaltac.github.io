@@ -17,10 +17,9 @@ import CommunitySide from '../components/SocialPages/CommunitySide';
 
 export default function SocialPage() {
   return (
-    <Flex w='100%' h='100%' flexWrap={'wrap'} padding='10' gap={15}>
+    <Flex w='100%' h='100%' padding='10' gap={15}>
       <Sidebar />
       <Explore />
-      <CommunitySide />
     </Flex>
   );
 }

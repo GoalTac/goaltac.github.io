@@ -18,9 +18,10 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { useState, FormGroup } from 'react';
-import supabase from '../../supabase';
+import { useSupabaseClient } from '../../hooks/SessionProvider';
 
 export default function CreateTask() {
+  const supabase = useSupabaseClient();
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useToast();

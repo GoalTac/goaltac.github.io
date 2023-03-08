@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
 import {
-  createMemoryRouter,
+  createBrowserRouter,
   createRoutesFromElements,
   Route,
   RouterProvider,
 } from 'react-router-dom';
+import React from 'react';
 import './App.css';
 import Calendar from './components/schedule/Calendar';
 import BetaPage from './pages/BetaPage';
 import HelpPage from './pages/HelpPage';
 import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
+import SignInPage from './pages/SignInPage';
 import MarketPage from './pages/MarketPage';
 import Messages from './pages/Messages';
 import Profile from './pages/Profile';
@@ -21,55 +21,32 @@ import SettingsPage from './pages/SettingsPage';
 import SignUpPage from './pages/SignUpPage';
 import SocialPage from './pages/SocialPage';
 import UpdatePasswordPage from './pages/UpdatePasswordPage';
-import supabase from './supabase';
+import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
-  const [session, setSession] = useState(null);
-
-  useEffect(() => {
-    console.log('Top of use effect');
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Specific getSession call');
-      setSession(session);
-    });
-
-    supabase.auth.onAuthStateChange(async (_event, newSession) => {
-      console.log('Event change detected:' + _event);
-      console.log(newSession);
-      const { data, error } = await supabase.auth.getSession();
-      // Changing tabs will fire a SIGNED_IN event. We only want to update the session
-      // when a user changes from being signed out to signed in. The condition below
-      // checks for that scenario
-      console.log(data);
-      if (_event === 'SIGNED_IN' && !data && newSession) {
-        console.log('Setting le new session');
-        setSession(newSession);
-      } else if (_event === 'SIGNED_OUT') {
-        console.log('Session signed out');
-        setSession(null);
-      }
-    });
-  }, []);
-
-  const router = createMemoryRouter(
+  const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path='/' element={<Root session={session} />}>
-        <Route index element={<HomePage session={session} />} />
-        <Route path='schedule' element={<Schedule session={session} />} />
-        <Route path='social' element={<SocialPage />} />
-        <Route path='market' element={<MarketPage />} />
-        <Route path='beta' element={<BetaPage />} />
-        <Route path='profiles'>
-          <Route path=':username' element={<Profile />} />
+      <Route element={<Root />}>
+        <Route path='/'>
+          <Route index element={<HomePage />} />
+          <Route path='beta' element={<BetaPage />} />
+          <Route path='help' element={<HelpPage />} />
+          <Route path='signin' element={<SignInPage />} />
+          <Route path='signup' element={<SignUpPage />} />
+          <Route path='resetpassword' element={<ResetPasswordPage />} />
+          <Route path='market' element={<MarketPage />} />
+          <Route path='profile'>
+            <Route path=':username' element={<Profile />} />
+          </Route>
+          <Route element={<ProtectedRoute redirectPath={'/signin'} />}>
+            <Route path='schedule' element={<Schedule />} />
+            <Route path='social' element={<SocialPage />} />
+            <Route path='settings' element={<SettingsPage />} />
+            <Route path='updatepassword' element={<UpdatePasswordPage />} />
+            <Route path='messages' element={<Messages />} />
+            <Route path='calendar' element={<Calendar />} />
+          </Route>
         </Route>
-        <Route path='settings' element={<SettingsPage session={session} />} />
-        <Route path='help' element={<HelpPage />} />
-        <Route path='login' element={<LoginPage />} />
-        <Route path='signup' element={<SignUpPage />} />
-        <Route path='resetpassword' element={<ResetPasswordPage />} />
-        <Route path='updatepassword' element={<UpdatePasswordPage />} />
-        <Route path='messages' element={<Messages />} />
-        <Route path='calendar' element={<Calendar />} />
       </Route>
     )
   );

@@ -21,27 +21,25 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import supabase from '../../supabase';
+import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useSession } from '../../hooks/SessionProvider';
 
-import { Link } from 'react-router-dom';
-
-export default function AddTask(props) {
-  //Database
+export default function AddTask() {
+  const { user, session, supabase } = useSession();
   const { isOpen, onOpen, onClose } = useDisclosure(); //For the modal's open/close
 
   //Page
-
   const [task, setTask] = useState({
     title: '',
     text: '',
     tag: '',
     end_date: new Date(),
     difficulty: '0',
-    userid: props.userid,
+    userid: user?.id,
   });
-  const { title, text, tag, end_date, difficulty, userid } = task;
+
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
@@ -51,7 +49,6 @@ export default function AddTask(props) {
     e.preventDefault();
     setLoading(true);
 
-    // console.log(formatDate(end_date))
     const { error } = await supabase
       .from('todos') //Table name
       .insert(task);
@@ -79,8 +76,9 @@ export default function AddTask(props) {
 
   // Keep this so that the add task knows the user's id as it loads LAST in HomePage.js
   useEffect(() => {
-    setTask({ ...task, userid: props.userid });
-  }, [props.userid]);
+    setTask({ ...task, userid: user?.id });
+  }, []);
+
   return (
     <>
       <Button onClick={tempOnOpen} colorScheme='blue' p='10px'>
@@ -107,7 +105,7 @@ export default function AddTask(props) {
                   <Input
                     type='text'
                     maxLength={24}
-                    value={title}
+                    value={task.title}
                     onChange={e => setTask({ ...task, title: e.target.value })}
                   />
                   <FormHelperText>
@@ -120,7 +118,7 @@ export default function AddTask(props) {
                   <Text>Difficulty</Text>
                   <RadioGroup
                     onChange={e => setTask({ ...task, difficulty: e })}
-                    value={difficulty}
+                    value={task?.difficulty}
                   >
                     <HStack>
                       <Radio value='0' colorScheme='green'>
@@ -141,7 +139,7 @@ export default function AddTask(props) {
                   <Input
                     type='text'
                     maxLength={16}
-                    value={tag}
+                    value={task.tag}
                     onChange={e => setTask({ ...task, tag: e.target.value })}
                   />
                   <FormHelperText>Type a hashtag in</FormHelperText>
@@ -151,14 +149,9 @@ export default function AddTask(props) {
                 <FormControl>
                   <FormLabel>End Date</FormLabel>
                   <DatePicker
-                    selected={end_date}
+                    selected={task.end_date}
                     onChange={e => setTask({ ...task, end_date: e })}
                   />
-                  {/* <Input type='datetime-local'
-                onChange={ e => setTask({...task, end_date: e.target.value})}
-                placeholder='yyyy-mm-dd'
-                required={true}
-                /> */}
                 </FormControl>
 
                 {/* Details */}
@@ -167,7 +160,7 @@ export default function AddTask(props) {
                   <Input
                     type='text'
                     maxLength={1024}
-                    value={text}
+                    value={task.text}
                     onChange={e => setTask({ ...task, text: e.target.value })}
                   />
                   <FormHelperText>

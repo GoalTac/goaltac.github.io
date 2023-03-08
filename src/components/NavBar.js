@@ -15,10 +15,12 @@ import logo from '../images/logo.png';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import Nav from './BetaPages/Nav';
 import { useEffect, useState } from 'react';
-import supabase from '../supabase';
+import { useSupabaseClient, useSession } from '../hooks/SessionProvider';
 
-export default function NavBar({ session }) {
+export default function NavBar() {
+  const session = useSession();
   const navigate = useNavigate();
+  const supabase = useSupabaseClient();
   const locate = useLocation();
   const colorModeV = useColorModeValue('gray.100', 'gray.900');
   const [username, setUsername] = useState(null);
@@ -41,7 +43,14 @@ export default function NavBar({ session }) {
 
   const GeneralNavBar = function () {
     return (
-      <Box bg={colorModeV} opacity='0.9' px={4} top='0' position='sticky'>
+      <Box
+        zIndex={999}
+        bg={colorModeV}
+        opacity='0.9'
+        px={4}
+        top='0'
+        position='sticky'
+      >
         <Stack direction={'row'} spacing={12} padding={3}>
           <Tooltip label='Home'>
             <Link as={Link} to=''>
@@ -51,13 +60,13 @@ export default function NavBar({ session }) {
           </Tooltip>
 
           <Tooltip label='Social'>
-            <Link as={Link} to='social'>
+            <Link as={Link} to='/social'>
               <Icon as={FaUserFriends} boxSize={9} />
             </Link>
           </Tooltip>
 
           <Tooltip label='Market'>
-            <Link as={Link} to='market'>
+            <Link as={Link} to='/market'>
               <Icon as={FaStore} boxSize={9} />
             </Link>
           </Tooltip>
@@ -65,12 +74,12 @@ export default function NavBar({ session }) {
           <Spacer />
 
           <Tooltip label='Messages'>
-            <Link as={Link} to='messages'>
+            <Link as={Link} to='/messages'>
               <Icon as={RiMessage2Fill} boxSize={9} />
             </Link>
           </Tooltip>
 
-          <Link as={Link} to='/profiles/Test2333'>
+          <Link as={Link} to='/profile/Test2333'>
             Profile test
           </Link>
           <Settings session={session} />
@@ -91,7 +100,7 @@ export default function NavBar({ session }) {
       case '/updatepassword':
       case '/resetpassword':
       case '/signup':
-      case '/login':
+      case '/signin':
         return <></>;
 
       default:
@@ -101,6 +110,6 @@ export default function NavBar({ session }) {
 
   useEffect(() => {
     console.log(locate);
-  }, [locate]);
+  }, []);
   return <Display />;
 }

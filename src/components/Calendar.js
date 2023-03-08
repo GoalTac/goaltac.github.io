@@ -14,12 +14,13 @@ import DeleteTask from './Tasks/DeleteTask';
 import ClearTasks from './Tasks/ClearTasks';
 // import { useRealtime } from 'react-supabase';
 import { useEffect, useState } from 'react';
-import supabase from '../supabase';
 import TaskItem from './TaskListDetails/TaskItem';
+import { useSupabaseClient } from '../hooks/SessionProvider';
 
 export default function Calendar() {
   // const [result, reexecute] = useRealtime('todos');
   // const { data: tasks, error, fetching } = result;
+  const supabase = useSupabaseClient();
 
   const todos = supabase
     .channel('custom-all-channel')

@@ -1,8 +1,9 @@
 import { Flex, Button } from '@chakra-ui/react';
-import supabase from '../../supabase';
 import { useState } from 'react';
+import { useSession } from '../../hooks/SessionProvider';
 
 export default function ClearTasks() {
+  const { supabase: supabase } = useSession();
   const [loading, setloading] = useState(false);
 
   async function handleClear() {

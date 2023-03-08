@@ -16,12 +16,12 @@ import { FiLogOut } from 'react-icons/fi';
 import { SettingsIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
 import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
-import supabase from '../../supabase';
 import { CSVLink } from 'react-csv';
+import { useSupabaseClient } from '../../hooks/SessionProvider';
 
 export default function Settings({ session }) {
   //Session defined from HomePage.js (supabase.auth.getSession())
-
+  const supabase = useSupabaseClient();
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
   const { toggleColorMode, colorMode } = useColorMode();
@@ -82,7 +82,8 @@ export default function Settings({ session }) {
                   icon={<FiLogOut />}
                   onClick={async () => {
                     const { error } = await supabase.auth.signOut();
-                    navigate('/login');
+                    console.log('here');
+                    navigate('/signin');
                   }}
                 >
                   Sign Out

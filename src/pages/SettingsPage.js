@@ -15,10 +15,11 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { SmallCloseIcon } from '@chakra-ui/icons';
-import supabase from '../supabase';
 import { useEffect, useState } from 'react';
+import { useSession } from '../hooks/SessionProvider';
 
 function SettingsPage({ session }) {
+  const { supabase: supabase } = useSession();
   const { colorMode } = useColorMode();
   const toast = useToast();
 
@@ -38,7 +39,7 @@ function SettingsPage({ session }) {
 
       setFieldState(prevState => ({
         ...prevState,
-        username: data[0].username,
+        username: data.length < 1 ? '' : data[0].username,
       }));
     }
     fetchData();

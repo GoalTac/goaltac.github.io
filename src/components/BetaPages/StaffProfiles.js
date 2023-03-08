@@ -12,7 +12,12 @@ import {
 
 export default function StaffProfiles() {
   return (
-    <Flex py={6} alignItems={'center'} flexDirection={'column'}>
+    <Flex
+      py={6}
+      justifyContent='center'
+      alignItems={'center'}
+      flexDirection={'row'}
+    >
       <Box
         maxW={'320px'}
         w={'full'}
