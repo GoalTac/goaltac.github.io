@@ -1,5 +1,5 @@
 import SendMessage from './SendMessage';
-import supabase from '../../supabase';
+import { useSupabaseClient } from '../../hooks/SessionProvider';
 import { useState, useEffect } from 'react';
 import {
   VStack,
@@ -14,6 +14,7 @@ import { FaUserCircle } from 'react-icons/fa';
 
 export default function MsgConversation() {
   const [user, setUser] = useState(null); //sets user ID not user list
+  const supabase = useSupabaseClient();
   const [message, setMessage] = useState({
     sender_id: null,
     recipient_id: null,

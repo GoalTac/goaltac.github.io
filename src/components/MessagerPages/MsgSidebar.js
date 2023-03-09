@@ -1,4 +1,4 @@
-import supabase from '../../supabase';
+import { useSupabaseClient } from '../../hooks/SessionProvider';
 import { useEffect, useState } from 'react';
 import {
   VStack,
@@ -19,6 +19,7 @@ import { BiMessageEdit } from 'react-icons/bi';
 export default function MsgSidebar() {
   const [search, setSearch] = useState('');
   const [contacts, setContacts] = useState([]);
+  const supabase = useSupabaseClient();
 
   // Get contacts history data from Supabase
   async function fetchData() {
