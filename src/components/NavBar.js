@@ -30,7 +30,7 @@ export default function NavBar() {
       const { data, error } = await supabase
         .from('usernames')
         .select('username')
-        .eq('userid', session.user.id)
+        .eq('userid', session.user.id) //this is throwing an error
         .limit(1)
         .single();
       console.log(session.user.id);
