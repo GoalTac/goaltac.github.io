@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, Flex, useColorMode } from '@chakra-ui/react';
 
 import { Header } from '../components/BetaPages/Header';
 import { Intro } from '../components/BetaPages/Intro';
@@ -41,6 +41,7 @@ function BetaPage() {
   const [showDots, setShowDots] = React.useState(!initialState);
   const [mobile, setMobile] = React.useState(!initialState);
   const [openModal, setOpenModal] = React.useState(false);
+  const { colorMode } = useColorMode();
 
   const toggleModal = () => {
     setOpenModal(!openModal);
@@ -65,36 +66,38 @@ function BetaPage() {
   }, []);
 
   return (
-    <Box overflowX='hidden'>
-      <Box
-        bgSize='cover'
-        bgPosition='center'
-        bgRepeat='no-repeat'
-        minHeight='100vh'
-        overflowX='hidden'
-        position='relative'
-        zIndex='100'
-      >
-        {openModal && mobile && (
-          <Modal
+    <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'} overflowX='hidden'>
+      <Flex justifyContent='center' alignItems='center'>
+        <Box
+          bgSize='cover'
+          bgPosition='center'
+          bgRepeat='no-repeat'
+          minHeight='100vh'
+          overflowX='hidden'
+          position='relative'
+          zIndex='100'
+        >
+          {openModal && mobile && (
+            <Modal
+              sections={sections}
+              toggleModal={toggleModal}
+              setOpenModal={setOpenModal}
+            />
+          )}
+          <Header
+            showMenu={showMenu}
+            setShowMenu={setShowMenu}
+            openModal={openModal}
             sections={sections}
             toggleModal={toggleModal}
-            setOpenModal={setOpenModal}
-          />
-        )}
-        <Header
-          showMenu={showMenu}
-          setShowMenu={setShowMenu}
-          openModal={openModal}
-          sections={sections}
-          toggleModal={toggleModal}
-        ></Header>
-        <Intro />
-        <Features hideBgFeatureTitle={hideBgFeatureTitle} />
-        <Slider showDots={showDots} />
-        <Prefooter />
-        <Footer mobile={mobile} />
-      </Box>
+          ></Header>
+          <Intro />
+          <Features hideBgFeatureTitle={hideBgFeatureTitle} />
+          <Slider showDots={showDots} />
+          <Prefooter />
+          <Footer mobile={mobile} />
+        </Box>
+      </Flex>
     </Box>
   );
 }

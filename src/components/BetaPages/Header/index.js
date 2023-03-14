@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flex, Image, HStack, Button } from '@chakra-ui/react';
-import logo from '../resources/images/logo.svg';
+import logo from '../../../images/GoalTac_Logo.png';
 import hamburgerIcon from '../resources/images/icon-hamburger.svg';
 import closeIcon from '../resources/images/icon-close.svg';
 import imgBg from '../resources/images/bg-tablet-pattern.svg';
@@ -14,8 +14,9 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
         <Flex
           justify='space-between'
           alignItems='center'
-          px='6rem'
-          py='3rem'
+          px='3rem'
+          py='2rem'
+          width='100%'
           _after={{
             content: "''",
             background: `no-repeat url(${imgBg})`,
@@ -27,7 +28,7 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
             height: '100%',
           }}
         >
-          <Image src={logo} pt='5px' />
+          <Image src={logo} boxSize='20%' pt='5px' />
           <HStack>
             {sections.map((section, index) => {
               return (

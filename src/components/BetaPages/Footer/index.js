@@ -56,7 +56,7 @@ function Footer({ mobile }) {
   return (
     <Stack
       id='about'
-      bg='blue.veryDark'
+      bg='gray.900'
       direction={['column-reverse', null, 'row']}
       justifyContent='space-around'
       py='3rem'
@@ -70,7 +70,7 @@ function Footer({ mobile }) {
         spacing={['4rem', null]}
       >
         {mobile && (
-          <Box color='blue.light'>Copyright 2023. All Rights Reserved</Box>
+          <Box color='gray.400'>Copyright 2023. All Rights Reserved</Box>
         )}
         <Image src={logo} pt='5px' maxWidth={['200px', '150px']} />
         <HStack
@@ -95,7 +95,7 @@ function Footer({ mobile }) {
           })}
         </HStack>
       </Stack>
-      <HStack spacing={['5rem', null, '10rem']}>
+      <HStack spacing={['5rem', null, '10rem']} fontWeight='extrabold'>
         <VStack spacing='.3rem' textAlign='left' alignItems='flex-start'>
           {sectionsLeft.map((section, index) => {
             return (
@@ -107,7 +107,16 @@ function Footer({ mobile }) {
                 duration={500}
                 key={index}
               >
-                <Button variant='footer'>{section.name}</Button>
+                <Button
+                  variant='footer'
+                  bgColor='white'
+                  bgClip='text'
+                  _hover={{
+                    bgGradient: 'linear(to-l, teal.300, blue.500)',
+                  }}
+                >
+                  {section.name}
+                </Button>
               </Link>
             );
           })}
@@ -123,7 +132,16 @@ function Footer({ mobile }) {
                 duration={500}
                 key={index}
               >
-                <Button variant='footer'>{section.name}</Button>
+                <Button
+                  variant='footer'
+                  bgColor='white'
+                  bgClip='text'
+                  _hover={{
+                    bgGradient: 'linear(to-l, teal.300, blue.500)',
+                  }}
+                >
+                  {section.name}
+                </Button>
               </Link>
             );
           })}
@@ -135,7 +153,7 @@ function Footer({ mobile }) {
       >
         <Form />
         {!mobile && (
-          <Box color='blue.light'>Copyright 2023. All Rights Reserved</Box>
+          <Box color='gray.400'>Copyright 2023. All Rights Reserved</Box>
         )}
       </VStack>
     </Stack>

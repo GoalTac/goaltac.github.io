@@ -5,8 +5,10 @@ import {
   FormControl,
   FormErrorMessage,
   Input,
+  useToast,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
+import { useSession } from '../../../hooks/SessionProvider';
 
 function Form() {
   const {
@@ -15,14 +17,56 @@ function Form() {
     handleSubmit,
   } = useForm();
   const [isClicked, setIsClicked] = React.useState(false);
+  const { supabase: supabase } = useSession();
+  const toast = useToast();
 
-  const onSubmit = values => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        alert(`You've received an email in ${JSON.stringify(values.email)}`);
-        resolve();
-      }, 1000);
-    });
+  const isExistingEmail = async email => {
+    // checks whether the email is already in the database
+
+    try {
+      let { data: betaSignUp, error } = await supabase
+        .from('betaSignUp')
+        .select()
+        .eq('email', email);
+
+      if (betaSignUp.length > 0) {
+        return true;
+      }
+      {
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
+  const onSubmit = async values => {
+    console.log(await isExistingEmail(values.email));
+    if (await isExistingEmail(values.email)) {
+      return toast({
+        title: 'You are already signed up',
+        description: 'Try another email!',
+        status: 'error',
+        color: 'red.400',
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      const { data, error } = await supabase
+        .from('betaSignUp')
+        .insert([{ email: values.email }]);
+      console.log(error);
+
+      return toast({
+        title: 'Welcome!🚀',
+        description: `${values.email} is now signed up`,
+        status: 'success',
+        color: 'green.400',
+        duration: 9000,
+        isClosable: true,
+      });
+    }
   };
 
   const onClick = () => {
@@ -40,11 +84,12 @@ function Form() {
       >
         <Input
           id='email'
-          placeholder='Updates in your inbox...'
-          borderRadius='40px'
+          placeholder='Email Notifications'
+          borderRadius='full'
           py='1.8rem'
-          bg='gray'
-          color='blue.light'
+          bgClip='text'
+          bg='white'
+          color='gray'
           {...register('email', {
             required: 'This is required',
             pattern: {
@@ -59,7 +104,12 @@ function Form() {
             Good! Your email address looks valid.
           </Box>
         ) : (
-          <FormErrorMessage position='absolute' zIndex='100' top='56px'>
+          <FormErrorMessage
+            position='absolute'
+            zIndex='100'
+            top='56px'
+            color='red.400'
+          >
             {errors.email && errors.email.message}
           </FormErrorMessage>
         )}

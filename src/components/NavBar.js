@@ -95,7 +95,7 @@ export default function NavBar() {
   const Display = function () {
     switch (locate.pathname) {
       case '/beta':
-        return <Nav />;
+      //return <Nav />;
 
       case '/updatepassword':
       case '/resetpassword':
