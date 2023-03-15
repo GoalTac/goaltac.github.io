@@ -72,7 +72,6 @@ function BetaPage() {
           bgSize='cover'
           bgPosition='center'
           bgRepeat='no-repeat'
-          minHeight='100vh'
           overflowX='hidden'
           position='relative'
           zIndex='100'

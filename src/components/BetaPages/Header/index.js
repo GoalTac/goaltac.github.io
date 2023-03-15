@@ -1,13 +1,36 @@
 import React from 'react';
-import { Flex, Image, HStack, Button } from '@chakra-ui/react';
+import {
+  Button,
+  Box,
+  Spacer,
+  Img,
+  Stack,
+  IconButton,
+  useColorMode,
+  useColorModeValue,
+  Spinner,
+  HStack,
+  Image,
+  Flex,
+} from '@chakra-ui/react';
+import { FaDiscord } from 'react-icons/fa';
 import logo from '../../../images/GoalTac_Logo.png';
 import hamburgerIcon from '../resources/images/icon-hamburger.svg';
 import closeIcon from '../resources/images/icon-close.svg';
 import imgBg from '../resources/images/bg-tablet-pattern.svg';
-
-import { Link, animateScroll as scroll } from 'react-scroll';
+import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { animateScroll as scroll } from 'react-scroll';
 
 function Header({ showMenu, openModal, sections, toggleModal }) {
+  const { toggleColorMode, colorMode } = useColorMode();
+  const [isLoading, setIsLoading] = useState(false); //for login loading
+  const loading = () => {
+    setIsLoading(true);
+    console.log(isLoading);
+  };
+
   return (
     <>
       {showMenu ? (
@@ -28,7 +51,8 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
             height: '100%',
           }}
         >
-          <Image src={logo} boxSize='20%' pt='5px' />
+          <Image src={logo} boxSize='20%' pr='2px' />
+          <Spacer />
           <HStack>
             {sections.map((section, index) => {
               return (
@@ -46,7 +70,36 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
               );
             })}
           </HStack>
-          <Button variant='solid'>Get Started</Button>
+          <Spacer />
+          <a href='https://discord.gg/EzFPQDAKGf' target='_blank'>
+            <IconButton
+              variant='unstyled'
+              icon={<FaDiscord size='100%' color='rgba(114,137,218)' />}
+            />
+          </a>
+
+          <Button onClick={toggleColorMode}>
+            {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+          </Button>
+
+          <Button
+            variant='solid'
+            fontWeight='800'
+            onClick={loading}
+            bgClip='text'
+            bgGradient='linear(to-l, teal.300, blue.500)'
+            bgColor='white'
+            borderRadius='30px'
+            boxShadow='0 4px 4px gray'
+            _hover={{
+              boxShadow: '0 1px 1px gray',
+              fontWeight: '900',
+            }}
+          >
+            <Link as={Link} to='/signin'>
+              {isLoading == true ? <Spinner /> : 'Sign In'}
+            </Link>
+          </Button>
         </Flex>
       ) : (
         <Flex
@@ -65,7 +118,14 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
             height: '18%',
           }}
         >
-          <Image src={logo} pt='8px' position='relative' zIndex='100' />
+          <Image
+            src={logo}
+            width='45%'
+            height='45%'
+            pt='6px'
+            position='relative'
+            zIndex='100'
+          />
           <Button
             variant='icon'
             onClick={() => {
