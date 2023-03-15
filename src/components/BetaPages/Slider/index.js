@@ -2,38 +2,99 @@ import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import './Dots.css';
 import React from 'react';
-import { Box, Image, Button, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Image,
+  Button,
+  VStack,
+  useColorModeValue,
+  Avatar,
+  Badge,
+  Heading,
+  Flex,
+  Stack,
+  Text,
+  Link,
+} from '@chakra-ui/react';
 
-import person1 from '../resources/images/avatar-ali.png';
-import person2 from '../resources/images/avatar-anisha.png';
-import person3 from '../resources/images/avatar-richard.png';
-import person4 from '../resources/images/avatar-shanai.png';
-
-const comments = [
+const staffProfiles = [
   {
-    image: person1,
-    name: 'Ali Bravo',
-    text: `“We have been able to cancel so many other subscriptions since using 
-        Manage. There is no more cross-channel confusion and everyone is much 
-        more focused.” `,
+    name: 'My Phung',
+    image: null,
+    title: 'Founder',
+    desc: 'Entrepreneur, student, chess and guitar enthusiast. Chat with me on Discord @ Wrys#8935',
+    badges: [
+      'weightlifting',
+      'chess',
+      'entrepreneurship',
+      'guitar',
+      'academics',
+    ],
+    contact: 'myphungquoc@gmail.com',
   },
   {
-    image: person2,
-    name: 'Anisha Li',
-    text: `“Manage has supercharged our team’s workflow. The ability to maintain 
-        visibility on larger milestones at all times keeps everyone motivated.”`,
+    name: 'Aditya Chandraker',
+    image: null,
+    title: 'Lead Developer',
+    desc: 'Premed student, CS minor, Pianist, and a fan of spicy food',
+    badges: ['tabletennis', 'chess', 'art', 'taekwondo', 'academics'],
+    contact: 'aditya.chandraker@uconn.edu',
   },
   {
-    image: person3,
-    name: 'Richard Watts',
-    text: `“Manage allows us to provide structure and process. It keeps us organized 
-        and focused. I can’t stop recommending them to everyone I talk to!” `,
+    name: 'Ibrahima Capo-ChiChi',
+    image: null,
+    title: 'Developer',
+    desc: '',
+    badges: [''],
+    contact: '',
   },
   {
-    image: person4,
-    name: 'Shanai Gough',
-    text: ` “Their software allows us to track, manage and collaborate on our projects 
-        from anywhere. It keeps the whole team in-sync without being intrusive.”`,
+    name: 'Nikhil Ghosh',
+    image: null,
+    title: 'Developer',
+    desc: '',
+    badges: [''],
+    contact: '',
+  },
+  {
+    name: 'Jack Cornell',
+    image: null,
+    title: 'Developer',
+    desc: '',
+    badges: [''],
+    contact: '',
+  },
+  {
+    name: 'Colin Acerbi',
+    image: null,
+    title: 'Developer',
+    desc: '',
+    badges: [''],
+    contact: '',
+  },
+  {
+    name: 'Jordan Hawkes',
+    image: null,
+    title: 'Marketing',
+    desc: '',
+    badges: [''],
+    contact: '',
+  },
+  {
+    name: 'Paolo Rangonese',
+    image: null,
+    title: 'Finance',
+    desc: '',
+    badges: [''],
+    contact: '',
+  },
+  {
+    name: 'Seth Pappalardo',
+    image: null,
+    title: 'Business',
+    desc: '',
+    badges: [''],
+    contact: '',
   },
 ];
 
@@ -41,18 +102,18 @@ const responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.
     breakpoint: { max: 4000, min: 3000 },
-    items: 5,
+    items: 4,
   },
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
     items: 3,
   },
   tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 1,
+    breakpoint: { max: 1024, min: 768 },
+    items: 2,
   },
   mobile: {
-    breakpoint: { max: 464, min: 0 },
+    breakpoint: { max: 768, min: 0 },
     items: 1,
   },
 };
@@ -72,30 +133,97 @@ function Slider({ showDots }) {
         px={['2rem', null, '6rem']}
         py='2rem'
       >
-        What they've said
+        Our Team
       </Box>
       <Carousel
-        removeArrowOnDeviceType={['tablet', 'mobile', 'desktop']}
+        removeArrowOnDeviceType={[
+          'mobile',
+          'tablet',
+          'desktop',
+          'superLargeDesktop',
+        ]}
         showDots={showDots}
         responsive={responsive}
         autoPlay={!showDots ? true : false}
         autoPlaySpeed={2000}
         infinite={true}
+        focusOnSelect={true}
+        arrow={true}
       >
-        {comments.map((comment, index) => {
+        {staffProfiles.map((staff, index) => {
           return (
-            <VStack
-              key={index}
-              cursor='grab'
-              p='2rem'
-              paddingBottom='4rem'
-              textAlign='center'
-              userSelect='none'
-            >
-              <Image src={comment.image}></Image>
-              <Box fontWeight='800'>{comment.name}</Box>
-              <Box color='blue.light'>{comment.text}</Box>
-            </VStack>
+            <Box p='0.5rem' paddingY='6rem' pt='2rem'>
+              <VStack
+                key={index}
+                cursor='grab'
+                textAlign='center'
+                alignItems='center'
+                alignContent='center'
+                userSelect='none'
+                bg={useColorModeValue('white', 'gray.900')}
+                rounded={'lg'}
+                transition='boxShadow 3s'
+                _hover={{
+                  boxShadow: '0px 2px 2px gray',
+                }}
+              >
+                <Avatar
+                  size={'xl'}
+                  alt={'Avatar Alt'}
+                  mb={4}
+                  pos={'relative'}
+                />
+                <Heading fontSize={'2xl'} fontFamily={'body'}>
+                  {staff.name}
+                </Heading>
+                <Text fontWeight={600} color={'gray.500'} mb={4}>
+                  {staff.title}
+                </Text>
+                <Text
+                  textAlign={'center'}
+                  color={useColorModeValue('gray.700', 'gray.400')}
+                  px={3}
+                >
+                  {staff.desc}
+                </Text>
+                <Flex
+                  flexWrap='wrap'
+                  justifyItems='center'
+                  alignContent='center'
+                  alignItems='center'
+                  columnGap={2}
+                  rowGap={1}
+                  p={3}
+                >
+                  {staff.badges.map((badge, index) => {
+                    return (
+                      <Badge
+                        px={2}
+                        py={1}
+                        bg={useColorModeValue('gray.50', 'gray.800')}
+                        fontWeight={'400'}
+                        key={index}
+                      >
+                        {badge}
+                      </Badge>
+                    );
+                  })}
+                </Flex>
+                <Stack>
+                  <Link
+                    href={'mailto: ' + `${staff.contact}`}
+                    flex={1}
+                    fontSize={'sm'}
+                    marginBottom={7}
+                    _focus={{
+                      bg: 'gray.200',
+                    }}
+                  >
+                    {staff.contact}
+                  </Link>
+                </Stack>
+              </VStack>
+            </Box>
           );
         })}
       </Carousel>
