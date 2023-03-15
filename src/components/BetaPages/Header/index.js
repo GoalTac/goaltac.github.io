@@ -12,6 +12,7 @@ import {
   HStack,
   Image,
   Flex,
+  withDelay,
 } from '@chakra-ui/react';
 import { FaDiscord } from 'react-icons/fa';
 import logo from '../../../images/GoalTac_Logo.png';
@@ -22,6 +23,7 @@ import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { Link, NavLink, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import { animateScroll as scroll } from 'react-scroll';
+import { delay } from 'framer-motion';
 
 function Header({ showMenu, openModal, sections, toggleModal }) {
   const { toggleColorMode, colorMode } = useColorMode();
@@ -60,12 +62,23 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
               return (
                 <Link
                   to={`${section.href}`}
+                  key={index}
                   spy={true}
                   smooth={true}
                   offset={50}
                   duration={500}
                 >
-                  <Button variant='ghost' key={index}>
+                  <Button
+                    variant='ghost'
+                    fontSize='2xl'
+                    background='teal.300'
+                    bgClip='text'
+                    transition='background 600ms'
+                    _hover={{
+                      background: 'blue.500',
+                      bgClip: 'text',
+                    }}
+                  >
                     {section.name}
                   </Button>
                 </Link>

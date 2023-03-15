@@ -11,24 +11,17 @@ import { Modal } from '../components/BetaPages/Modal';
 
 const sections = [
   {
-    href: 'pricing',
-    name: 'Pricing',
-  },
-  {
     href: 'product',
     name: 'Product',
   },
   {
-    href: 'about',
-    name: 'About Us',
+    href: 'pricing',
+    name: 'Pricing',
   },
+
   {
-    href: 'careers',
-    name: 'Careers',
-  },
-  {
-    href: 'community',
-    name: 'Community',
+    href: 'resources',
+    name: 'Resources',
   },
 ];
 
