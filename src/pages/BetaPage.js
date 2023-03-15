@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex, useColorMode } from '@chakra-ui/react';
+import { Box, Flex, useColorMode, Divider } from '@chakra-ui/react';
 
 import { Header } from '../components/BetaPages/Header';
 import { Intro } from '../components/BetaPages/Intro';
@@ -86,7 +86,10 @@ function BetaPage() {
           ></Header>
           <Intro />
           <Features hideBgFeatureTitle={hideBgFeatureTitle} />
+          <Divider />
           <Slider showDots={showDots} />
+          <Divider mt={10} />
+
           <Prefooter />
           <Footer mobile={mobile} />
         </Box>

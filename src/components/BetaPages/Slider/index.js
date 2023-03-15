@@ -227,9 +227,7 @@ function Slider({ showDots }) {
           );
         })}
       </Carousel>
-      <Button variant='solid' mt='3rem'>
-        Get Started
-      </Button>
+      <Button variant='solid'>Get Started</Button>
     </Box>
   );
 }
