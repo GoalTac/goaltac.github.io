@@ -19,15 +19,17 @@ import hamburgerIcon from '../resources/images/icon-hamburger.svg';
 import closeIcon from '../resources/images/icon-close.svg';
 import imgBg from '../resources/images/bg-tablet-pattern.svg';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { Link } from 'react-router-dom';
+import { Link, NavLink, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import { animateScroll as scroll } from 'react-scroll';
 
 function Header({ showMenu, openModal, sections, toggleModal }) {
   const { toggleColorMode, colorMode } = useColorMode();
   const [isLoading, setIsLoading] = useState(false); //for login loading
+
   const loading = () => {
-    setIsLoading(true);
+    setIsLoading(!isLoading);
+    Navigate('/signin');
     console.log(isLoading);
   };
 
@@ -85,9 +87,14 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
               boxShadow: '0 1px 1px gray',
             }}
           >
-            <Link as={Link} to='/signin'>
-              {isLoading == true ? <Spinner /> : 'Sign In'}
-            </Link>
+            <NavLink
+              to='/signin'
+              className={({ isActive, isPending }) =>
+                isPending ? 'pending' : isActive ? 'active' : ''
+              }
+            >
+              {isLoading == true ? <Spinner color='black' /> : 'Sign In'}
+            </NavLink>
           </Button>
         </Flex>
       ) : (

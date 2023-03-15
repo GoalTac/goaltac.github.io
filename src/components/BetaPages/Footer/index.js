@@ -140,6 +140,7 @@ function Footer({ mobile }) {
                   variant='footer'
                   bgColor='white'
                   bgClip='text'
+                  fontWeight='bold'
                   _hover={{
                     bgGradient: 'linear(to-l, teal.300, blue.500)',
                   }}
@@ -165,6 +166,7 @@ function Footer({ mobile }) {
                   variant='footer'
                   bgColor='white'
                   bgClip='text'
+                  fontWeight='bold'
                   _hover={{
                     bgGradient: 'linear(to-l, teal.300, blue.500)',
                   }}
