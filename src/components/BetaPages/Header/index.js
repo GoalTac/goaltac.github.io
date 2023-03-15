@@ -71,16 +71,6 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
             })}
           </HStack>
           <Spacer />
-          <a href='https://discord.gg/EzFPQDAKGf' target='_blank'>
-            <IconButton
-              variant='unstyled'
-              icon={<FaDiscord size='100%' color='rgba(114,137,218)' />}
-            />
-          </a>
-
-          <Button onClick={toggleColorMode}>
-            {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-          </Button>
 
           <Button
             variant='solid'
@@ -93,7 +83,6 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
             boxShadow='0 4px 4px gray'
             _hover={{
               boxShadow: '0 1px 1px gray',
-              fontWeight: '900',
             }}
           >
             <Link as={Link} to='/signin'>

@@ -1,14 +1,27 @@
 import React from 'react';
 import { Form } from '../Form';
-import { Box, Image, HStack, Button, VStack, Stack } from '@chakra-ui/react';
+import {
+  Box,
+  Image,
+  HStack,
+  Button,
+  VStack,
+  Stack,
+  IconButton,
+  Spacer,
+} from '@chakra-ui/react';
 
-import logo from '../resources/images/logo-footer.svg';
-import iconFacebook from '../resources/images/icon-facebook.svg';
-import iconYoutube from '../resources/images/icon-youtube.svg';
-import iconTwitter from '../resources/images/icon-twitter.svg';
-import iconPinterest from '../resources/images/icon-pinterest.svg';
-import iconInstagram from '../resources/images/icon-instagram.svg';
 import { Link, animateScroll as scroll } from 'react-scroll';
+import {
+  FaDiscord,
+  FaFacebookSquare,
+  FaInstagram,
+  FaTwitter,
+  FaYoutube,
+  FaTiktok,
+} from 'react-icons/fa';
+import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import logo from '../../../images/GoalTac_Logo.png';
 
 const sectionsLeft = [
   {
@@ -45,11 +58,26 @@ const sectionsRight = [
 ];
 
 const icons = [
-  iconFacebook,
-  iconYoutube,
-  iconTwitter,
-  iconPinterest,
-  iconInstagram,
+  {
+    icon: <FaFacebookSquare size={25} color='rgba(66, 103, 178)' />,
+    href: '',
+  },
+  {
+    icon: <FaYoutube size={25} color='rgba(255,0,0)' />,
+    href: '',
+  },
+  {
+    icon: <FaDiscord size={25} color='rgba(114,137,218)' />,
+    href: 'https://discord.gg/EzFPQDAKGf',
+  },
+  {
+    icon: <FaTiktok size={25} color='white' />,
+    href: '',
+  },
+  {
+    icon: <FaInstagram size={30} color='white' />,
+    href: '',
+  },
 ];
 
 function Footer({ mobile }) {
@@ -72,7 +100,7 @@ function Footer({ mobile }) {
         {mobile && (
           <Box color='gray.400'>Copyright 2023. All Rights Reserved</Box>
         )}
-        <Image src={logo} pt='5px' maxWidth={['200px', '150px']} />
+        <Image src={logo} pt='5px' maxWidth={['250px', '200px']} />
         <HStack
           spacing='1rem'
           justifyContent={['space-around', null]}
@@ -80,22 +108,23 @@ function Footer({ mobile }) {
         >
           {icons.map((icon, index) => {
             return (
-              <Image
-                key={index}
-                src={icon}
-                cursor='pointer'
-                height={['32px', '20px']}
-                _hover={{
-                  filter:
-                    'invert(58%) sepia(54%) saturate(470%) hue-rotate(323deg) brightness(103%) contrast(95%)',
-                }}
-                transition='.4s all ease'
-              ></Image>
+              <a href={icon.href} target='_blank' key={index}>
+                <IconButton
+                  variant='unstyled'
+                  cursor='pointer'
+                  transition='.4s all ease'
+                  icon={icon.icon}
+                  _hover={{
+                    filter:
+                      'invert(58%) sepia(54%) saturate(470%) hue-rotate(323deg) brightness(103%) contrast(95%)',
+                  }}
+                />
+              </a>
             );
           })}
         </HStack>
       </Stack>
-      <HStack spacing={['5rem', null, '10rem']} fontWeight='extrabold'>
+      <HStack spacing={['6rem', null, '6rem']} fontWeight='extrabold'>
         <VStack spacing='.3rem' textAlign='left' alignItems='flex-start'>
           {sectionsLeft.map((section, index) => {
             return (
