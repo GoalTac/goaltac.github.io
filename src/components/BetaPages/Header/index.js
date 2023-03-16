@@ -63,8 +63,6 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
                 <Link
                   to={`${section.href}`}
                   key={index}
-                  spy={true}
-                  smooth={true}
                   offset={50}
                   duration={500}
                 >

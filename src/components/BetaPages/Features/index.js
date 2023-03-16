@@ -58,12 +58,12 @@ function Features({ hideBgFeatureTitle }) {
         spacing='2rem'
       >
         <Box fontSize={['30px', '4xl']} fontWeight='700' lineHeight='1.1'>
-          What’s different about Manage?
+          Why is GoalTac Better?
         </Box>
-        <Box maxWidth={['100%', '70%']} color='blue.light'>
-          Manage provides all the functionality your team needs, without the
-          complexity. Our software is tailor-made for modern digital product
-          teams.
+        <Box paddingStart={5} maxWidth={['100%', '80%']} color='blue.light'>
+          Compared to other goal tracking apps, GoalTac is a 
+          shot of energy that will keep you motivated to
+          become your most productive and accomplished self
         </Box>
       </VStack>
       <VStack spacing='2rem'>

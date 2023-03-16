@@ -99,13 +99,8 @@ const staffProfiles = [
 ];
 
 const responsive = {
-  superLargeDesktop: {
-    // the naming can be any, depends on you.
-    breakpoint: { max: 4000, min: 3000 },
-    items: 4,
-  },
   desktop: {
-    breakpoint: { max: 3000, min: 1024 },
+    breakpoint: { max: 99999, min: 1024 },
     items: 3,
   },
   tablet: {
@@ -140,7 +135,6 @@ function Slider({ showDots }) {
           'mobile',
           'tablet',
           'desktop',
-          'superLargeDesktop',
         ]}
         showDots={showDots}
         responsive={responsive}

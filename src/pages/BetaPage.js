@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Flex, useColorMode, Divider } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
+import { Box, Flex, useColorMode, Divider, Spacer } from '@chakra-ui/react';
 
 import { Header } from '../components/BetaPages/Header';
 import { Intro } from '../components/BetaPages/Intro';
@@ -36,12 +36,35 @@ function BetaPage() {
   const [openModal, setOpenModal] = React.useState(false);
   const { colorMode } = useColorMode();
 
+  const [windowSize, setWindowSize] = React.useState('100%');;
+
   const toggleModal = () => {
     setOpenModal(!openModal);
   };
 
+  const sizeSelect = (size) => {
+    if (size < 1750) {
+      return '100%'
+    } else if (size < 2250) {
+      return '90%'
+    } else if (size < 2750) {
+      return '80%'
+    } else if (size < 3250) {
+      return '70%'
+    } else if (size < 3750) {
+      return '60%'
+    } else if (size < 4250) {
+      return '50%'
+    } else if (size < 4750) {
+      return '40%'
+    } else if (size < 99999) {
+      return '30%'
+    }
+  }
   React.useEffect(() => {
+    setWindowSize(sizeSelect(window.innerWidth))
     function handleResize() {
+      console.log(window.innerWidth)
       if (window.innerWidth < 768) {
         setShowMenu(false);
         setHideBgFeatureTitle(true);
@@ -53,15 +76,25 @@ function BetaPage() {
         setShowDots(false);
         setMobile(false);
       }
+      setWindowSize(sizeSelect(window.innerWidth))
+      console.log("size: "+ windowSize)
+      
+      
     }
+
+
+    
+      
+
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [windowSize]);
 
   return (
     <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'} overflowX='hidden'>
-      <Flex justifyContent='center' alignItems='center'>
+      <Spacer />
+      <Flex justifyContent='center' alignItems='center' width={windowSize}>
         <Box
           bgSize='cover'
           bgPosition='center'
