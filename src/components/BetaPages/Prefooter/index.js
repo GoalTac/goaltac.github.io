@@ -9,8 +9,6 @@ function Prefooter() {
 
   const loading = () => {
     setIsLoading(!isLoading);
-    Navigate('/signin');
-    console.log(isLoading);
   };
 
   return (

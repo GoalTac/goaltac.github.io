@@ -22,23 +22,28 @@ export default function NavBar() {
   const supabase = useSupabaseClient();
   const locate = useLocation();
   const colorModeV = useColorModeValue('gray.100', 'gray.900');
-  const [username, setUsername] = useState(null);
+  /* const [username, setUsername] = useState(null); //this does not seem needed
 
   useEffect(() => {
     async function getUsername() {
-      const { data, error } = await supabase
-        .from('usernames')
-        .select('username')
-        .eq('userid', session.user.id) //this is throwing an error
-        .limit(1)
-        .single();
-      console.log(session.user.id);
-      console.log(data);
-      setUsername(data.username);
+      try {
+        const { data, error } = await supabase
+          .from('usernames')
+          .select('username')
+          .eq('userid', session.user.id)
+          .limit(1)
+          .single();
+        console.log(session.user.id);
+        console.log(data);
+        setUsername(data.username);
+      } catch(err) {
+        console.log(err)
+      }
+      
     }
 
     getUsername();
-  }, []);
+  }, []); */
 
   const GeneralNavBar = function () {
     return (

@@ -90,7 +90,6 @@ function BetaPage() {
     return () => window.removeEventListener('resize', handleResize);
   }, [windowSize]);
 
-  console.log(colorMode)
   return (
     <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
       <Flex justifyContent='center' alignItems='center' >

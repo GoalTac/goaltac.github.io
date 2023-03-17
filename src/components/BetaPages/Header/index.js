@@ -30,8 +30,6 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
 
   const loading = () => {
     setIsLoading(!isLoading);
-    Navigate('/signin');
-    console.log(isLoading);
   };
 
   return (

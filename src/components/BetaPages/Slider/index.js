@@ -146,9 +146,8 @@ function Slider({ showDots }) {
       >
         {staffProfiles.map((staff, index) => {
           return (
-            <Box p='0.5rem' paddingY='6rem' pt='2rem'>
+            <Box p='0.5rem' paddingY='6rem' pt='2rem' key={index}>
               <VStack
-                key={index}
                 cursor='grab'
                 textAlign='center'
                 alignItems='center'
@@ -191,14 +190,14 @@ function Slider({ showDots }) {
                   rowGap={1}
                   p={3}
                 >
-                  {staff.badges.map((badge, index) => {
+                  {staff.badges.forEach((badge, i) => {
                     return (
                       <Badge
                         px={2}
                         py={1}
                         bg='transparent'
                         fontWeight={'400'}
-                        key={index}
+                        key={i}
                       >
                         {badge}
                       </Badge>
