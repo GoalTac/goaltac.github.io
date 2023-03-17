@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Flex, HStack, Divider } from '@chakra-ui/react';
 
 export default function Messages() {
+  const supabase = useSupabaseClient();
   console.log('Messages has loaded.');
 
   const openConvo = async event => {

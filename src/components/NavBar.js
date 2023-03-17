@@ -13,7 +13,6 @@ import {
 import Settings from './HomePages/Settings';
 import logo from '../images/logo.png';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import Nav from './BetaPages/Nav';
 import { useEffect, useState } from 'react';
 import { useSupabaseClient, useSession } from '../hooks/SessionProvider';
 
@@ -30,7 +29,7 @@ export default function NavBar() {
       const { data, error } = await supabase
         .from('usernames')
         .select('username')
-        .eq('userid', session.user.id)
+        .eq('userid', session.user.id) //this is throwing an error
         .limit(1)
         .single();
       console.log(session.user.id);
@@ -95,7 +94,7 @@ export default function NavBar() {
   const Display = function () {
     switch (locate.pathname) {
       case '/beta':
-        return <Nav />;
+      //return <Nav />;
 
       case '/updatepassword':
       case '/resetpassword':

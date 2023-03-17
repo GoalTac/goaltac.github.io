@@ -18,10 +18,13 @@
     "react-csv": "^2.2.2",
     "react-datepicker": "^4.8.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.43.5",
     "react-icons": "^4.7.1",
+    "react-multi-carousel": "^2.8.2",
     "react-router": "^6.7.0",
     "react-router-dom": "^6.7.0",
     "react-scripts": "^5.0.1",
+    "react-scroll": "^1.8.9",
     "supabase": "^1.34.5",
     "web-vitals": "^3.1.1"
   },
@@ -49,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "css-loader": "^6.7.3",
     "eslint": "^8.33.0",
     "eslint-plugin-react": "^7.32.1",
     "husky": "^8.0.3",
