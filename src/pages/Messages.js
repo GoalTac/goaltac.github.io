@@ -2,9 +2,10 @@ import MsgSidebar from '../components/MessagerPages/MsgSidebar';
 import MsgConversation from '../components/MessagerPages/MsgConversation';
 import { useEffect, useState } from 'react';
 import { Flex, HStack, Divider } from '@chakra-ui/react';
+import { useSession } from '../hooks/SessionProvider';
 
 export default function Messages() {
-  const supabase = useSupabaseClient();
+  const { user: user, supabase: supabase } = useSession();
   console.log('Messages has loaded.');
 
   const openConvo = async event => {

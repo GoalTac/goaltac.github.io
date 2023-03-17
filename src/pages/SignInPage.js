@@ -22,11 +22,11 @@ import { FaUserAlt, FaLock } from 'react-icons/fa';
 import { useNavigate, Link } from 'react-router-dom';
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
-import { useSupabaseClient } from '../hooks/SessionProvider';
+import { useSession } from '../hooks/SessionProvider';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const supabase = useSupabaseClient();
+  const { user: user, supabase: supabase } = useSession();
   const { colorMode } = useColorMode();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');

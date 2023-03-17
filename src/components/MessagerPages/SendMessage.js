@@ -1,4 +1,4 @@
-import { useSupabaseClient } from '../../hooks/SessionProvider';
+import { useSession } from '../../hooks/SessionProvider';
 import { useEffect, useState } from 'react';
 import { FormControl, InputGroup, Input, Button } from '@chakra-ui/react';
 
@@ -9,7 +9,7 @@ export default function SendMessage(props) {
     text: '',
   });
   const { sender_id, recipient_id, text } = message;
-  const supabase = useSupabaseClient();
+  const { user: user, supabase: supabase } = useSession();
 
   const sendMessage = async () => {
     print('Lets send the message');
