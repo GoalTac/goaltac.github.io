@@ -47,24 +47,25 @@ function BetaPage() {
       return '100%'
     } else if (size < 2250) {
       return '90%'
-    } else if (size < 2750) {
+    } else if (size < 2500) {
       return '80%'
-    } else if (size < 3250) {
+    } else if (size < 2750) {
       return '70%'
-    } else if (size < 3750) {
+    } else if (size < 3000) {
       return '60%'
-    } else if (size < 4250) {
+    } else if (size < 3250) {
       return '50%'
-    } else if (size < 4750) {
+    } else if (size < 3500) {
       return '40%'
-    } else if (size < 99999) {
+    } else if (size < 3750) {
       return '30%'
+    } else if (size < 99999) {
+      return '20%'
     }
   }
   React.useEffect(() => {
     setWindowSize(sizeSelect(window.innerWidth))
     function handleResize() {
-      console.log(window.innerWidth)
       if (window.innerWidth < 768) {
         setShowMenu(false);
         setHideBgFeatureTitle(true);
@@ -77,9 +78,6 @@ function BetaPage() {
         setMobile(false);
       }
       setWindowSize(sizeSelect(window.innerWidth))
-      console.log("size: "+ windowSize)
-      
-      
     }
 
 
@@ -92,9 +90,8 @@ function BetaPage() {
   }, [windowSize]);
 
   return (
-    <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'} overflowX='hidden'>
-      <Spacer />
-      <Flex justifyContent='center' alignItems='center' width={windowSize}>
+    <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
+      <Flex justifyContent='center' alignItems='center' >
         <Box
           bgSize='cover'
           bgPosition='center'
@@ -102,6 +99,8 @@ function BetaPage() {
           overflowX='hidden'
           position='relative'
           zIndex='100'
+          width={windowSize}
+          height='100%'
         >
           {openModal && mobile && (
             <Modal

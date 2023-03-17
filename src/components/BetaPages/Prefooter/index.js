@@ -18,12 +18,12 @@ function Prefooter() {
     <Stack
       id='careers'
       direction={['column', null, 'row']}
-      bgGradient='linear(to-b, teal.300, blue.500)'
+      bgGradient='linear(to-b, white, teal.100, teal.300, blue.500)'
       alignItems='center'
       justifyContent={['center', null, 'space-between']}
       py='3rem'
       px={['2rem', null, '7rem']}
-      mt='8rem'
+      mt='4rem'
       spacing='2rem'
       height={['390px', null, '220px']}
       position='relative'
@@ -51,15 +51,18 @@ function Prefooter() {
         Simplify how your team works today.
       </Box>
       <Button
+        width={250}
+        height={100}
         variant='solid'
         fontWeight='800'
+        fontSize={30}
         onClick={loading}
         bgColor='blackAlpha.600'
         bgClip='text'
         borderRadius='30px'
-        boxShadow='0 4px 4px black'
+        boxShadow='0 6px 6px black'
         _hover={{
-          boxShadow: '0 0px 0px transparent',
+          boxShadow: '0px 1px 1px black',
         }}
       >
         <NavLink

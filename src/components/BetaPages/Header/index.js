@@ -44,6 +44,8 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
           px='3rem'
           py='2rem'
           width='100%'
+          boxShadow='0px 0px 3px black'
+          
           _after={{
             content: "''",
             background: `no-repeat url(${imgBg})`,
