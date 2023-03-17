@@ -15,6 +15,7 @@ import logo from '../images/logo.png';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSupabaseClient, useSession } from '../hooks/SessionProvider';
+import SideBar from './General/Sidebar';
 
 export default function NavBar() {
   const session = useSession();
@@ -97,19 +98,20 @@ export default function NavBar() {
   };
 
   const Display = function () {
-    switch (locate.pathname) {
-      case '/beta':
-      //return <Nav />;
 
-      case '/updatepassword':
-      case '/resetpassword':
-      case '/signup':
-      case '/signin':
-        return <></>;
+    const sideBarPages = [
+      '/', '/market','/profile',
+      '/social','/messages'
+    ]
+    
 
-      default:
-        return <GeneralNavBar />;
+    if (sideBarPages.includes(locate.pathname)) {
+      return <SideBar />;
+    } else {
+      return <></>;
     }
+
+    
   };
 
   useEffect(() => {

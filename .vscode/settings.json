@@ -2,5 +2,10 @@
   "crosshair.enabled": true,
   "eslint.enable": true,
   "editor.acceptSuggestionOnCommitCharacter": false,
-  "eslint.validate": ["javascript", "javascriptreact", "html", "typescriptreact"]
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "html",
+    "typescriptreact"
+  ]
 }
