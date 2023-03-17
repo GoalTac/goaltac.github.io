@@ -154,20 +154,22 @@ function Slider({ showDots }) {
                 alignItems='center'
                 alignContent='center'
                 userSelect='none'
-                bg={useColorModeValue('white', 'gray.900')}
+                bg='transparent'
                 rounded={'lg'}
                 transition='boxShadow 3s'
                 _hover={{
-                  boxShadow: '0px 2px 2px gray',
+                  boxShadow: '0px 0px 2px gray',
                 }}
+                py='2rem'
               >
                 <Avatar
                   size={'xl'}
                   alt={'Avatar Alt'}
                   mb={4}
                   pos={'relative'}
+                  bgGradient='radial(blue.500, teal.300)'
                 />
-                <Heading fontSize={'2xl'} fontFamily={'body'}>
+                <Heading fontSize={'2xl'} fontFamily={'body'} >
                   {staff.name}
                 </Heading>
                 <Text fontWeight={600} color={'gray.500'} mb={4}>
@@ -194,7 +196,7 @@ function Slider({ showDots }) {
                       <Badge
                         px={2}
                         py={1}
-                        bg={useColorModeValue('gray.50', 'gray.800')}
+                        bg='transparent'
                         fontWeight={'400'}
                         key={index}
                       >
@@ -212,6 +214,7 @@ function Slider({ showDots }) {
                     _focus={{
                       bg: 'gray.200',
                     }}
+                    fontWeight='600'
                   >
                     {staff.contact}
                   </Link>
@@ -221,7 +224,6 @@ function Slider({ showDots }) {
           );
         })}
       </Carousel>
-      <Button variant='solid'>Get Started</Button>
     </Box>
   );
 }

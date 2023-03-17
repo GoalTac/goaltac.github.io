@@ -22,8 +22,7 @@ import imgBg from '../resources/images/bg-tablet-pattern.svg';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { Link, NavLink, Navigate } from 'react-router-dom';
 import { useState } from 'react';
-import { animateScroll as scroll } from 'react-scroll';
-import { delay } from 'framer-motion';
+import { easeIn } from 'framer-motion';
 
 function Header({ showMenu, openModal, sections, toggleModal }) {
   const { toggleColorMode, colorMode } = useColorMode();
@@ -73,7 +72,8 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
                     fontSize='2xl'
                     background='teal.300'
                     bgClip='text'
-                    transition='background 600ms'
+                    transition='background 1500ms'
+                    
                     _hover={{
                       background: 'blue.500',
                       bgClip: 'text',

@@ -117,13 +117,15 @@ function BetaPage() {
             toggleModal={toggleModal}
           ></Header>
           <Intro />
-          <Features hideBgFeatureTitle={hideBgFeatureTitle} />
-          <Divider />
-          <Slider showDots={showDots} />
-          <Divider mt={10} />
+          
+          <Box bgGradient='linear(to-b, white, teal.100, teal.300, blue.500)'>
+            <Features hideBgFeatureTitle={hideBgFeatureTitle} />
+            <Slider showDots={showDots} />
 
-          <Prefooter />
-          <Footer mobile={mobile} />
+            <Prefooter />
+            <Footer mobile={mobile} />
+          </Box>
+          
         </Box>
       </Flex>
     </Box>

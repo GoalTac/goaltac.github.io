@@ -5,25 +5,39 @@ import imgBg from '../resources/images/bg-tablet-pattern.svg';
 const content = [
   {
     number: '01',
-    title: 'Track company-wide progress',
-    text: `See how your day-to-day tasks fit into the wider vision. Go from 
-        tracking progress at the milestone level all the way done to the 
-        smallest of details. Never lose sight of the bigger picture again.`,
+    title: 'Have fun with it!',
+    text: <p>Goal execution is gamified and will help make work fun!
+            Reach significant milestones whilst competing with 
+            your peers to accomplish shared goals through various
+            challenges and games. &#x1F60A;</p>,
   },
   {
     number: '02',
-    title: 'Advanced built-in reports',
-    text: `Set internal delivery estimates and track progress toward company 
-        goals. Our customisable dashboard helps you build out the reports 
-        you need to keep key stakeholders informed.`,
+    title: 'Meet new friends',
+    text: <p>Join or create your own community specified towards a topic of choice! 
+            Communities are ranked based on how many points they earn. The more
+            productive you and your community are, the higher you place! This will
+            give that accountability rarely seen on online platforms, especially in
+            a productive setting.
+          </p>,
   },
   {
     number: '03',
     title: 'Everything you need in one place',
-    text: `Stop jumping from one service to another to communicate, store files, 
-        track tasks and share documents. Manage offers an all-in-one team 
-        productivity solution.`,
+    text: <p>Want to just organize your tasks? No problem.
+            Want to use the app to meet other people? You can do that too.
+            GoalTac's app allows you to use it in any way you like without
+            jeopordizing your experience! 
+          </p>,
   },
+  {
+    number: '04',
+    title: 'Superior organization',
+    text: <p>We prioritize high customizability in task creation,
+            which can be visualized in many ways! Use GoalTac to track
+            progress towards any goal you aspire to accomplish.
+          </p>,
+  }
 ];
 
 function Features({ hideBgFeatureTitle }) {
@@ -36,6 +50,7 @@ function Features({ hideBgFeatureTitle }) {
       px={['1rem', null, '6rem']}
       py='3rem'
       position='relative'
+      
       _after={{
         content: "''",
         background: [
@@ -56,6 +71,7 @@ function Features({ hideBgFeatureTitle }) {
         textAlign={['center', null, 'left']}
         minWidth='40%'
         spacing='2rem'
+        mb='4rem'
       >
         <Box fontSize={['30px', '4xl']} fontWeight='700' lineHeight='1.1'>
           Why is GoalTac Better?
@@ -101,10 +117,12 @@ function Features({ hideBgFeatureTitle }) {
                 {vstack.title}
               </Box>
             </Flex>
-            <Box paddingLeft={['0', '75px']} color='blue.light'>
+            <Box paddingLeft={['0', '75px']}>
               {vstack.text}
             </Box>
+              
           </VStack>
+          
         ))}
       </VStack>
     </Stack>

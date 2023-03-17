@@ -55,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "css-loader": "^6.7.3",
     "eslint": "^8.33.0",
     "eslint-plugin-react": "^7.32.1",
     "gh-pages": "^5.0.0",

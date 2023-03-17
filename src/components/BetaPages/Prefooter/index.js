@@ -4,7 +4,6 @@ import imgBg from '../resources/images/bg-simplify-section-desktop.svg';
 import imgBgMobile from '../resources/images/bg-simplify-section-mobile.svg';
 import { Link, NavLink, Navigate } from 'react-router-dom';
 import { useState } from 'react';
-
 function Prefooter() {
   const [isLoading, setIsLoading] = useState(false); //for login loading
 
@@ -18,12 +17,10 @@ function Prefooter() {
     <Stack
       id='careers'
       direction={['column', null, 'row']}
-      bgGradient='linear(to-b, white, teal.100, teal.300, blue.500)'
       alignItems='center'
       justifyContent={['center', null, 'space-between']}
       py='3rem'
       px={['2rem', null, '7rem']}
-      mt='4rem'
       spacing='2rem'
       height={['390px', null, '220px']}
       position='relative'
@@ -48,7 +45,7 @@ function Prefooter() {
         maxWidth={['100%', null, '40%']}
         textAlign={['center', 'left']}
       >
-        Simplify how your team works today.
+        Be the change you want to see today.
       </Box>
       <Button
         width={250}
