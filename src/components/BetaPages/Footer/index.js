@@ -8,6 +8,8 @@ import {
   VStack,
   Stack,
   IconButton,
+  useColorMode,
+  useColorModeValue,
   Spacer,
 } from '@chakra-ui/react';
 
@@ -81,6 +83,9 @@ const icons = [
 ];
 
 function Footer({ mobile }) {
+
+  const { toggleColorMode, colorMode } = useColorMode();
+
   return (
     <Stack
       id='about'
@@ -122,6 +127,9 @@ function Footer({ mobile }) {
               </a>
             );
           })}
+          <Button onClick={toggleColorMode}>
+            {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+          </Button>
         </HStack>
       </Stack>
       <HStack spacing={['6rem', null, '6rem']} fontWeight='extrabold'>
@@ -183,6 +191,7 @@ function Footer({ mobile }) {
         alignItems={['center', null, 'flex-end']}
       >
         <Form />
+        
         {!mobile && (
           <Box color='gray.400'>Copyright 2023. All Rights Reserved</Box>
         )}

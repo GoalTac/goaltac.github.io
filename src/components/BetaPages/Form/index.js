@@ -6,11 +6,13 @@ import {
   FormErrorMessage,
   Input,
   useToast,
+  useColorMode
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { useSession } from '../../../hooks/SessionProvider';
 
 function Form() {
+  const { colorMode } = useColorMode();
   const {
     register,
     formState: { errors },
@@ -88,7 +90,6 @@ function Form() {
           borderRadius='full'
           py='1.8rem'
           bgClip='text'
-          bg='white'
           color='gray'
           {...register('email', {
             required: 'This is required',

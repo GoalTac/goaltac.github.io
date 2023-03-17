@@ -36,6 +36,7 @@ function BetaPage() {
   const [openModal, setOpenModal] = React.useState(false);
   const { colorMode } = useColorMode();
 
+
   const [windowSize, setWindowSize] = React.useState('100%');;
 
   const toggleModal = () => {
@@ -89,6 +90,7 @@ function BetaPage() {
     return () => window.removeEventListener('resize', handleResize);
   }, [windowSize]);
 
+  console.log(colorMode)
   return (
     <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
       <Flex justifyContent='center' alignItems='center' >
@@ -118,7 +120,7 @@ function BetaPage() {
           ></Header>
           <Intro />
           
-          <Box bgGradient='linear(to-b, white, teal.100, teal.300, blue.500)'>
+          <Box bgGradient={colorMode === 'dark' ? 'linear(to-b, gray.800, teal.800, teal.300, blue.500)' : 'linear(to-b, white, teal.100, teal.300, blue.500)'}>
             <Features hideBgFeatureTitle={hideBgFeatureTitle} />
             <Slider showDots={showDots} />
 
