@@ -19,7 +19,7 @@ import {
     FiSettings
 } from 'react-icons/fi'
 import { IoPawOutline } from 'react-icons/io5'
-import NavItem from '../General/NavItem'
+import NavItem from '../RootPages/NavItem'
 import { FaUserFriends, FaStore } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
 import largelogo from '../../images/GoalTac_Logo.png';
@@ -27,64 +27,18 @@ import smalllogo from '../../images/logo.png';
 import Settings from './Settings';
 import { useSupabaseClient } from '../../hooks/SessionProvider';
 
-export default function Sidebar({activeItem}) {
+export default function Sidebar({activeItem, highBarItems, lowBarItems}) {
 
-    const initialState = window.innerWidth < 768 ? "small" : "large";
+    const initialState = window.innerWidth < 868 ? "small" : "large";
     const [navSize, changeNavSize] = React.useState(initialState);
     
 
-    const highBarItems = [
-        {
-            icon: FiHome,
-            title: 'Home',
-            description: '',
-            nav: '/',
 
-        },
-        {
-            icon: FaUserFriends,
-            title: 'Community',
-            description: '',
-            nav: '/social',
-
-        },
-        {
-            icon: FaStore,
-            title: 'Market',
-            description: '',
-            nav: '/market',
-
-        },
-    ]
-
-    const lowBarItems = [
-        {
-            icon: RiMessage2Fill,
-            title: 'Messages',
-            description: '',
-            nav: '/messages',
-
-        },
-        {
-            icon: FiDollarSign,
-            title: 'Profile Test',
-            description: '',
-            nav: '/profile/Test2333',
-
-        },
-        {
-            icon: FiDollarSign,
-            title: 'Calendar',
-            description: '',
-            nav: '/calendar',
-
-        }
-    ]
 
     //automatic resizing of sidebar
     React.useEffect(() => {
         function handleResize() {
-          if (window.innerWidth < 768) {
+          if (window.innerWidth < 868) {
             changeNavSize("small");
           } else {
             changeNavSize("large");
