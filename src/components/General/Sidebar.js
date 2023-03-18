@@ -6,7 +6,8 @@ import {
     Divider,
     Avatar,
     Heading,
-    Image
+    Image,
+    Menu
 } from '@chakra-ui/react'
 import {
     FiMenu,
@@ -21,14 +22,41 @@ import { IoPawOutline } from 'react-icons/io5'
 import NavItem from '../General/NavItem'
 import { FaUserFriends, FaStore } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
-import logo from '../../images/logo.png';
+import largelogo from '../../images/GoalTac_Logo.png';
+import smalllogo from '../../images/logo.png';
+import { act } from 'react-dom/test-utils'
 
+export default function Sidebar({activeItem}) {
 
-export default function Sidebar() {
-
-    const initialState = window.innerWidth < 768 ? "large" : "small";
+    const initialState = window.innerWidth < 768 ? "small" : "large";
     const [navSize, changeNavSize] = React.useState(initialState);
+    
 
+    const sideBarItems = [
+        {
+            icon: FiHome,
+            title: 'Home',
+            description: '',
+            nav: '/',
+
+        },
+        {
+            icon: FaUserFriends,
+            title: 'Community',
+            description: '',
+            nav: '/social',
+
+        },
+        {
+            icon: FaStore,
+            title: 'Market',
+            description: '',
+            nav: '/market',
+
+        },
+    ]
+
+    //automatic resizing of sidebar
     React.useEffect(() => {
         function handleResize() {
           if (window.innerWidth < 768) {
@@ -41,6 +69,7 @@ export default function Sidebar() {
         return () => window.removeEventListener('resize', handleResize);
       }, []);
 
+
     return (
         <Flex
             pos="sticky"
@@ -51,31 +80,30 @@ export default function Sidebar() {
             borderRadius={navSize == "small" ? "15px" : "30px"}
             w={navSize == "small" ? "75px" : "200px"}
             flexDir="column"
-            justifyContent="space-between"
-        >
+            justifyContent="space-between">
             <Flex
                 p="5%"
                 flexDir="column"
                 w="100%"
                 alignItems={navSize == "small" ? "center" : "flex-start"}
-                as="nav"
-            >
-                <IconButton
-                    background="none"
-                    mt={5}
-                    _hover={{ background: 'none' }}
-                    icon={<FiMenu />}
-                    onClick={() => {
-                        if (navSize == "small")
-                            changeNavSize("large")
-                        else
-                            changeNavSize("small")
-                    }}
-                />
-                <Image src={logo}/>
-                <NavItem navSize={navSize} icon={FiHome} title="Home" description="This is the description for the dashboard." />
-                <NavItem navSize={navSize} icon={FaUserFriends} title="Community" active />
-                <NavItem navSize={navSize} icon={FaStore} title="Market" />
+                as="nav">
+
+                <Image src={navSize == "small" ? smalllogo : largelogo}/>
+                
+                {sideBarItems.map((item, index) => {
+                    return (
+                        <NavItem 
+                        key={index}
+                        navSize={navSize} 
+                        icon={item.icon} 
+                        title={item.title}
+                        description={item.description}
+                        nav={item.nav}
+                        active={activeItem == item.nav ? true : false}
+                        />
+                    );
+                })}
+                
             </Flex>
 
             <Flex
@@ -86,7 +114,7 @@ export default function Sidebar() {
                 mb={4}
             >
                 <Divider display={navSize == "small" ? "none" : "flex"} />
-                <NavItem navSize={navSize} icon={RiMessage2Fill} title="Messages" />
+                <NavItem nav='/messages' navSize={navSize} icon={RiMessage2Fill} title="Messages" active={activeItem == '/messages' ? true : false} />
                 <Flex mt={4} align="center">
                     <Avatar size="sm" src="avatar-1.jpg" />
                     <Flex flexDir="column" ml={4} display={navSize == "small" ? "none" : "flex"}>

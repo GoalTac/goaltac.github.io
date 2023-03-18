@@ -38,7 +38,7 @@ export default function Root() {
           {sideBarPages.includes(locate.pathname) ? (
             <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
               <Flex>
-                <SideBar />
+                <SideBar activeItem={locate.pathname} />
                 <Box
                   position='relative'
                   zIndex='100'
