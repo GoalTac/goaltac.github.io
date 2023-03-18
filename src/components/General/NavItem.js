@@ -6,9 +6,10 @@ import {
     Menu,
     MenuButton,
     MenuList,
-    Box
+    Box,
+    LinkBox
 } from '@chakra-ui/react'
-import { useNavigate, Link, NavLink } from 'react-router-dom';
+import { useNavigate, Link, NavLink,  } from 'react-router-dom';
 import SideBar from "./Sidebar";
 
 export default function NavItem({ icon, title, description, nav, active, navSize }) {
@@ -17,7 +18,7 @@ export default function NavItem({ icon, title, description, nav, active, navSize
 
 //Figure out how to make link expand to entire buttons
     return (
-        <Flex
+        <LinkBox
             backgroundColor={active && "#AEC8CA"}
             p={3}
             borderRadius={8}
@@ -26,16 +27,16 @@ export default function NavItem({ icon, title, description, nav, active, navSize
             flexDir="column"
             w={navSize == "large" && "100%"}
             alignItems={navSize == "small" ? "center" : "flex-start"}>
-        <Menu placement="right">
         <NavLink to={nav}>
+        <Menu placement="right">
             <MenuButton w='100%'>
                 <Flex>
                     <Icon as={icon} fontSize="xl" color={active ? "#82AAAD" : "gray.500"} />
                     <Text ml={5} display={navSize == "small" ? "none" : "flex"}>{title}</Text>
                 </Flex>
             </MenuButton>
-        </NavLink>
         </Menu>
-        </Flex>
+        </NavLink>
+        </LinkBox>
     )
 }

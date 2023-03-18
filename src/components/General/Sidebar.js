@@ -131,7 +131,7 @@ export default function Sidebar({activeItem}) {
                 
             </Flex>
 
-            <Box
+            <Flex
                 p="5%"
                 flexDir="column"
                 w="100%"
@@ -153,10 +153,10 @@ export default function Sidebar({activeItem}) {
                 })}
                 <Divider display={navSize == "small" ? "none" : "flex"} />
 
-                <Box mt='2rem'>
+                <Flex mt='2rem'>
                     <Settings session={useSupabaseClient.session} />
-                </Box>
-            </Box>
+                </Flex>
+            </Flex>
             
         </Flex>
     )
