@@ -19,10 +19,11 @@ export default function NavItem({ icon, title, description, nav, active, navSize
 //Figure out how to make link expand to entire buttons
     return (
         <LinkBox
-            backgroundColor={active && "#AEC8CA"}
+            backgroundColor={active && "blue.100"}
             p={3}
             borderRadius={8}
-            _hover={{ textDecor: 'none', backgroundColor: "#AEC8CA" }}
+            boxShadow= {active && "0px 0px 2px teal"}
+            _hover={{ textDecor: 'none', backgroundColor: "blue.100" }}
             mt={30}
             flexDir="column"
             w={navSize == "large" && "100%"}

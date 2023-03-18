@@ -24,7 +24,7 @@ import { FaUserFriends, FaStore } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
 import largelogo from '../../images/GoalTac_Logo.png';
 import smalllogo from '../../images/logo.png';
-import Settings from '../HomePages/Settings';
+import Settings from './Settings';
 import { useSupabaseClient } from '../../hooks/SessionProvider';
 
 export default function Sidebar({activeItem}) {
