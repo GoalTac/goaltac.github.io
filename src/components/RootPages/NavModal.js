@@ -2,10 +2,12 @@ import React from 'react';
 import { Box, Button, VStack } from '@chakra-ui/react';
 import { Link, animateScroll as scroll } from 'react-scroll';
 
-export default function Modal({ sections, toggleModal, setOpenModal, openModal }) {
+export default function NavModal({ sections, toggleModal, setOpenModal, openModal }) {
   const closeModal = () => {
     setOpenModal(false);
   };
+
+  //the modal isn't using ChakraUI's Modal system. It's just a button that opens a div
 
   return (
     <Box
@@ -13,7 +15,7 @@ export default function Modal({ sections, toggleModal, setOpenModal, openModal }
       w='100%'
       h='100%'
       position='absolute'
-      zIndex='50'
+      zIndex='overlay'
     >
       <VStack
         bg='gray'

@@ -2,13 +2,13 @@ import React from 'react';
 import { Flex, Button, VStack, Icon, Img } from '@chakra-ui/react';
 import { Link, animateScroll as scroll } from 'react-scroll';
 import logo from '../../images/GoalTac_Logo.png';
-import Modal from '../RootPages/Modal';
+import Modal from './NavModal';
 
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
 
 // <Image src={navSize == "small" ? smalllogo : largelogo}/>
 
-export default function Header({ activeItem, sections, toggleModal, setOpenModal, openModal }) {
+export default function NavHeader({ activeItem, sections, toggleModal, setOpenModal, openModal }) {
 
 
   return (
@@ -16,16 +16,6 @@ export default function Header({ activeItem, sections, toggleModal, setOpenModal
       justify='space-between'
       alignItems='center'
       px='1rem'
-      py='3rem'
-      _after={{
-        content: "''",
-        position: 'absolute',
-        left: '12%',
-        top: '-5%',
-        zIndex: '-2',
-        width: '134%',
-        height: '18%',
-      }}
     >
       <Img
         src={logo}

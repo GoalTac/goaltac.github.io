@@ -17,7 +17,8 @@ import { Outlet } from 'react-router';
 import { supabaseClient } from '../supabaseClient';
 import { SessionProvider } from '../hooks/SessionProvider';
 import SideBar from '../components/RootPages/Sidebar';
-import Header from '../components/RootPages/Header';
+import NavHeader from '../components/RootPages/NavHeader';
+import NavFooter from '../components/RootPages/NavFooter';
 
 import { useLocation } from 'react-router-dom';
 
@@ -91,7 +92,7 @@ const lowBarItems = [
 export default function Root() {
   const { colorMode } = useColorMode();
   const initialState = window.innerWidth < 400 ? true : false;
-  const [showHeader, setShowHeader] = React.useState(initialState); //This is to display header
+  const [isMobile, setMobile] = React.useState(initialState); //This is to display header
   const [openModal, setOpenModal] = React.useState(false); //This is to open/close modal
   const locate = useLocation();
 
@@ -104,14 +105,14 @@ export default function Root() {
   React.useEffect(() => {
     function handleResize() {
       if (window.innerWidth < 400) {
-        setShowHeader(true);
+        setMobile(true);
       } else {
-        setShowHeader(false);
+        setMobile(false);
       }
     }
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [showHeader]);
+  }, [isMobile]);
 
   return (
     <>
@@ -121,14 +122,14 @@ export default function Root() {
           {!notSideBarPages.includes(locate.pathname) ? (
             <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
               
-              {showHeader ? <Header activeItem={locate.pathname} 
+              {isMobile ? <NavHeader activeItem={locate.pathname} 
               sections={highBarItems}
               toggleModal={toggleModal}
               setOpenModal={setOpenModal}
               openModal={openModal}
               /> :  <></>}
               <Flex>
-                {showHeader ? <></> :  <SideBar activeItem={locate.pathname} 
+                {isMobile ? <></> :  <SideBar activeItem={locate.pathname} 
                 highBarItems={highBarItems} lowBarItems={lowBarItems}/>}
                 
                 <Box
@@ -140,6 +141,9 @@ export default function Root() {
                   <Outlet />
                 </Box>
               </Flex>
+
+              {isMobile ? <NavFooter activeItem={locate.pathname} sections={highBarItems} isMobile={isMobile}/> :  <></>}
+              
             </Box>
           ) : (
               <Stack>  
