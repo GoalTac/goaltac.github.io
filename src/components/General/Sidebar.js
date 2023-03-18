@@ -64,6 +64,20 @@ export default function Sidebar({activeItem}) {
             description: '',
             nav: '/messages',
 
+        },
+        {
+            icon: FiDollarSign,
+            title: 'Profile Test',
+            description: '',
+            nav: '/profile/Test2333',
+
+        },
+        {
+            icon: FiDollarSign,
+            title: 'Calendar',
+            description: '',
+            nav: '/calendar',
+
         }
     ]
 
@@ -83,9 +97,9 @@ export default function Sidebar({activeItem}) {
 
     return (
         <Flex
-            pos="sticky"
             left="5"
-            h={navSize == "small" ? "100%" : "95vh"}
+            zIndex='overlay'
+            minH="95vh"
             marginTop="2.5vh"
             boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.05)"
             borderRadius={navSize == "small" ? "15px" : "30px"}
@@ -139,7 +153,7 @@ export default function Sidebar({activeItem}) {
                 })}
                 <Divider display={navSize == "small" ? "none" : "flex"} />
 
-                <Box mt='2rem' backgroundColor='red'>
+                <Box mt='2rem'>
                     <Settings session={useSupabaseClient.session} />
                 </Box>
             </Box>

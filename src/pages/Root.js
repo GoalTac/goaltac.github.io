@@ -20,10 +20,10 @@ import { useLocation } from 'react-router-dom';
 //TODO When people zoom in far enough create a HEADER to replace the sidebar
 
 //Chooses what to display to each page
-const sideBarPages = [
-  '/', '/market','/profile',
-  '/social','/messages','/help',
-  '/settings','/calendar'
+const notSideBarPages = [
+
+  '/beta', '/updatepassword','/resetpassword',
+  '/signup','/signin'
 ]
 
 export default function Root() {
@@ -35,7 +35,7 @@ export default function Root() {
       <ChakraProvider>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <SessionProvider supabase={supabaseClient}>
-          {sideBarPages.includes(locate.pathname) ? (
+          {!notSideBarPages.includes(locate.pathname) ? (
             <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
               <Flex>
                 <SideBar activeItem={locate.pathname} />
