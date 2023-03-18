@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {
     Flex,
-    Text,
+    Box,
     IconButton,
     Divider,
     Avatar,
@@ -24,7 +24,8 @@ import { FaUserFriends, FaStore } from 'react-icons/fa';
 import { RiMessage2Fill } from 'react-icons/ri';
 import largelogo from '../../images/GoalTac_Logo.png';
 import smalllogo from '../../images/logo.png';
-import { act } from 'react-dom/test-utils'
+import Settings from '../HomePages/Settings';
+import { useSupabaseClient } from '../../hooks/SessionProvider';
 
 export default function Sidebar({activeItem}) {
 
@@ -32,7 +33,7 @@ export default function Sidebar({activeItem}) {
     const [navSize, changeNavSize] = React.useState(initialState);
     
 
-    const sideBarItems = [
+    const highBarItems = [
         {
             icon: FiHome,
             title: 'Home',
@@ -56,6 +57,16 @@ export default function Sidebar({activeItem}) {
         },
     ]
 
+    const lowBarItems = [
+        {
+            icon: RiMessage2Fill,
+            title: 'Messages',
+            description: '',
+            nav: '/messages',
+
+        }
+    ]
+
     //automatic resizing of sidebar
     React.useEffect(() => {
         function handleResize() {
@@ -74,7 +85,7 @@ export default function Sidebar({activeItem}) {
         <Flex
             pos="sticky"
             left="5"
-            h="95vh"
+            h={navSize == "small" ? "100%" : "95vh"}
             marginTop="2.5vh"
             boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.05)"
             borderRadius={navSize == "small" ? "15px" : "30px"}
@@ -90,7 +101,7 @@ export default function Sidebar({activeItem}) {
 
                 <Image src={navSize == "small" ? smalllogo : largelogo}/>
                 
-                {sideBarItems.map((item, index) => {
+                {highBarItems.map((item, index) => {
                     return (
                         <NavItem 
                         key={index}
@@ -106,23 +117,33 @@ export default function Sidebar({activeItem}) {
                 
             </Flex>
 
-            <Flex
+            <Box
                 p="5%"
                 flexDir="column"
                 w="100%"
                 alignItems={navSize == "small" ? "center" : "flex-start"}
-                mb={4}
-            >
+                mb={4}>
                 <Divider display={navSize == "small" ? "none" : "flex"} />
-                <NavItem nav='/messages' navSize={navSize} icon={RiMessage2Fill} title="Messages" active={activeItem == '/messages' ? true : false} />
-                <Flex mt={4} align="center">
-                    <Avatar size="sm" src="avatar-1.jpg" />
-                    <Flex flexDir="column" ml={4} display={navSize == "small" ? "none" : "flex"}>
-                        <Heading as="h3" size="sm">Sylwia Weller</Heading>
-                        <Text color="gray">Admin</Text>
-                    </Flex>
-                </Flex>
-            </Flex>
+                {lowBarItems.map((item, index) => {
+                    return (
+                        <NavItem 
+                        key={index}
+                        navSize={navSize} 
+                        icon={item.icon} 
+                        title={item.title}
+                        description={item.description}
+                        nav={item.nav}
+                        active={activeItem == item.nav ? true : false}
+                        />
+                    );
+                })}
+                <Divider display={navSize == "small" ? "none" : "flex"} />
+
+                <Box mt='2rem' backgroundColor='red'>
+                    <Settings session={useSupabaseClient.session} />
+                </Box>
+            </Box>
+            
         </Flex>
     )
 }
