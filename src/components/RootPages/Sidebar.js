@@ -4,6 +4,7 @@ import {
     Flex,
     Divider,
     Image,
+    Box
 } from '@chakra-ui/react'
 import NavItem from '../RootPages/NavItem'
 import largelogo from '../../images/GoalTac_Logo.png';
@@ -55,6 +56,7 @@ export default function Sidebar({activeItem, highBarItems, lowBarItems}) {
                 
                 {highBarItems.map((item, index) => {
                     return (
+                        
                         <NavItem 
                         key={index}
                         navSize={navSize} 
@@ -62,8 +64,8 @@ export default function Sidebar({activeItem, highBarItems, lowBarItems}) {
                         title={item.title}
                         description={item.description}
                         nav={item.nav}
-                        active={activeItem == item.nav ? true : false}
-                        />
+                        active={activeItem == item.nav ? true : false}/>
+                        
                     );
                 })}
                 

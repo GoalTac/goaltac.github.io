@@ -18,12 +18,13 @@ export default function NavItem({ icon, title, description, nav, active, navSize
 
 //Figure out how to make link expand to entire buttons
     return (
+        <Box minW={isMobile ? '' : `${navSize == 'small' ? '' : '100%'}`}>
         
         <NavLink to={nav}>
             <LinkBox
             backgroundColor={active && "blue.100"}
             px={isMobile ? 2 : 3} 
-            py={isMobile ? 1 : 3} 
+            py={isMobile ? 2 : 3} 
 
             borderRadius={8}
             boxShadow= {active && "0px 0px 1px #82AAAD"}
@@ -38,6 +39,7 @@ export default function NavItem({ icon, title, description, nav, active, navSize
             </Flex>
         </LinkBox>        
         </NavLink>
+        </Box>
 
     )
 }

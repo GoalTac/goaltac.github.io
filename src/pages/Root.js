@@ -121,7 +121,7 @@ export default function Root() {
         <SessionProvider supabase={supabaseClient}>
         <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
           {!noNavPages.includes(locate.pathname) ? (
-            <Flex position='relative' flexDirection='column' maxH='full'>
+            <Flex flexDirection='column'>
               {console.log(openModal)}
             
 

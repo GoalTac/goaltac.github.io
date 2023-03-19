@@ -14,7 +14,7 @@ export default function NavFooter({ activeItem, sections, isMobile}) {
     <Flex
       justify='space-between'
       alignItems='center'
-      pos='sticky'
+      pos='fixed'
       bottom='0'
       right='0'
       left='0'
