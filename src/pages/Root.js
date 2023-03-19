@@ -47,7 +47,7 @@ const highBarItems = [
       icon: FiHome,
       title: 'Home',
       description: '',
-      nav: '/',
+      nav: '/home',
 
   },
   {
