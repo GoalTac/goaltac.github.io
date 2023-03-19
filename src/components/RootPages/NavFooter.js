@@ -16,16 +16,19 @@ export default function NavFooter({ activeItem, sections, isMobile}) {
       alignItems='center'
       pos='sticky'
       bottom='0'
+      right='0'
+      left='0'
       zIndex='overlay'
       flexDirection='row'
       bgColor='white'
       borderWidth='1px'
+      width='100%'
       maxH='25vh'
       padding='2px'
       
     >
       {/*<Img src={logo} w='30px' h='30px' mt='10px' mb='10px' ml='10px'/>*/}
-      <Box>
+      <Box mb={1}>
         <Settings pSize={30} mPlacement={'top'} session={useSupabaseClient.session} />
       </Box>
       

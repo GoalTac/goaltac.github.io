@@ -121,7 +121,7 @@ export default function Root() {
         <SessionProvider supabase={supabaseClient}>
         <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
           {!noNavPages.includes(locate.pathname) ? (
-            <Box>
+            <Flex position='relative' flexDirection='column' maxH='full'>
               {console.log(openModal)}
             
 
@@ -145,9 +145,8 @@ export default function Root() {
                   <Outlet />
                 </Box>
               </Flex>
-
               {isMobile ? <NavFooter activeItem={locate.pathname} sections={highBarItems} isMobile={isMobile}/> :  <></>}
-            </Box>
+            </Flex>
           ) : (
               <Stack>  
                 <Outlet />
