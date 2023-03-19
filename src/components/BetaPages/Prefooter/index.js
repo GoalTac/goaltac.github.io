@@ -45,30 +45,29 @@ function Prefooter() {
       >
         Be the change you want to see today.
       </Box>
-      <Button
-        width={250}
-        height={100}
-        variant='solid'
-        fontWeight='800'
-        fontSize={30}
-        onClick={loading}
-        bgColor='blackAlpha.600'
-        bgClip='text'
-        borderRadius='30px'
-        boxShadow='0 6px 6px black'
-        _hover={{
-          boxShadow: '0px 1px 1px black',
-        }}
-      >
-        <NavLink
-          to='/signup'
-          className={({ isActive, isPending }) =>
-            isPending ? 'pending' : isActive ? 'active' : ''
-          }
-        >
+      <NavLink
+        to='/signup'
+        className={({ isActive, isPending }) =>
+          isPending ? 'pending' : isActive ? 'active' : ''}>
+        <Button
+          width={250}
+          height={100}
+          variant='solid'
+          fontWeight='800'
+          fontSize={30}
+          onClick={loading}
+          bgColor='blackAlpha.600'
+          bgClip='text'
+          borderRadius='30px'
+          boxShadow='0 6px 6px black'
+          _active={{}}
+          _hover={{
+            boxShadow: '0px 1px 1px black',
+          }}>
+        
           {isLoading == true ? <Spinner color='black' /> : 'Get Started'}
-        </NavLink>
-      </Button>
+        </Button>
+      </NavLink>
     </Stack>
   );
 }

@@ -87,28 +87,29 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
           </HStack>
           <Spacer />
 
-          <Button
-            variant='solid'
-            fontWeight='800'
-            onClick={loading}
-            bgClip='text'
-            bgGradient='linear(to-l, teal.300, blue.500)'
-            bgColor='white'
-            borderRadius='30px'
-            boxShadow='0 4px 4px gray'
-            _hover={{
-              boxShadow: '0 1px 1px gray',
-            }}
-          >
-            <NavLink
-              to='/signin'
-              className={({ isActive, isPending }) =>
-                isPending ? 'pending' : isActive ? 'active' : ''
-              }
+          
+          <NavLink
+            to='/signin'
+            className={({ isActive, isPending }) =>
+              isPending ? 'pending' : isActive ? 'active' : ''}>
+            <Button
+              variant='solid'
+              fontWeight='800'
+              onClick={loading}
+              bgClip='text'
+              bgGradient='linear(to-l, teal.300, blue.500)'
+              bgColor='white'
+              borderRadius='30px'
+              _active={{}} //for some reason this fixes the white coloration when pressing and holding
+              boxShadow='0 4px 4px gray'
+              _hover={{
+                boxShadow: '0 1px 1px gray',
+              }}
             >
               {isLoading == true ? <Spinner color='black' /> : 'Sign In'}
-            </NavLink>
-          </Button>
+            </Button>
+          </NavLink>
+          
         </Flex>
       ) : (
         <Flex
