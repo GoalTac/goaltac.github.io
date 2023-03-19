@@ -39,7 +39,7 @@ import { RiMessage2Fill } from 'react-icons/ri';
 
 //Chooses what to display to each page
 const noNavPages = [
-  '/beta', '/updatepassword','/resetpassword',
+  '/', '/updatepassword','/resetpassword',
   '/signup','/signin'
 ]
 const highBarItems = [

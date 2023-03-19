@@ -61,10 +61,10 @@ export default function LoginPage() {
         title: 'Authentication Success',
         description: 'Loading...',
         status: 'success',
-        duration: 10000,
+        duration: 5000,
         isClosable: true,
       });
-      navigate('/', { state: { session: data.session } });
+      navigate('/home', { state: { session: data.session } });
       // Save the authentication token in local storage or a cookie
       // so that it can be used on subsequent requests
     } catch (err) {

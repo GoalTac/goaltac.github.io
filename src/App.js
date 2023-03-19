@@ -28,17 +28,17 @@ export default function App() {
     createRoutesFromElements(
       <Route element={<Root />}>
         <Route path='/'>
-          <Route index element={<HomePage />} />
-          <Route path='beta' element={<BetaPage />} />
+          <Route index element={<BetaPage />} />
+          <Route path='home' element={<HomePage />} />
           <Route path='help' element={<HelpPage />} />
           <Route path='signin' element={<SignInPage />} />
           <Route path='signup' element={<SignUpPage />} />
           <Route path='resetpassword' element={<ResetPasswordPage />} />
-          <Route path='market' element={<MarketPage />} />
           <Route path='profile'>
             <Route path=':username' element={<Profile />} />
           </Route>
           <Route element={<ProtectedRoute redirectPath={'/signin'} />}>
+            <Route path='market' element={<MarketPage />} />
             <Route path='schedule' element={<Schedule />} />
             <Route path='social' element={<SocialPage />} />
             <Route path='settings' element={<SettingsPage />} />
