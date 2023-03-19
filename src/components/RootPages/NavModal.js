@@ -1,24 +1,37 @@
 import React from 'react';
-import { Box, Button, VStack } from '@chakra-ui/react';
-import { Link, animateScroll as scroll } from 'react-scroll';
+import { 
+  Box, 
+  Button, 
+  VStack, 
+  useColorMode, 
+  Divider, 
+  Menu, 
+  MenuButton, 
+  Flex,
+  Text
+} from '@chakra-ui/react';
+import { useNavigate, NavLink,  } from 'react-router-dom';
+import NavItem from './NavItem';
+import Settings from './Settings';
 
-export default function NavModal({ sections, toggleModal, setOpenModal, openModal }) {
+
+export default function NavModal({ isMobile, sections, toggleModal, setOpenModal, openModal }) {
   const closeModal = () => {
     setOpenModal(false);
   };
-
-  //the modal isn't using ChakraUI's Modal system. It's just a button that opens a div
+  const { colorMode } = useColorMode();
 
   return (
     <Box
-      bg='linear-gradient(to top, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.1))'
       w='100%'
       h='100%'
       position='absolute'
       zIndex='overlay'
     >
       <VStack
-        bg='gray'
+        bg={colorMode === 'dark' ? 'gray.900' : 'white'}
+        borderRadius={10}
+        boxShadow='0px 10px 10px gray'
         position='absolute'
         top='3.5%'
         left='4%'
@@ -26,24 +39,21 @@ export default function NavModal({ sections, toggleModal, setOpenModal, openModa
         width='92%'
         transition='0.2s ease-in-out'
       >
-        {sections.map((section, index) => {
+        {sections.map((item, index) => {
           return (
-            <Link
-              to={`${section.href}`}
-              spy={true}
-              smooth={true}
-              offset={50}
-              duration={500}
-              onClick={closeModal}
+            <NavItem 
               key={index}
-            >
-              <Button variant='outline' fontWeight='700' key={index}>
-                {section.name}
-              </Button>
-            </Link>
+              navSize={isMobile ? "small" : "large"}
+              icon={item.icon} 
+              title={item.title}
+              description={item.description}
+              nav={item.nav}
+              isMobile={isMobile}
+              />
           );
         })}
       </VStack>
+      
     </Box>
   );
 }

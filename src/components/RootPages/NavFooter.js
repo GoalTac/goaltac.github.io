@@ -3,8 +3,9 @@ import { Flex, Button, VStack, Icon, Img, Spacer, Box } from '@chakra-ui/react';
 import { Link, animateScroll as scroll } from 'react-scroll';
 import logo from '../../images/logo.png';
 import NavItem from './NavItem';
+import { useSupabaseClient } from '../../hooks/SessionProvider';
+import Settings from './Settings';
 
-// <Image src={navSize == "small" ? smalllogo : largelogo}/>
 
 export default function NavFooter({ activeItem, sections, isMobile}) {
 
@@ -13,23 +14,26 @@ export default function NavFooter({ activeItem, sections, isMobile}) {
     <Flex
       justify='space-between'
       alignItems='center'
-      position='sticky'
+      pos='sticky'
       bottom='0'
       zIndex='overlay'
       flexDirection='row'
       bgColor='white'
       borderWidth='1px'
-      h='25vh'
+      maxH='25vh'
+      padding='2px'
       
     >
-      <Img src={logo} w='30px' h='30px' mt='10px' mb='10px' ml='10px'/>
+      {/*<Img src={logo} w='30px' h='30px' mt='10px' mb='10px' ml='10px'/>*/}
+      <Box>
+        <Settings pSize={30} mPlacement={'top'} session={useSupabaseClient.session} />
+      </Box>
+      
       <Spacer />
       {sections.map((item, index) => {
         return (
-          <Box px='5px'>
+          <Box px='5px' key={index}>
             <NavItem 
-
-            key={index}
             navSize={isMobile ? "small" : "large"}
             icon={item.icon} 
             title={item.title}

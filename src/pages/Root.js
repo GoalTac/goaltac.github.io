@@ -38,7 +38,7 @@ import { RiMessage2Fill } from 'react-icons/ri';
 //TODO When people zoom in far enough create a HEADER to replace the sidebar
 
 //Chooses what to display to each page
-const notSideBarPages = [
+const noNavPages = [
   '/beta', '/updatepassword','/resetpassword',
   '/signup','/signin'
 ]
@@ -91,7 +91,7 @@ const lowBarItems = [
 
 export default function Root() {
   const { colorMode } = useColorMode();
-  const initialState = window.innerWidth < 400 ? true : false;
+  const initialState = window.innerWidth < 500 ? true : false;
   const [isMobile, setMobile] = React.useState(initialState); //This is to display header
   const [openModal, setOpenModal] = React.useState(false); //This is to open/close modal
   const locate = useLocation();
@@ -104,7 +104,7 @@ export default function Root() {
   //decides to show header or not in real time
   React.useEffect(() => {
     function handleResize() {
-      if (window.innerWidth < 400) {
+      if (window.innerWidth < 500) {
         setMobile(true);
       } else {
         setMobile(false);
@@ -119,14 +119,19 @@ export default function Root() {
       <ChakraProvider>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <SessionProvider supabase={supabaseClient}>
-          {!notSideBarPages.includes(locate.pathname) ? (
-            <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
+        <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
+          {!noNavPages.includes(locate.pathname) ? (
+            <Box>
+              {console.log(openModal)}
+            
+
               
               {isMobile ? <NavHeader activeItem={locate.pathname} 
-              sections={highBarItems}
+              sections={lowBarItems}
               toggleModal={toggleModal}
               setOpenModal={setOpenModal}
               openModal={openModal}
+              isMobile={isMobile}
               /> :  <></>}
               <Flex>
                 {isMobile ? <></> :  <SideBar activeItem={locate.pathname} 
@@ -136,20 +141,19 @@ export default function Root() {
                   position='relative'
                   zIndex='100'
                   width='100%'
-                  height='100%'
-                >
+                  height='100%'>
                   <Outlet />
                 </Box>
               </Flex>
 
               {isMobile ? <NavFooter activeItem={locate.pathname} sections={highBarItems} isMobile={isMobile}/> :  <></>}
-              
             </Box>
           ) : (
               <Stack>  
                 <Outlet />
               </Stack>
           )}
+          </Box>
         </SessionProvider>
       </ChakraProvider>
     </>

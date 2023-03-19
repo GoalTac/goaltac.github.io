@@ -8,7 +8,7 @@ import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'
 
 // <Image src={navSize == "small" ? smalllogo : largelogo}/>
 
-export default function NavHeader({ activeItem, sections, toggleModal, setOpenModal, openModal }) {
+export default function NavHeader({ isMobile, activeItem, sections, toggleModal, setOpenModal, openModal }) {
 
 
   return (
@@ -40,7 +40,7 @@ export default function NavHeader({ activeItem, sections, toggleModal, setOpenMo
           <Modal sections={sections} 
           toggleModal={toggleModal} 
           setOpenModal={setOpenModal} 
-          openModal={openModal}/>
+          openModal={openModal} isMobile={isMobile}/>
           </>
          
         ) : (

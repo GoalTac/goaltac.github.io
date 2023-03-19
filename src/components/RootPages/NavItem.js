@@ -18,7 +18,9 @@ export default function NavItem({ icon, title, description, nav, active, navSize
 
 //Figure out how to make link expand to entire buttons
     return (
-        <LinkBox
+        
+        <NavLink to={nav}>
+            <LinkBox
             backgroundColor={active && "blue.100"}
             px={isMobile ? 2 : 3} 
             py={isMobile ? 1 : 3} 
@@ -30,7 +32,6 @@ export default function NavItem({ icon, title, description, nav, active, navSize
             flexDir="column"
             w={navSize == "large" && "100%"}
             alignItems={navSize == "small" ? "center" : "flex-start"}>
-        <NavLink to={nav}>
         <Menu placement="right">
             <MenuButton w='100%'>
                 <Flex>
@@ -39,7 +40,8 @@ export default function NavItem({ icon, title, description, nav, active, navSize
                 </Flex>
             </MenuButton>
         </Menu>
+        </LinkBox>        
         </NavLink>
-        </LinkBox>
+
     )
 }

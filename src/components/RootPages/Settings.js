@@ -19,7 +19,7 @@ import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
 import { CSVLink } from 'react-csv';
 import { useSupabaseClient } from '../../hooks/SessionProvider';
 
-export default function Settings({ session }) {
+export default function Settings({ session, mPlacement, pSize }) {
   //Session defined from HomePage.js (supabase.auth.getSession())
   const supabase = useSupabaseClient();
   const [isOpen, setIsOpen] = useState(false);
@@ -36,13 +36,13 @@ export default function Settings({ session }) {
 
   return (
     <Box>
-      <Menu>
+      <Menu placement={mPlacement == null ? 'bottom' : `${mPlacement}`}>
         {({ isOpen }) => (
           <>
             <MenuButton variant='contained' isActive={isOpen} as={Button}>
-              <Avatar name='Adi C' bg={isOpen ? 'cyan' : null}>
+              <Avatar name='Adi C' bg={isOpen ? 'cyan' : null} boxSize={pSize == null ? '50px' : `${pSize}px`}>
                 <AvatarBadge
-                  boxSize='1.25em'
+                  boxSize={pSize == null ? '1.35rem' : `${pSize/2}px`}
                   bg={session ? 'green.500' : 'red.500'}
                 />
               </Avatar>
