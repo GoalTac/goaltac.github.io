@@ -32,14 +32,10 @@ export default function NavItem({ icon, title, description, nav, active, navSize
             flexDir="column"
             w={navSize == "large" && "100%"}
             alignItems={navSize == "small" ? "center" : "flex-start"}>
-        <Menu placement="right">
-            <MenuButton w='100%'>
-                <Flex>
-                    <Icon as={icon} fontSize={isMobile ? "sm" : "xl"} color={active ? "#82AAAD" : "gray.500"} />
-                    <Text ml={5} display={navSize == "small" ? "none" : "flex"}>{title}</Text>
-                </Flex>
-            </MenuButton>
-        </Menu>
+            <Flex>
+                <Icon as={icon} fontSize={isMobile ? "sm" : "xl"} color={active ? "#82AAAD" : "gray.500"} />
+                <Text ml={5} display={navSize == "small" ? "none" : "flex"}>{title}</Text>
+            </Flex>
         </LinkBox>        
         </NavLink>
 

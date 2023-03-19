@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Button, VStack, Icon, Img } from '@chakra-ui/react';
+import { Flex, Button, VStack, Icon, Img, Box } from '@chakra-ui/react';
 import { Link, animateScroll as scroll } from 'react-scroll';
 import logo from '../../images/GoalTac_Logo.png';
 import Modal from './NavModal';
@@ -35,13 +35,13 @@ export default function NavHeader({ isMobile, activeItem, sections, toggleModal,
         minWidth='0'
       >
         {openModal ? (
-          <> 
+          <Box> 
           <Icon as={CloseIcon}  position='relative' zIndex='100'/>
           <Modal sections={sections} 
           toggleModal={toggleModal} 
           setOpenModal={setOpenModal} 
           openModal={openModal} isMobile={isMobile}/>
-          </>
+          </Box>
          
         ) : (
           <Icon as={HamburgerIcon}/>

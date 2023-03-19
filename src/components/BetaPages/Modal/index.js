@@ -30,7 +30,7 @@ function Modal({ sections, toggleModal, setOpenModal, openModal }) {
       >
         {sections.map((section, index) => {
           return (
-            <>
+            <Box key={index}>
             <Link
               to={`${section.href}`}
               spy={true}
@@ -38,7 +38,7 @@ function Modal({ sections, toggleModal, setOpenModal, openModal }) {
               offset={50}
               duration={500}
               onClick={closeModal}
-              key={index}
+              
             >
               <Button
                 variant='ghost'
@@ -56,7 +56,7 @@ function Modal({ sections, toggleModal, setOpenModal, openModal }) {
               </Button>
             </Link>
             <Divider />
-            </>
+            </Box>
           );
         })}
       </VStack>
