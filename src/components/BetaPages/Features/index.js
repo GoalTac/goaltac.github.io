@@ -43,7 +43,7 @@ const content = [
 function Features({ hideBgFeatureTitle }) {
   return (
     <Stack
-      id='product'
+      id='features'
       direction={['column', null, 'row']}
       spacing='6rem'
       mt='8rem'

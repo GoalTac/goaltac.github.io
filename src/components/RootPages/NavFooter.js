@@ -18,7 +18,7 @@ export default function NavFooter({ activeItem, sections, isMobile}) {
       zIndex='overlay'
       flexDirection='row'
       bgColor='white'
-      boxShadow='0px 0px 3px gray'
+      borderWidth='1px'
       h='25vh'
       
     >

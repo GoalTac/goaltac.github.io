@@ -12,7 +12,6 @@ import {
   HStack,
   Image,
   Flex,
-  withDelay,
 } from '@chakra-ui/react';
 import { FaDiscord } from 'react-icons/fa';
 import logo from '../../../images/GoalTac_Logo.png';
@@ -20,9 +19,10 @@ import hamburgerIcon from '../resources/images/icon-hamburger.svg';
 import closeIcon from '../resources/images/icon-close.svg';
 import imgBg from '../resources/images/bg-tablet-pattern.svg';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import { Link, NavLink, Navigate } from 'react-router-dom';
+import { NavLink, Navigate } from 'react-router-dom';
 import { useState } from 'react';
-import { easeIn } from 'framer-motion';
+import { Link, animateScroll as scroll } from 'react-scroll';
+
 
 function Header({ showMenu, openModal, sections, toggleModal }) {
   const { toggleColorMode, colorMode } = useColorMode();
@@ -61,6 +61,8 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
               return (
                 <Link
                   to={`${section.href}`}
+                  spy={true}
+                  smooth={true}
                   key={index}
                   offset={50}
                   duration={500}

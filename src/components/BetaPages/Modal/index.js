@@ -1,22 +1,26 @@
 import React from 'react';
-import { Box, Button, VStack } from '@chakra-ui/react';
+import { Box, Button, VStack, useColorMode, Divider } from '@chakra-ui/react';
 import { Link, animateScroll as scroll } from 'react-scroll';
 
 function Modal({ sections, toggleModal, setOpenModal, openModal }) {
   const closeModal = () => {
     setOpenModal(false);
   };
+  const { colorMode } = useColorMode();
+
 
   return (
     <Box
-      bg='linear-gradient(to top, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.1))'
+      bg='linear-gradient(to top, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.1))'
       w='100%'
       h='100%'
       position='absolute'
       zIndex='50'
     >
       <VStack
-        bg='gray'
+        bg={colorMode === 'dark' ? 'gray.900' : 'white'}
+        borderRadius={10}
+        boxShadow='0px 10px 10px gray'
         position='absolute'
         top='3.5%'
         left='4%'
@@ -26,6 +30,7 @@ function Modal({ sections, toggleModal, setOpenModal, openModal }) {
       >
         {sections.map((section, index) => {
           return (
+            <>
             <Link
               to={`${section.href}`}
               spy={true}
@@ -35,10 +40,23 @@ function Modal({ sections, toggleModal, setOpenModal, openModal }) {
               onClick={closeModal}
               key={index}
             >
-              <Button variant='outline' fontWeight='700' key={index}>
+              <Button
+                variant='ghost'
+                fontSize='2xl'
+                background='teal.300'
+                bgClip='text'
+                transition='background 1500ms'
+                
+                _hover={{
+                  background: 'blue.500',
+                  bgClip: 'text',
+                }}
+              >
                 {section.name}
               </Button>
             </Link>
+            <Divider />
+            </>
           );
         })}
       </VStack>

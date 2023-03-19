@@ -15,13 +15,13 @@ const sections = [
     name: 'Product',
   },
   {
-    href: 'pricing',
-    name: 'Pricing',
+    href: 'features',
+    name: 'Features',
   },
 
   {
-    href: 'resources',
-    name: 'Resources',
+    href: 'community',
+    name: 'About',
   },
 ];
 

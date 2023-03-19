@@ -1,27 +1,11 @@
 import React, { useState } from 'react'
+
 import {
     Flex,
-    Box,
-    IconButton,
     Divider,
-    Avatar,
-    Heading,
     Image,
-    Menu
 } from '@chakra-ui/react'
-import {
-    FiMenu,
-    FiHome,
-    FiCalendar,
-    FiUser,
-    FiDollarSign,
-    FiBriefcase,
-    FiSettings
-} from 'react-icons/fi'
-import { IoPawOutline } from 'react-icons/io5'
 import NavItem from '../RootPages/NavItem'
-import { FaUserFriends, FaStore } from 'react-icons/fa';
-import { RiMessage2Fill } from 'react-icons/ri';
 import largelogo from '../../images/GoalTac_Logo.png';
 import smalllogo from '../../images/logo.png';
 import Settings from './Settings';

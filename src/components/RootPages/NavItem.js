@@ -24,7 +24,7 @@ export default function NavItem({ icon, title, description, nav, active, navSize
             py={isMobile ? 1 : 3} 
 
             borderRadius={8}
-            boxShadow= {active && "0px 0px 2px teal"}
+            boxShadow= {active && "0px 0px 1px #82AAAD"}
             _hover={{ textDecor: 'none', backgroundColor: "blue.100" }}
             mt={isMobile ? 0 : 30} 
             flexDir="column"

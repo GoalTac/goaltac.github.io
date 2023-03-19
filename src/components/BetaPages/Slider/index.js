@@ -176,12 +176,12 @@ function Slider({ showDots }) {
                 </Text>
                 <Text
                   textAlign={'center'}
-                  color={useColorModeValue('gray.700', 'gray.400')}
+                  color={useColorModeValue('gray.800', 'gray.600')}
                   px={3}
                 >
                   {staff.desc}
                 </Text>
-                <Flex
+                <Box
                   flexWrap='wrap'
                   justifyItems='center'
                   alignContent='center'
@@ -189,21 +189,23 @@ function Slider({ showDots }) {
                   columnGap={2}
                   rowGap={1}
                   p={3}
+                  gap={20}
                 >
-                  {staff.badges.forEach((badge, i) => {
+                  {staff.badges.map((badge, i) => {
                     return (
                       <Badge
                         px={2}
                         py={1}
-                        bg='transparent'
+                        bgColor='transparent'
                         fontWeight={'400'}
                         key={i}
+                        
                       >
                         {badge}
                       </Badge>
                     );
                   })}
-                </Flex>
+                </Box>
                 <Stack>
                   <Link
                     href={'mailto: ' + `${staff.contact}`}
