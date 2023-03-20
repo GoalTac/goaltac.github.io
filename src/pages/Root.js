@@ -96,6 +96,7 @@ export default function Root() {
   const initialState = window.innerWidth < 700 ? true : false;
   const [isMobile, setMobile] = React.useState(initialState); //This is to display header & footer
   const [openModal, setOpenModal] = React.useState(false); //This is to open/close modal
+  const allItems = highBarItems.concat(lowBarItems)
   const locate = useLocation();
 
   //toggle opening/closing of modal
@@ -143,7 +144,7 @@ export default function Root() {
                 <Spacer />
                 <Flex
                 marginTop='30px'
-                w='1700px'
+                w='1200px'
                 maxH='100%'
                 maxW='100%'
                 flexDirection='row'>
@@ -153,7 +154,7 @@ export default function Root() {
                     {isMobile ? <></> :  
                     <Box 
                     paddingEnd='10px'>
-                      <MainPanel />
+                      <MainPanel currentPage={locate.pathname}/>
                     </Box>
                     }
                 </Flex>

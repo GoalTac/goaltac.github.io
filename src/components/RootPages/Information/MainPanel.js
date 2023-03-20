@@ -18,12 +18,24 @@ import CommunitiesPanel from './CommunitiesPanel';
 import QuestsPanel from './QuestsPanel';
 
 
-export default function MainPanel({}) {
+export default function MainPanel({currentPage}) {
 
-    const infoPanels = [<PremiumPanel />, <StatsPanel />, <QuestsPanel />, <CommunitiesPanel />, <AdPanel />]
+    const infoPanels = [<PremiumPanel />, <QuestsPanel />, <AdPanel />]
+    function filteredPanels() {
+        switch(currentPage) {
+            case '/home': 
+                return [<PremiumPanel />, <StatsPanel />, <QuestsPanel />, <AdPanel />]
+            case '/social': 
+                return [<PremiumPanel />, <QuestsPanel />, <CommunitiesPanel />, <AdPanel />]
+            default: 
+                return infoPanels
+
+        }
+    }
 
     return (
         <Flex
+        //How to make it emulate duolingo's panels?
         pos='sticky'
         top='0'
         right='0'
@@ -37,7 +49,7 @@ export default function MainPanel({}) {
 
 
             {/* Display panels */}
-            {infoPanels.map((panel, index) => {
+            {filteredPanels().map((panel, index) => {
                 return (
                     <Box 
                     key={index}
