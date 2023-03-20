@@ -59,10 +59,10 @@ function Prefooter() {
           bgColor='blackAlpha.600'
           bgClip='text'
           borderRadius='30px'
-          boxShadow='0 6px 6px black'
+          boxShadow='0 6px 6px #171923'
           _active={{}}
           _hover={{
-            boxShadow: '0px 1px 1px black',
+            boxShadow: '0px 1px 1px #171923',
           }}>
         
           {isLoading == true ? <Spinner color='black' /> : 'Get Started'}

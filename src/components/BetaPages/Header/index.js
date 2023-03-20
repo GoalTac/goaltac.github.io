@@ -101,9 +101,9 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
               bgColor='white'
               borderRadius='30px'
               _active={{}} //for some reason this fixes the white coloration when pressing and holding
-              boxShadow='0 4px 4px gray'
+              boxShadow={colorMode === 'dark' ? '0 4px 4px black' : '0 4px 4px gray'}
               _hover={{
-                boxShadow: '0 1px 1px gray',
+                boxShadow: `${colorMode == 'dark' ? '0 1px 1px black' : '0 1px 1px gray'}`,
               }}
             >
               {isLoading == true ? <Spinner color='black' /> : 'Sign In'}

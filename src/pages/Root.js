@@ -121,8 +121,9 @@ export default function Root() {
       <ChakraProvider>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <SessionProvider supabase={supabaseClient}>
-        <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
           {!noNavPages.includes(locate.pathname) ? (
+            <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
+
             <Flex flexDirection='column'>
 
               {isMobile ? <NavHeader activeItem={locate.pathname} 
@@ -163,12 +164,12 @@ export default function Root() {
               </Flex>
               {isMobile ? <NavFooter activeItem={locate.pathname} sections={highBarItems} isMobile={isMobile}/> :  <></>}
             </Flex>
+            </Box>
           ) : (
               <Stack>  
                 <Outlet />
               </Stack>
           )}
-          </Box>
         </SessionProvider>
       </ChakraProvider>
     </>
