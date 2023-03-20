@@ -20,7 +20,14 @@ import SideBar from '../components/RootPages/Navigaton/Sidebar';
 import NavHeader from '../components/RootPages/Navigaton/NavHeader';
 import NavFooter from '../components/RootPages/Navigaton/NavFooter';
 import MainPanel from '../components/RootPages/Information/MainPanel';
-
+import AdPanel from '../components/RootPages/Information/AdPanel';
+import StatsPanel from '../components/RootPages/Information/StatsPanel';
+import PremiumPanel from '../components/RootPages/Information/PremiumPanel';
+import CommunitiesPanel from '../components/RootPages/Information/CommunitiesPanel';
+import QuestsPanel from '../components/RootPages/Information/QuestsPanel';
+import ChatRoomPanel from '../components/RootPages/Information/Community/ChatRoomPanel';
+import OnlineMembersPanel from '../components/RootPages/Information/Community/OnlineMembersPanel';
+import FriendsPanel from '../components/RootPages/Information/FriendsPanel';
 
 import { useLocation } from 'react-router-dom';
 
@@ -91,6 +98,22 @@ const lowBarItems = [
   }
 ]
 
+const infoPanels = [<PremiumPanel />, <QuestsPanel />, <AdPanel />]
+function filteredPanels(currentPage) {
+  if (currentPage.includes('/community/')) {
+    return [<PremiumPanel />, <ChatRoomPanel />, <OnlineMembersPanel />, <AdPanel />]
+  }
+  switch(currentPage) {
+      case '/home': 
+          return [<PremiumPanel />, <StatsPanel />, <QuestsPanel />, <AdPanel />]
+      case '/social': 
+          return [<PremiumPanel />, <CommunitiesPanel />, <FriendsPanel />, <AdPanel />]
+      default: 
+          return infoPanels
+
+  }
+}
+
 export default function Root() {
   const { colorMode } = useColorMode();
   const initialState = window.innerWidth < 700 ? true : false;
@@ -154,7 +177,7 @@ export default function Root() {
                     {isMobile ? <></> :  
                     <Box 
                     paddingEnd='10px'>
-                      <MainPanel currentPage={locate.pathname}/>
+                      <MainPanel infoPanels={filteredPanels(locate.pathname)} />
                     </Box>
                     }
                 </Flex>
