@@ -16,9 +16,9 @@ import theme from '../components/theme';
 import { Outlet } from 'react-router';
 import { supabaseClient } from '../supabaseClient';
 import { SessionProvider } from '../hooks/SessionProvider';
-import SideBar from '../components/RootPages/Sidebar';
-import NavHeader from '../components/RootPages/NavHeader';
-import NavFooter from '../components/RootPages/NavFooter';
+import SideBar from '../components/RootPages/Navigaton/Sidebar';
+import NavHeader from '../components/RootPages/Navigaton/NavHeader';
+import NavFooter from '../components/RootPages/Navigaton/NavFooter';
 
 import { useLocation } from 'react-router-dom';
 
@@ -92,7 +92,7 @@ const lowBarItems = [
 export default function Root() {
   const { colorMode } = useColorMode();
   const initialState = window.innerWidth < 500 ? true : false;
-  const [isMobile, setMobile] = React.useState(initialState); //This is to display header
+  const [isMobile, setMobile] = React.useState(initialState); //This is to display header & footer
   const [openModal, setOpenModal] = React.useState(false); //This is to open/close modal
   const locate = useLocation();
 
@@ -144,6 +144,8 @@ export default function Root() {
                   height='100%'>
                   <Outlet />
                 </Box>
+
+                {/* Sidebar on the right for advertisements, notifications, etc. */}
               </Flex>
               {isMobile ? <NavFooter activeItem={locate.pathname} sections={highBarItems} isMobile={isMobile}/> :  <></>}
             </Flex>

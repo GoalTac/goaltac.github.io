@@ -1,7 +1,7 @@
 import React from 'react';
 import { Flex, Button, VStack, Icon, Img, Box } from '@chakra-ui/react';
 import { Link, animateScroll as scroll } from 'react-scroll';
-import logo from '../../images/GoalTac_Logo.png';
+import logo from '../../../images/GoalTac_Logo.png';
 import Modal from './NavModal';
 
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons'

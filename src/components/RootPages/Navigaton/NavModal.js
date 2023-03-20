@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate, NavLink,  } from 'react-router-dom';
 import NavItem from './NavItem';
-import Settings from './Settings';
+import Settings from '../Settings';
 
 
 export default function NavModal({ isMobile, sections, toggleModal, setOpenModal, openModal }) {
