@@ -19,6 +19,8 @@ import { SessionProvider } from '../hooks/SessionProvider';
 import SideBar from '../components/RootPages/Navigaton/Sidebar';
 import NavHeader from '../components/RootPages/Navigaton/NavHeader';
 import NavFooter from '../components/RootPages/Navigaton/NavFooter';
+import MainPanel from '../components/RootPages/Information/MainPanel';
+
 
 import { useLocation } from 'react-router-dom';
 
@@ -91,7 +93,7 @@ const lowBarItems = [
 
 export default function Root() {
   const { colorMode } = useColorMode();
-  const initialState = window.innerWidth < 500 ? true : false;
+  const initialState = window.innerWidth < 700 ? true : false;
   const [isMobile, setMobile] = React.useState(initialState); //This is to display header & footer
   const [openModal, setOpenModal] = React.useState(false); //This is to open/close modal
   const locate = useLocation();
@@ -104,7 +106,7 @@ export default function Root() {
   //decides to show header or not in real time
   React.useEffect(() => {
     function handleResize() {
-      if (window.innerWidth < 500) {
+      if (window.innerWidth < 700) {
         setMobile(true);
       } else {
         setMobile(false);
@@ -122,10 +124,7 @@ export default function Root() {
         <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
           {!noNavPages.includes(locate.pathname) ? (
             <Flex flexDirection='column'>
-              {console.log(openModal)}
-            
 
-              
               {isMobile ? <NavHeader activeItem={locate.pathname} 
               sections={lowBarItems}
               toggleModal={toggleModal}
@@ -133,18 +132,33 @@ export default function Root() {
               openModal={openModal}
               isMobile={isMobile}
               /> :  <></>}
-              <Flex>
+              <Flex
+              w='100%'
+              height='100%'>
                 {isMobile ? <></> :  <SideBar activeItem={locate.pathname} 
                 highBarItems={highBarItems} lowBarItems={lowBarItems}/>}
-                
-                <Box
-                  position='relative'
-                  zIndex='100'
-                  width='100%'
-                  height='100%'>
-                  <Outlet />
-                </Box>
 
+                {/* Using spacers to center a component is extremely scuffed. Find a better way later */}
+                <Spacer />
+                <Flex
+                marginTop='30px'
+                w='1700px'
+                maxH='100%'
+                maxW='100%'
+                flexDirection='row'>
+                  <Outlet />
+                  <Spacer />
+                  
+                    {isMobile ? <></> :  
+                    <Box 
+                    paddingEnd='10px'>
+                      <MainPanel />
+                    </Box>
+                    }
+                </Flex>
+                <Spacer />
+                
+                
                 {/* Sidebar on the right for advertisements, notifications, etc. */}
               </Flex>
               {isMobile ? <NavFooter activeItem={locate.pathname} sections={highBarItems} isMobile={isMobile}/> :  <></>}

@@ -54,7 +54,7 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
             height: '100%',
           }}
         >
-          <Image src={logo} boxSize='20%' pr='2px' />
+          <Image src={logo} boxSize='17%' pr='2px' />
           <Spacer />
           <HStack>
             {sections.map((section, index) => {
