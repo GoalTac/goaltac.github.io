@@ -1,8 +1,8 @@
 import { VStack, StackDivider, Image, Box } from '@chakra-ui/react';
-import img from '../images/empty.svg';
+import img from '../../images/empty.svg';
 import { useEffect, useState } from 'react';
 import TaskItem from './TaskListDetails/TaskItem';
-import { useSupabaseClient } from '../hooks/SessionProvider';
+import { useSupabaseClient } from '../../hooks/SessionProvider';
 
 export default function TaskList() {
   const supabase = useSupabaseClient();

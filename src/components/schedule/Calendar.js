@@ -1,5 +1,5 @@
 import { Grid, GridItem, Text, Stack } from '@chakra-ui/react';
-import TaskItem from '../TaskListDetails/TaskItem';
+import TaskItem from '../HomePages/TaskListDetails/TaskItem';
 import DayOfWeek from './DayOfWeek';
 
 export default function Calendar(props) {

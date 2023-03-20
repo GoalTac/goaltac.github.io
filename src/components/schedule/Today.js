@@ -1,5 +1,5 @@
 import { VStack } from '@chakra-ui/react';
-import TaskItem from '../../components/TaskListDetails/TaskItem';
+import TaskItem from '../../components/HomePages/TaskListDetails/TaskItem';
 
 export default function Today(props) {
   return (

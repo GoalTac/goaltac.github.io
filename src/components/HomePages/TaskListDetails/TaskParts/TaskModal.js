@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import DeleteTask from '../../Tasks/DeleteTask';
 import EditTask from '../../Tasks/EditTask';
-import DueDate from './../TaskParts/DueDate';
+import DueDate from './DueDate';
 import Title from './Title';
 
 // To allow for swap between edit mode and view

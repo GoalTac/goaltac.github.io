@@ -15,7 +15,7 @@ import {
 // import { difficultyBorder } from '../TaskBasedBorderColors/TaskBasedBorder';
 
 import { useEffect, useState } from 'react';
-import { useSession } from '../../hooks/SessionProvider';
+import { useSession } from '../../../hooks/SessionProvider';
 
 import EditTaskModal from './EditTaskModal';
 

@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useSession } from '../../hooks/SessionProvider';
+import { useSession } from '../../../hooks/SessionProvider';
 
 export default function AddTask() {
   const { user, session, supabase } = useSession();

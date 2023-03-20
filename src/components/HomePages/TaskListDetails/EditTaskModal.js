@@ -23,7 +23,7 @@ import EditTask from '../Tasks/EditTask';
 import DueDate from './TaskParts/DueDate';
 import ConfirmEdits from '../Tasks/ConfirmEdits';
 import { useEffect, useState } from 'react';
-import { useSession } from '../../hooks/SessionProvider';
+import { useSession } from '../../../hooks/SessionProvider';
 
 const EditTaskModal = function ({ props }) {
   const { supabase: supabase } = useSession();
