@@ -29,7 +29,6 @@ export default function App() {
       <Route element={<Root />}>
         <Route path='/'>
           <Route index element={<BetaPage />} />
-          <Route path='home' element={<HomePage />} />
           <Route path='help' element={<HelpPage />} />
           <Route path='signin' element={<SignInPage />} />
           <Route path='signup' element={<SignUpPage />} />
@@ -38,6 +37,7 @@ export default function App() {
             <Route path=':username' element={<Profile />} />
           </Route>
           <Route element={<ProtectedRoute redirectPath={'/signin'} />}>
+           <Route path='home' element={<HomePage />} />
             <Route path='market' element={<MarketPage />} />
             <Route path='schedule' element={<Schedule />} />
             <Route path='social' element={<SocialPage />} />
