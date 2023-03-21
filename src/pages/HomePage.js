@@ -1,6 +1,8 @@
+import React, { useState } from 'react';
 import { Box, VStack } from '@chakra-ui/react';
 import AddTask from '../components/HomePages/Tasks/AddTask';
-import TaskList from '../components/HomePages/TaskPage';
+import TaskPage from '../components/HomePages/TaskPage';
+import DashboardPage from '../components/HomePages/DashboardPage';
 
 function HomePage() {
   return (
@@ -22,9 +24,16 @@ function HomePage() {
 
         */}
 
+        <DashboardPage />
+
         <VStack p={4}>
+          {/*
+          
           <AddTask />
-          <TaskList />
+          <TaskPage />
+          
+          */}
+          
         </VStack>
       </Box>
     </>
