@@ -21,18 +21,15 @@ function HomePage() {
             - Tasks
 
         Create New Task Modal Overlay
-
+<DashboardPage />
         */}
 
-        <DashboardPage />
+        
 
         <VStack p={4}>
-          {/*
-          
           <AddTask />
           <TaskPage />
-          
-          */}
+        
           
         </VStack>
       </Box>
