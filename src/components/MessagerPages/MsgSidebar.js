@@ -53,7 +53,7 @@ export default function MsgSidebar() {
 
   return (
     <>
-      <VStack id='Sidebar'>
+      <VStack id='Sidebar' position='sticky' top='0'>
         <FormControl>
           <InputGroup>
             <InputLeftElement
