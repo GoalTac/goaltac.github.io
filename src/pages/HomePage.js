@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Box, VStack } from '@chakra-ui/react';
+import { Box, VStack, useColorMode } from '@chakra-ui/react';
 import AddTask from '../components/HomePages/Tasks/AddTask';
 import TaskPage from '../components/HomePages/TaskPage';
 import DashboardPage from '../components/HomePages/DashboardPage';
 
 function HomePage() {
+  const { colorMode } = useColorMode();
+
   return (
     <>
-      <Box w='100%' h='100%'>
+      <Box w='100%' h='100%' backgroundColor={colorMode === 'dark' ? 'grey.800' : 'white'}>
 
         {/* 
 
@@ -26,7 +28,7 @@ function HomePage() {
 
         
 
-        <VStack p={4}>
+        <VStack p={4} >
           <AddTask />
           <TaskPage />
         

@@ -146,7 +146,7 @@ export default function Root() {
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <SessionProvider supabase={supabaseClient}>
           {!noNavPages.includes(locate.pathname) ? (
-            <Box bg={colorMode === 'dark' ? 'grey.100' : 'white'}>
+            <Box>
 
             <Flex flexDirection='column'>
 

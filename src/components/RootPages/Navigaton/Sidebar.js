@@ -4,7 +4,8 @@ import {
     Flex,
     Divider,
     Image,
-    Box
+    Box,
+    useColorMode
 } from '@chakra-ui/react'
 import NavItem from '../Navigaton/NavItem'
 import largelogo from '../../../images/GoalTac_Logo.png';
@@ -16,7 +17,8 @@ export default function Sidebar({activeItem, highBarItems, lowBarItems}) {
 
     const initialState = window.innerWidth < 868 ? "small" : "large";
     const [navSize, changeNavSize] = React.useState(initialState);
-    
+    const { colorMode } = useColorMode();
+
 
 
 
@@ -36,12 +38,15 @@ export default function Sidebar({activeItem, highBarItems, lowBarItems}) {
 
     return (
         <Flex
+            color={(colorMode == 'dark' ? 'gray.100' : 'black')}
+            backgroundColor={(colorMode == 'dark' ? 'gray.700' : 'white')}
+
             left="5"
             zIndex='overlay'
-            minH="95vh"
-            marginTop="2.5vh"
+            minH="100vh"
+            paddingRight='12px'
+            paddingTop='10px'
             boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.05)"
-            borderRadius={navSize == "small" ? "15px" : "30px"}
             w={navSize == "small" ? "75px" : "200px"}
             flexDir="column"
             justifyContent="space-between">
