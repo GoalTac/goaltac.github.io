@@ -137,12 +137,14 @@ export default function AddTask() {
                 <FormControl>
                   <FormLabel>Hash Tag</FormLabel>
                   <Input
+                    backgroundColor='gray.400'
+                    disabled
                     type='text'
                     maxLength={16}
                     value={task.tag}
                     onChange={e => setTask({ ...task, tag: e.target.value })}
                   />
-                  <FormHelperText>Type a hashtag in</FormHelperText>
+                  <FormHelperText>Type a hashtag in (WIP)</FormHelperText>
                 </FormControl>
 
                 {/* End Date */}
