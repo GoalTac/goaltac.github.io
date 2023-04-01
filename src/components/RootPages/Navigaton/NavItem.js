@@ -20,8 +20,7 @@ const { colorMode } = useColorMode();
 
 //Figure out how to make link expand to entire buttons
     return (
-        <Box minW={isMobile ? '' : `${navSize == 'small' ? '' : '140px'}`} 
-        maxW={isMobile ? '' : `${navSize == 'small' ? '' : '100%'}`}>
+        <Box minW={isMobile ? '' : `${navSize == 'small' ? '' : '160px'}`}>
         
         <NavLink to={nav}>
             <LinkBox

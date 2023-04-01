@@ -41,10 +41,10 @@ export default function Sidebar({activeItem, highBarItems, lowBarItems}) {
             color={(colorMode == 'dark' ? 'gray.100' : 'black')}
             backgroundColor={(colorMode == 'dark' ? 'gray.700' : 'white')}
 
-            left="5"
+            
             zIndex='overlay'
             minH="100vh"
-            paddingRight='12px'
+            paddingX={navSize == "small" ? "" : "12px"}
             paddingTop='10px'
             boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.05)"
             w={navSize == "small" ? "75px" : "200px"}
@@ -54,7 +54,7 @@ export default function Sidebar({activeItem, highBarItems, lowBarItems}) {
                 p="5%"
                 flexDir="column"
                 w="100%"
-                alignItems={navSize == "small" ? "center" : "flex-start"}
+                alignItems='center'
                 as="nav">
 
                 <Image src={navSize == "small" ? smalllogo : largelogo}/>
