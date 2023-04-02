@@ -1,5 +1,7 @@
 // This is the file that actually sends data to supabase
 import {
+  Flex,
+  Box,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -18,8 +20,12 @@ import {
   RadioGroup,
   Radio,
   Text,
+  Icon,
+  IconButton
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { CloseIcon } from '@chakra-ui/icons'
+
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
@@ -34,15 +40,77 @@ export default function AddTask() {
   const [task, setTask] = useState({
     title: '',
     text: '',
-    tag: '',
+    tag: [],
     end_date: new Date(),
     difficulty: '0',
     userid: user?.id,
   });
-
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
+  const selectedTags = tags => console.log(tags);
+
+
+  /**
+   * 
+   * @param {*} props 
+   * @returns tag display component
+   */
+  const TagsInput = props => {
+    const [tags, setTags] = React.useState([]);
+
+    const addTag = event => {
+      if (event.key === "Enter" && event.target.value !== "") {
+        const newTag = event.target.value.replace(/\s+/g, '');
+        console.log(newTag)
+        if (tags.includes(newTag)) {
+          return new Error('Can not have duplicated tags.');
+        } else {
+          setTags([...tags, newTag])
+          props.selectedTags([...tags, newTag]);
+          event.target.value = "";
+        }
+      }
+    }
+
+    const removeTag = tag => {
+      //remove matching tag from tags
+      if (tags.includes(tag)) {
+          setTags(
+            [...tags.filter(
+              i => i !== tag //if i is the matching tag to be removed, then remove it
+            )]
+          )
+          
+      } else {
+        return new Error('Tag not found.');
+      }
+    }
+
+    return (
+        <div className="tags-input">
+            <Input
+              borderWidth='2px' borderRadius='10px' padding='2px'
+              placeholder='Please enter to add tags'
+              type='text'
+              maxLength={16}
+              onKeyUp={e => addTag(e)}/>
+            <Box justifyContent='space-evenly'>
+              {tags.map((tag, index) => (
+                <Button 
+                  marginRight={1}
+                  minWidth='60px'
+                  columnGap={2}
+                  onClick={() => removeTag(tag)}
+                  key={index} 
+                  borderWidth='1px'>
+                    {tag} 
+                    <CloseIcon />
+                </Button>))}
+          </Box>
+        </div>
+    );
+  };
 
   async function saveTask(e) {
     console.log(task.end_date);
@@ -56,7 +124,7 @@ export default function AddTask() {
 
     //Finishing tasks
     setLoading(false);
-    setTask({ ...task, title: '', text: '', tag: '', end_date: new Date() });
+    setTask({ ...task, title: '', text: '', tag: [], end_date: new Date() });
     console.log(task);
 
     toast({
@@ -103,6 +171,7 @@ export default function AddTask() {
                 <FormControl>
                   <FormLabel>Title</FormLabel>
                   <Input
+                    borderWidth='2px' borderRadius='10px' padding='2px'
                     type='text'
                     maxLength={24}
                     value={task.title}
@@ -136,30 +205,26 @@ export default function AddTask() {
                 {/* Hashtag */}
                 <FormControl>
                   <FormLabel>Hash Tag</FormLabel>
-                  <Input
-                    backgroundColor='gray.400'
-                    disabled
-                    type='text'
-                    maxLength={16}
-                    value={task.tag}
-                    onChange={e => setTask({ ...task, tag: e.target.value })}
-                  />
-                  <FormHelperText>Type a hashtag in (WIP)</FormHelperText>
+                  <TagsInput selectedTags={selectedTags} />
                 </FormControl>
-
                 {/* End Date */}
                 <FormControl>
                   <FormLabel>End Date</FormLabel>
-                  <DatePicker
-                    selected={task.end_date}
-                    onChange={e => setTask({ ...task, end_date: e })}
-                  />
+                  <Flex borderWidth='2px' maxW={'max-content'} borderRadius='10px' padding='2px'>
+                    <DatePicker
+                      showTimeSelect
+                      dateFormat="Pp"
+                      selected={task.end_date}
+                      onChange={e => setTask({ ...task, end_date: e })}/>
+                  </Flex>
+                  
                 </FormControl>
 
                 {/* Details */}
                 <FormControl>
                   <FormLabel>Task Details</FormLabel>
                   <Input
+                    borderWidth='2px' borderRadius='10px' padding='2px'
                     type='text'
                     maxLength={1024}
                     value={task.text}
