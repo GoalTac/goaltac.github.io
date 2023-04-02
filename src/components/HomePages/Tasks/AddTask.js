@@ -48,7 +48,10 @@ export default function AddTask() {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
-  const selectedTags = tags => console.log(tags);
+  var selectedTags = tags => {
+    console.log(tags)
+    setTask({...task, tag: tags})
+  }
 
 
   /**
@@ -56,61 +59,34 @@ export default function AddTask() {
    * @param {*} props 
    * @returns tag display component
    */
-  const TagsInput = props => {
-    const [tags, setTags] = React.useState([]);
+  const [tags, setTags] = React.useState([]);
 
-    const addTag = event => {
-      if (event.key === "Enter" && event.target.value !== "") {
-        const newTag = event.target.value.replace(/\s+/g, '');
-        console.log(newTag)
-        if (tags.includes(newTag)) {
-          return new Error('Can not have duplicated tags.');
-        } else {
-          setTags([...tags, newTag])
-          props.selectedTags([...tags, newTag]);
-          event.target.value = "";
-        }
-      }
-    }
-
-    const removeTag = tag => {
-      //remove matching tag from tags
-      if (tags.includes(tag)) {
-          setTags(
-            [...tags.filter(
-              i => i !== tag //if i is the matching tag to be removed, then remove it
-            )]
-          )
-          
+  const addTag = event => {
+    if (event.key === "Enter" && event.target.value !== "") {
+      const newTag = event.target.value.replace(/\s+/g, '');
+      if (tags.includes(newTag)) {
+        return new Error('Can not have duplicated tags.');
       } else {
-        return new Error('Tag not found.');
+        setTags([...tags, newTag])
+        selectedTags([...tags, newTag]);
+        event.target.value = "";
       }
     }
+  }
 
-    return (
-        <div className="tags-input">
-            <Input
-              borderWidth='2px' borderRadius='10px' padding='2px'
-              placeholder='Please enter to add tags'
-              type='text'
-              maxLength={16}
-              onKeyUp={e => addTag(e)}/>
-            <Box justifyContent='space-evenly'>
-              {tags.map((tag, index) => (
-                <Button 
-                  marginRight={1}
-                  minWidth='60px'
-                  columnGap={2}
-                  onClick={() => removeTag(tag)}
-                  key={index} 
-                  borderWidth='1px'>
-                    {tag} 
-                    <CloseIcon />
-                </Button>))}
-          </Box>
-        </div>
-    );
-  };
+  const removeTag = tag => {
+    //remove matching tag from tags
+    if (tags.includes(tag)) {
+        setTags(
+          [...tags.filter(
+            i => i !== tag //if i is the matching tag to be removed, then remove it
+          )]
+        )
+        
+    } else {
+      return new Error('Tag not found.');
+    }
+  }
 
   async function saveTask(e) {
     console.log(task.end_date);
@@ -134,6 +110,10 @@ export default function AddTask() {
       duration: 2000,
       isClosable: true,
     });
+
+    //reset tags (because idk how to make it look better)
+    setTags([])
+    selectedTags = []
 
     onClose();
   }
@@ -205,7 +185,25 @@ export default function AddTask() {
                 {/* Hashtag */}
                 <FormControl>
                   <FormLabel>Hash Tag</FormLabel>
-                  <TagsInput selectedTags={selectedTags} />
+                  <Input
+                    borderWidth='2px' borderRadius='10px' padding='2px'
+                    placeholder='Please enter to add tags'
+                    type='text'
+                    maxLength={16}
+                    onKeyUp={e => addTag(e)}/>
+                  <Box justifyContent='space-evenly'>
+                    {tags.map((tag, index) => (
+                      <Button 
+                        marginRight={1}
+                        minWidth='60px'
+                        columnGap={2}
+                        onClick={() => removeTag(tag)}
+                        key={index} 
+                        borderWidth='1px'>
+                          {tag} 
+                          <CloseIcon />
+                      </Button>))}
+                  </Box>
                 </FormControl>
                 {/* End Date */}
                 <FormControl>
