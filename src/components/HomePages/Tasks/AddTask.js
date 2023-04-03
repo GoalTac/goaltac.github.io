@@ -77,11 +77,11 @@ export default function AddTask() {
   const removeTag = tag => {
     //remove matching tag from tags
     if (tags.includes(tag)) {
-        setTags(
-          [...tags.filter(
-            i => i !== tag //if i is the matching tag to be removed, then remove it
-          )]
-        )
+        const newTag = [...tags.filter(
+          i => i !== tag //if i is the matching tag to be removed, then remove it
+        )]
+        setTags(newTag)
+        selectedTags(newTag);
         
     } else {
       return new Error('Tag not found.');
@@ -89,19 +89,16 @@ export default function AddTask() {
   }
 
   async function saveTask(e) {
-    console.log(task.end_date);
     e.preventDefault();
     setLoading(true);
 
     const { error } = await supabase
       .from('todos') //Table name
       .insert(task);
-    console.log(task);
 
     //Finishing tasks
     setLoading(false);
     setTask({ ...task, title: '', text: '', tag: [], end_date: new Date() });
-    console.log(task);
 
     toast({
       title: error || 'task added',

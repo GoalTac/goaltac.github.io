@@ -10,49 +10,34 @@ import React, { useState } from 'react';
 import TaskItem from './TaskListDetails/TaskItem';
 import { useSupabaseClient } from '../../hooks/SessionProvider';
 
-export default function DashboardPage({}) {
+export default function DashboardPage({tasks}) {
     const supabase = useSupabaseClient();
   
   //get all task data relating to the user
   //organize by category -> goals
   //if user has clicked on a goal expand to full task view 
 
-    const [tasks, setTasks] = useState([]);
+    const [categories, setCategories] = useState([]);
 
-    React.useEffect(() => {
+    //getting data actively from the database
     async function fetchData() {
-        let { data: tasks, error } = await supabase.from('todos').select('*');
-        setTasks(tasks);
+        let { data: categories, error } = await supabase.from('categories').select('*');
+        setCategories(categories);
     }
-    fetchData();
+    React.useEffect(() => {
+        fetchData();
     } , []);
 
 
 
-    const taskStructure = [ //create a task structure that brings together all of the person's tasks
-        //goals are the highest parent node
-        {
-            Goal: 'goal1',
-        },
-        {
-            Goal: 'goal2'
-        },
-        {
-            Goal: 'goal3'
-        },
-        {
-            Goal: 'goal4',
 
-        }
-    ]
-
+    /*
     const categories = [
         {
-            Data: ['red', 'Health & Fitness'],
-            Goals: ['goal2','goal3']
+            Data: ['red', 'Health & Fitness']
 
         }
-    ]
+    ]*/
     
     return (
         <Box>
