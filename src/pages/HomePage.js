@@ -10,20 +10,7 @@ function HomePage() {
   const { user, session, supabase } = useSession();
   const { colorMode } = useColorMode();
   const [isLoading, setLoading] = useState(true);
-  const [tasks, setTasks] = useState();
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  async function fetchData() {
-    supabase.from('todos').select('*').then(
-      (response) => {
-        let { data: tasks, error } = response
-        setTasks(tasks)
-        setLoading(false)
-      })
-  }
+  
 
   return  (
     <>
@@ -49,7 +36,7 @@ function HomePage() {
         <VStack p={4} >
           <AddTask />
           <TaskPage />
-          {isLoading == false && <AddCategory initialTasks={tasks}/>}
+          <AddCategory/>
 
           
         </VStack>

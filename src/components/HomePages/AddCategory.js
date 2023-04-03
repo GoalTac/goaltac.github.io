@@ -39,11 +39,13 @@ import { useSession } from '../../hooks/SessionProvider';
   to how AddTask adds a task to the user's task list
 */
 
-export default function AddCategory({initialTasks}) {
+export default function AddCategory() {
   const { user, session, supabase } = useSession();
   const { isOpen, onOpen, onClose } = useDisclosure(); //For the modal's open/close
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [tasks, setTasks] = useState([]);
+  const [initialTasks, setInitialTasks] = useState([]);
+
   const [category, setCategory] = useState({
     title: '',
     description: '',
@@ -55,6 +57,15 @@ export default function AddCategory({initialTasks}) {
     const taskIDs = tasks.map((task) => {return task.id})
     setCategory({...category, tasks: taskIDs})
   }
+
+  useEffect(() => {
+    async function fetchData() {
+      let { data: tasks, error } = await supabase.from('todos').select('*');
+      setLoading(false)
+      setInitialTasks(tasks)
+    }
+    fetchData();
+  }, []);
 
   /**
    * 
@@ -96,8 +107,8 @@ export default function AddCategory({initialTasks}) {
       const { error } = await supabase
         .from('categories') //Table name
         .insert(category);
-      //Finishing tasks
-      setLoading(false);
+      
+      setLoading(false); //Finishing tasks
       setCategory({ ...category, title: '', description: '', tasks: [] });
 
       
@@ -166,18 +177,19 @@ export default function AddCategory({initialTasks}) {
                     type='checkbox'
                     maxLength={24}
                     >
-                    
-                      {initialTasks.map((task, index) => (
-                      <Checkbox
-                        key={index}
-                        value={`${task.id}`}
-                        marginRight={1}
-                        minWidth='60px'
-                        columnGap={2}
-                        onChange={e => {e.target.checked ? addTask(task) : removeTask(task)}}
-                        borderWidth='1px'>
-                          {task.title} 
-                      </Checkbox>))}
+                      
+                        {initialTasks.map(task => (
+                          <Checkbox
+                            key={task.id}
+                            value={`${task.id}`}
+                            marginRight={1}
+                            minWidth='60px'
+                            columnGap={2}
+                            onChange={e => {e.target.checked ? addTask(task) : removeTask(task)}}
+                            borderWidth='1px'>
+                              {task.title} 
+                          </Checkbox>
+                        ))}
 
                   </CheckboxGroup>
 
@@ -210,3 +222,21 @@ export default function AddCategory({initialTasks}) {
     </>
   );
 }
+
+/*
+.then(data => {
+  console.log(data)
+  data.map((task, index) => {
+    <Checkbox
+      key={index}
+      value={`${task.id}`}
+      marginRight={1}
+      minWidth='60px'
+      columnGap={2}
+      onChange={e => {e.target.checked ? addTask(task) : removeTask(task)}}
+      borderWidth='1px'>
+        {task.title} 
+    </Checkbox>
+  })
+})
+*/
