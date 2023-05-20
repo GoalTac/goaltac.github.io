@@ -32,7 +32,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useSession } from '../../hooks/SessionProvider';
+import { useSession } from '../../../hooks/SessionProvider';
 
 /*
   This file is to add a category to the user's dashboard, similar

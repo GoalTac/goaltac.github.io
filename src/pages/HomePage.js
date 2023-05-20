@@ -2,9 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Box, VStack, useColorMode } from '@chakra-ui/react';
 import AddTask from '../components/HomePages/Tasks/AddTask';
 import TaskPage from '../components/HomePages/TaskPage';
-import DashboardPage from '../components/HomePages/DashboardPage';
-import AddCategory from '../components/HomePages/AddCategory';
+import CategoryDisplay from '../components/HomePages/Category/CategoryDisplay';
+import AddCategory from '../components/HomePages/Category/AddCategory';
 import { useSession } from '../hooks/SessionProvider';
+
+/**
+ * 
+ * 1. Gather data on the tasks[taskID, title, desc, ...] and categories[category[[taskIDs, title, desc, ...]]]
+ * 2. Iterate through categories and use the categoryItem component to create the UI
+ */
 
 function HomePage() {
   const { user, session, supabase } = useSession();
@@ -29,6 +35,8 @@ function HomePage() {
 
         Create New Task Modal Overlay
 <DashboardPage />
+
+
         */}
 
         
@@ -37,7 +45,7 @@ function HomePage() {
           <AddTask />
           <TaskPage />
           <AddCategory/>
-
+          <CategoryDisplay />
           
         </VStack>
       </Box>

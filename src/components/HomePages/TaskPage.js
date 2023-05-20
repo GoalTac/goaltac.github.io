@@ -4,6 +4,13 @@ import { useEffect, useState } from 'react';
 import TaskItem from './TaskListDetails/TaskItem';
 import { useSupabaseClient } from '../../hooks/SessionProvider';
 
+
+/**
+ * 
+ * 1. Gather data on the tasks[taskID, title, desc, ...] and categories[category[[taskIDs, title, desc, ...]]]
+ * 2. Iterate through categories and use the categoryItem component to create the UI
+ */
+
 export default function TaskList() {
   const supabase = useSupabaseClient();
 
