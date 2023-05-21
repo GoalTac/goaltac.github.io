@@ -39,26 +39,33 @@ import { useSession } from '../../../hooks/SessionProvider';
   to how AddTask adds a task to the user's task list
 */
 
-export default function AddCategory() {
+export default function AddCategory({initOpen, initTasks, initCategory, buttonTitle}) {
   const { user, session, supabase } = useSession();
   const { isOpen, onOpen, onClose } = useDisclosure(); //For the modal's open/close
   const [loading, setLoading] = useState(true);
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] =  useState([]);
   const [initialTasks, setInitialTasks] = useState([]);
 
-  const [category, setCategory] = useState({
-    title: '',
-    description: '',
-    tasks: [],
-    uuid: user?.id,
+  //sets the AddCategory to an initial category if it exists
+  const [category, setCategory] = 
+    useState({
+    title: (initCategory ? initCategory.title : ''),
+    description: (initCategory ? initCategory.description : ''),
+    tasks: (initCategory ? initCategory.tasks : []),
+    uuid: (initCategory ? initCategory.uuid : user?.id),
   });
   const toast = useToast();
   var selectedTasks = tasks => {
     const taskIDs = tasks.map((task) => {return task.id})
     setCategory({...category, tasks: taskIDs})
+    
   }
 
   useEffect(() => {
+    if (initTasks) {
+      setTasks(initTasks)
+      selectedTasks(initTasks)
+    }
     async function fetchData() {
       let { data: tasks, error } = await supabase.from('todos').select('*');
       setLoading(false)
@@ -67,6 +74,90 @@ export default function AddCategory() {
     fetchData();
   }, []);
 
+  /**
+   * Public accessor for the modal!
+   */
+  const modal = function() {
+    return(
+        <Modal
+          isOpen={isOpen || initOpen}
+          onClose={onClose}
+          closeOnOverlayClick={false}
+          size='xl'
+        >
+          <ModalOverlay>
+            <ModalContent>
+              <ModalHeader>Create your new category</ModalHeader>
+              <ModalBody>
+                <VStack as='form' p='25px'>
+                  {/* Title */}
+                  <FormControl>
+                    <FormLabel>Title</FormLabel>
+                    <Input
+                      borderWidth='2px' borderRadius='10px' padding='2px'
+                      type='text'
+                      maxLength={24}
+                      value={category.title}
+                      onChange={e => setCategory({ ...category, title: e.target.value })}
+                    />
+                    <FormHelperText>
+                      Choose a title that's fun and concise!
+                    </FormHelperText>
+                  </FormControl>
+
+                  {/* Task */}
+                  <FormControl>
+                    <FormLabel>Tasks</FormLabel>
+                    <CheckboxGroup
+                      borderWidth='2px' borderRadius='10px' padding='2px'
+                      type='checkbox'
+                      maxLength={24}
+                      >
+                          {initialTasks.map(task => (
+                            <Checkbox
+                              key={task.id}
+                              marginRight='1rem'
+                              defaultChecked={category.tasks.includes(task.id) ? true : false}
+                              minWidth='4rem'
+                              columnGap='1rem'
+                              onChange={e => {e.target.checked ? addTask(task) : removeTask(task)}}
+                              borderWidth='1px'>
+                                {task.title}
+                            </Checkbox>
+                          ))}
+
+                    </CheckboxGroup>
+
+                  </FormControl>
+
+                  {/* Description */}
+                  <FormControl>
+                    <FormLabel>Category Description</FormLabel>
+                    <Input
+                      borderWidth='2px' borderRadius='10px' padding='2px'
+                      type='text'
+                      maxLength={1024}
+                      value={category.description}
+                      onChange={e => {
+                        setCategory({ ...category, description: e.target.value})
+                        this.onChange(e) //not sure if this does anything :shrug:
+                      }}
+                    />
+                    <FormHelperText>
+                      Explain your task in as little (or as much ;-) ) detail as
+                      you need!
+                    </FormHelperText>
+                  </FormControl>
+                  <Button colorScheme='blue' onClick={saveCategory}>
+                    Add
+                  </Button>
+                </VStack>
+              </ModalBody>
+              <ModalCloseButton />
+            </ModalContent>
+          </ModalOverlay>
+        </Modal>);
+    };
   /**
    * 
    * @param {*} task 
@@ -102,21 +193,33 @@ export default function AddCategory() {
     
     e.preventDefault();
     setLoading(true);
+    const editMode = ((buttonTitle == 'Edit' ? true : false))
 
     try {
-      const { error } = await supabase
+      if (editMode) {
+        const { error } = await supabase
+        .from('categories') //Table name
+        .update(category)
+        .eq('id', category.id);
+        console.log(error)
+      } else {
+        const { error } = await supabase
         .from('categories') //Table name
         .insert(category);
+      }
+      
       
       setLoading(false); //Finishing tasks
-      setCategory({ ...category, title: '', description: '', tasks: [] });
+      //setCategory({ ...category, title: '', description: '', tasks: [] });
 
       
 
       selectedTasks([])
       setTasks([])
       onClose();
+      
     } catch(e) {
+      console.log(e)
       toast({
         title: error || 'category added',
         position: 'top',
@@ -137,88 +240,15 @@ export default function AddCategory() {
 
   }, []);
 
+  
+
   return (
     <>
       <Button onClick={tempOnOpen} colorScheme='blue' p='10px'>
-        + Category
+        {buttonTitle ? buttonTitle : "+ Category"}
       </Button>
-
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        closeOnOverlayClick={false}
-        size='xl'
-      >
-        <ModalOverlay>
-          <ModalContent>
-            <ModalHeader>Create your new category</ModalHeader>
-            <ModalBody>
-              <VStack as='form' p='25px'>
-                {/* Title */}
-                <FormControl>
-                  <FormLabel>Title</FormLabel>
-                  <Input
-                    borderWidth='2px' borderRadius='10px' padding='2px'
-                    type='text'
-                    maxLength={24}
-                    value={category.title}
-                    onChange={e => setCategory({ ...category, title: e.target.value })}
-                  />
-                  <FormHelperText>
-                    Choose a title that's fun and concise!
-                  </FormHelperText>
-                </FormControl>
-
-                {/* Task */}
-                <FormControl>
-                  <FormLabel>Tasks</FormLabel>
-                  <CheckboxGroup
-                    borderWidth='2px' borderRadius='10px' padding='2px'
-                    type='checkbox'
-                    maxLength={24}
-                    >
-                      
-                        {initialTasks.map(task => (
-                          <Checkbox
-                            key={task.id}
-                            value={`${task.id}`}
-                            marginRight={1}
-                            minWidth='60px'
-                            columnGap={2}
-                            onChange={e => {e.target.checked ? addTask(task) : removeTask(task)}}
-                            borderWidth='1px'>
-                              {task.title} 
-                          </Checkbox>
-                        ))}
-
-                  </CheckboxGroup>
-
-                </FormControl>
-
-                {/* Description */}
-                <FormControl>
-                  <FormLabel>Category Description</FormLabel>
-                  <Input
-                    borderWidth='2px' borderRadius='10px' padding='2px'
-                    type='text'
-                    maxLength={1024}
-                    value={category.description}
-                    onChange={e => setCategory({ ...category, description: e.target.value })}
-                  />
-                  <FormHelperText>
-                    Explain your task in as little (or as much ;-) ) detail as
-                    you need!
-                  </FormHelperText>
-                </FormControl>
-                <Button colorScheme='blue' onClick={saveCategory}>
-                  Add
-                </Button>
-              </VStack>
-            </ModalBody>
-            <ModalCloseButton />
-          </ModalContent>
-        </ModalOverlay>
-      </Modal>
+      {modal()}
+      
     </>
   );
 }

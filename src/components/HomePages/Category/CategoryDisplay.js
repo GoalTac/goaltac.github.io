@@ -97,13 +97,13 @@ export default function CategoryDisplay() {
       <>
         <VStack
           divider={<StackDivider />}
-          borderColor='gray.100'
+          borderColor='gray.300'
           borderWidth='2px'
           p='5'
           borderRadius='lg'
           w='100vw'
           maxW={{ base: '90vw', sm: '80vw', lg: '50vw', xl: '30vw' }}
-          alignItems='center'
+          alignItems='left'
         >
           {!isLoading && categories.map(category => (
             <CategoryItem
