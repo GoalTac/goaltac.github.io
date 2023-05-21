@@ -13,9 +13,11 @@ import {
 } from '@chakra-ui/react';
 import { Link as ReactRouterLink, useParams } from 'react-router-dom';
 import { useSupabaseClient } from '../hooks/SessionProvider';
+
 export default function Profile({ session }) {
   const { username } = useParams();
   const [editMode, setEditMode] = useState(false);
+  const supabase = useSupabaseClient();
 
   const [profile, setProfile] = useState({
     id: null,
@@ -71,8 +73,7 @@ export default function Profile({ session }) {
       height='100vh'
       justifyContent='center'
       alignItems='center'
-      bg={useColorModeValue('gray.50', 'gray.800')}
-    >
+      bg={useColorModeValue('gray.50', 'gray.800')}>
       <Button
         visibility={editMode ? 'hidden' : 'visible'}
         onClick={onClickEdit}
