@@ -2,8 +2,8 @@ import {
   Button,
   VStack,
   StackDivider,
-  Modal,
-  ModalBody,
+  Text,
+  HStack,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
@@ -31,9 +31,12 @@ export default function CategoryItem({tasks, category}) {
         <Box w='100%'>
           {/* Category Title component "Make this into a button which we can
           click on to edit the contents of the category"*/} 
-          <AddCategory initTasks={tasks} initCategory={category} buttonTitle={'Edit'}/>
-          {category.title}
-          <Flex marginLeft='1rem' flexDir={'column'} rowGap='0.5rem'>
+          <HStack columnGap='0.3rem'>
+            <AddCategory initTasks={tasks} initCategory={category} buttonTitle={`+ ${category.title}`}/>
+            
+          </HStack>
+          
+          <Flex marginLeft='1rem' flexDir={'row'} columnGap='0.5rem'>
             {tasks.map(task => (
               <TaskItem
                 key={task.id}
@@ -42,9 +45,7 @@ export default function CategoryItem({tasks, category}) {
                 w='auto'
                 minW='1rem'
                 h='1rem'
-                heading_font_size='lg'
-               
-              />
+                heading_font_size='lg'/>
             ))}
           </Flex>
           

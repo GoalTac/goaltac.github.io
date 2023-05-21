@@ -193,14 +193,14 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
     
     e.preventDefault();
     setLoading(true);
-    const editMode = ((buttonTitle == 'Edit' ? true : false))
+    const editMode = ((buttonTitle ? true : false))
 
     try {
-      if (editMode) {
+      if (editMode && initCategory) {
         const { error } = await supabase
         .from('categories') //Table name
         .update(category)
-        .eq('id', category.id);
+        .eq('id', initCategory.id);
         console.log(error)
       } else {
         const { error } = await supabase
