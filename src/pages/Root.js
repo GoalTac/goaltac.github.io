@@ -143,10 +143,10 @@ export default function Root() {
   return (
     <>
       <ChakraProvider>
-        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+        <ColorModeScript initialColorMode={theme.config.initialColorMode}  />
         <SessionProvider supabase={supabaseClient}>
           {!noNavPages.includes(locate.pathname) ? (
-            <Box>
+            <Box className='Root' height='100vh'>
 
             <Flex flexDirection='column'>
 
@@ -159,7 +159,7 @@ export default function Root() {
               /> :  <></>}
               <Flex
               w='100%'
-              height='100%'>
+              height='100vh'>
                 {isMobile ? <></> :  <SideBar activeItem={locate.pathname} 
                 highBarItems={highBarItems} lowBarItems={lowBarItems}/>}
 

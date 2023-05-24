@@ -1,6 +1,11 @@
+*{margin: 0}
+
 .task-modal-header {
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.22);
 }
+
+body {width: 100vw;
+  height: 100vh}
 
 html {
   /* Firefox way to mod scrollbars, otherwise it looks jank */
@@ -8,6 +13,8 @@ html {
   scrollbar-width: thin;
   scroll-behavior: smooth;
 }
+
+
 
 /* width */
 html ::-webkit-scrollbar {

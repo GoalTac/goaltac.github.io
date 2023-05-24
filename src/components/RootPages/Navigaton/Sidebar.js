@@ -5,7 +5,8 @@ import {
     Divider,
     Image,
     Box,
-    useColorMode
+    useColorMode,
+    Spacer
 } from '@chakra-ui/react'
 import NavItem from '../Navigaton/NavItem'
 import largelogo from '../../../images/GoalTac_Logo.png';
@@ -35,73 +36,73 @@ export default function Sidebar({activeItem, highBarItems, lowBarItems}) {
         return () => window.removeEventListener('resize', handleResize);
       }, []);
 
-
     return (
-        <Flex
+        <Flex className='SideBar Parent'
             color={(colorMode == 'dark' ? 'gray.100' : 'black')}
             backgroundColor={(colorMode == 'dark' ? 'gray.700' : 'white')}
-
-            
-            zIndex='overlay'
-            minH="100vh"
-            paddingX={navSize == "small" ? "" : "12px"}
-            paddingTop='10px'
+            height='100vh'
             boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.05)"
-            w={navSize == "small" ? "75px" : "200px"}
-            flexDir="column"
-            justifyContent="space-between">
-            <Flex
-                p="5%"
-                flexDir="column"
-                w="100%"
-                alignItems='center'
-                as="nav">
+            position='relative'
+            
+            flexDir="column">
 
-                <Image src={navSize == "small" ? smalllogo : largelogo}/>
-                
+            {/* How to prevent logo resizing? */}
+            <Box className='SideBar Parent Logo'
+                paddingTop='2vh' 
+                paddingX='1vw'>
+                <Image className='Sidebar Logo' 
+                    maxW='12vw'
+                    src={navSize == "small" ? smalllogo : largelogo}/>
+            </Box>
+            
+            
+            <Flex className='SideBar Parent Contents'
+                height='100vh'
+                flexDir='column'
+                overflow='hidden'
+                paddingX={navSize == "small" ? "" : "12px"}>
+
+                <Box className='SideBar Content Upper'>                
                 {highBarItems.map((item, index) => {
                     return (
-                        
-                        <NavItem 
-                        key={index}
-                        navSize={navSize} 
-                        icon={item.icon} 
-                        title={item.title}
-                        description={item.description}
-                        nav={item.nav}
-                        active={activeItem == item.nav ? true : false}/>
-                        
-                    );
-                })}
-                
-            </Flex>
+                        <NavItem
+                            key={index}
+                            navSize={navSize} 
+                            icon={item.icon} 
+                            title={item.title}
+                            description={item.description}
+                            nav={item.nav}
+                            active={activeItem == item.nav ? true : false}/>
+                        );
+                    })}
+                </Box>
+                <Spacer />
 
-            <Flex
-                p="5%"
-                flexDir="column"
-                w="100%"
-                alignItems={navSize == "small" ? "center" : "flex-start"}
-                mb={4}>
-                <Divider display={navSize == "small" ? "none" : "flex"} />
-                {lowBarItems.map((item, index) => {
-                    return (
-                        <NavItem 
-                        key={index}
-                        navSize={navSize} 
-                        icon={item.icon} 
-                        title={item.title}
-                        description={item.description}
-                        nav={item.nav}
-                        active={activeItem == item.nav ? true : false}
-                        />
-                    );
-                })}
-                <Divider display={navSize == "small" ? "none" : "flex"} />
+                <Box className='SideBar Content Lower' mb={4}>
+                    <Divider display={navSize == "small" ? "none" : "flex"} />
+                    {lowBarItems.map((item, index) => {
+                        return (
+                            <NavItem 
+                            key={index}
+                            navSize={navSize} 
+                            icon={item.icon} 
+                            title={item.title}
+                            description={item.description}
+                            nav={item.nav}
+                            active={activeItem == item.nav ? true : false}
+                            />
+                        );
+                    })}
+                    <Divider display={navSize == "small" ? "none" : "flex"} />
 
-                <Flex mt='2rem'>
-                    <Settings session={useSupabaseClient.session} />
-                </Flex>
+                    <Flex mt='2rem'>
+                        <Settings session={useSupabaseClient.session} />
+                    </Flex>
+                </Box>
             </Flex>
+            
+
+            
             
         </Flex>
     )
