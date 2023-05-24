@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   Flex,
   Text,
@@ -18,6 +18,9 @@ export default function Profile({ session }) {
   const { username } = useParams();
   const [editMode, setEditMode] = useState(false);
   const supabase = useSupabaseClient();
+  const ref = React.useRef();
+  const isOverflow = useIsOverflow(ref);
+
 
   const [profile, setProfile] = useState({
     id: null,

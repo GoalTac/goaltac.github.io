@@ -10,6 +10,8 @@ import {
   AvatarBadge,
   useColorMode,
   Switch,
+  Flex,
+  Portal
 } from '@chakra-ui/react';
 import { FaMoon, FaSun, FaQuestion, FaHome } from 'react-icons/fa';
 import { FiLogOut } from 'react-icons/fi';
@@ -35,64 +37,64 @@ export default function Settings({ session, mPlacement, pSize }) {
   };
 
   return (
-    <Box>
-      <Menu placement={mPlacement == null ? 'bottom' : `${mPlacement}`}>
-        {({ isOpen }) => (
-          <>
-            <MenuButton variant='contained' isActive={isOpen} as={Button}>
-              <Avatar name='Adi C' bg={isOpen ? 'cyan' : null} boxSize={pSize == null ? '50px' : `${pSize}px`}>
-                <AvatarBadge
-                  boxSize={pSize == null ? '1.35rem' : `${pSize/2}px`}
-                  bg={session ? 'green.500' : 'red.500'}
-                />
-              </Avatar>
-            </MenuButton>
-
+    <Menu className='Setting Parent' id='Setting Parent'
+      placement={mPlacement == null ? 'bottom' : `${mPlacement}`}>
+      {({ isOpen }) => (
+        <>
+          <MenuButton className='Setting Button' id='Setting Button'
+            variant='contained' isActive={isOpen} as={Button}>
+            <Avatar name='Adi C'>
+              <AvatarBadge
+                boxSize={pSize == null ? '1.35rem' : `${pSize/2}px`}
+                bg={session ? 'green.500' : 'red.500'}
+              />
+            </Avatar>
+          </MenuButton>
+          <Portal>
             <MenuList>
-              <MenuGroup>
-                <MenuItem
-                  closeOnSelect={false}
-                  onClick={toggleColorMode}
-                  icon={colorMode === 'dark' ? <FaSun /> : <FaMoon />}
-                >
-                  Dark mode{' '}
-                  <Switch
-                    id='darkMode'
-                    isChecked={colorMode === 'dark' ? true : false}
-                  />
-                </MenuItem>
-                <MenuItem
-                  icon={<FaQuestion />}
-                  onClick={() => navigate('/help')}
-                >
-                  Help and support
-                </MenuItem>
-                <MenuItem>
-                  <CSVLink data={exportTasks} onClick={handleTaskExport}>
-                    📁&nbsp;Export Data as CSV
-                  </CSVLink>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => navigate('/settings')}
-                  icon={<SettingsIcon />}
-                >
-                  Settings
-                </MenuItem>
-                <MenuItem
-                  icon={<FiLogOut />}
-                  onClick={async () => {
-                    const { error } = await supabase.auth.signOut();
-                    console.log('here');
-                    navigate('/signin');
-                  }}
-                >
-                  Sign Out
-                </MenuItem>
-              </MenuGroup>
+              <MenuItem
+                closeOnSelect={false}
+                onClick={toggleColorMode}
+                icon={colorMode === 'dark' ? <FaSun /> : <FaMoon />}
+              >
+                Dark mode{' '}
+                <Switch
+                  id='darkMode'
+                  isChecked={colorMode === 'dark' ? true : false}
+                />
+              </MenuItem>
+              <MenuItem
+                icon={<FaQuestion />}
+                onClick={() => navigate('/help')}
+              >
+                Help and support
+              </MenuItem>
+              <MenuItem>
+                <CSVLink data={exportTasks} onClick={handleTaskExport}>
+                  📁&nbsp;Export Data as CSV
+                </CSVLink>
+              </MenuItem>
+              <MenuItem
+                onClick={() => navigate('/settings')}
+                icon={<SettingsIcon />}
+              >
+                Settings
+              </MenuItem>
+              <MenuItem
+                icon={<FiLogOut />}
+                onClick={async () => {
+                  const { error } = await supabase.auth.signOut();
+                  console.log('here');
+                  navigate('/signin');
+                }}
+              >
+                Sign Out
+              </MenuItem>
             </MenuList>
-          </>
-        )}
-      </Menu>
-    </Box>
+          </Portal>
+          
+        </>
+      )}
+    </Menu>
   );
 }
