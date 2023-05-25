@@ -12,7 +12,6 @@ export const SessionProvider = ({ children, supabase }) => {
   const [session, setSession] = useState();
   const [loading, setLoading] = useState(true);
 
-  console.log(supabase);
   useEffect(() => {
     const requestSession = async () => {
       const {

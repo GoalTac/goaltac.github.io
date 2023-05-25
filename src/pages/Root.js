@@ -7,7 +7,9 @@ import {
   useColorMode,
   Stack,
   Spacer,
-  Center
+  Center,
+  VStack,
+  Divider
 } from '@chakra-ui/react';
 import React, { useState } from 'react'
 
@@ -29,7 +31,7 @@ import ChatRoomPanel from '../components/RootPages/Information/Community/ChatRoo
 import OnlineMembersPanel from '../components/RootPages/Information/Community/OnlineMembersPanel';
 import FriendsPanel from '../components/RootPages/Information/FriendsPanel';
 import { useLocation } from 'react-router-dom';
-
+import { useIsOverflow } from '../hooks/Utilities/CheckOverflow';
 import {
     FiMenu,
     FiHome,
@@ -115,7 +117,7 @@ function filteredPanels(currentPage) {
 
 export default function Root() {
   const { colorMode } = useColorMode();
-  const initialState = window.innerWidth < 700 ? true : false;
+  const initialState = window.innerWidth < 1000 ? true : false;
   const [isMobile, setMobile] = React.useState(initialState); //This is to display header & footer
   const [openModal, setOpenModal] = React.useState(false); //This is to open/close modal
   const allItems = highBarItems.concat(lowBarItems)
@@ -129,7 +131,7 @@ export default function Root() {
   //decides to show header or not in real time
   React.useEffect(() => {
     function handleResize() {
-      if (window.innerWidth < 700) {
+      if (window.innerWidth < 1000) {
         setMobile(true);
       } else {
         setMobile(false);
@@ -145,8 +147,8 @@ export default function Root() {
         <ColorModeScript initialColorMode={theme.config.initialColorMode}  />
         <SessionProvider supabase={supabaseClient}>
           {!noNavPages.includes(locate.pathname) ? (
-            <Box className='Root Parent' id='Root Parent' 
-              flexDirection='column'>
+            <Box className='Root Parent' id='Root Parent'
+              posiiton='absolute'>
               
               {/* Header Overlay*/
               isMobile ? <NavHeader activeItem={locate.pathname} 
@@ -158,43 +160,42 @@ export default function Root() {
               /> :  <></>}
 
 
-              <Flex className='Root Parent Contents' id='Root Parent Contents'>
+              <Flex className='Root Parent Contents' id='Root Parent Contents'
+                marginLeft='15vw'>
 
                 {/**Need to fix for later:
                  * How to elongate sidebar component to compensate for overflow?
                  */}
                 <Box className='Root SideBar' id='Root SideBar'
-                  borderWidth='4px'>
+                  position='fixed'
+                  left='0'
+                  top='0'
+                  boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.1)">
                   {isMobile ? <></> :  <Sidebar activeItem={locate.pathname} 
                   highBarItems={highBarItems} lowBarItems={lowBarItems}/>}
                 </Box>
                 
                 {/* Using spacers to center a component is extremely scuffed. Find a better way later */}
                 <Spacer />
-                <HStack className='Root Display Contents' id='Root Display Contents'
-                  borderWidth='4px'>
+                <Flex className='Root Display Contents' id='Root Display Contents'>
 
                   
                   <Box className='Root Main Content' id='Root Main Content'>
                     <Outlet />
                   </Box>
-                  
-                  
-                  
-                  <Spacer />
-                  <Box className='Root Info Panels' id='Root Info Panels'>
-                    {isMobile ? <></> : 
-                    <MainPanel infoPanels={filteredPanels(locate.pathname)} />}
-                  </Box>
-                  
-                    
-                </HStack>
-                <Spacer />
+                </Flex>
                 
+                <Box className='Root Info Panels' id='Root Info Panels'
+                  top='0'>
+                  {isMobile ? <></> : 
+                  <MainPanel infoPanels={filteredPanels(locate.pathname)} />}
+                </Box>
+                <Spacer/>
                 
                 {/* Sidebar on the right for advertisements, notifications, etc. */}
               </Flex>
               {isMobile ? <NavFooter activeItem={locate.pathname} sections={highBarItems} isMobile={isMobile}/> :  <></>}
+              
             </Box>
           ) : (
               <Stack>  

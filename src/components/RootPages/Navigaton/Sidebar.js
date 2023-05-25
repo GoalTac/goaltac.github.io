@@ -6,7 +6,8 @@ import {
     Image,
     Box,
     useColorMode,
-    Spacer
+    Spacer,
+    VStack
 } from '@chakra-ui/react'
 import NavItem from '../Navigaton/NavItem'
 import largelogo from '../../../images/GoalTac_Logo.png';
@@ -17,7 +18,7 @@ import { useIsOverflow } from '../../../hooks/Utilities/CheckOverflow';
 
 export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
 
-    const initialState = window.innerWidth < 868 ? "small" : "large";
+    const initialState = window.innerWidth < 1400 ? "small" : "large";
     const [navSize, changeNavSize] = useState(initialState);
     const { colorMode } = useColorMode();
     
@@ -25,11 +26,12 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
     //detects an overflow, the navSize should to "small/large"
 
     //automatic resizing of sidebar
+    
     React.useEffect(() => {
         
         function handleResize() {
-            console.log( useIsOverflow("",document.getElementById("SideBar Parent")) )
-            if (useIsOverflow("", document.getElementById("SideBar Parent"))) {
+            console.log( useIsOverflow("",document.getElementById("Root Parent")) )
+            if (window.innerWidth < 1400) {
                 changeNavSize("small");
             } else {
                 changeNavSize("large");
@@ -43,11 +45,10 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
         <Flex className='SideBar Parent' id='SideBar Parent'
             color={(colorMode == 'dark' ? 'gray.100' : 'black')}
             backgroundColor={(colorMode == 'dark' ? 'gray.700' : 'white')}
-            height='100vh'
-            boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.05)"
-            position='relative'
+            minH='100vh'
+            
             width='min-content'
-            borderWidth='4px'
+            overflow='scroll'
             flexDir="column">
 
             {/* How to prevent logo resizing? */}
@@ -55,17 +56,17 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
                 paddingTop='2vh' 
                 paddingX='1vw'>
                 <Image className='Sidebar Logo' id='SideBar Logo'
-                    src={navSize == "small" ? smalllogo : largelogo}/>
+                    src={largelogo}/>
             </Box>
             
             
-            <Flex className='SideBar Parent Contents' id='SideBar Parent Contents'
-                height='100vh'
-                overflow='visible'
-                marginX='2rem'
+            <VStack className='SideBar Parent Contents' id='SideBar Parent Contents'
+                marginX='1.5rem'
+                justify='space-between'
                 flexDir='column'>
 
-                <Box className='SideBar Content Upper' id='SideBar Content Upper'>                
+                <Box className='SideBar Content Upper' id='SideBar Content Upper'
+                    height='min-content'>                
                 {highBarItems.map((item, index) => {
                     return (
                         <NavItem
@@ -79,9 +80,9 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
                         );
                     })}
                 </Box>
-                <Spacer />
-
-                <Box className='SideBar Content Lower' id='SideBar Content Lower'>
+                <Divider orientation='horizontal' size='lg' colorScheme='black'/>
+                <Box className='SideBar Content Lower' id='SideBar Content Lower'
+                    height='min-content'>
                     {lowBarItems.map((item, index) => {
                         return (
                             <NavItem 
@@ -97,16 +98,13 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
                     })}
                     <Divider />
                     <Box className='SideBar Settings' id='SideBar Settings'
+                        zIndex='overlay'
                         marginY='1rem'>
                         <Settings session={useSupabaseClient.session} />
                     </Box>
                     
                 </Box>
-            </Flex>
-            
-
-            
-            
+            </VStack>
         </Flex>
     )
 }

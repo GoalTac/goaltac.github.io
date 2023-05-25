@@ -12,17 +12,11 @@ export default function NavHeader({ isMobile, activeItem, sections, toggleModal,
 
 
   return (
-    <Flex
-      justify='space-between'
-      alignItems='center'
-      px='1rem'
-    >
+    <Flex className='NavHeader' id='NavHeader'
+      justify='space-between'>
       <Img
         src={logo}
-        width='45%'
-        height='45%'
-        position='relative'
-        zIndex='100'
+        width='20vw'
       />
       <Button
         variant='icon'
