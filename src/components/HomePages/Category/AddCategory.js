@@ -61,6 +61,20 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
     
   }
 
+  const close  = function() {
+    onClose();
+    //selectedTasks([])
+    //setTasks([])
+    if (initTasks) {
+      selectedTasks(initTasks)
+    } else {
+      selectedTasks([])
+      setTasks([])
+      setInitialTasks([])
+    }
+    
+  }
+
   useEffect(() => {
     if (initTasks) {
       setTasks(initTasks)
@@ -79,36 +93,38 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
    */
   const modal = function() {
     return(
-        <Modal
+        <Modal className='Category Modal Parent' id='Category Modal Parent'
           isOpen={isOpen || initOpen}
-          onClose={onClose}
+          onClose={close}
           closeOnOverlayClick={false}
           size='xl'
         >
-          <ModalOverlay>
-            <ModalContent>
-              <ModalHeader>Create your new category</ModalHeader>
-              <ModalBody>
-                <VStack as='form' p='25px'>
+          <ModalOverlay className='Category Modal Overlay' id='Category Modal Overlay'>
+            <ModalContent className='Category Modal Content' id='Category Modal Content'>
+              <ModalHeader className='Category Modal Header' id='Category Modal Header'>
+                Create your new category</ModalHeader>
+              <ModalBody className='Category Modal Body' id='Category Modal Body'>
+                <VStack as='form' p='25px' className='Category Modal VStack' id='Category Modal VStack'>
                   {/* Title */}
-                  <FormControl>
-                    <FormLabel>Title</FormLabel>
-                    <Input
+                  <FormControl className='Category Modal Title Form' id='Category Modal Title Form'>
+                    <FormLabel className='Category Modal Title Name' id='Category Modal Title Name'>
+                      Title</FormLabel>
+                    <Input className='Category Modal Title Edit' id='Category Modal Title Edit'
                       borderWidth='2px' borderRadius='10px' padding='2px'
                       type='text'
                       maxLength={24}
                       value={category.title}
-                      onChange={e => setCategory({ ...category, title: e.target.value })}
-                    />
-                    <FormHelperText>
+                      onChange={e => setCategory({ ...category, title: e.target.value })}/>
+                    <FormHelperText className='Category Modal SubTitle' id='Category Modal SubTitle'>
                       Choose a title that's fun and concise!
                     </FormHelperText>
                   </FormControl>
 
                   {/* Task */}
-                  <FormControl>
-                    <FormLabel>Tasks</FormLabel>
-                    <CheckboxGroup
+                  <FormControl className='Category Modal Task Form' id='Category Modal Task Form'>
+                    <FormLabel className='Category Modal Task Name' id='Category Modal Task Name'>
+                      Tasks</FormLabel>
+                    <CheckboxGroup className='Category Modal Task Edit' id='Category Modal Task Edit'
                       borderWidth='2px' borderRadius='10px' padding='2px'
                       type='checkbox'
                       maxLength={24}
@@ -131,8 +147,9 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
                   </FormControl>
 
                   {/* Description */}
-                  <FormControl>
-                    <FormLabel>Category Description</FormLabel>
+                  <FormControl className='Category Modal Desc Form' id='Category Modal Desc Form'>
+                    <FormLabel className='Category Modal Desc Name' id='Category Modal Desc Name'>
+                      Category Description</FormLabel>
                     <Input
                       borderWidth='2px' borderRadius='10px' padding='2px'
                       type='text'
@@ -140,15 +157,15 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
                       value={category.description}
                       onChange={e => {
                         setCategory({ ...category, description: e.target.value})
-                        this.onChange(e) //not sure if this does anything :shrug:
                       }}
                     />
-                    <FormHelperText>
+                    <FormHelperText className='Category Modal Desc SubTitle' id='Category Modal Desc SubTitle'>
                       Explain your task in as little (or as much ;-) ) detail as
                       you need!
                     </FormHelperText>
                   </FormControl>
-                  <Button colorScheme='blue' onClick={saveCategory}>
+                  <Button className='Category Modal Add Button' id='Category Modal Add Button'
+                    colorScheme='blue' onClick={saveCategory}>
                     Add
                   </Button>
                 </VStack>
@@ -211,12 +228,8 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
       
       setLoading(false); //Finishing tasks
       //setCategory({ ...category, title: '', description: '', tasks: [] });
-
       
-
-      selectedTasks([])
-      setTasks([])
-      onClose();
+      close();
       
     } catch(e) {
       console.log(e)
