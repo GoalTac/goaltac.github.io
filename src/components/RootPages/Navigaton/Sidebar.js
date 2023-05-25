@@ -46,27 +46,26 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
             color={(colorMode == 'dark' ? 'gray.100' : 'black')}
             backgroundColor={(colorMode == 'dark' ? 'gray.700' : 'white')}
             minH='100vh'
-            borderWidth='4px'
+            maxWidth='15vw'
             width='min-content'
             overflow='scroll'
+            overflowX='hidden'
             alignItems='center'
             flexDir="column">
 
             {/* How to prevent logo resizing? */}
             <Box className='SideBar Parent Logo' id='SideBar Parent Logo'
-                borderWidth='4px'
                 margin='0.5rem' 
-
-                boxSize={navSize == 'small' ? '50%' : '100%'}>
+                marginLeft={navSize == 'small' ? '1rem' : null}
+                boxSize={navSize == 'small' ? '50%' : '90%'}>
                 <Image className='Sidebar Logo' id='SideBar Logo'                
                     src={navSize == 'small' ? smalllogo : largelogo}/>
             </Box>
             
             
             <VStack className='SideBar Parent Contents' id='SideBar Parent Contents'
-                marginX='1.5rem'
+                marginX={navSize == 'small' ? '0.5rem' : '1.5rem'}
                 justify='space-between'
-                borderWidth='4px'
                 flexDir='column'>
                 <Box className='SideBar Nav Content' id='SideBar Nav Content'>
                     {highBarItems.map((item, index) => {
@@ -106,7 +105,6 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
                     
                 <Divider />
                 <Box className='SideBar Settings' id='SideBar Settings'
-                    borderWidth='4px'
                     zIndex='overlay'
                     marginY='1rem'>
                     <Settings session={useSupabaseClient.session} />
