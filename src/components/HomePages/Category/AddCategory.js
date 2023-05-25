@@ -23,16 +23,18 @@ import {
   Icon,
   IconButton,
   Checkbox,
-  CheckboxGroup
+  CheckboxGroup,
+  Spinner
 } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons'
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useSession } from '../../../hooks/SessionProvider';
+import CategoryObject from './CategoryObject';
 
 /*
   This file is to add a category to the user's dashboard, similar
@@ -42,50 +44,43 @@ import { useSession } from '../../../hooks/SessionProvider';
 export default function AddCategory({initOpen, initTasks, initCategory, buttonTitle}) {
   const { user, session, supabase } = useSession();
   const { isOpen, onOpen, onClose } = useDisclosure(); //For the modal's open/close
-  const [loading, setLoading] = useState(true);
-  const [tasks, setTasks] =  useState([]);
-  const [initialTasks, setInitialTasks] = useState([]);
+  const toast = useToast();
 
-  //sets the AddCategory to an initial category if it exists
-  const [category, setCategory] = 
-    useState({
+  const [loading, setLoading] = useState(true);
+
+  //currently selected tasks
+  const [tasks, setTasks] =  useState((initTasks ? initTasks : []));
+
+  //all of the user's tasks to be selected
+  const [allTasks, setAllTasks] = useState([]); //this only needs to load ONCE
+  const [category, setCategory] = useState({
     title: (initCategory ? initCategory.title : ''),
     description: (initCategory ? initCategory.description : ''),
     tasks: (initCategory ? initCategory.tasks : []),
     uuid: (initCategory ? initCategory.uuid : user?.id),
   });
-  const toast = useToast();
-  var selectedTasks = tasks => {
-    const taskIDs = tasks.map((task) => {return task.id})
-    setCategory({...category, tasks: taskIDs})
-    
-  }
-
+ 
+  
   const close  = function() {
     onClose();
-    //selectedTasks([])
-    //setTasks([])
-    if (initTasks) {
-      selectedTasks(initTasks)
-    } else {
-      selectedTasks([])
-      setTasks([])
-      setInitialTasks([])
-    }
+
+    //to reset the selected tasks
+    setTasks([])
     
   }
 
   useEffect(() => {
-    if (initTasks) {
-      setTasks(initTasks)
-      selectedTasks(initTasks)
-    }
+
+    console.log(category)
+
     async function fetchData() {
       let { data: tasks, error } = await supabase.from('todos').select('*');
+      
+      setAllTasks(tasks)
       setLoading(false)
-      setInitialTasks(tasks)
     }
     fetchData();
+    setCategory({ ...category, uuid: user?.id });
   }, []);
 
   /**
@@ -127,13 +122,12 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
                     <CheckboxGroup className='Category Modal Task Edit' id='Category Modal Task Edit'
                       borderWidth='2px' borderRadius='10px' padding='2px'
                       type='checkbox'
-                      maxLength={24}
-                      >
-                          {initialTasks.map(task => (
+                      maxLength={24}>
+                          {allTasks.map(task => (
                             <Checkbox
                               key={task.id}
                               marginRight='1rem'
-                              defaultChecked={category.tasks.includes(task.id) ? true : false}
+                              //defaultChecked={category.tasks.includes(task.id) ? true : false}
                               minWidth='4rem'
                               columnGap='1rem'
                               onChange={e => {e.target.checked ? addTask(task) : removeTask(task)}}
@@ -181,9 +175,12 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
    * @returns void - Adds a task to the tasks array
    */
   const addTask = task => {
-    const newTasks = tasks.length > 0 ? [...tasks, task]:[task]
+    setCategory(category.tasks.concat(task.id))
+    console.log("Added Cat",category.tasks)
+
+    const newTasks = tasks.concat(task)
+    console.log("Added", newTasks)
     setTasks(newTasks);
-    selectedTasks(newTasks);
   }
 
   /**
@@ -192,18 +189,13 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
    * @returns void - Removes matching task from tasks list
    */
   const removeTask = task => {
-      //remove matching task from tasks
-    if (tasks.includes(task)) {
-      const newTasks = [...tasks.filter(
-        i => i !== task //if i is the matching task, then remove it
-      )]
-      setTasks(newTasks);
-      selectedTasks(newTasks);
+    setCategory(category.tasks.filter(i => i !== task.id))
+    console.log("Removed Cat", category.tasks)
 
-      
-    } else {
-      return new Error('Task not found.');
-    }
+    const newTasks = tasks.filter(i => i.id !== task.id)
+    console.log("Removed", newTasks)
+    setTasks(newTasks);
+    
   }
 
   async function saveCategory(e) {
@@ -227,7 +219,7 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
       
       
       setLoading(false); //Finishing tasks
-      //setCategory({ ...category, title: '', description: '', tasks: [] });
+      setCategory({ ...category, title: '', description: '', tasks: [] });
       
       close();
       
@@ -246,12 +238,6 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
   function tempOnOpen() {
     onOpen();
   }
-
-  // Keep this so that the add task knows the user's id as it loads LAST in HomePage.js
-  useEffect(() => {
-    setCategory({ ...category, uuid: user?.id });
-
-  }, []);
 
   
 
