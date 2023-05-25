@@ -22,11 +22,6 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
     const [navSize, changeNavSize] = useState(initialState);
     const { colorMode } = useColorMode();
     
-    //this should be changed so that any time web page
-    //detects an overflow, the navSize should to "small/large"
-
-    //automatic resizing of sidebar
-    
     React.useEffect(() => {
         
         function handleResize() {
