@@ -41,7 +41,7 @@ import CategoryObject from './CategoryObject';
   to how AddTask adds a task to the user's task list
 */
 
-export default function AddCategory({initOpen, initTasks, initCategory, buttonTitle}) {
+export default function AddCategory({initTasks, initCategory, buttonTitle}) {
   const { user, session, supabase } = useSession();
   const { isOpen, onOpen, onClose } = useDisclosure(); //For the modal's open/close
   const toast = useToast();
@@ -89,7 +89,7 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
   const modal = function() {
     return(
         <Modal className='Category Modal Parent' id='Category Modal Parent'
-          isOpen={isOpen || initOpen}
+          isOpen={isOpen}
           onClose={close}
           closeOnOverlayClick={false}
           size='xl'
@@ -127,7 +127,7 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
                             <Checkbox
                               key={task.id}
                               marginRight='1rem'
-                              //defaultChecked={category.tasks.includes(task.id) ? true : false}
+                              defaultChecked={category.tasks.includes(task.id) ? true : false}
                               minWidth='4rem'
                               columnGap='1rem'
                               onChange={e => {e.target.checked ? addTask(task) : removeTask(task)}}
@@ -175,9 +175,9 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
    * @returns void - Adds a task to the tasks array
    */
   const addTask = task => {
-    setCategory(category.tasks.concat(task.id))
-    console.log("Added Cat",category.tasks)
-
+    setCategory({...category, tasks: category.tasks.concat(task.id)})
+    console.log("Added Cat", category.tasks)
+    
     const newTasks = tasks.concat(task)
     console.log("Added", newTasks)
     setTasks(newTasks);
@@ -189,7 +189,7 @@ export default function AddCategory({initOpen, initTasks, initCategory, buttonTi
    * @returns void - Removes matching task from tasks list
    */
   const removeTask = task => {
-    setCategory(category.tasks.filter(i => i !== task.id))
+    setCategory({...category, tasks: category.tasks.filter(i => i !== task.id)})
     console.log("Removed Cat", category.tasks)
 
     const newTasks = tasks.filter(i => i.id !== task.id)
