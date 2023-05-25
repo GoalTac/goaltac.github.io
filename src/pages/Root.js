@@ -161,12 +161,8 @@ export default function Root() {
 
 
               <Flex className='Root Parent Contents' id='Root Parent Contents'
-                borderWidth='4px'
-                marginLeft='15vw'>
+                alignItems='center'>
 
-                {/**Need to fix for later:
-                 * How to elongate sidebar component to compensate for overflow?
-                 */}
                 <Box className='Root SideBar' id='Root SideBar'
                   position='fixed'
                   left='0'
@@ -175,23 +171,19 @@ export default function Root() {
                   {isMobile ? <></> :  <Sidebar activeItem={locate.pathname} 
                   highBarItems={highBarItems} lowBarItems={lowBarItems}/>}
                 </Box>
-                
-                {/* Using spacers to center a component is extremely scuffed. Find a better way later */}
-                <Flex className='Root Display Contents' id='Root Display Contents'
-                  borderWidth='4px'>
-
-                  
-                  <Box className='Root Main Content' id='Root Main Content'>
-                    <Outlet />
-                  </Box>
-                  <Box className='Root Info Panels' id='Root Info Panels'
-                    top='0'>
-                    {isMobile ? <></> : 
-                    <MainPanel infoPanels={filteredPanels(locate.pathname)} />}
-                  </Box>
-                </Flex>
-                
-                
+                <Spacer/>
+                <Box className='Root Main Content' id='Root Main Content'
+                  alignItems='center'>
+                  <Outlet />
+                </Box>
+                <Spacer/>
+                <Box className='Root Info Panels' id='Root Info Panels'
+                  position='absolute'
+                  right='0'
+                  top='0'>
+                  {isMobile ? <></> : <MainPanel 
+                  infoPanels={filteredPanels(locate.pathname)} />}
+                </Box>
                 
                 {/* Sidebar on the right for advertisements, notifications, etc. */}
               </Flex>

@@ -18,12 +18,9 @@ export default function MainPanel({infoPanels}) {
     return (
         <Flex
         //How to make it emulate duolingo's panels?
-        pos='sticky'
-        top='0'
-        right='0'
-        zIndex='overlay'
         padding='10px'
-        maxW='300px'
+        maxW='15vw'
+        overflow='hidden'
         height='fit-content'
         rowGap='20px'
         flexDirection="column">

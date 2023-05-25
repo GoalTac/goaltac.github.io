@@ -100,7 +100,6 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
                     
                 <Divider />
                 <Box className='SideBar Settings' id='SideBar Settings'
-                    zIndex='overlay'
                     marginY='1rem'>
                     <Settings session={useSupabaseClient.session} />
                 </Box>
