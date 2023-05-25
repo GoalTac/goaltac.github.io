@@ -15,6 +15,7 @@ export default function NavHeader({ isMobile, activeItem, sections, toggleModal,
     <Flex className='NavHeader' id='NavHeader'
       justify='space-between'>
       <Img
+        height='min-content'
         src={logo}
         width='20vw'
       />

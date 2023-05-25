@@ -12,8 +12,16 @@ import {
 } from '@chakra-ui/react'
 import { useNavigate, Link, NavLink,  } from 'react-router-dom';
 
-export const NavItem = ({ icon, title, description, nav, active, navSize, isMobile}, props) => {
+export const NavItem = (props) => {
     const { colorMode } = useColorMode();
+    
+    const icon = props.icon;
+    const title = props.title;
+    const description = props.description;
+    const nav = props.nav;
+    const active = props.active;
+    const navSize = props.navSize;
+    const isMobile = props.isMobile;
 
     return (
         <Box>
