@@ -11,7 +11,7 @@ import {
   Text
 } from '@chakra-ui/react';
 import { useNavigate, NavLink,  } from 'react-router-dom';
-import NavItem from './NavItem';
+import { NavItem } from './NavItem';
 import Settings from '../Settings';
 
 

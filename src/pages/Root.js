@@ -161,6 +161,7 @@ export default function Root() {
 
 
               <Flex className='Root Parent Contents' id='Root Parent Contents'
+                borderWidth='4px'
                 marginLeft='15vw'>
 
                 {/**Need to fix for later:
@@ -176,21 +177,21 @@ export default function Root() {
                 </Box>
                 
                 {/* Using spacers to center a component is extremely scuffed. Find a better way later */}
-                <Spacer />
-                <Flex className='Root Display Contents' id='Root Display Contents'>
+                <Flex className='Root Display Contents' id='Root Display Contents'
+                  borderWidth='4px'>
 
                   
                   <Box className='Root Main Content' id='Root Main Content'>
                     <Outlet />
                   </Box>
+                  <Box className='Root Info Panels' id='Root Info Panels'
+                    top='0'>
+                    {isMobile ? <></> : 
+                    <MainPanel infoPanels={filteredPanels(locate.pathname)} />}
+                  </Box>
                 </Flex>
                 
-                <Box className='Root Info Panels' id='Root Info Panels'
-                  top='0'>
-                  {isMobile ? <></> : 
-                  <MainPanel infoPanels={filteredPanels(locate.pathname)} />}
-                </Box>
-                <Spacer/>
+                
                 
                 {/* Sidebar on the right for advertisements, notifications, etc. */}
               </Flex>

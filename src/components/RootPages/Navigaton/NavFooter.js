@@ -2,7 +2,7 @@ import React from 'react';
 import { Flex, Button, VStack, Icon, Img, Spacer, Box } from '@chakra-ui/react';
 import { Link, animateScroll as scroll } from 'react-scroll';
 import logo from '../../../images/logo.png';
-import NavItem from './NavItem';
+import { NavItem } from './NavItem';
 import { useSupabaseClient } from '../../../hooks/SessionProvider';
 import Settings from '../Settings';
 
