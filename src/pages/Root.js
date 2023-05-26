@@ -9,7 +9,7 @@ import {
   Spacer,
   Center,
   VStack,
-  Divider
+  Divider,
 } from '@chakra-ui/react';
 import React, { useState } from 'react'
 
@@ -143,13 +143,12 @@ export default function Root() {
 
   return (
     <>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <ColorModeScript initialColorMode={theme.config.initialColorMode}  />
         <SessionProvider supabase={supabaseClient}>
           {!noNavPages.includes(locate.pathname) ? (
             <Box className='Root Parent' id='Root Parent'
               posiiton='absolute'>
-              
               {/* Header Overlay*/
               isMobile ? <NavHeader activeItem={locate.pathname} 
               sections={lowBarItems}
@@ -158,7 +157,7 @@ export default function Root() {
               openModal={openModal}
               isMobile={isMobile}
               /> :  <></>}
-
+              
 
               <Flex className='Root Parent Contents' id='Root Parent Contents'
                 alignItems='center'>

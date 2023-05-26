@@ -1,15 +1,19 @@
 // theme.js
-
-// 1. import `extendTheme` function
 import { extendTheme } from '@chakra-ui/react';
 
-// 2. Add your color mode config
-const config = {
-  initialColorMode: 'light',
-  useSystemColorMode: false,
-};
+const theme = extendTheme(
+  {
+    initialColorMode: 'light',
+    useSystemColorMode: false,
+    colors: {
+      GoalTac: {
+        1: '#4FD1C5',
+        2: '#3182CE',
+      },
+      
+    },
 
-// 3. extend the theme
-const theme = extendTheme({ config });
+  }
+);
 
 export default theme;

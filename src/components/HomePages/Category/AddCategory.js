@@ -24,7 +24,7 @@ import {
   IconButton,
   Checkbox,
   CheckboxGroup,
-  Spinner
+  Spinner,
 } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons'
 
@@ -69,6 +69,8 @@ export default function AddCategory({initTasks, initCategory, buttonTitle}) {
     
   }
 
+  
+
   useEffect(() => {
 
     console.log(category)
@@ -80,7 +82,6 @@ export default function AddCategory({initTasks, initCategory, buttonTitle}) {
       setLoading(false)
     }
     fetchData();
-    setCategory({ ...category, uuid: user?.id });
   }, []);
 
   /**
@@ -107,6 +108,7 @@ export default function AddCategory({initTasks, initCategory, buttonTitle}) {
                     <Input className='Category Modal Title Edit' id='Category Modal Title Edit'
                       borderWidth='2px' borderRadius='10px' padding='2px'
                       type='text'
+                      bg={'GoalTac.1'}
                       maxLength={24}
                       value={category.title}
                       onChange={e => setCategory({ ...category, title: e.target.value })}/>
@@ -175,9 +177,11 @@ export default function AddCategory({initTasks, initCategory, buttonTitle}) {
    * @returns void - Adds a task to the tasks array
    */
   const addTask = task => {
+    //saves the ids of the new task list to category var's task property
     setCategory({...category, tasks: category.tasks.concat(task.id)})
     console.log("Added Cat", category.tasks)
     
+    //saves the new task objects to the task var
     const newTasks = tasks.concat(task)
     console.log("Added", newTasks)
     setTasks(newTasks);
@@ -189,9 +193,11 @@ export default function AddCategory({initTasks, initCategory, buttonTitle}) {
    * @returns void - Removes matching task from tasks list
    */
   const removeTask = task => {
+    //saves the ids of the new task list to category var's task property
     setCategory({...category, tasks: category.tasks.filter(i => i !== task.id)})
     console.log("Removed Cat", category.tasks)
 
+    //saves the new task objects to the task var
     const newTasks = tasks.filter(i => i.id !== task.id)
     console.log("Removed", newTasks)
     setTasks(newTasks);
@@ -219,7 +225,6 @@ export default function AddCategory({initTasks, initCategory, buttonTitle}) {
       
       
       setLoading(false); //Finishing tasks
-      setCategory({ ...category, title: '', description: '', tasks: [] });
       
       close();
       

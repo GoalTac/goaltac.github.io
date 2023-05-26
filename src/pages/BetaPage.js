@@ -43,6 +43,7 @@ function BetaPage() {
     setOpenModal(!openModal);
   };
 
+  //THIS IS TERRIBLE
   const sizeSelect = (size) => {
     if (size < 1750) {
       return '100%'
