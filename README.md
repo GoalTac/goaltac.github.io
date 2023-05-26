@@ -66,3 +66,10 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+
+
+Trouble Shooting Issues with Startup
+- keep the `.env.local` file in the root directory (not under the `src` folder) (don't forget the period before env) 
+- in the terminal `npm ci` to install the right dependencies (maybe redownload the `package.json` and `package-lock.json`)
+- try doing `npm start` again (hit `ctrl+c` twice to stop a server that is currently running)
