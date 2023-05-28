@@ -2,9 +2,9 @@ import {
   Button,
   VStack,
   StackDivider,
-  Text,
+  Spacer,
   HStack,
-  ModalCloseButton,
+  IconButton,
   ModalContent,
   ModalFooter,
   ModalOverlay,
@@ -13,13 +13,50 @@ import {
   Box,
   Flex
 } from '@chakra-ui/react';
+import { DeleteIcon } from '@chakra-ui/icons'
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSession } from '../../../hooks/SessionProvider';
 import TaskItem from '../TaskListDetails/TaskItem';
 import AddCategory from './AddCategory';
 
 export default function CategoryItem({tasks, category}) {
+
+  const dragItem = useRef();
+  const dragOverItem = useRef();
+  const [taskList, setTaskList] = useState(tasks.map((task, index) => {
+    return { index, task}
+  }));
+
+  const dragStart = (e, taskElem) => {
+    dragItem.current = taskElem;
+    
+  };
+
+  const dragEnter = (e, taskElem) => {
+    dragOverItem.current = taskElem;
+
+  };
+
+  const drop = () => {
+    console.log(taskList);
+
+    const copyListItems = [...taskList];
+
+    const dragItemContent = copyListItems[dragItem.current.index];
+    copyListItems.splice(dragItem.current.index, 1);
+    copyListItems.splice(dragOverItem.current.index, 0, dragItemContent);
+
+    console.log("Drag Start",dragItem.current)
+    console.log("Drag Enter",dragOverItem.current)
+
+
+    dragItem.current = null;
+    dragOverItem.current = null;
+    setTaskList(copyListItems);
+    console.log(copyListItems);
+
+  };
 
   return (
     <Box>
@@ -33,19 +70,32 @@ export default function CategoryItem({tasks, category}) {
           click on to edit the contents of the category"*/} 
           <HStack columnGap='0.3rem'>
             <AddCategory initTasks={tasks} initCategory={category} buttonTitle={`+ ${category.title}`}/>
-            
+            <Spacer />
+            <IconButton icon={<DeleteIcon />}
+              color='gray.400' 
+              _hover={{
+                color: 'gray.800', 
+
+              }}/>
           </HStack>
           
           <Flex marginLeft='1rem' flexDir={'row'} columnGap='0.5rem'>
-            {tasks.map(task => (
-              <TaskItem
-                key={task.id}
-                task={task}
-                p='7px'
-                w='auto'
-                minW='1rem'
-                h='1rem'
-                heading_font_size='lg'/>
+            {taskList && taskList.map((taskElem) => (
+              <Box draggable
+                key={taskElem.index}
+                onDragStart={(e) => dragStart(e, taskElem)}
+                onDragEnter={(e) => dragEnter(e, taskElem)}
+                onDragEnd={drop}>
+                <TaskItem
+
+                  task={taskElem.task}
+                  p='7px'
+                  w='auto'
+                  minW='1rem'
+                  h='1rem'
+                  heading_font_size='lg'/>
+              </Box>
+              
             ))}
           </Flex>
           

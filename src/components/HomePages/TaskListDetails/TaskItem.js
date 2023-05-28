@@ -45,9 +45,10 @@ export default function TaskItem(props) {
   };
 
   return (
-    <HStack maxW='100%'>
+    <HStack 
+      maxW='100%' 
+      props={props}>
       <Button
-        props={props}
         justifyContent='center'
         onClick={onOpen}
         overflow='hidden'
