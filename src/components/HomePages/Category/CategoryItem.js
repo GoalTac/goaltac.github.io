@@ -11,16 +11,20 @@ import {
   useDisclosure,
   Heading,
   Box,
-  Flex
+  Flex,
+  useToast
 } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons'
 
 import { useEffect, useState, useRef } from 'react';
-import { useSession } from '../../../hooks/SessionProvider';
 import TaskItem from '../TaskListDetails/TaskItem';
 import AddCategory from './AddCategory';
+import { useSession } from '../../../hooks/SessionProvider';
 
 export default function CategoryItem({tasks, category}) {
+
+  const toast = useToast();
+  const { user, session, supabase } = useSession();
 
   const dragItem = useRef();
   const dragOverItem = useRef();
@@ -58,6 +62,21 @@ export default function CategoryItem({tasks, category}) {
 
   };
 
+  async function onDelete(item) {
+      
+      try {
+        
+        const { error } = await supabase
+        .from('categories') //Table name
+        .delete()
+        .eq("id", item.id);
+        
+      } catch(e) {
+        console.log(e)
+      }
+  
+  }
+
   return (
     <Box>
       {/* Encompassing component */}
@@ -71,7 +90,7 @@ export default function CategoryItem({tasks, category}) {
           <HStack columnGap='0.3rem'>
             <AddCategory initTasks={tasks} initCategory={category} buttonTitle={`+ ${category.title}`}/>
             <Spacer />
-            <IconButton icon={<DeleteIcon />}
+            <IconButton icon={<DeleteIcon />} onClick={(e) => onDelete(category)}
               color='gray.400' 
               _hover={{
                 color: 'gray.800', 
