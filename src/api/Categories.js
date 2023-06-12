@@ -1,5 +1,5 @@
-import { useQuery } from 'react-query';
-import supabase from '../app/supabase';
+import { useQuery, useQueryClient } from 'react-query';
+import { useSession } from '../hooks/SessionProvider.js';
 
 //Main idea is to split up the UI and back-end fetching into two parts for better readability and smaller file sizes for the pages.
 //Can create multiple files (e.g one for each table or similar) and can have multiple functions in each file each to read, update, create etc.
@@ -7,6 +7,8 @@ import supabase from '../app/supabase';
 //Function which returns data and handles error / input validation if required
 //Function can take in parameters if they are needed in the supabase query or for validation
 const getCatgeory = async () => {
+  const { user, session, supabase } = useSession();
+
   const { data, error } = await supabase.from('categories').select('*');
 
   if (error) {
