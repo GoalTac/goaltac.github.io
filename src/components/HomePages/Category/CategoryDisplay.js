@@ -14,10 +14,11 @@ import useCategory from '../../../api/Categories';
 export default function CategoryDisplay() {
   const supabase = useSupabaseClient();
 
+  /*
   //REACT HOOK EXAMPLE, returns data and helper functions like isLoading
   const { data, isLoading: loading2 } = useCategory();
   console.log(data);
-  console.log(loading2);
+  console.log(loading2);*/
 
   //provides updates to the category component whenever categories gets updated
   useEffect(() => {
