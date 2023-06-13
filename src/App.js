@@ -22,6 +22,7 @@ import SignUpPage from './pages/SignUpPage';
 import SocialPage from './pages/SocialPage';
 import UpdatePasswordPage from './pages/UpdatePasswordPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import Community from './pages/Community';
 
 export default function App() {
   const router = createBrowserRouter(
@@ -45,6 +46,7 @@ export default function App() {
             <Route path='updatepassword' element={<UpdatePasswordPage />} />
             <Route path='messages' element={<Messages />} />
             <Route path='calendar' element={<Calendar />} />
+            <Route path='community' element={<Community />} />
           </Route>
         </Route>
       </Route>

@@ -101,7 +101,7 @@ const lowBarItems = [
 
 const infoPanels = [<PremiumPanel />, <QuestsPanel />, <AdPanel />]
 function filteredPanels(currentPage) {
-  if (currentPage.includes('/community/')) {
+  if (currentPage.includes('/community')) {
     return [<PremiumPanel />, <ChatRoomPanel />, <OnlineMembersPanel />, <AdPanel />]
   }
   switch(currentPage) {

@@ -7,6 +7,7 @@ import {
   CardBody,
   Card,
   StackDivider,
+  Button,
 } from '@chakra-ui/react';
 
 /*
@@ -29,9 +30,15 @@ export default function Sidebar() {
             </Text>
           </Box>
           <Box>
-            <Text size='xs' textTransform='uppercase'>
-              Community
-            </Text>
+            <Button
+              justifyContent='center'
+              // onClick={}
+              overflow='hidden'
+            >
+              <Text size='xs' textTransform='uppercase'>
+                Communities
+              </Text>
+            </Button>
           </Box>
           <Box>
             <Text size='xs' textTransform='uppercase'>
