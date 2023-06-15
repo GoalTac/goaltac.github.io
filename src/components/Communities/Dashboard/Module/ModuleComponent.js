@@ -1,7 +1,7 @@
 import { 
     Box, Flex, useColorMode, Divider, Spacer, Heading, Text
 } from '@chakra-ui/react';
-import JoinButton from './Joined';
+import JoinButton from '../Joined';
 import SettingsButton from './Settings';
 import RequestButton from './Request';
 import { useSession } from '../../../hooks/SessionProvider';
