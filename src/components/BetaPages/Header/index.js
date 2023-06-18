@@ -8,6 +8,7 @@ import {
   IconButton,
   useColorMode,
   useColorModeValue,
+  Text,
   Spinner,
   HStack,
   Image,
@@ -35,27 +36,12 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
   return (
     <>
       {showMenu ? (
-        <Flex
+        <HStack
           justify='space-between'
           alignItems='center'
           px='3rem'
-          py='2rem'
-          width='100%'
-          boxShadow='0px 0px 3px black'
-          
-          _after={{
-            content: "''",
-            background: `no-repeat url(${imgBg})`,
-            position: 'absolute',
-            left: '46%',
-            top: '-110px',
-            zIndex: '-2',
-            width: '100%',
-            height: '100%',
-          }}
-        >
+          py='2rem'>
           <Image src={logo} boxSize='17%' pr='2px' />
-          <Spacer />
           <HStack>
             {sections.map((section, index) => {
               return (
@@ -64,12 +50,11 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
                   spy={true}
                   smooth={true}
                   key={index}
-                  offset={50}
                   duration={500}
                 >
                   <Button
                     variant='ghost'
-                    fontSize='2xl'
+                    fontSize='3xl'
                     background='teal.300'
                     bgClip='text'
                     transition='background 1500ms'
@@ -80,12 +65,12 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
                     }}
                   >
                     {section.name}
+                    
                   </Button>
                 </Link>
               );
             })}
           </HStack>
-          <Spacer />
 
           
           <NavLink
@@ -110,23 +95,14 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
             </Button>
           </NavLink>
           
-        </Flex>
+        </HStack>
       ) : (
         <Flex
           justify='space-between'
           alignItems='center'
           px='1rem'
+          mr='2rem'
           py='3rem'
-          _after={{
-            content: "''",
-            background: `center/104% no-repeat url(${imgBg})`,
-            position: 'absolute',
-            left: '12%',
-            top: '-5%',
-            zIndex: '-2',
-            width: '134%',
-            height: '18%',
-          }}
         >
           <Image
             src={logo}

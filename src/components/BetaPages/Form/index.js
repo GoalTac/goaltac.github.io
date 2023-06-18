@@ -5,6 +5,7 @@ import {
   FormControl,
   FormErrorMessage,
   Input,
+  Stack,
   useToast,
   useColorMode
 } from '@chakra-ui/react';
@@ -85,12 +86,13 @@ function Form() {
         position='relative'
       >
         <Input
+          minW='full'
           id='email'
           placeholder='Email Notifications'
           borderRadius='full'
-          py='1.8rem'
+          py='1rem'
           bgClip='text'
-          color='gray'
+          color='white'
           {...register('email', {
             required: 'This is required',
             pattern: {
@@ -114,17 +116,9 @@ function Form() {
             {errors.email && errors.email.message}
           </FormErrorMessage>
         )}
-
-        <Button
-          type='submit'
-          variant='solid'
-          onClick={onClick}
-          marginLeft='1rem'
-        >
-          Go
-        </Button>
       </FormControl>
     </form>
+    
   );
 }
 

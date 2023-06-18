@@ -17,24 +17,10 @@ function Prefooter() {
       direction={['column', null, 'row']}
       alignItems='center'
       justifyContent={['center', null, 'space-between']}
+      marginY='6rem'
       py='3rem'
       px={['2rem', null, '7rem']}
-      spacing='2rem'
-      height={['390px', null, '220px']}
       position='relative'
-      _before={{
-        content: "''",
-        background: [
-          `0 17%/23% no-repeat url(${imgBgMobile})`,
-          null,
-          `20px/114% no-repeat url(${imgBg})`,
-        ],
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
-        top: '0',
-        backgroundPosition: { base: '0% 43%', md: '1px -154px' },
-      }}
     >
       <Box
         fontSize={['35px', '4xl']}

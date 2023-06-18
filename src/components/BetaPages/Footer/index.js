@@ -9,6 +9,7 @@ import {
   Stack,
   IconButton,
   useColorMode,
+  Flex,
   useColorModeValue,
   Spacer,
 } from '@chakra-ui/react';
@@ -82,58 +83,35 @@ const icons = [
   },
 ];
 
-function Footer({ mobile }) {
+function Footer({ contentWidth }) {
 
   const { toggleColorMode, colorMode } = useColorMode();
 
   return (
-    <Stack
-      id='about'
-      bg='gray.900'
-      direction={['column-reverse', null, 'row']}
-      justifyContent='space-around'
-      py='3rem'
-      px={['2rem', null, '7rem']}
-      spacing={['4rem', null, null]}
-    >
-      <Stack
-        direction={['column-reverse', null, 'column']}
-        justifyContent='space-between'
-        alignItems='center'
-        spacing={['4rem', null]}
-      >
-        {mobile && (
-          <Box color='gray.400'>Copyright 2023. All Rights Reserved</Box>
-        )}
-        <Image src={logo} pt='5px' maxWidth={['250px', '200px']} />
-        <HStack
-          spacing='1rem'
-          justifyContent={['space-around', null]}
-          width='100%'
-        >
-          {icons.map((icon, index) => {
-            return (
-              <a href={icon.href} target='_blank' key={index}>
-                <IconButton
-                  variant='unstyled'
-                  cursor='pointer'
-                  transition='.4s all ease'
-                  icon={icon.icon}
-                  _hover={{
-                    filter:
-                      'invert(58%) sepia(54%) saturate(470%) hue-rotate(323deg) brightness(103%) contrast(95%)',
-                  }}
-                />
-              </a>
-            );
-          })}
-          <Button onClick={toggleColorMode}>
-            {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-          </Button>
+      <Flex
+        maxW={contentWidth}
+        px='3rem'
+        w='100%'>
+
+      <Flex 
+        flexDirection='column'
+        gap='1rem'
+        alignItems='center'>
+
+        <Image src={logo} pt='5px' maxWidth='200px'/>
+        <HStack>
+          {mediaIcons}
         </HStack>
-      </Stack>
-      <HStack spacing={['6rem', null, '6rem']} fontWeight='extrabold'>
-        <VStack spacing='.3rem' textAlign='left' alignItems='flex-start'>
+        <Button onClick={toggleColorMode}>
+          {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+        </Button>
+        
+      </Flex>
+
+      <Spacer/>
+
+      <HStack spacing='1rem' fontWeight='extrabold'>
+        <VStack spacing='.2rem' textAlign='left' alignItems='flex-start'>
           {sectionsLeft.map((section, index) => {
             return (
               <Link
@@ -186,18 +164,30 @@ function Footer({ mobile }) {
           })}
         </VStack>
       </HStack>
-      <VStack
-        justifyContent='space-between'
-        alignItems={['center', null, 'flex-end']}
-      >
-        <Form />
-        
-        {!mobile && (
-          <Box color='gray.400'>Copyright 2023. All Rights Reserved</Box>
-        )}
-      </VStack>
-    </Stack>
+
+      <Spacer/>
+
+      <Form />
+      
+    </Flex>
   );
 }
+
+const mediaIcons = icons.map((icon, index) => {
+  return (
+    <a href={icon.href} target='_blank' key={index}>
+      <IconButton
+        variant='unstyled'
+        cursor='pointer'
+        transition='.4s all ease'
+        icon={icon.icon}
+        _hover={{
+          filter:
+            'invert(58%) sepia(54%) saturate(470%) hue-rotate(323deg) brightness(103%) contrast(95%)',
+        }}
+      />
+    </a>
+  );
+})
 
 export { Footer };
