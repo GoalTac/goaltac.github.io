@@ -73,8 +73,8 @@ function BetaPage() {
     flexDirection='column'
     minH='100vh'
     bgGradient={colorMode === 
-    'dark' ? 'linear(to-b, gray.800, teal.700, blue.500)' : 
-    'linear(to-b, white, teal.100, teal.300, blue.500)'}>
+    'dark' ? 'linear(to-b, gray.700, teal.700, blue.500)' : 
+    'linear(to-b, teal.300, blue.500)'}>
       
       <Flex justifyContent='center' alignItems='center' >
         <Box overflowX='hidden'
