@@ -97,7 +97,9 @@ function BetaPage() {
           
           <Box>
             <Flex
+            paddingTop='6rem'
             columnGap='6rem'
+            rowGap='2rem'
             alignItems='center'
             paddingX='4rem'
             flexDirection={mobile ? 'column-reverse' : 'row'}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex, VStack, Stack } from '@chakra-ui/react';
+import { Box, Flex, VStack, Stack, Text, HStack, Heading } from '@chakra-ui/react';
 import imgBg from './resources/images/bg-tablet-pattern.svg';
 
 const content = [
@@ -49,38 +49,47 @@ function Features({ hideBgFeatureTitle }) {
       mt='8rem'
       px={['1rem', null, '6rem']}
       py='3rem'
-      position='relative'
-      
-      _after={{
-        content: "''",
-        background: [
-          `center/55% no-repeat url(${imgBg})`,
-          null,
-          `center/38% no-repeat url(${imgBg})`,
-        ],
-        position: 'absolute',
-        left: ['32%', null, '-48%'],
-        top: ['-117%', null, '79px'],
-        zIndex: '-2',
-        width: ['145%', null, '91%'],
-        height: '178%',
-      }}
-    >
+      position='relative'>
+        
       <VStack
         alignItems={['center', null, 'flex-start']}
         textAlign={['center', null, 'left']}
-        minWidth='40%'
-        spacing='2rem'
-        mb='4rem'
-      >
-        <Box fontSize={['30px', '4xl']} fontWeight='700' lineHeight='1.1'>
-          Why is GoalTac Better?
+        minWidth='50%'
+        spacing='2rem'>
+
+        <Box fontSize='3rem' bgGradient='linear(to-t, teal.300, blue.500)' fontWeight='700' lineHeight='1.1' bgClip='text'>
+          What is GoalTac?
         </Box>
-        <Box paddingStart={5} maxWidth={['100%', '80%']} color='blue.light'>
-          Compared to other goal tracking apps, GoalTac is a 
-          shot of energy that will keep you motivated to
-          become your most productive and accomplished self
-        </Box>
+        
+        <VStack rowGap='2rem' paddingStart={['', null, '2rem']} maxWidth={['100%', '80%']} fontSize='1.5rem'>
+          
+          <Box >
+            <Heading >Background</Heading>
+            <Text paddingStart={['', null, '2rem']}>
+            Motivation to better oneself is declining 
+            in this day and age and <b>we want to make a dent in this issue. </b>
+          </Text>
+          </Box>
+          
+          <Box>
+            <Heading >What is out There</Heading>
+            <Text paddingStart={['', null, '2rem']}>
+            <b>We want to cater to the least motivated people by pitching in the help of others, keeping you accountable! </b>
+            There is an inherent flaw in productivity apps today, which have very few strong
+            extrinsic motivators to come back to the app.
+            </Text>
+          </Box>
+
+          <Box>
+            <Heading>Details</Heading>
+            <Text paddingStart={['', null, '2rem']}>
+            <b>We promote a new lifestyle where you and your peers hold yourself accountable. </b>
+            You have the option to join user-made communities specific to the goal you want to accomplish.
+            Not only are you surrounded by like minded people,
+            but you also have the option to compete with them through the various goals that can be posted!
+            </Text>
+          </Box>
+        </VStack>
       </VStack>
       <VStack spacing='2rem'>
         {content.map((vstack, index) => (

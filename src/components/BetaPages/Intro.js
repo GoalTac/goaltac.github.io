@@ -6,18 +6,19 @@ import illustrationIntro from './resources/images/illustration-intro.svg';
 function Intro() {
   return (
     <Flex
-      alignItems='center'
-      textAlign='center'
+      alignItems={['center', 'flex-start']}
+      textAlign={['center', 'flex-start']}
       id='product'
     >
       <VStack>
-        <Box fontSize={['37px', '3.35rem']} fontWeight='700' paddingTop='5rem' lineHeight='1.1' bgGradient='linear(to-t, teal.300, blue.500)'
+        <Box fontSize='4rem' paddingBottom='2rem' fontWeight='700' lineHeight='1.1' bgGradient='linear(to-t, teal.300, blue.500)'
         bgClip='text'>
-          Work Harder and Smarter
+          Productivity Together
         </Box>
-        <Box maxWidth={['100%', '80%']} lineHeight='1.7'>
-          GoalTac revolutionizes productivity by focusing on the key drivers
-          to success that many people do not have: <b>consistency and motivation</b>.
+        <Box maxWidth={['90%', '70%']} lineHeight='1.4' fontSize='1.5rem'>
+          Have a goal that you want to work towards? Data shows that people may be
+          inclined to feel more motivated and disciplined when they around like-minded peers.
+          Join a community at GoalTac today to attack the goals you share together!
         </Box>
       </VStack>
     </Flex>
