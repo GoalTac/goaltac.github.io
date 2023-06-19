@@ -22,6 +22,8 @@ import imgBg from './resources/images/bg-tablet-pattern.svg';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { NavLink, Navigate } from 'react-router-dom';
 import { useState } from 'react';
+import { SignIn } from './Button.js';
+
 import { Link, animateScroll as scroll } from 'react-scroll';
 
 
@@ -72,28 +74,7 @@ function Header({ showMenu, openModal, sections, toggleModal }) {
             })}
           </HStack>
 
-          
-          <NavLink
-            to='/signin'
-            className={({ isActive, isPending }) =>
-              isPending ? 'pending' : isActive ? 'active' : ''}>
-            <Button
-              variant='solid'
-              fontWeight='800'
-              onClick={loading}
-              bgClip='text'
-              bgGradient='linear(to-l, teal.300, blue.500)'
-              bgColor='white'
-              borderRadius='30px'
-              _active={{}} //for some reason this fixes the white coloration when pressing and holding
-              boxShadow={colorMode === 'dark' ? '0 4px 4px black' : '0 4px 4px gray'}
-              _hover={{
-                boxShadow: `${colorMode == 'dark' ? '0 1px 1px black' : '0 1px 1px gray'}`,
-              }}
-            >
-              {isLoading == true ? <Spinner color='black' /> : 'Sign In'}
-            </Button>
-          </NavLink>
+          {SignIn()}
           
         </HStack>
       ) : (
