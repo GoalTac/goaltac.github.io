@@ -192,6 +192,7 @@ export default function SignUpPage() {
                   />
                   {/* Username */}
                   <Input
+                    disabled
                     type='text'
                     id='userName'
                     placeholder='Username'
@@ -208,6 +209,7 @@ export default function SignUpPage() {
                   />
                   {/* Email */}
                   <Input
+                  disabled
                     type='email'
                     id='email'
                     placeholder='Email Address'
@@ -225,6 +227,7 @@ export default function SignUpPage() {
                   />
                   {/* Password */}
                   <Input
+                  disabled
                     type={showPassword ? 'text' : 'password'}
                     placeholder='Password'
                     id='password'
@@ -248,7 +251,8 @@ export default function SignUpPage() {
               >
                 Sign Up
               </Button>
-              <Center>Or</Center>
+              {/*
+<Center>Or</Center>
               <Button
                 w={'full'}
                 maxW={'md'}
@@ -259,6 +263,9 @@ export default function SignUpPage() {
                   <Text>Sign up with Google</Text>
                 </Center>
               </Button>
+
+               */}
+              
             </Stack>
           </form>
         </Box>

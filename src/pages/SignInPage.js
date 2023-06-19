@@ -160,6 +160,7 @@ export default function LoginPage() {
               >
                 Login
               </Button>
+              {/*
               <Button
                 w={'full'}
                 maxW={'md'}
@@ -170,6 +171,8 @@ export default function LoginPage() {
                   <Text>Sign in with Google</Text>
                 </Center>
               </Button>
+              */}
+              
             </Stack>
           </form>
         </Box>
