@@ -79,6 +79,7 @@ function BetaPage() {
       
       <Flex justifyContent='center' alignItems='center' >
         <Box overflowX='hidden'
+          backgroundColor='white' 
           maxW={measurements.maxWidth}>
 
           {openModal && mobile ? (
@@ -120,7 +121,8 @@ function BetaPage() {
         
       </Flex>
       
-      <Spacer/>
+      <Spacer alignSelf='center' w={measurements.maxWidth} backgroundColor='white'/>
+
       {!mobile && (
         <HStack 
         minW='100%'
