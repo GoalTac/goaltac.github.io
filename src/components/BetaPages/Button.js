@@ -37,7 +37,7 @@ export function SignUp() {
 }
 export function SignIn() {
     return <NavLink
-        to='/login'>
+        to='/signin'>
         <Button variant='ghost'
             padding='2rem'
             fontSize='1.5rem'
