@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form } from '../Form';
+import { Form } from './Form';
 import {
   Box,
   Image,
@@ -24,7 +24,7 @@ import {
   FaTiktok,
 } from 'react-icons/fa';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
-import logo from '../../../images/GoalTac_Logo.png';
+import logo from '../../images/GoalTac_Logo.png';
 
 const sectionsLeft = [
   {

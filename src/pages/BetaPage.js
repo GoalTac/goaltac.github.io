@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { Box, Flex, useColorMode, Divider, Spacer, Image, VStack, HStack, Stack } from '@chakra-ui/react';
 
-import { Header } from '../components/BetaPages/Header';
-import { Intro } from '../components/BetaPages/Intro';
-import { Features } from '../components/BetaPages/Features';
+import { Header } from '../components/BetaPages/Header.js';
+import { Intro } from '../components/BetaPages/Intro.js';
+import { Features } from '../components/BetaPages/Feature.js';
 import { Slider } from '../components/BetaPages/Slider';
-import { Prefooter } from '../components/BetaPages/Prefooter';
-import { Footer } from '../components/BetaPages/Footer';
-import { Modal } from '../components/BetaPages/Modal';
+import { Prefooter } from '../components/BetaPages/Prefooter.js';
+import { Footer } from '../components/BetaPages/Footer.js';
+import { Modal } from '../components/BetaPages/Modal.js';
 import createTask from '../images/CreateTask.png';
 
 const sections = [
@@ -72,14 +72,13 @@ function BetaPage() {
     <Flex 
     flexDirection='column'
     minH='100vh'
-    bg={colorMode === 'dark' ? 'grey.100' : 'white'}
     bgGradient={colorMode === 
     'dark' ? 'linear(to-b, gray.800, teal.700, blue.500)' : 
     'linear(to-b, white, teal.100, teal.300, blue.500)'}>
       
       <Flex justifyContent='center' alignItems='center' >
         <Box overflowX='hidden'
-          backgroundColor='white' 
+          bgColor={colorMode === 'dark' ? 'gray.700' : 'white'}
           maxW={measurements.maxWidth}>
 
           {openModal && mobile ? (
@@ -121,7 +120,10 @@ function BetaPage() {
         
       </Flex>
       
-      <Spacer alignSelf='center' w={measurements.maxWidth} backgroundColor='white'/>
+      <Spacer alignSelf='center' w={measurements.maxWidth} 
+      bgColor={colorMode === 'dark' ? 'gray.700' : 'white'}
+
+/>
 
       {!mobile && (
         <HStack 

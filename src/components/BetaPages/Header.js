@@ -15,10 +15,10 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { FaDiscord } from 'react-icons/fa';
-import logo from '../../../images/GoalTac_Logo.png';
-import hamburgerIcon from '../resources/images/icon-hamburger.svg';
-import closeIcon from '../resources/images/icon-close.svg';
-import imgBg from '../resources/images/bg-tablet-pattern.svg';
+import logo from '../../images/GoalTac_Logo.png';
+import hamburgerIcon from './resources/images/icon-hamburger.svg';
+import closeIcon from './resources/images/icon-close.svg';
+import imgBg from './resources/images/bg-tablet-pattern.svg';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { NavLink, Navigate } from 'react-router-dom';
 import { useState } from 'react';

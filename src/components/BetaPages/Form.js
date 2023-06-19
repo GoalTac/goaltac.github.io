@@ -10,7 +10,7 @@ import {
   useColorMode
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { useSession } from '../../../hooks/SessionProvider';
+import { useSession } from '../../hooks/SessionProvider';
 
 function Form() {
   const { colorMode } = useColorMode();

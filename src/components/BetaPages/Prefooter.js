@@ -1,11 +1,12 @@
 import React from 'react';
-import { Box, Button, Stack, Spinner } from '@chakra-ui/react';
-import imgBg from '../resources/images/bg-simplify-section-desktop.svg';
-import imgBgMobile from '../resources/images/bg-simplify-section-mobile.svg';
+import { Box, Button, Stack, Spinner, useColorMode } from '@chakra-ui/react';
+import imgBg from './resources/images/bg-simplify-section-desktop.svg';
+import imgBgMobile from './resources/images/bg-simplify-section-mobile.svg';
 import { Link, NavLink, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 function Prefooter() {
   const [isLoading, setIsLoading] = useState(false); //for login loading
+  const { colorMode } = useColorMode();
 
   const loading = () => {
     setIsLoading(!isLoading);
@@ -42,7 +43,8 @@ function Prefooter() {
           fontWeight='800'
           fontSize={30}
           onClick={loading}
-          bgColor='blackAlpha.600'
+          bgColor={colorMode === 'light' ? 'blackAlpha.600' : 'white'}
+
           bgClip='text'
           borderRadius='30px'
           boxShadow='0 6px 6px #171923'

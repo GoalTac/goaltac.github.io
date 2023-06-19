@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Flex, VStack, Stack } from '@chakra-ui/react';
-import imgBg from '../resources/images/bg-tablet-pattern.svg';
+import imgBg from './resources/images/bg-tablet-pattern.svg';
 
 const content = [
   {

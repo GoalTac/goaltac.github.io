@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Flex, Image, Button, VStack } from '@chakra-ui/react';
 
-import illustrationIntro from '../resources/images/illustration-intro.svg';
+import illustrationIntro from './resources/images/illustration-intro.svg';
 
 function Intro() {
   return (
