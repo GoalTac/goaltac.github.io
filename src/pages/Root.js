@@ -21,15 +21,15 @@ import { SessionProvider } from '../hooks/SessionProvider';
 import {Sidebar} from '../components/RootPages/Navigaton/Sidebar';
 import NavHeader from '../components/RootPages/Navigaton/NavHeader';
 import NavFooter from '../components/RootPages/Navigaton/NavFooter';
-import MainPanel from '../components/RootPages/Information/MainPanel';
-import AdPanel from '../components/RootPages/Information/AdPanel';
-import StatsPanel from '../components/RootPages/Information/StatsPanel';
-import PremiumPanel from '../components/RootPages/Information/PremiumPanel';
-import CommunitiesPanel from '../components/RootPages/Information/CommunitiesPanel';
-import QuestsPanel from '../components/RootPages/Information/QuestsPanel';
+import MainPanel from '../components/RootPages/Information/Panels/MainPanel';
+import AdPanel from '../components/RootPages/Information/Panels/AdPanel';
+import StatsPanel from '../components/RootPages/Information/Panels/StatsPanel';
+import PremiumPanel from '../components/RootPages/Information/Panels/PremiumPanel';
+import CommunitiesPanel from '../components/RootPages/Information/Panels/CommunitiesPanel';
+import QuestsPanel from '../components/RootPages/Information/Panels/QuestsPanel';
 import ChatRoomPanel from '../components/RootPages/Information/Community/ChatRoomPanel';
 import OnlineMembersPanel from '../components/RootPages/Information/Community/OnlineMembersPanel';
-import FriendsPanel from '../components/RootPages/Information/FriendsPanel';
+import FriendsPanel from '../components/RootPages/Information/Panels/FriendsPanel';
 import { useLocation } from 'react-router-dom';
 import { useIsOverflow } from '../hooks/Utilities/CheckOverflow';
 import {
@@ -159,11 +159,10 @@ export default function Root() {
               /> :  <></>}
               
 
-              <Flex className='Root Parent Contents' id='Root Parent Contents'
-                alignItems='center'>
+              <Flex className='Root Parent Contents' id='Root Parent Contents'>
 
                 <Box className='Root SideBar' id='Root SideBar'
-                  position='fixed'
+                  position='absolute'
                   left='0'
                   top='0'
                   boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.1)">
@@ -174,15 +173,16 @@ export default function Root() {
                 <Box className='Root Main Content' id='Root Main Content'
                   alignItems='center'>
                   <Outlet />
+                  
                 </Box>
-                <Spacer/>
                 <Box className='Root Info Panels' id='Root Info Panels'
-                  position='absolute'
-                  right='0'
+                  borderWidth='10px'
+                  width='max'
                   top='0'>
                   {isMobile ? <></> : <MainPanel 
                   infoPanels={filteredPanels(locate.pathname)} />}
                 </Box>
+                <Spacer/>
                 
                 {/* Sidebar on the right for advertisements, notifications, etc. */}
               </Flex>

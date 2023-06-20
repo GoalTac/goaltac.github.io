@@ -6,12 +6,6 @@ import {
     Image,
     Box
 } from '@chakra-ui/react'
-import NavItem from '../Navigaton/NavItem'
-import largelogo from '../../../images/GoalTac_Logo.png';
-import smalllogo from '../../../images/logo.png';
-import Settings from '../Settings';
-import { useSupabaseClient } from '../../../hooks/SessionProvider';
-
 
 export default function MainPanel({infoPanels}) {
 
@@ -19,7 +13,8 @@ export default function MainPanel({infoPanels}) {
         <Flex
         //How to make it emulate duolingo's panels?
         padding='10px'
-        maxW='15vw'
+        width='20rem'
+        position='relative'
         overflow='hidden'
         height='fit-content'
         rowGap='20px'

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Button, VStack, Icon, Img, Spacer, Box } from '@chakra-ui/react';
+import { Flex, Button, useColorMode, HStack, VStack, Icon, Img, Spacer, Box } from '@chakra-ui/react';
 import { Link, animateScroll as scroll } from 'react-scroll';
 import logo from '../../../images/logo.png';
 import { NavItem } from './NavItem';
@@ -8,20 +8,17 @@ import Settings from '../Settings';
 
 
 export default function NavFooter({ activeItem, sections, isMobile}) {
-
+  const { colorMode } = useColorMode();
 
   return (
-    <Flex
-      justify='space-between'
+    <HStack
       alignItems='center'
       pos='fixed'
+      backgroundColor={(colorMode == 'dark' ? 'gray.700' : 'white')}
       bottom='0'
-      right='0'
-      left='0'
-      bgColor='white'
       borderWidth='1px'
-      width='100vw'
-    >
+      width='100vw'>
+
       {/*<Img src={logo} w='30px' h='30px' mt='10px' mb='10px' ml='10px'/>*/}
       <Box>
         <Settings pSize={30} session={useSupabaseClient.session} />
@@ -43,6 +40,6 @@ export default function NavFooter({ activeItem, sections, isMobile}) {
           </Box>
         );
       })}
-    </Flex>
+    </HStack>
   );
 }
