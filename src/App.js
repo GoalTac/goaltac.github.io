@@ -19,7 +19,7 @@ import Root from './pages/Root';
 import Schedule from './pages/Schedule';
 import SettingsPage from './pages/SettingsPage';
 import SignUpPage from './pages/SignUpPage';
-import SocialPage from './pages/SocialPage';
+import NetworkPage from './pages/NetworkPage';
 import UpdatePasswordPage from './pages/UpdatePasswordPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Community from './pages/Community';
@@ -41,7 +41,7 @@ export default function App() {
            <Route path='home' element={<HomePage />} />
             <Route path='market' element={<MarketPage />} />
             <Route path='schedule' element={<Schedule />} />
-            <Route path='social' element={<SocialPage />} />
+            <Route path='network' element={<NetworkPage />} />
             <Route path='settings' element={<SettingsPage />} />
             <Route path='updatepassword' element={<UpdatePasswordPage />} />
             <Route path='messages' element={<Messages />} />

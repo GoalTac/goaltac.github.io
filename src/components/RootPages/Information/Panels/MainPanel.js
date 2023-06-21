@@ -6,6 +6,7 @@ import {
     Image,
     Box
 } from '@chakra-ui/react'
+import UserInfo from '../UserInfo'
 
 export default function MainPanel({infoPanels}) {
 
@@ -14,13 +15,13 @@ export default function MainPanel({infoPanels}) {
         //How to make it emulate duolingo's panels?
         padding='10px'
         width='20rem'
-        position='relative'
+        position='sticky'
         overflow='hidden'
         height='fit-content'
         rowGap='20px'
         flexDirection="column">
             {/* Display general profile stats */}
-
+            <UserInfo/>
 
             {/* Display panels */}
             {infoPanels.map((panel, index) => {

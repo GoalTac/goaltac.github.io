@@ -15,11 +15,14 @@ import Explore from '../components/SocialPages/Explore';
 import Sidebar from '../components/SocialPages/Sidebar';
 import CommunitySide from '../components/SocialPages/CommunitySide';
 
-export default function SocialPage() {
+export default function NetworkPage() {
+
+
+
   return (
-    <Flex w='100%' h='100%' padding='10' gap={15}>
-      <Sidebar />
-      <Explore />
+    <Flex overflowY='scroll'> 
+      <Explore/>
+      
     </Flex>
   );
 }

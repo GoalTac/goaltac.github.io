@@ -18,7 +18,7 @@ import { useIsOverflow } from '../../../hooks/Utilities/CheckOverflow';
 
 export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
 
-    const initialState = window.innerWidth < 1400 ? "small" : "large";
+    const initialState = window.innerWidth < 1100 ? "small" : "large";
     const [navSize, changeNavSize] = useState(initialState);
     const { colorMode } = useColorMode();
     
@@ -26,7 +26,7 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
         
         function handleResize() {
             console.log( useIsOverflow("",document.getElementById("Root Parent")) )
-            if (window.innerWidth < 1400) {
+            if (window.innerWidth < 1100) {
                 changeNavSize("small");
             } else {
                 changeNavSize("large");

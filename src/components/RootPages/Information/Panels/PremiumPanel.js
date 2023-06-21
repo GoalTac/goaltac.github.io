@@ -19,9 +19,10 @@ export default function PremiumPanel({}) {
     const { colorMode } = useColorMode()
     return (
         <Flex flexDirection='column' 
+        position='relative'
         rowGap='1rem' 
         borderColor={(colorMode == 'dark' ? 'yellow.500' : 'orange.300')}>
-            <Image style={{position:'absolute'}} top='8px' right='8px' width='25%' src={premiumLogo}/>
+            <Image position='absolute' top='0px' right='0px' width='25%' src={premiumLogo}/>
             <VStack alignItems='left'>
                 <Image width='50%' src={premiumName} />
                 <Box paddingStart='0.6rem' rowGap='1rem'>

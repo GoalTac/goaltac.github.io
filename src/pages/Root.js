@@ -64,7 +64,7 @@ const highBarItems = [
       icon: FaUserFriends,
       title: 'Community',
       description: '',
-      nav: '/social',
+      nav: '/network',
 
   },
   {
@@ -117,7 +117,7 @@ function filteredPanels(currentPage) {
 
 export default function Root() {
   const { colorMode } = useColorMode();
-  const initialState = window.innerWidth < 1000 ? true : false;
+  const initialState = window.innerWidth < 800 ? true : false;
   const [isMobile, setMobile] = React.useState(initialState); //This is to display header & footer
   const [openModal, setOpenModal] = React.useState(false); //This is to open/close modal
   const allItems = highBarItems.concat(lowBarItems)
@@ -131,7 +131,7 @@ export default function Root() {
   //decides to show header or not in real time
   React.useEffect(() => {
     function handleResize() {
-      if (window.innerWidth < 1000) {
+      if (window.innerWidth < 800) {
         setMobile(true);
       } else {
         setMobile(false);
