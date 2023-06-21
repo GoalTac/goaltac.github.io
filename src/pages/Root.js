@@ -176,7 +176,6 @@ export default function Root() {
                   
                 </Box>
                 <Box className='Root Info Panels' id='Root Info Panels'
-                  borderWidth='10px'
                   width='max'
                   top='0'>
                   {isMobile ? <></> : <MainPanel 
