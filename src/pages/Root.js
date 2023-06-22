@@ -165,20 +165,22 @@ export default function Root() {
                 
                 {isMobile ? <></> :  <Sidebar activeItem={locate.pathname} 
                   highBarItems={highBarItems} lowBarItems={lowBarItems}/>}
-                <Spacer/>
                 
-                <Box className='Root Main Content' id='Root Main Content'
-                  alignItems='center'>
-                  <Outlet />
+                <Box alignContent='center' 
+                marginX='auto'
+                display='flex' >
+                  <Box className='Root Main Content' id='Root Main Content'
+                    alignItems='center'>
+                    <Outlet />
+                  </Box>
+                  
+                  <Box className='Root Info Panels' id='Root Info Panels'
+                    width='max'
+                    top='0'>
+                    {isMobile ? <></> : <MainPanel 
+                    infoPanels={filteredPanels(locate.pathname)} />}
+                  </Box>
                 </Box>
-                
-                <Box className='Root Info Panels' id='Root Info Panels'
-                  width='max'
-                  top='0'>
-                  {isMobile ? <></> : <MainPanel 
-                  infoPanels={filteredPanels(locate.pathname)} />}
-                </Box>
-                <Spacer/>
                 
                 {/* Sidebar on the right for advertisements, notifications, etc. */}
               </Flex>

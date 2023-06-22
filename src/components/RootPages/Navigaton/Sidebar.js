@@ -37,8 +37,8 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
       }, []);
 
     return (
-        <Box
-            left='0'
+        <Box left='0'
+            posiiton='fixed'
             top='0'
             boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.1)">
         <Flex className='SideBar Parent' id='SideBar Parent'
@@ -48,7 +48,6 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
             maxWidth='15vw'
             width='min-content'
             alignItems='center'
-            
             flexDir="column">
 
             {/* How to prevent logo resizing? */}
