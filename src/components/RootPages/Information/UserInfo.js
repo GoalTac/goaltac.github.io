@@ -64,7 +64,7 @@ export default function UserInfo() {
 const CurrentTask = ({handleMouseOver, handleMouseOut, isHovering}) => {
     return(
         <Box height='60px'
-        backgroundColor={(isHovering && 'gray.100')}
+        backgroundColor={(isHovering && 'gray.200')}
         borderTopRadius={(isHovering && '10px')}
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}>
@@ -87,13 +87,15 @@ const PickTask = ({handleMouseOver, handleMouseOut}) => {
         top='50px'
         width='16rem'
         height='200px'
-        borderColor='gray.150'
-        borderWidth='2px'
+        borderColor='gray.300'
+        borderWidth='3px'
 
         flexDirection='row'
         position='absolute'>
             <Flex textAlign='center'
             flexDirection='row'
+            borderColor='gray.150'
+            borderBottom='1px'
             height='40px'>
                 <Heading paddingStart='20px' 
                 paddingTop='10px'
@@ -109,13 +111,14 @@ const PickTask = ({handleMouseOver, handleMouseOut}) => {
 
             </Flex>
             <Button bottom='0'
-             display='unset'
-             height='50px'
-             width='100%'
-             backgroundColor='unset'
-             borderRadius='unset'
-             textAlign='left'
-             position='absolute'>
+                borderTop='1px'
+                display='unset'
+                height='50px'
+                width='100%'
+                backgroundColor='unset'
+                borderRadius='unset'
+                textAlign='left'
+                position='absolute'>
 
                 <Box>
                     <HStack columnGap='0.75rem'>
