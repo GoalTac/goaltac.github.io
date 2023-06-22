@@ -35,6 +35,12 @@ export default function PremiumPanel({}) {
                 </Box>
             </VStack>
             <Button borderRadius='15px'
+                _active={{
+                    bgColor: 
+                    (colorMode == 'dark' ? 
+                    'rgb(236, 201, 75)' : 
+                    'rgb(251, 211, 141)')
+                }}
                 boxShadow={(colorMode == 'dark' ? 
                 '0px 2px 8px rgb(214, 158, 46)' : 
                 '0px 2px 8px rgb(237, 137, 54)')}
