@@ -148,7 +148,8 @@ export default function Root() {
         <SessionProvider supabase={supabaseClient}>
           {!noNavPages.includes(locate.pathname) ? (
             <Box className='Root Parent' id='Root Parent'
-              posiiton='absolute'>
+              boxSize='100%'
+              posiiton='relative'>
               {/* Header Overlay*/
               isMobile ? <NavHeader activeItem={locate.pathname} 
               sections={lowBarItems}
@@ -161,20 +162,16 @@ export default function Root() {
 
               <Flex className='Root Parent Contents' id='Root Parent Contents'>
 
-                <Box className='Root SideBar' id='Root SideBar'
-                  position='absolute'
-                  left='0'
-                  top='0'
-                  boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.1)">
-                  {isMobile ? <></> :  <Sidebar activeItem={locate.pathname} 
+                
+                {isMobile ? <></> :  <Sidebar activeItem={locate.pathname} 
                   highBarItems={highBarItems} lowBarItems={lowBarItems}/>}
-                </Box>
                 <Spacer/>
+                
                 <Box className='Root Main Content' id='Root Main Content'
                   alignItems='center'>
                   <Outlet />
-                  
                 </Box>
+                
                 <Box className='Root Info Panels' id='Root Info Panels'
                   width='max'
                   top='0'>

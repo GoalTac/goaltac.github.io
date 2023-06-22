@@ -37,15 +37,18 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
       }, []);
 
     return (
+        <Box
+            left='0'
+            top='0'
+            boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.1)">
         <Flex className='SideBar Parent' id='SideBar Parent'
             color={(colorMode == 'dark' ? 'gray.100' : 'black')}
             backgroundColor={(colorMode == 'dark' ? 'gray.700' : 'white')}
             minH='100vh'
             maxWidth='15vw'
             width='min-content'
-            overflow='scroll'
-            overflowX='hidden'
             alignItems='center'
+            
             flexDir="column">
 
             {/* How to prevent logo resizing? */}
@@ -105,5 +108,7 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
                 </Box>
             </VStack>
         </Flex>
+        </Box>
+        
     )
 }

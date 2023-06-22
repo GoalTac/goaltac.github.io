@@ -20,7 +20,7 @@ function HomePage() {
 
   return  (
     <>
-      <Box w='100%' h='100%' backgroundColor={colorMode === 'dark' ? 'grey.800' : 'white'}>
+      <Box>
 
         {/* 
 
