@@ -167,11 +167,13 @@ export default function Root() {
                   highBarItems={highBarItems} lowBarItems={lowBarItems}/>}
                 
                 <Box alignContent='center' 
-                marginX='auto'
-                display='flex' >
+                  marginX='auto'
+                  display='flex' >
                   <Box className='Root Main Content' id='Root Main Content'
-                    alignItems='center'>
-                    <Outlet />
+                    alignContent='center'
+                    marginX='auto'>
+                        <Outlet />
+                    
                   </Box>
                   
                   <Box className='Root Info Panels' id='Root Info Panels'

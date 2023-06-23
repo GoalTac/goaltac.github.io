@@ -22,7 +22,7 @@ export default function PremiumPanel({}) {
         position='relative'
         rowGap='1rem' 
         borderColor={(colorMode == 'dark' ? 'yellow.500' : 'orange.300')}>
-            <Image position='absolute' top='0px' right='0px' width='25%' src={premiumLogo}/>
+            <Image zIndex='hide' position='absolute' top='0px' right='0px' width='25%' src={premiumLogo}/>
             <VStack alignItems='left'>
                 <Image width='50%' src={premiumName} />
                 <Box paddingStart='0.6rem' rowGap='1rem'>
