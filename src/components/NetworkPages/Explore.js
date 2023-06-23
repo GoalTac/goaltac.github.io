@@ -39,9 +39,10 @@ export default function Explore() {
       boxShadow={'2xl'}
     >
       {console.log(tasks)}
-      {tasks?.map(task => {
+      {/*tasks?.map(task => {
         return <CardMaker key={task.id} task={task} />;
-      })}
+      })*/}
+      <CardMaker />
       <Flex
         flexWrap={'wrap'}
         justifyItems={'center'}
@@ -88,7 +89,7 @@ export function CardMaker({ task }) {
           fontSize={'lg'}
           fontFamily={'body'}
         >
-          {task.title}
+          {/*task.title*/}
         </Heading>
         <Text color={'gray.500'} fontSize='sm'>
           If I told myself that I would be able to do a backflip in 6 months, I

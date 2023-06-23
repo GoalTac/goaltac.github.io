@@ -9,6 +9,8 @@ import {
   StackDivider,
   Button,
 } from '@chakra-ui/react';
+import { Navigate } from 'react-router';
+import { NavLink } from 'react-router-dom';
 
 /*
     This is the component that contains the 
@@ -30,15 +32,14 @@ export default function Sidebar() {
             </Text>
           </Box>
           <Box>
-            <Button
+            <NavLink
               justifyContent='center'
-              // onClick={}
-              overflow='hidden'
-            >
+              to='/community'
+              overflow='hidden'>
               <Text size='xs' textTransform='uppercase'>
                 Communities
               </Text>
-            </Button>
+            </NavLink>
           </Box>
           <Box>
             <Text size='xs' textTransform='uppercase'>
