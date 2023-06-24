@@ -1,6 +1,5 @@
 export function experienceNeeded(level) {
     const scalar = (level+5) ** 4
-    console.log(scalar)
     return scalar;
 }
 
@@ -19,7 +18,7 @@ export function calculateLevel(experience) {
             experience -= experienceNeeded(index);
             level = index;
     }
-    return level;
+    return {level, experience};
 }
 
 
@@ -32,8 +31,13 @@ export function calculateLevel(experience) {
  * @param {*} exp 
  * @returns 
  */
-export function experiencePercent(level, exp) {
-    const expPercent = (exp/experienceNeeded(level))
+export function experiencePercent(exp) {
+    const levelObject = calculateLevel(exp)
+    const level = levelObject.level
+    const leftOverExp = levelObject.experience
+    const expNeeded = experienceNeeded(level)
+    const expPercent = (leftOverExp/expNeeded)
+
     if(expPercent > 1) {
         console.log("Clan needs to be leveled up")
     }
