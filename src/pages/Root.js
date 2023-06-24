@@ -167,9 +167,11 @@ export default function Root() {
                   highBarItems={highBarItems} lowBarItems={lowBarItems}/>}
                 
                 <Box alignContent='center' 
+                  marginTop='40px'
                   marginX='auto'
                   display='flex' >
                   <Box className='Root Main Content' id='Root Main Content'
+                    width='max-content'
                     alignContent='center'
                     marginX='auto'>
                         <Outlet />
@@ -177,6 +179,7 @@ export default function Root() {
                   </Box>
                   
                   <Box className='Root Info Panels' id='Root Info Panels'
+                    overflowX='hidden'
                     width='max'
                     top='0'>
                     {isMobile ? <></> : <MainPanel 
