@@ -17,6 +17,7 @@ import {
 import { PhoneIcon, AddIcon, WarningIcon } from '@chakra-ui/icons'
 import { BiCoin, BiTask } from 'react-icons/bi'
 import { FaFire } from 'react-icons/fa'
+import { useNavigate, Link, NavLink,  } from 'react-router-dom';
 
 import { MdAddTask } from 'react-icons/md'
 
@@ -93,7 +94,6 @@ export default function UserInfo() {
 
 
 const SearchBar = ({handleMouseOver, handleMouseOut, isHovering, placeHolder}) => {
-    console.log(placeHolder)
     return(
         <FormControl 
         onMouseDown={handleMouseOver}
@@ -231,10 +231,9 @@ const PickTask = ({handleMouseOver, handleMouseOut}) => {
                 width='100%'
                 backgroundColor='unset'
                 borderRadius='unset'
-                textAlign='left'
+                alignContent='center'
                 position='absolute'>
-
-                <Box>
+                <NavLink to='/home'>
                     <HStack columnGap='0.75rem'>
                         <Box borderWidth='3px'
                         borderColor='blackAlpha.700'
@@ -247,8 +246,7 @@ const PickTask = ({handleMouseOver, handleMouseOut}) => {
                             Add a new Goal
                         </Heading>
                     </HStack>
-                </Box>
-                
+                </NavLink>
             </Button>
         </Box>
     )
