@@ -140,8 +140,10 @@ export default function Root() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [isMobile]);
+    console.log(isMobile)
 
   return (
+
     <>
       <ChakraProvider theme={theme}>
         <ColorModeScript initialColorMode={theme.config.initialColorMode}  />
@@ -151,19 +153,19 @@ export default function Root() {
               boxSize='100%'
               posiiton='relative'>
               {/* Header Overlay*/
-              isMobile ? <NavHeader activeItem={locate.pathname} 
+              isMobile && <NavHeader activeItem={locate.pathname} 
               sections={lowBarItems}
               toggleModal={toggleModal}
               setOpenModal={setOpenModal}
               openModal={openModal}
-              isMobile={isMobile}
-              /> :  <></>}
+              isMobile={isMobile}/>}
               
 
-              <Flex className='Root Parent Contents' id='Root Parent Contents'>
+              <Flex className='Root Parent Contents' id='Root Parent Contents'
+                columnGap='1rem'>
 
                 
-                {isMobile ? <></> :  <Sidebar activeItem={locate.pathname} 
+                {!isMobile &&  <Sidebar activeItem={locate.pathname} 
                   highBarItems={highBarItems} lowBarItems={lowBarItems}/>}
                 
                 <Box alignContent='center' 
@@ -171,7 +173,6 @@ export default function Root() {
                   marginX='auto'
                   display='flex' >
                   <Box className='Root Main Content' id='Root Main Content'
-                    width='max-content'
                     alignContent='center'
                     marginX='auto'>
                         <Outlet />
