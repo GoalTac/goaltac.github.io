@@ -1,14 +1,19 @@
 import {
     Flex,
 } from '@chakra-ui/react';
-import Header from '../components/Communities/InsideView/Group/Header';
+import InsideView from '../components/Communities/InsideView/InsideView';
 
 /*
-Contains the dashboard, recommended communityies, and search for new communities
+Contains the dashboard, recommended communities, and search for new communities
  */
-export default function Community() {
+export default function Community({community}) {  
+
   return (
     <Flex>
+
+      {/* Temporarily here for testing. This would
+      be in another level beyond dashboard */}
+      <InsideView community={community}/>
     </Flex>
   );        
 }
