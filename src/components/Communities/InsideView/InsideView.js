@@ -9,10 +9,11 @@ import {
  */
 export default function InsideView({community}) {
     return(
-        <Box name='Specific Community View'
-        borderWidth='1px'
-        h='90vh'>
+        <Box name='Specific Community View' >
            <Header community={community}/> 
+           <Box height='10vh'>
+
+         </Box>
         </Box>
         
     );
