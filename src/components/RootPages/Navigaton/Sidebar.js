@@ -25,7 +25,6 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
     React.useEffect(() => {
         
         function handleResize() {
-            console.log( useIsOverflow("",document.getElementById("Root Parent")) )
             if (window.innerWidth < 1100) {
                 changeNavSize("small");
             } else {
