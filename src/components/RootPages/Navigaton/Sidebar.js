@@ -40,7 +40,7 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
             color={(colorMode == 'dark' ? 'gray.100' : 'black')}
             backgroundColor={(colorMode == 'dark' ? 'gray.700' : 'white')}
             minH='100vh'
-            maxWidth='15vw'
+            width='15vw'
             position='fixed'
             alignItems='center'
             boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.1)"
@@ -52,7 +52,7 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
                 <Box className='SideBar Parent Logo' id='SideBar Parent Logo'
                     margin='0.5rem' 
                     marginLeft={navSize == 'small' ? '1rem' : null}
-                    boxSize={navSize == 'small' ? '50%' : '80%'}>
+                    width={navSize == 'small' ? '3rem' : '10rem'}>
                     <Image className='Sidebar Logo' id='SideBar Logo'                
                         src={navSize == 'small' ? smalllogo : largelogo}/>
                 </Box>
@@ -109,6 +109,5 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
             </Flex>
 
         </Flex>
-        
     )
 }
