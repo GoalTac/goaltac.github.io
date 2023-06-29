@@ -62,7 +62,7 @@ const highBarItems = [
   },
   {
       icon: FaUserFriends,
-      title: 'Community',
+      title: 'Network',
       description: '',
       nav: '/network',
 
@@ -164,11 +164,12 @@ export default function Root() {
               <Flex className='Root Parent Contents' id='Root Parent Contents'
                 columnGap='1rem'>
 
-                
                 {!isMobile &&  <Sidebar activeItem={locate.pathname} 
-                  highBarItems={highBarItems} lowBarItems={lowBarItems}/>}
+                highBarItems={highBarItems} lowBarItems={lowBarItems}/>}
+                
                 
                 <Box alignContent='center' 
+                  paddingLeft={!isMobile && '17vw'}
                   marginTop='40px'
                   marginX='auto'
                   display='flex' >
@@ -180,7 +181,6 @@ export default function Root() {
                   </Box>
                   
                   <Box className='Root Info Panels' id='Root Info Panels'
-                    overflowX='hidden'
                     width='max'
                     top='0'>
                     {isMobile ? <></> : <MainPanel 
