@@ -33,14 +33,29 @@ export default function InsideView({community}) {
         }
     }
 
-    const examplePeople = {
-        'cf636296-2c08-4a41-94dc-77b5518ba267': {
+    const examplePeople = [
+        {
+            uuid: 'cf636296-2c08-4a41-94dc-77b5518ba267',
+            userName: 'Adi',
+            points: 1209,
 
         },
-        'd0ab045d-568d-409a-91d4-b09bb5805ce6': {
-
-        }
-    }
+        {
+            uuid: 'd0ab045d-568d-409a-91d4-b09bb5805ce6',
+            userName: 'My',
+            points: 312
+        },
+        {
+            uuid: 'something!',
+            userName: 'Nikhil',
+            points: 12019
+        },
+        {
+            uuid: 'woo woo',
+            userName: 'Andrew',
+            points: 19
+        },
+    ]
 
     const [tab, setTab] = useState('calendar');
     const DisplayedView = (checkTab) => {

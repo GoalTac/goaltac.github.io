@@ -2,18 +2,20 @@ import {
     Flex,
 } from '@chakra-ui/react';
 import InsideView from '../components/Communities/InsideView/InsideView';
+import Dashboard from '../components/Communities/Dashboard/Dashboard';
 
 /*
 Contains the dashboard, recommended communities, and search for new communities
  */
-export default function Community({community}) {  
+export default function CommunityDisplay() {  
 
   return (
     <Flex>
-
-      {/* Temporarily here for testing. This would
-      be in another level beyond dashboard */}
-      <InsideView community={community}/>
+      <Dashboard />
+      
+      {/* Will add recommended and other displays below the dashboard 
+      <InsideView />
+      */}
     </Flex>
   );        
 }
