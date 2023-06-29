@@ -1,10 +1,13 @@
 import Header from './Group/Header'
 import HeaderNav from './HeaderNav'
+import Roster from './Group/Roster'
+import { useState, useEffect } from 'react';
 import GoalTac_Logo from '../../../images/GoalTac_Logo.png'
 
 import {
     Box,
 } from '@chakra-ui/react'
+import React from 'react'
 
 /**
  * Contains all components of an individual community
@@ -30,15 +33,36 @@ export default function InsideView({community}) {
         }
     }
 
+    const examplePeople = {
+        'cf636296-2c08-4a41-94dc-77b5518ba267': {
 
+        },
+        'd0ab045d-568d-409a-91d4-b09bb5805ce6': {
+
+        }
+    }
+
+    const [tab, setTab] = useState('calendar');
+    const DisplayedView = (checkTab) => {
+        console.log(checkTab.tab)
+        switch(checkTab.tab) {
+            case 'people':
+                return <Roster people={examplePeople} />
+            default:
+                return <Box  borderWidth='1px' height='1000px' ></Box>
+        }
+    }
     return(
         <Box name='Specific Community View' >
-           <Header community={exampleCommunity}/>
-           <HeaderNav community={exampleCommunity}/>
+            <Header community={exampleCommunity}/>
+            <HeaderNav setTab={setTab} community={exampleCommunity}/>
+            
+            <DisplayedView tab={tab} />
+            
 
-           <Box height='10vh'>
+            <Box height='10vh'>
 
-         </Box>
+            </Box>
         </Box>
         
     );

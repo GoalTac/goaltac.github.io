@@ -18,55 +18,30 @@ import {
     ChatIcon
 } from '@chakra-ui/icons';
 
+export default function HeaderNav({setTab, community}) {
 
-//to export the buttons from into Header.js
-//and write their functionality
+    const navigation = [
+        ['calendar', <RiCalendarEventLine/>],
+        ['goals', <TbTarget/>],
+        ['people', <FaUserFriends/>],
+        ['leaderboard', <FaChalkboard />],
+        ['chat', <ChatIcon />]]
 
-
-export default function HeaderNav({community}) {
+    
     return (<VStack>
     <Flex width='100%'>
-    <IconButton 
-      borderWidth='1px'
-      borderEndRadius='unset'
-      borderBlockEnd='unset'
-      width='100%'
-      variant='ghost' 
-      fontSize='2rem' 
-      icon={<RiCalendarEventLine/>}  />
-    <IconButton 
-      borderWidth='1px'
-      borderEndRadius='unset'
-      borderBlockEnd='unset'
-      width='100%'
-      variant='ghost' 
-      fontSize='2rem' 
-      icon={<TbTarget/>}  />
-    <IconButton 
-      borderWidth='1px'
-      borderEndRadius='unset'
-      borderBlockEnd='unset'
-      width='100%'
-      variant='ghost' 
-      fontSize='2rem' 
-      icon={<FaUserFriends/>}  />
-    <IconButton 
-      borderWidth='1px'
-      borderEndRadius='unset'
-      borderBlockEnd='unset'
-      width='100%'
-      variant='ghost' 
-      fontSize='2rem' 
-      icon={<FaChalkboard />}  />
-    <IconButton 
-      borderWidth='1px'
-      borderEndRadius='unset'
-      borderBlockEnd='unset'
-      width='100%'
-      variant='ghost' 
-      fontSize='2rem' 
-      icon={<ChatIcon />}  />
-  </Flex>
+        {navigation.map((navItem, index) => {
+            return (
+            <IconButton key={index}
+            borderWidth='1px'
+            borderEndRadius='unset'
+            borderBlockEnd='unset'
+            width='100%'
+            variant='ghost' 
+            fontSize='2rem' 
+            onClick={() => setTab(navItem[0])}
+            icon={navItem[1]}/>)})}
+    </Flex>
   <Divider/>
   </VStack>)
 }
