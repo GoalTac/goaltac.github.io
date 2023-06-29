@@ -36,24 +36,23 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
       }, []);
 
     return (
-        <Box left='0'
-            posiiton='sticky'
-            top='0'
-            boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.1)">
         <Flex className='SideBar Parent' id='SideBar Parent'
             color={(colorMode == 'dark' ? 'gray.100' : 'black')}
             backgroundColor={(colorMode == 'dark' ? 'gray.700' : 'white')}
             minH='100vh'
             maxWidth='15vw'
-            width='max-content'
+            position='fixed'
             alignItems='center'
+            boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.1)"
+            paddingX='10px'
+            marginBottom='auto'
             flexDir="column">
             <Flex alignItems='center' flexDir="column" height='max-content' paddingX='2px'>
                 {/* How to prevent logo resizing? */}
                 <Box className='SideBar Parent Logo' id='SideBar Parent Logo'
                     margin='0.5rem' 
                     marginLeft={navSize == 'small' ? '1rem' : null}
-                    boxSize={navSize == 'small' ? '50%' : '90%'}>
+                    boxSize={navSize == 'small' ? '50%' : '80%'}>
                     <Image className='Sidebar Logo' id='SideBar Logo'                
                         src={navSize == 'small' ? smalllogo : largelogo}/>
                 </Box>
@@ -105,11 +104,11 @@ export const Sidebar = ({activeItem, highBarItems, lowBarItems}) => {
                         <Settings session={useSupabaseClient.session} />
                     </Box>
                 </VStack> 
+            
+            
             </Flex>
 
-            
         </Flex>
-        </Box>
         
     )
 }
