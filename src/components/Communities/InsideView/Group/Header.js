@@ -2,14 +2,11 @@
 import {
     Flex,
     Heading,
-    Stack,
     Text,
-    Button, 
     HStack,
     Box,
     VStack,
     Image,
-    Progress,
     StatGroup,
     Stat,
     StatLabel,
@@ -17,18 +14,6 @@ import {
     StatHelpText,
     StatArrow,
     Spacer,
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
-    Grid,
-    GridItem,
-    Divider,
     useColorMode,
     Icon,
     CircularProgress,
@@ -38,6 +23,7 @@ import {
 import OptionComponent from '../Options/OptionComponent';
 import GoalTac_Logo from '../../../../images/logo.png'
 import React, { useState, useEffect } from 'react';
+import { typeCheck } from '../../CommunityAPI.js'
 
 import { calculateLevel, experiencePercent } from '../../../../hooks/Utilities/Levels'
 import { formatNumber } from '../../../../hooks/Utilities/Numbers';
@@ -46,22 +32,9 @@ import {
   GiPerson
 
 } from 'react-icons/gi'
-import {
-  TbTarget
-} from 'react-icons/tb'
-import {
-  FaUserFriends,
-  FaChalkboard
-} from 'react-icons/fa'
-import {
-  RiCalendarEventLine
-} from 'react-icons/ri'
 import { 
-  ArrowBackIcon,
   ChevronDownIcon,
-  ChevronUpIcon,
-  ChatIcon
-  
+  ChevronUpIcon,  
  } from '@chakra-ui/icons';
  
 /**
@@ -84,77 +57,25 @@ export default function Header({community}) {
     <Box 
       padding='3px'
       borderColor={colorMode == 'dark' ? 'gray.700' : 'gray.400'}>
-      <VStack>
 
         <OverviewGrid expandedView={expandedView} 
-        toggleExpandedView={toggleExpandedView} />
+        toggleExpandedView={toggleExpandedView} community={community} />
 
         {expandedView && 
         <VStack width='100%' rowGap='1rem'>
 
           {/* General Info */}  
-          <GeneralInfoGrid/>
+          <GeneralInfoGrid community={community} />
 
           {/* PrerequisitesGrid Info */}  
-          <PrerequisitesGrid/>
+          <PrerequisitesGrid community={community} />
 
           {/* Statistics */}  
-          <StatsGrid experience={11210}/>  
+          <StatsGrid community={community}/>  
 
           
      
         </VStack>}
-
-        
-
-        {/*
-        Just keeping this here because it's great for
-        changes we want to make when resizing
-        flexDirection={['column', 'row']}*/}
-        <Flex width='100%'>
-          <IconButton 
-            borderWidth='1px'
-            borderEndRadius='unset'
-            borderBlockEnd='unset'
-            width='100%'
-            variant='ghost' 
-            fontSize='2rem' 
-            icon={<RiCalendarEventLine/>}  />
-          <IconButton 
-            borderWidth='1px'
-            borderEndRadius='unset'
-            borderBlockEnd='unset'
-            width='100%'
-            variant='ghost' 
-            fontSize='2rem' 
-            icon={<TbTarget/>}  />
-          <IconButton 
-            borderWidth='1px'
-            borderEndRadius='unset'
-            borderBlockEnd='unset'
-            width='100%'
-            variant='ghost' 
-            fontSize='2rem' 
-            icon={<FaUserFriends/>}  />
-          <IconButton 
-            borderWidth='1px'
-            borderEndRadius='unset'
-            borderBlockEnd='unset'
-            width='100%'
-            variant='ghost' 
-            fontSize='2rem' 
-            icon={<FaChalkboard />}  />
-          <IconButton 
-            borderWidth='1px'
-            borderEndRadius='unset'
-            borderBlockEnd='unset'
-            width='100%'
-            variant='ghost' 
-            fontSize='2rem' 
-            icon={<ChatIcon />}  />
-        </Flex>
-      </VStack>
-      <Divider marginY='2px' />
     </Box>
   )
 }
@@ -165,7 +86,7 @@ export default function Header({community}) {
  * profile picture, options, and progress
  * @returns Overview view
  */
-function OverviewGrid({toggleExpandedView, expandedView}) {
+function OverviewGrid({toggleExpandedView, expandedView, community}) {
 
   return (<Flex width='100%' 
     flexDirection='column'
@@ -174,7 +95,7 @@ function OverviewGrid({toggleExpandedView, expandedView}) {
     marginBottom='auto'>
     <Flex flexDirection='row'>
       <VStack>
-        {/* Profile Picture*/}
+        {/* Profile Picture - use community object */}
         <Box 
         borderWidth='3px'
         borderRadius='16px'>
@@ -187,15 +108,12 @@ function OverviewGrid({toggleExpandedView, expandedView}) {
         alignItems='left'>
         {/* Title */}
         <Heading color='gray.500'>
-          GoalTac
+          {community.name}
         </Heading>
         
         {/* Description */}
         <Text paddingX='20px' maxWidth='500px'>
-          Welcome to the GoalTac community, 
-          a group of ambitious individuals who want 
-          to become more productive members and join
-          a place to keep people accountable and encourage efforts!
+          {community.desc}
         </Text>
       </VStack>
     </Flex>
@@ -223,17 +141,21 @@ function OverviewGrid({toggleExpandedView, expandedView}) {
  * Contains the various requisites to join the community
  * @returns Pre-reqs grif
  */
-function PrerequisitesGrid() {
+function PrerequisitesGrid({community}) {
+
+  const type = typeCheck(community.stats.type)
+  const pointsRequired = community.stats.pReq
+
   return(<Flex width='100%' paddingX='20px'>
     <Flex flexDirection='row' alignItems='left' width='100%'>
       <StatComponent stats={{
         title: 'Type',
-        value: 'Anyone can Join'
+        value: type
       }} />
       <Spacer/>
       <StatComponent stats={{
         title: 'Points Required',
-        value: 1000
+        value: pointsRequired
       }} />
     </Flex>
   </Flex>);
@@ -243,7 +165,13 @@ function PrerequisitesGrid() {
  * Contains the general information (members, etc.)
  * @returns General information
  */
-function GeneralInfoGrid() {
+function GeneralInfoGrid({community}) {
+
+  const memberCount = community.members.length
+  const goalsWIP = community.goals.length
+  const goalsCompleted = community.goalsC.length
+
+
   return(<Flex width='100%' paddingX='20px'>
     <Flex columnGap='1rem'
     flexDirection='row' alignItems='left' width='100%'>
@@ -253,19 +181,19 @@ function GeneralInfoGrid() {
 
         <StatComponent stats={{
           title: 'Members',
-          value: 20
+          value: memberCount
         }} />
       </HStack>
      
       <Spacer/>
       <StatComponent stats={{
         title: 'Goals in Progress',
-        value: 12
+        value: goalsWIP
       }} />
       <Spacer/>
       <StatComponent stats={{
         title: 'Goals Completed',
-        value: 1213
+        value: goalsCompleted
       }} />
     </Flex>
   </Flex>);
@@ -275,12 +203,15 @@ function GeneralInfoGrid() {
  * Contains statistics (so numbers and such)
  * @returns Stats view
  */
-function StatsGrid({experience}) {
+function StatsGrid({community}) {
 
+  const experience = community.levelObj.exp
   const levelObject = calculateLevel(experience)
   const level = calculateLevel(experience).level
   const expLeftover = calculateLevel(experience).experience
   const expPercent = experiencePercent(experience)
+
+  const totalPoints = community.totalPoints
 
   return (<Flex width='100%' 
     borderTop='2px'
@@ -298,9 +229,7 @@ function StatsGrid({experience}) {
 
         <StatComponent stats={{
           title: 'Total Points',
-          value: 11210,
-          type: 'increase',
-          percent: '21.1%',
+          value: totalPoints,
         }} />
       </HStack>
       
