@@ -38,7 +38,8 @@ const medals: Medal[] = [
 ];
 
 export default function Market() {
-    const [balance, setBalance] = useState(500);
+    // Variables ----------------------------------------------------------------------
+
     const [cart, setCart] = useState<Medal[]>([]);
 
     const handleBuy = (medal: Medal) => {
@@ -50,6 +51,10 @@ export default function Market() {
         }
     };
 
+    // UseEffect ----------------------------------------------------------------------
+    // Functions ----------------------------------------------------------------------
+
+    const [balance, setBalance] = useState(500);
     return (
         <Box p={12}>
             <Text fontSize="3xl" fontWeight="bold" mt={12} mb={4}>

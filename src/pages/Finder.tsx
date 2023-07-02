@@ -1,9 +1,19 @@
 import { useParams } from "react-router-dom";
+import CheckAndTitle from "../components/CheckAndTitle";
 
 export default function Finder() {
-    const { searchElement } = useParams<{ searchElement: string }>();
-    console.log(searchElement);
 
-    return (<div><br /><br /><br /><br />{searchElement}</div>);
+    // Variables ----------------------------------------------------------------------
+
+    const { searchElement } = useParams<{ searchElement: string }>();
+
+    // UseEffect ----------------------------------------------------------------------
+    // Functions ----------------------------------------------------------------------
+
+    return (
+        <CheckAndTitle title={'Search'}>
+            <br /><br /><br /><br />{searchElement}
+        </CheckAndTitle>
+    );
 
 }

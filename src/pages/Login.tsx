@@ -11,6 +11,7 @@ const CFaLock = chakra(FaLock);
 
 export default function Login() {
 
+    // Variables ----------------------------------------------------------------------
     // navigates to calendar page if authenticated
     const navigate = useNavigate();
 
@@ -25,6 +26,11 @@ export default function Login() {
     //ChakraUI
     const toast = useToast()
     const { colorMode } = useColorMode()
+
+
+    // useEffect ----------------------------------------------------------------------
+
+    // Functions ----------------------------------------------------------------------
 
     const handleSubmit = async function (event: React.SyntheticEvent) {
         event.preventDefault();

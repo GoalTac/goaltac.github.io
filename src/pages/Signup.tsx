@@ -11,6 +11,8 @@ const CFaLock = chakra(FaLock);
 
 export default function SignUpPage() {
 
+    // Variables ----------------------------------------------------------------------
+
     // navigates to check your email
     const navigate = useNavigate();
 
@@ -34,6 +36,9 @@ export default function SignUpPage() {
         console.log(isLoading);
     };
 
+    // UseEffect ----------------------------------------------------------------------
+
+    // Functions ----------------------------------------------------------------------
     const handleShowClick = () => setShowPassword(!showPassword);
 
     const handleSubmit = async (event: { preventDefault: () => void; }) => {

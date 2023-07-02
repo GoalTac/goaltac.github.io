@@ -1,42 +1,14 @@
-import { Badge, Box, Flex, Image, Text, useColorMode, useColorModeValue } from "@chakra-ui/react";
+import { Badge, Box, Flex, Image, Text, useColorModeValue } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { supabase } from "../supabase";
 import Chat from "../components/Chat";
-
-// interface Album {
-//     name: string;
-//     pic: string | null;
-//     tags: string | null;
-//     description: string | null;
-//     score: number | null;
-//     isPublic: boolean | null;
-//     old: string;
-//     owner: string;
-//     members: string[] | null;
-// }
+import CheckAndTitle from "../components/CheckAndTitle";
 
 export default function Communities() {
 
-    // failsafe redirect to login if not authenticated
-    const navigate = useNavigate();
 
-    useEffect(() => {
-        const getUser = async () => {
-            const { data, error } = await supabase.auth.getUser();
-            // console.log(user);
-            if (error) {
-                navigate('/login');
-            }
-        };
-        getUser();
-    }, []);
-
-    // changes the title of page to Communities
-    useEffect(() => {
-        document.title = 'Communities';
-    }, []);
-
+    // Variables ----------------------------------------------------------------------
 
     // Temporary community until data is fetched from database
     const [albums, setAlbums] = useState([{
@@ -46,6 +18,8 @@ export default function Communities() {
         image: "./logo.png",
         score: 0,
     }]);
+
+    // useEffect ----------------------------------------------------------------------
 
     useEffect(() => {
         const fetchAlbums = async () => {
@@ -69,42 +43,46 @@ export default function Communities() {
         fetchAlbums();
     }, []);
 
+    // Functions ----------------------------------------------------------------------
+
     return (
-        <Flex flexWrap="wrap" justifyContent="left" style={{ marginTop: "55px" }}>
-            {albums.map((album) => (
-                <Box
-                    key={album.title}
-                    maxW="sm"
-                    borderWidth="1px"
-                    borderRadius="lg"
-                    overflow="hidden"
-                    boxShadow="md"
-                    ml={3} mt={3}
-                    bg={useColorModeValue("gray.300", "gray.700")}
-                    as={Link} to={`/community/${album.title}`}
-                >
-                    <Image src={album.image} alt={album.title} boxSize="250px" objectFit="cover" bg={"gray.100"} />
+        <CheckAndTitle title='Communities'>
+            <Flex flexWrap="wrap" justifyContent="left" style={{ marginTop: "55px" }}>
+                {albums.map((album) => (
+                    <Box
+                        key={album.title}
+                        maxW="sm"
+                        borderWidth="1px"
+                        borderRadius="lg"
+                        overflow="hidden"
+                        boxShadow="md"
+                        ml={3} mt={3}
+                        bg={useColorModeValue("gray.300", "gray.700")}
+                        as={Link} to={`/community/${album.title}`}
+                    >
+                        <Image src={album.image} alt={album.title} boxSize="250px" objectFit="cover" bg={"gray.100"} />
 
-                    <Box p="6" maxW={250}>
-                        <Text fontWeight="bold" fontSize="lg" mr="2" noOfLines={1}>
-                            {album.title}
-                        </Text>
-                        <Text color="gray.500" fontSize="sm" noOfLines={1}>
-                            {album.old}
-                        </Text>
+                        <Box p="6" maxW={250}>
+                            <Text fontWeight="bold" fontSize="lg" mr="2" noOfLines={1}>
+                                {album.title}
+                            </Text>
+                            <Text color="gray.500" fontSize="sm" noOfLines={1}>
+                                {album.old}
+                            </Text>
 
-                        <Box as="span" color="gray.500" fontSize="sm" noOfLines={2}>
-                            {album.description}
+                            <Box as="span" color="gray.500" fontSize="sm" noOfLines={2}>
+                                {album.description}
+                            </Box>
+
+
+                            <Badge fontSize="xs" bg={"gray.500"} color={"white"}>{album.score ?? 0} points</Badge>
                         </Box>
-
-
-                        <Badge fontSize="xs" bg={"gray.500"} color={"white"}>{album.score ?? 0} points</Badge>
                     </Box>
-                </Box>
-            ))}
+                ))}
 
-            <Chat />
-        </Flex>
+                <Chat />
+            </Flex>
+        </CheckAndTitle>
     );
 }
 

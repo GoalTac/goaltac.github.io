@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase';
 import React from 'react';
 import { FiMoreHorizontal } from 'react-icons/fi';
+import CheckAndTitle from '../components/CheckAndTitle';
 
 interface Post {
     id: number;
@@ -36,11 +37,6 @@ export default function Social() {
                 setPost({ ...post, userid: data.user.id });
         };
         getUser();
-    }, []);
-
-    // changes title of the html tab
-    useEffect(() => {
-        document.title = 'Social';
     }, []);
 
 
@@ -237,7 +233,7 @@ export default function Social() {
     // Render -------------------------------------------------------------------------
 
     return (
-        <Box>
+        <CheckAndTitle title="Social">
             {/* post template that maps everything */}
             {posts.map((post) => {
                 return (
@@ -334,7 +330,7 @@ export default function Social() {
             <Box position="fixed" bottom={4} right={4} zIndex={11}>
                 <IconButton background={'black'} color={'white'} aria-label="Chat" icon={< FaPlusCircle />} onClick={() => setIsDrawerOpen(true)} />
             </Box>
-        </Box>
+        </CheckAndTitle>
     );
 }
 

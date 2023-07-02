@@ -18,13 +18,16 @@ import { useEffect } from 'react';
 import { supabase } from '../supabase';
 
 export default function BetaPage() {
-    // failsafe redirect to login if not authenticated
+
+    // Variables ----------------------------------------------------------------------
     const navigate = useNavigate();
 
+    // useEffects ----------------------------------------------------------------------
     useEffect(() => {
         const getUser = async () => {
             const { data, error } = await supabase.auth.getUser();
-            // console.log(data);
+            
+            // if the user is logged in, redirect them to the calendar page
             if (data.user != null)
                 navigate('/calendar');
         };

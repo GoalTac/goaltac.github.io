@@ -1,7 +1,12 @@
 import { Box, Heading, Text } from '@chakra-ui/react'
 import { CheckIcon } from '@chakra-ui/icons'
 
-export default function Title() {
+export default function CheckVerification() {
+
+    // Variables ----------------------------------------------------------------------
+    // UseEffect ----------------------------------------------------------------------
+    // Functions ----------------------------------------------------------------------
+
     return (
         <Box textAlign='center' mt={20} mx='auto' maxW='50%'>
             <Box mb={5}>
