@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Image, Text, IconButton, Spacer, Badge, Avatar, Button, useColorMode, useBreakpointValue, Icon, Drawer, DrawerContent, DrawerOverlay, DrawerCloseButton, DrawerHeader, DrawerBody, FormControl, FormLabel, Input, Textarea, Checkbox, useToast } from '@chakra-ui/react';
+import { Box, Flex, Heading, Image, Text, IconButton, Spacer, Badge, Avatar, Button, useColorModeValue, useBreakpointValue, Icon, Drawer, DrawerContent, DrawerOverlay, DrawerCloseButton, DrawerHeader, DrawerBody, FormControl, FormLabel, Input, Textarea, Checkbox, useToast } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import { FaAudioDescription, FaHeart, FaPlusCircle, } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -69,7 +69,6 @@ export default function Social() {
     ]);
 
     // ui niceness
-    const { colorMode } = useColorMode();
     const toast = useToast()
 
     // opens the add post drawer
@@ -273,13 +272,13 @@ export default function Social() {
                             </Flex>
                         ) : (
                             // website layout
-                            <Box key={post.id} bg={colorMode === "light" ? 'gray.50' : 'gray.700'} boxShadow="md" mt={4} maxW={widthSize} mx="auto">
+                            <Box key={post.id} bg={useColorModeValue('gray.50', 'gray.700')} boxShadow="md" mt={4} maxW={widthSize} mx="auto">
                                 <Flex alignItems="center" position="relative">
                                     <Image src={post.imageurl} alt={post.title} boxSize={boxSize} objectFit="cover" mr={4} />
                                     <Box>
-                                        <Heading size="md" color={colorMode === 'light' ? 'black' : 'white'} mb={2}>{post.title}</Heading>
+                                        <Heading size="md" color={useColorModeValue('black', 'white')} mb={2}>{post.title}</Heading>
                                         <Text fontSize="sm" color="gray.500" mb={2}>{post.date}</Text>
-                                        <Text fontSize="md" color={colorMode === 'light' ? 'black' : 'white'}>{post.description}</Text>
+                                        <Text fontSize="md" color={useColorModeValue('black', 'white')}>{post.description}</Text>
                                         <Badge colorScheme="blue" mt={2}>{post.college}</Badge>
                                     </Box>
                                     <Spacer />

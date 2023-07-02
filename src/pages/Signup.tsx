@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react';
-import { Text, Center, Flex, Image, Input, Button, InputGroup, Stack, InputLeftElement, chakra, Box, FormControl, InputRightElement, useColorMode, useToast, Spinner } from '@chakra-ui/react';
+import { Text, Center, Flex, Image, Input, Button, InputGroup, Stack, InputLeftElement, chakra, Box, FormControl, InputRightElement, useToast, Spinner } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaLock, FaUserAlt } from 'react-icons/fa';
 import { useNavigate, Link } from 'react-router-dom';
@@ -15,8 +15,6 @@ export default function SignUpPage() {
 
     // navigates to check your email
     const navigate = useNavigate();
-
-    const { colorMode } = useColorMode();
 
     // login stuff
     const [showPassword, setShowPassword] = useState(false);

@@ -1,4 +1,4 @@
-import { Box, Flex, Text, IconButton, Drawer, DrawerOverlay, DrawerCloseButton, DrawerHeader, DrawerContent, DrawerBody, Avatar, AvatarBadge, InputGroup, Input, InputRightElement, Button, useColorMode, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, FormControl, ModalBody, FormLabel, ModalFooter, Toast, useToast } from '@chakra-ui/react';
+import { Box, Flex, Text, IconButton, Drawer, DrawerOverlay, DrawerCloseButton, DrawerHeader, DrawerContent, DrawerBody, Avatar, AvatarBadge, InputGroup, Input, InputRightElement, Button, useColorMode, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, FormControl, ModalBody, FormLabel, ModalFooter, Toast, useToast, useColorModeValue } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { FaCircle, FaRegPaperPlane, } from 'react-icons/fa';
 import { supabase } from '../supabase';
@@ -12,8 +12,15 @@ interface Message {
 
 export default function Chat() {
 
-    const { colorMode } = useColorMode();
+    // Variables ----------------------------------------------------------------------
     const toast = useToast()
+
+    // UseEffect ----------------------------------------------------------------------
+
+    // Functions ----------------------------------------------------------------------
+
+
+
 
     // use this function to change the favicon to the alert icon
     const useAlert = (() => {
@@ -124,7 +131,7 @@ export default function Chat() {
                 setFriendIdArr(data[0].friends);
 
                 // current chat that shows up is the first friend
-                if(typeOfChat)
+                if (typeOfChat)
                     handleFriendClick(data[0].friends[0]);
 
                 // gets avatars
@@ -401,7 +408,7 @@ export default function Chat() {
                             </Modal>
 
 
-                            <Box bg={colorMode === "light" ? 'gray.100' : 'gray.800'} boxShadow="md" p={3} mt={10} borderRadius="md">
+                            <Box bg={useColorModeValue('gray.100', 'gray.800')} boxShadow="md" p={3} mt={10} borderRadius="md">
                                 <Flex direction="column" height="70vh">
                                     <Box flex="1" mb={3} overflowY="scroll">
                                         {messages.map((message, index) => (
@@ -419,9 +426,9 @@ export default function Chat() {
                                     <form onSubmit={handleFormSubmit}>
                                         <Flex alignItems="center">
                                             <InputGroup>
-                                                <Input type="text" value={inputValue} onChange={handleInputChange} placeholder="Type a message" bg={colorMode === "light" ? 'gray.50' : 'gray.700'} />
+                                                <Input type="text" value={inputValue} onChange={handleInputChange} placeholder="Type a message" bg={useColorModeValue('gray.50' ,'gray.700')} />
                                                 <InputRightElement>
-                                                    <Button type="submit" aria-label="Send" size="xs" fontSize="10px" colorScheme="blue" variant="ghost" bg={colorMode === "light" ? 'gray.50' : 'gray.700'} mr={2}>
+                                                    <Button type="submit" aria-label="Send" size="xs" fontSize="10px" colorScheme="blue" variant="ghost" bg={useColorModeValue('gray.50', 'gray.700')} mr={2}>
                                                         <FaRegPaperPlane />
                                                     </Button>
                                                 </InputRightElement>
@@ -436,7 +443,7 @@ export default function Chat() {
                         <DrawerContent>
                             <DrawerCloseButton />
                             <DrawerBody>
-                                <Box bg={colorMode === "light" ? 'gray.100' : 'gray.800'} boxShadow="md" p={3} mt={10} borderRadius="md">
+                                <Box bg={useColorModeValue('gray.100', 'gray.800')} boxShadow="md" p={3} mt={10} borderRadius="md">
                                     <Flex direction="column" height="85vh">
                                         <Box flex="1" mb={3} overflowY="scroll">
                                             {messages.map((message, index) => (
@@ -454,9 +461,9 @@ export default function Chat() {
                                         <form onSubmit={handleFormSubmit}>
                                             <Flex alignItems="center">
                                                 <InputGroup>
-                                                    <Input type="text" value={inputValue} onChange={handleInputChange} placeholder="Type a message" bg={colorMode === "light" ? 'gray.50' : 'gray.700'} />
+                                                    <Input type="text" value={inputValue} onChange={handleInputChange} placeholder="Type a message" bg={useColorModeValue('gray.50', 'gray.700')} />
                                                     <InputRightElement>
-                                                        <Button type="submit" aria-label="Send" size="xs" fontSize="10px" colorScheme="blue" variant="ghost" bg={colorMode === "light" ? 'gray.50' : 'gray.700'} mr={2}>
+                                                        <Button type="submit" aria-label="Send" size="xs" fontSize="10px" colorScheme="blue" variant="ghost" bg={useColorModeValue('gray.50', 'gray.700')} mr={2}>
                                                             <FaRegPaperPlane />
                                                         </Button>
                                                     </InputRightElement>

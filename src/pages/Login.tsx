@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabase';
-import { Box, Button, Center, Flex, FormControl, FormHelperText, Heading, Input, InputGroup, InputLeftElement, InputRightElement, Stack, Text, chakra, useColorMode, useToast, Image, background } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, FormControl, FormHelperText, Heading, Input, InputGroup, InputLeftElement, InputRightElement, Stack, Text, chakra, useToast, Image, } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import Canvas from '../components/Beta/Canvas';
@@ -25,7 +25,6 @@ export default function Login() {
 
     //ChakraUI
     const toast = useToast()
-    const { colorMode } = useColorMode()
 
 
     // useEffect ----------------------------------------------------------------------
