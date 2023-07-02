@@ -13,44 +13,33 @@ interface Message {
 export default function Chat() {
 
     // Variables ----------------------------------------------------------------------
+
     const toast = useToast()
-
-    // UseEffect ----------------------------------------------------------------------
-
-    // Functions ----------------------------------------------------------------------
-
-
-
-
-    // use this function to change the favicon to the alert icon
-    const useAlert = (() => {
-        useEffect(() => {
-            let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
-            if (!link) {
-                link = document.createElement('link');
-                link.rel = 'icon';
-                document.getElementsByTagName('head')[0].appendChild(link);
-            }
-            link.href = 'logoAlert.png';
-        }, []);
-    })
-
-    // call the useAlert function to set the favicon
-    useAlert();
-
     // opens the social drawer
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const handleChatClick = () => {
-        setIsDrawerOpen(true);
-    };
-
-    const handleDrawerClose = () => {
-        setIsDrawerOpen(false);
-    };
-
     // handles whether this is a groupchat or not
     const [typeOfChat, setTypeOfChat] = useState(true);
     const location = useLocation();
+
+    // display friends on the top bar
+    const [friendIdArr, setFriendIdArr] = useState<string[]>([]); // array of friend ids
+    const [friendAvatarArr, setFriendAvatarArr] = useState<string[]>([]); // array of friend ids avatars
+
+    // handles adding friends
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [username, setUsername] = useState<string>('');
+
+    // handles messaging
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [inputValue, setInputValue] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+    // sets current chat messages
+    const [currentChatMessages, setCurrentChatMessages] = useState('');
+    const [currentChatAvatar, setCurrentChatAvatar] = useState('');
+
+
+    // UseEffect ----------------------------------------------------------------------
 
     useEffect(() => {
         async function fetchMessages() {
@@ -115,9 +104,7 @@ export default function Chat() {
         fetchMessages();
     }, []);
 
-    // display friends on the top bar
-    const [friendIdArr, setFriendIdArr] = useState<string[]>([]); // array of friend ids
-    const [friendAvatarArr, setFriendAvatarArr] = useState<string[]>([]); // array of friend ids avatars
+
     useEffect(() => {
         const getAllFriends = async () => {
             // get my user id
@@ -151,10 +138,32 @@ export default function Chat() {
         getAllFriends();
     }, []);
 
+    // Functions ----------------------------------------------------------------------
 
-    // handles adding friends
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [username, setUsername] = useState<string>('');
+    // use this function to change the favicon to the alert icon
+    const useAlert = (() => {
+        useEffect(() => {
+            let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+            if (!link) {
+                link = document.createElement('link');
+                link.rel = 'icon';
+                document.getElementsByTagName('head')[0].appendChild(link);
+            }
+            link.href = 'logoAlert.png';
+        }, []);
+    })
+
+    // call the useAlert function to set the favicon
+    useAlert();
+
+
+    const handleChatClick = () => {
+        setIsDrawerOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setIsDrawerOpen(false);
+    };
 
     const handleAddFriend = () => {
         setIsModalOpen(true);
@@ -259,10 +268,7 @@ export default function Chat() {
     };
 
 
-    // handles messaging
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [inputValue, setInputValue] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.target.value);
@@ -299,9 +305,7 @@ export default function Chat() {
         }, 2000);
     };
 
-    // sets current chat messages
-    const [currentChatMessages, setCurrentChatMessages] = useState('');
-    const [currentChatAvatar, setCurrentChatAvatar] = useState('');
+
     const handleFriendClick = async (friendId: string) => {
 
         setCurrentChatMessages(friendId);
@@ -426,7 +430,7 @@ export default function Chat() {
                                     <form onSubmit={handleFormSubmit}>
                                         <Flex alignItems="center">
                                             <InputGroup>
-                                                <Input type="text" value={inputValue} onChange={handleInputChange} placeholder="Type a message" bg={useColorModeValue('gray.50' ,'gray.700')} />
+                                                <Input type="text" value={inputValue} onChange={handleInputChange} placeholder="Type a message" bg={useColorModeValue('gray.50', 'gray.700')} />
                                                 <InputRightElement>
                                                     <Button type="submit" aria-label="Send" size="xs" fontSize="10px" colorScheme="blue" variant="ghost" bg={useColorModeValue('gray.50', 'gray.700')} mr={2}>
                                                         <FaRegPaperPlane />
