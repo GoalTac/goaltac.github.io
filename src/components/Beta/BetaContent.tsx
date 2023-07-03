@@ -1,4 +1,4 @@
-export const content = [
+export const contents = [
     {
         number: '01',
         title: 'Have fun with it!',
@@ -32,6 +32,21 @@ export const content = [
             progress towards any goal you aspire to accomplish.`,
     }
 ];
+
+export const goalTacDesc = [
+    {
+        name: 'Background',
+        desc: 'Motivation to better oneself is declining in this day and age and we want to make a dent in this issue.'
+    },
+    {
+        name: 'Productivity Apps Now',
+        desc: 'We want to cater to the least motivated people by pitching in the help of others, keeping you accountable! There is an inherent flaw in productivity apps today, which have very few strong extrinsic motivators to come back to the app.'
+    },
+    {
+        name: 'Details',
+        desc: 'We promote a new lifestyle where you and your peers hold yourself accountable. You have the option to join user-made communities specific to the goal you want to accomplish. Not only are you surrounded by like minded people, but you also have the option to compete with them through the various goals that can be posted!'
+    }
+]
 
 export const staffProfiles = [
     {
