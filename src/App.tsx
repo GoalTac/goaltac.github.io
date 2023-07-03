@@ -15,13 +15,18 @@ import { Route, Routes } from 'react-router-dom';
 import Root from './components/Root';
 import Market from './pages/Market';
 
+
+// v1
+import Beta1 from './pages1/Beta';
+import TestRedirect from './components/TestRedirect';
+
 export default function App() {
 
   return (
 
     <Routes>
       <Route path='/'>
-        <Route path='' element={<BetaPage />} />
+        <Route path='beta2' element={<BetaPage />} />
         <Route path='login' element={<Login />} />
         <Route path='signup' element={<SignUp />} />
         <Route path='checkyouremail' element={<CheckVerification />} />
@@ -38,6 +43,13 @@ export default function App() {
           <Route path='/search/:searchElement' element={<Finder />} />
           <Route path='/profile/:profileName' element={<ProfileView />} />
         </Route>
+
+        <Route path='beta1' element={<Beta1 />} />
+
+
+
+        {/* Redirects */}
+        <Route path='' element={<TestRedirect link1='beta1' link2='beta2' />} />
       </Route>
     </Routes>
   );

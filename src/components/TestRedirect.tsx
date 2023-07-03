@@ -1,7 +1,7 @@
-import { Box, Heading, Icon, Button } from '@chakra-ui/react';
+import { Box, Heading, Icon, Button, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import { FaToggleOn } from 'react-icons/fa';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 type MyComponentProps = {
@@ -34,12 +34,13 @@ export default function CheckVerification(props: MyComponentProps) {
                 <Heading as='h1' size='2xl'>
                     Try out version 1 and version 2
                 </Heading>
+                <Text mt={4}>Leave your comments on discord on which features you like better from each version</Text>
             </Box>
 
-            <Button onClick={() => handleButtonClick(props.link1)} mr={2}>
+            <Button onClick={() => handleButtonClick(props.link1)} mr={2} bg={'gray.100'}>
                 Link 1
             </Button>
-            <Button onClick={() => handleButtonClick(props.link2)} mr={2}>
+            <Button onClick={() => handleButtonClick(props.link2)} mr={2} bg={'gray.100'}>
                 Link 2
             </Button>
         </Box>
