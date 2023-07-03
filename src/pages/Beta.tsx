@@ -16,6 +16,7 @@ import {
 import { content, staffProfiles, responsive } from '../components/Beta/BetaContent';
 import { useEffect } from 'react';
 import { supabase } from '../supabase';
+import TestRedirect from '../components/TestRedirect';
 
 export default function BetaPage() {
 
@@ -26,7 +27,7 @@ export default function BetaPage() {
     useEffect(() => {
         const getUser = async () => {
             const { data, error } = await supabase.auth.getUser();
-            
+
             // if the user is logged in, redirect them to the calendar page
             if (data.user != null)
                 navigate('/calendar');
@@ -36,6 +37,7 @@ export default function BetaPage() {
 
     return (
         <Box position="relative">
+
 
             {/* 1st Page */}
             <Canvas style={{ width: '100vw', height: '100vh', position: 'absolute', top: 0, left: 0 }} />
@@ -159,6 +161,9 @@ export default function BetaPage() {
                 </Box>
 
             </Stack>
+
+            <TestRedirect link1='/1' link2='/2' />
+
 
 
             {/* Button to Login (must be rendered last to be on top)*/}
