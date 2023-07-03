@@ -17,6 +17,7 @@ import {
     Input,
     Textarea,
     Badge,
+    Toast,
 } from '@chakra-ui/react';
 import { supabase } from '../supabase';
 import CheckAndTitle from '../components/CheckAndTitle';
@@ -28,6 +29,7 @@ export default function Profile() {
     // set up state variables for the name modal and user name input fields
     const [showNameModal, setShowNameModal] = useState(false);
     const [person, setPerson] = useState({ name: '', username: '', biography: '', avatarurl: '' });
+    const [friend, setFriend] = useState({ name: '', username: '', });
 
     // UseEffects ----------------------------------------------------------------------
 
@@ -111,7 +113,36 @@ export default function Profile() {
         setShowNameModal(true);
     };
 
+    
+    // add a friend request in the friend_requests table
+    const handleAddFriend = async () => {
+        // get the user's information
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) {
+            console.log('User not found');
+            return;
+        }
 
+        const { data, error } = await supabase
+            .from('friend_requests')
+            .update({ userid: user.id, requests: [friend.username]});
+
+        if (error) {
+            console.log(error);
+            return Toast({
+                title: "Error sending friend request.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
+        }
+        return Toast({
+            title: "Friend request sent.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+        });
+    };
 
 
     return (
@@ -200,7 +231,20 @@ export default function Profile() {
                             <Button>Accept</Button>
                         </Box>
                     ))}
-
+                    <FormControl>
+                        <FormLabel>Add Friend</FormLabel>
+                        <Input
+                            placeholder="friend's username"
+                            value={friend.username}
+                            onInput={(e) => {
+                                e.currentTarget.value = e.currentTarget.value.replace(/[^a-zA-Z ]/g, '');
+                            }}
+                            // onSubmit={handleAddFriend}
+                        />
+                        <Button mt={4} onClick={handleAddFriend} w={"full"}>
+                            Send Request
+                        </Button>
+                    </FormControl>
                 </Box>
             </Stack>
         </CheckAndTitle>
