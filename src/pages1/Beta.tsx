@@ -30,7 +30,7 @@ export default function BetaPageOne() {
 function VerisonOne() {
 
     function SignInButton() {
-        return <Link to='/signin'>
+        return <Link to='/login'>
             <Button variant='ghost'
                 padding='2rem'
                 fontSize='1.5rem'
