@@ -20,6 +20,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
 import InsideView from '../Community/InsideView';
 import { getExampleCommunities } from '../Example';
+import { Link } from "react-router-dom";
 
 
   
@@ -45,8 +46,8 @@ export default function CommunityList() {
         </CardHeader>
         <Divider borderColor="black"  borderWidth="1px"/>
 
-        {exampleCommunities.map((communityObj, index) => (
-          <Module key={index} community={communityObj}/>
+        {exampleCommunities.map((community, index) => (
+          <Module key={index} community={community}/>
         ))}
         
         <CardFooter></CardFooter>
@@ -63,16 +64,12 @@ export default function CommunityList() {
  * @returns A module to display in the dashboard
  */
 function Module(community: any) {
-  return(<Box minHeight='200px' 
-    onClick={() => {
-      console.log('hi')
-      //need to be able to redirect users to the inside view
-      //how do we give communities a unique page?
-      return <InsideView community={community}/>
-    }}>
+  community = community.community
+  return(
+  <Box minHeight='200px' as={Link} to={`/community/${community.name}`}>
     <CardBody >
         <Heading size='lg' marginX="8">{community.name}</Heading>
-        <Heading size="sm" marginX="8">{community.members.length}</Heading>
+        <Heading size="sm" marginX="8">{community.members.size}</Heading>
         <br/>
         
         <Flex justifyContent="flex-end">
