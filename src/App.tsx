@@ -13,6 +13,7 @@ import ProfileView from './pages/ProfileView';
 
 import { Route, Routes } from 'react-router-dom';
 import Root from './components/Root';
+
 import Market from './pages/Market';
 import { useState } from 'react';
 
@@ -21,6 +22,7 @@ import { useState } from 'react';
 import Beta1 from './pages1/Beta';
 import TestRedirect from './components/TestRedirect';
 import CommunityCentral from './pages1/Communities/Dashboard/CommunityCentral';
+import InsideView from './pages1/Communities/Community/InsideView';
 
 export default function App() {
 
@@ -51,6 +53,7 @@ export default function App() {
 
         <Route path='beta1' element={<Beta1 />} />
         <Route path='communities1' element={<CommunityCentral />} />
+        <Route path='/community1/:communityName1' element={<InsideView />} />
 
 
 
