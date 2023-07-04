@@ -19,6 +19,7 @@ import Market from './pages/Market';
 // v1
 import Beta1 from './pages1/Beta';
 import TestRedirect from './components/TestRedirect';
+import CommunityCentral from './pages1/Communities/Dashboard/CommunityCentral';
 
 export default function App() {
 
@@ -40,6 +41,8 @@ export default function App() {
           <Route path='market' element={<Market />} />
           <Route path='communities' element={<Communities />} />
           <Route path='/community/:communityName' element={<CommunityView />} />
+          <Route path='communities1' element={<CommunityCentral />} />
+
           <Route path='/search/:searchElement' element={<Finder />} />
           <Route path='/profile/:profileName' element={<ProfileView />} />
         </Route>
