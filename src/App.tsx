@@ -14,6 +14,7 @@ import ProfileView from './pages/ProfileView';
 import { Route, Routes } from 'react-router-dom';
 import Root from './components/Root';
 import Market from './pages/Market';
+import { useState } from 'react';
 
 
 // v1
@@ -22,6 +23,8 @@ import TestRedirect from './components/TestRedirect';
 import CommunityCentral from './pages1/Communities/Dashboard/CommunityCentral';
 
 export default function App() {
+
+  const [betaOne, setBetaOne] = useState(null)
 
   return (
 
@@ -41,13 +44,13 @@ export default function App() {
           <Route path='market' element={<Market />} />
           <Route path='communities' element={<Communities />} />
           <Route path='/community/:communityName' element={<CommunityView />} />
-          <Route path='communities1' element={<CommunityCentral />} />
 
           <Route path='/search/:searchElement' element={<Finder />} />
           <Route path='/profile/:profileName' element={<ProfileView />} />
         </Route>
 
         <Route path='beta1' element={<Beta1 />} />
+        <Route path='communities1' element={<CommunityCentral />} />
 
 
 
