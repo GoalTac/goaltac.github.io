@@ -14,19 +14,20 @@ import {
     GiPerson
   
   } from 'react-icons/gi'
-import { formatNumber } from '../../../hooks/Utilities/Numbers';
+import { formatNumber } from '../../../hooks/Utilities';
 import { JSXElementConstructor, Key, ReactElement, ReactFragment, ReactPortal } from 'react';
+import { getUser } from './../../../hooks/Utilities'
+import { useState, useEffect } from 'react';
+import { Member } from '../CommunityAPI';
 
 //roster has different viewables based on permission level
 /**
  * Displays the clan's roster
  * @param {*} param0
  */
-export default function Roster(community: any) : ReactElement {
+export default function Roster({community}: any) : ReactElement {
 
-    const members = community.members
-
-    const orderedPeople = numericalOrder({members})
+    const orderedPeople = numericalOrder(community.members)
 
     return (<Box minHeight='100%' paddingTop='20px'>
         {orderedPeople}
@@ -53,11 +54,11 @@ function checkPermission(user: Object) {
  * @returns ordered list of every member
  */
 function numericalOrder(people: any) {
-    const orderedPeople = people.sort((a: { points: number; }, b: { points: number; }) => (a.points < b.points) ? 1 : -1)
-    return orderedPeople.map((personObj: any, index: Key | null | undefined) => (
-        <RowItem key={index} 
-        number={index}
-        member={personObj}/>))
+    const orderedPeople = people.sort(
+        (a: { communityPoints: number; }, b: { communityPoints: number; }) => 
+        (a.communityPoints < b.communityPoints) ? 1 : -1)
+    return orderedPeople.map((personObj: Member, index: any) => 
+        <RowItem member={personObj} id={index} key ={index}/>)
 }
 
 /**
@@ -66,13 +67,23 @@ function numericalOrder(people: any) {
  * @param {*} param0 
  * @returns Row display for roster
  */
-function RowItem(member: any, number: number) {
+function RowItem({member, id}: any) {
     
     const { colorMode } = useColorMode();
 
+    //get username from uuid
+    const [userName, setUserName] = useState<any>();
+    useEffect(() => {
+        const fetchUserName = () => getUser(member.uuid).then((response) => {
+            setUserName(response?.name)
+            console.log(member)
+        })
+        fetchUserName();
+      }, []);
 
     return (
-    <Flex height='60px' 
+    <Flex
+        height='60px' 
         marginY='5px'
         flexDirection='column'
         borderWidth='1px'
@@ -80,11 +91,11 @@ function RowItem(member: any, number: number) {
         paddingX='1rem'>
         <HStack width='100%' justifyContent='center' marginY='auto'>
             <Heading fontSize='1.5rem' paddingEnd='1rem'>
-                {number + 1}.
+                {id + 1}.
             </Heading>
             <Divider orientation='vertical' />
             <Text fontSize='1.5rem' paddingStart='0.5rem'>
-                {member.userName}
+                {userName ? userName : 'hi'}
             </Text>
             <Spacer/>
             <Flex borderColor='blue.200' 
@@ -96,7 +107,7 @@ function RowItem(member: any, number: number) {
                 justifyContent='right'
                 borderWidth='2px'>
                 <Text fontSize='1.25rem'>
-                    {formatNumber(member.points)}
+                    {formatNumber(member.communityPoints)}
                 </Text>
                 <Icon boxSize='1.5rem' as={GiArrowhead}/>
             </Flex>
