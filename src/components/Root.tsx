@@ -8,7 +8,10 @@ export default function Root() {
   return (
     <div>
       <HeaderNav />
-      <Outlet />
+      <Box style={{ marginTop: '55px' }}>
+        <Outlet />
+      </Box>
+      
     </div >
   );
 };
