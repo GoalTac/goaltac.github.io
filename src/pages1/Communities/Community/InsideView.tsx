@@ -8,21 +8,39 @@ import {
     Box,
 } from '@chakra-ui/react'
 import React from 'react'
-
+import { useParams } from 'react-router-dom';
+import { getCommunity } from './../CommunityAPI'
+import { uniqueId } from 'lodash';
 /**
  * Contains all components of an individual community
  * @param {community} The community object
  */
-export default function InsideView(community: any) {
+export default function InsideView() {
 
-    const [view, setView] = useState(<Roster community={community} />);
+    const { communityName } = useParams<{ communityName: string }>();
+    const [community, setCommunity] = useState<any>();
 
-    return(
-        <Box className='Specific Community View' >
+    useEffect(() => {
+        const fetchCommunityData = async() => getCommunity(communityName).then((response) => {
+            setCommunity( response );
+            })
+        fetchCommunityData();
+    }, []);
+
+    
+    
+    /**
+     * <Header community={community}/>
+        <HeaderNav setView={setView} community={community} />
+        
+        {view}
+        */
+    const [view, setView] = useState();
+    return(community && 
+        <Box className='Specific Community View' width='600px' marginX='auto'>
             <Header community={community}/>
-            <HeaderNav setView={setView} community={community} />
-            
-            {view}
+            <HeaderNav  setView={setView} community={community} />
+            <Roster community={community} />
             
 
             <Box height='10vh'>
