@@ -21,8 +21,8 @@ import {
     IconButton
 } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
-import { calculateLevel, experiencePercent } from '../../../hooks/Utilities/Levels'
-import { formatNumber } from '../../../hooks/Utilities/Numbers';
+import { calculateLevel, experiencePercent } from '../../../hooks/Utilities'
+import { formatNumber } from '../../../hooks/Utilities';
 import {
   GiArrowhead,
   GiPerson
@@ -41,7 +41,7 @@ import {
  * @param {*} param0 
  * @returns 
  */
-export default function Header(community: any) {
+export default function Header({community}: any) {
 
   const { colorMode } = useColorMode();
   const [expandedView, setExpandedView] = useState(true);
@@ -49,15 +49,14 @@ export default function Header(community: any) {
     setExpandedView(!expandedView);
     return expandedView;
   }
-
+  
   return (
     <Box 
       padding='3px'
       borderColor={colorMode == 'dark' ? 'gray.700' : 'gray.400'}>
 
-        <OverviewGrid expandedView={expandedView} 
-        toggleExpandedView={toggleExpandedView} community={community} />
-
+        <OverviewGrid expandedView={expandedView} toggleExpandedView={toggleExpandedView} community={community} />
+        
         {expandedView && 
         <VStack width='100%' rowGap='1rem'>
 
@@ -67,8 +66,8 @@ export default function Header(community: any) {
           {/* PrerequisitesGrid Info */}  
           <PrerequisitesGrid community={community} />
 
-          {/* Statistics */}  
-          <StatsGrid community={community}/>  
+          {/* Statistics   */}  
+          <StatsGrid community={community}/>
 
           
      
@@ -83,8 +82,10 @@ export default function Header(community: any) {
  * profile picture, options, and progress
  * @returns Overview view
  */
-function OverviewGrid(toggleExpandedView: any, expandedView: any, community: any) {
+function OverviewGrid({toggleExpandedView, expandedView, community}: any) {
 
+  const picture: string = community.pic ? community.pic : './../GoalTac_TLogo.png'
+  
   return (<Flex width='100%' 
     flexDirection='column'
     paddingBottom='10px'
@@ -96,7 +97,7 @@ function OverviewGrid(toggleExpandedView: any, expandedView: any, community: any
         <Box 
         borderWidth='3px'
         borderRadius='16px'>
-          <Image width='100px' src={'GoalTac_Logo.png'} />
+          <Image width='100px' src={picture} />
         </Box>
       </VStack>
       <VStack width='100%' 
@@ -131,7 +132,6 @@ function OverviewGrid(toggleExpandedView: any, expandedView: any, community: any
 
     
   </Flex>);
-
 }
 
 
@@ -139,7 +139,7 @@ function OverviewGrid(toggleExpandedView: any, expandedView: any, community: any
  * Contains the various requisites to join the community
  * @returns Pre-reqs grif
  */
-function PrerequisitesGrid(community: any) {
+function PrerequisitesGrid({community}: any) {
 
   function typeCheck(type: Number) {
     switch(type) {
@@ -152,8 +152,8 @@ function PrerequisitesGrid(community: any) {
     }
   }
 
-  const type = typeCheck(community.stats.type)
-  const pointsRequired = community.stats.pReq
+  const type = typeCheck(0)//typeCheck(community.stats.type)
+  const pointsRequired = 0//community.stats.pReq
 
   return(<Flex width='100%' paddingX='20px'>
     <Flex flexDirection='row' alignItems='left' width='100%'>
@@ -174,11 +174,13 @@ function PrerequisitesGrid(community: any) {
  * Contains the general information (members, etc.)
  * @returns General information
  */
-function GeneralInfoGrid(community: any) {
+function GeneralInfoGrid({community}: any) {
+
+  console.log(community)
 
   const memberCount = community.members.length
-  const goalsWIP = community.goals.length
-  const goalsCompleted = community.goalsC.length
+  //const goalsWIP = community.goals.length
+  //const goalsCompleted = community.goalsC.length
 
 
   return(<Flex width='100%' paddingX='20px'>
@@ -195,7 +197,8 @@ function GeneralInfoGrid(community: any) {
       </HStack>
      
       <Spacer/>
-      <StatComponent stats={{
+      {/**
+       * <StatComponent stats={{
         title: 'Goals in Progress',
         value: goalsWIP
       }} />
@@ -204,6 +207,8 @@ function GeneralInfoGrid(community: any) {
         title: 'Goals Completed',
         value: goalsCompleted
       }} />
+       */}
+      
     </Flex>
   </Flex>);
 }
@@ -212,15 +217,14 @@ function GeneralInfoGrid(community: any) {
  * Contains statistics (so numbers and such)
  * @returns Stats view
  */
-function StatsGrid(community: any) {
-
-  const experience = community.levelObj.exp
+function StatsGrid({community}: any) {
+  const experience = 0//community.levelObj.exp
   const levelObject = calculateLevel(experience)
   const level = calculateLevel(experience).level
   const expLeftover = calculateLevel(experience).experience
   const expPercent = experiencePercent(experience)
 
-  const totalPoints = community.totalPoints
+  const totalPoints = 1000//community.totalPoints
 
   return (<Flex width='100%' 
     borderTop='2px'
@@ -271,7 +275,7 @@ function StatsGrid(community: any) {
  * @param {stats} object containing information on a stat
  * @returns 
  */
-function StatComponent(stats: any) {
+function StatComponent({stats}: any) {
   return (<StatGroup flexDirection='column'>
     <Stat>
       <StatNumber fontSize='lg'>{formatNumber(stats.value)}</StatNumber>
