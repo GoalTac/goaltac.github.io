@@ -47,13 +47,13 @@ export default function App() {
           <Route path='communities' element={<Communities />} />
           <Route path='/community/:communityName' element={<CommunityView />} />
 
+          <Route path='communities1' element={<CommunityCentral />} />
+          <Route path='/community1/:communityName' element={<InsideView />} />
           <Route path='/search/:searchElement' element={<Finder />} />
           <Route path='/profile/:profileName' element={<ProfileView />} />
         </Route>
 
-        <Route path='beta1' element={<Beta1 />} />
-        <Route path='communities1' element={<CommunityCentral />} />
-        <Route path='/community1/:communityName1' element={<InsideView />} />
+        <Route path='beta1' element={<Beta1 />} />        
 
 
 
