@@ -20,16 +20,27 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
 import InsideView from '../Community/InsideView';
 import { getExampleCommunities } from '../Example';
+import { getAllCommunities } from '../CommunityAPI';
 import { Link } from "react-router-dom";
+import { RandomUUIDOptions } from 'crypto';
 
 
   
 export default function CommunityList() {
 
-    const exampleCommunities = getExampleCommunities();
-    
-    return (
-      <Card w={'100%'} bg={useColorModeValue('gray.50', 'gray.900')} boxShadow={'2xl'}>
+  //get all the communities to display
+  useEffect(() => {
+    const fetchCommunityData = async() => getAllCommunities().then((response) => {
+        setCommunities(response)
+      }
+    );
+    fetchCommunityData();
+  }, []);
+
+  const [communities, setCommunities] = useState<any>(null);
+
+    function CommunityListing() {
+      return (<Card w={'100%'} bg={useColorModeValue('gray.50', 'gray.900')} boxShadow={'2xl'}>
         <CardHeader display="flex" justifyContent="space-between">
           <Stack direction="row" spacing="4">
             <Button variant="solid" colorScheme="blue" size="lg">
@@ -45,28 +56,33 @@ export default function CommunityList() {
           </Button>
         </CardHeader>
         <Divider borderColor="black"  borderWidth="1px"/>
-
-        {exampleCommunities.map((community, index) => (
+        {communities && communities.map((community: any, index: Number) => (
           <Module key={index} community={community}/>
         ))}
-        
         <CardFooter></CardFooter>
-      </Card>
+      </Card>);
+    }
+    
+
+    return (
+      <CommunityListing />
     );
   }
 
 
 
+
+
 /**
- * THIS WILL BE REPLACED FOR MODULECOMPONENT
- * Test strictly
+ * Component to display community in the community list
+ *  
  * @param {*} community object
  * @returns A module to display in the dashboard
  */
 function Module(community: any) {
   community = community.community
   return(
-  <Box minHeight='200px' as={Link} to={`/community/${community.name}`}>
+  <Box minHeight='200px' as={Link} to={`/community1/${community.name}`}>
     <CardBody >
         <Heading size='lg' marginX="8">{community.name}</Heading>
         <Heading size="sm" marginX="8">{community.members.size}</Heading>
