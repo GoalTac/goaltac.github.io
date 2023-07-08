@@ -23,6 +23,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import { calculateLevel, experiencePercent } from '../../../hooks/Utilities'
 import { formatNumber } from '../../../hooks/Utilities';
+import { getPicture } from '../CommunityAPI';
 import {
   GiArrowhead,
   GiPerson
@@ -84,7 +85,7 @@ export default function Header({community}: any) {
  */
 function OverviewGrid({toggleExpandedView, expandedView, community}: any) {
 
-  const picture: string = community.pic ? community.pic : './../GoalTac_TLogo.png'
+  const picture: string = getPicture(community);
   
   return (<Flex width='100%' 
     flexDirection='column'
