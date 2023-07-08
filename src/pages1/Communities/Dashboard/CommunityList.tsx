@@ -13,6 +13,8 @@ import {
     Button,
     Spacer,
     ButtonGroup,
+    Image,
+    HStack,
     Divider,
     Menu, MenuButton, MenuList, MenuItem, MenuItemOption, MenuGroup, MenuOptionGroup, MenuDivider
   } from '@chakra-ui/react';
@@ -21,7 +23,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
 import InsideView from '../Community/InsideView';
 import { getExampleCommunities } from '../Example';
-import { getAllCommunities } from '../CommunityAPI';
+import { getAllCommunities, getPicture } from '../CommunityAPI';
 import { Link } from "react-router-dom";
 import { RandomUUIDOptions } from 'crypto';
 
@@ -42,9 +44,9 @@ export default function CommunityList() {
     
 
     return (
-      <Flex marginX='auto' minWidth='fit-content' maxWidth='60vw' flexDirection={'column'}>
+      <Flex marginX='auto' justifySelf='center' alignSelf='center'
+      width='fit-content' maxWidth={['', '60vw']} overflow='hidden' flexDirection={'column'}>
         <CommunityListing communities={communities} />
-
       </Flex>
       
     );
@@ -65,10 +67,13 @@ export default function CommunityList() {
             Create
           </Button>
       </CardHeader>
+
       <Divider borderColor="black"  borderWidth="1px"/>
+
       {communities && communities.map((community: any, index: Number) => (
         <Module key={index} community={community}/>
       ))}
+
       <CardFooter></CardFooter>
     </Card>);
   }
@@ -83,38 +88,27 @@ export default function CommunityList() {
  * @param {*} community object
  * @returns A module to display in the dashboard
  */
-function Module(community: any) {
-  community = community.community
-  return(
-  <Box as={Link} to={`/community1/${community.name}`}>
-    <CardBody >
-        <Heading size='lg' marginX="8">{community.name}</Heading>
-        <Heading size="sm" marginX="8">{community.members.length}</Heading>
-        <br/>
-        
-        <Flex justifyContent="flex-end">
-
-        <Menu placement='left-start'>
-        <MenuButton as={Button} rightIcon={<ChevronDownIcon />} >
-        Actions
-        </MenuButton>
-        <MenuList>
-        <MenuItem>+Leave Group</MenuItem>
-        <MenuItem>+Share</MenuItem>
-        <MenuItem>+Settings</MenuItem>
-        </MenuList>
-        </Menu>
-
-        </Flex>
-
-        <Text fontSize="lg" marginX="8" maxWidth='500px'>{community.desc}</Text>
-        <br/>
-        
-
-        <Divider borderColor="black"  borderWidth="1px"/>
-
-        
-        
-    </CardBody>
+function Module({community}: any) {
+  const picture: string = getPicture(community);
+  return(<Box as={Link} to={`/community1/${community.name}`}>
+      <Card paddingY='10px'>
+        <HStack overflow='hidden'>
+            
+          <Image src={picture} marginY='auto'
+            alt={`${community.name} picture`}
+            boxSize='20%'
+            maxWidth='100px'
+            borderRadius='lg'/>
+          <Stack mt='6' spacing='3'>
+            <Heading size='md'>{community.name}</Heading>
+            <Text width='inherit'>
+              {community.description}
+            </Text>
+            <Text color='blue.600' fontSize='xl'>
+              Members: {community.members.length}
+            </Text>
+          </Stack>
+        </HStack>
+      </Card>
   </Box>)
 }
