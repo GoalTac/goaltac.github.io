@@ -6,6 +6,7 @@ import GoalTac_Logo from '../../../images/GoalTac_Logo.png'
 
 import {
     Box,
+    useColorModeValue
 } from '@chakra-ui/react'
 import React from 'react'
 import { useParams } from 'react-router-dom';
@@ -37,9 +38,11 @@ export default function InsideView() {
         */
     const [view, setView] = useState();
     return(community && 
-        <Box className='Specific Community View' width='600px' marginX='auto'>
+        <Box className='Specific Community View' bg={useColorModeValue('gray.50', 'gray.700')}
+        borderRadius='20px'
+        marginX='auto' minWidth='fit-content' maxWidth='60vw' boxShadow='2xl' padding='10px'>
             <Header community={community}/>
-            <HeaderNav  setView={setView} community={community} />
+            <HeaderNav setView={setView} community={community} />
             <Roster community={community} />
             
 
