@@ -11,6 +11,7 @@ import {
     Flex,
     CardFooter,
     Button,
+    Spacer,
     ButtonGroup,
     Divider,
     Menu, MenuButton, MenuList, MenuItem, MenuItemOption, MenuGroup, MenuOptionGroup, MenuDivider
@@ -28,45 +29,48 @@ import { RandomUUIDOptions } from 'crypto';
   
 export default function CommunityList() {
 
-  //get all the communities to display
-  useEffect(() => {
-    const fetchCommunityData = async() => getAllCommunities().then((response) => {
-        setCommunities(response)
-      }
-    );
-    fetchCommunityData();
-  }, []);
+    //get all the communities to display
+    useEffect(() => {
+      const fetchCommunityData = async() => getAllCommunities().then((response) => {
+          setCommunities(response)
+        }
+      );
+      fetchCommunityData();
+    }, []);
 
-  const [communities, setCommunities] = useState<any>(null);
-
-    function CommunityListing() {
-      return (<Card w={'100%'} bg={useColorModeValue('gray.50', 'gray.900')} boxShadow={'2xl'}>
-        <CardHeader display="flex" justifyContent="space-between">
-          <Stack direction="row" spacing="4">
-            <Button variant="solid" colorScheme="blue" size="lg">
-              Joined
-            </Button>
-            <Divider orientation="vertical" borderColor="black" borderWidth="1px" height="50px" />
-            <Button variant="ghost" colorScheme="blue" size="lg">
-              Requested
-            </Button>
-          </Stack>
-          <Button variant="outline" colorScheme="blue" size="lg">
-            Create Community
-          </Button>
-        </CardHeader>
-        <Divider borderColor="black"  borderWidth="1px"/>
-        {communities && communities.map((community: any, index: Number) => (
-          <Module key={index} community={community}/>
-        ))}
-        <CardFooter></CardFooter>
-      </Card>);
-    }
+    const [communities, setCommunities] = useState<any>(null);
     
 
     return (
-      <CommunityListing />
+      <Flex marginX='auto' minWidth='fit-content' maxWidth='60vw' flexDirection={'column'}>
+        <CommunityListing communities={communities} />
+
+      </Flex>
+      
     );
+  }
+
+  function CommunityListing({communities}: any) {
+    return (
+    <Card bg={useColorModeValue('gray.50', 'gray.900')} boxShadow={'xl'}>
+      <CardHeader display="flex" justifyContent="space-between">
+          <Button variant="solid" colorScheme="blue" width='fit-content'>
+            Joined
+          </Button>
+          <Button variant="ghost" colorScheme="blue" width='fit-content'>
+            Requested
+          </Button>
+          <Spacer/>
+          <Button variant="outline" colorScheme="blue" width='fit-content'>
+            Create
+          </Button>
+      </CardHeader>
+      <Divider borderColor="black"  borderWidth="1px"/>
+      {communities && communities.map((community: any, index: Number) => (
+        <Module key={index} community={community}/>
+      ))}
+      <CardFooter></CardFooter>
+    </Card>);
   }
 
 
@@ -82,10 +86,10 @@ export default function CommunityList() {
 function Module(community: any) {
   community = community.community
   return(
-  <Box minHeight='200px' as={Link} to={`/community1/${community.name}`}>
+  <Box as={Link} to={`/community1/${community.name}`}>
     <CardBody >
         <Heading size='lg' marginX="8">{community.name}</Heading>
-        <Heading size="sm" marginX="8">{community.members.size}</Heading>
+        <Heading size="sm" marginX="8">{community.members.length}</Heading>
         <br/>
         
         <Flex justifyContent="flex-end">
