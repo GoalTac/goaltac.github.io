@@ -84,25 +84,23 @@ function RowItem({member, id}: any) {
     return (
     <Flex
         height='60px' 
-        marginY='5px'
         flexDirection='column'
         borderWidth='1px'
-        borderRadius='15px'
         paddingX='1rem'>
-        <HStack width='100%' justifyContent='center' marginY='auto'>
+        <HStack height='min-content' justifyContent='center' marginY='auto' overflow={'hidden'}>
             <Heading fontSize='1.5rem' paddingEnd='1rem'>
                 {id + 1}.
             </Heading>
             <Divider orientation='vertical' />
-            <Text fontSize='1.5rem' paddingStart='0.5rem'>
+            <Text fontSize='1.5rem' paddingStart='0.5rem' maxWidth='200px'>
                 {userName ? userName : 'hi'}
             </Text>
             <Spacer/>
             <Flex borderColor='blue.200' 
                 backgroundColor={colorMode == 'dark' ? 'blue.700' : 'blue.100'}
-                borderRadius='10px' 
-                width='120px'
+                borderRadius='10px'
                 padding='4px' 
+                paddingStart='10px'
                 columnGap='10px'
                 justifyContent='right'
                 borderWidth='2px'>
