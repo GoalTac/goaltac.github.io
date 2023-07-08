@@ -13,6 +13,10 @@ import { ChatIcon } from '@chakra-ui/icons';
 import { uniqueId } from 'lodash';
 import { RandomUUIDOptions } from 'crypto';
 
+export function getPicture(community: any) {
+    return community.pic ? community.pic : './../GoalTac_TLogo.png'
+}
+
 export async function getCommunity(name: any)  {
 
     const { data: communityData, error } = await supabase
