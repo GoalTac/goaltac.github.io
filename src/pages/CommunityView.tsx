@@ -1,19 +1,19 @@
 import { Avatar, Box, Flex, Heading, Stack, Text, Image, useColorModeValue, Button, Progress, FormControl, FormLabel, Input, Textarea } from '@chakra-ui/react';
-import { useParams } from 'react-router-dom';
-import { AutoResizeTextarea } from '../components/Calendar/AutoResizeTextArea';
+import { ChatIcon } from '@chakra-ui/icons';
+import { FaChartBar, FaCheck, FaSearch, FaShoppingBag, FaStar, FaUser } from 'react-icons/fa';
 
 import { VerticalTimeline } from 'react-vertical-timeline-component';
 import { VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
 
-import { FaChartBar, FaCheck, FaSearch, FaShoppingBag, FaStar, FaUser } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { supabase } from '../supabase';
-import Chat from '../components/Chat';
-import { ChatIcon } from '@chakra-ui/icons';
+import { useParams } from 'react-router-dom';
+
+import { AutoResizeTextarea } from '../components/Calendar/AutoResizeTextArea';
 import CheckAndTitle from '../components/CheckAndTitle';
-
-
+import CommunityChat from '../components/Chats/CommunityChat';
+// import Chat from '../components/Chats/PrivateChat';
 
 
 export default function CommunityView() {
@@ -333,7 +333,7 @@ export default function CommunityView() {
           </Box>
         </Box>
 
-        <Chat />
+        <CommunityChat />
       </Stack>
     </CheckAndTitle>
   );

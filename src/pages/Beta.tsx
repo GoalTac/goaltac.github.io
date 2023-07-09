@@ -16,7 +16,6 @@ import {
 import { contents, staffProfiles, responsive } from '../components/Beta/BetaContent';
 import { useEffect } from 'react';
 import { supabase } from '../supabase';
-import TestRedirect from '../components/TestRedirect';
 
 export default function BetaPage() {
 

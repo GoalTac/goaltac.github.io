@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, MouseEventHandler } from 'react';
 import {
     Avatar,
     Heading,
@@ -17,9 +17,16 @@ import {
     Input,
     Textarea,
     Badge,
+    useColorModeValue,
+    useToast,
+    Flex,
+    CloseButton,
+    IconButton,
 } from '@chakra-ui/react';
 import { supabase } from '../supabase';
 import CheckAndTitle from '../components/CheckAndTitle';
+import { Link } from 'react-router-dom';
+import { CloseIcon } from '@chakra-ui/icons';
 
 export default function Profile() {
 
@@ -27,7 +34,11 @@ export default function Profile() {
 
     // set up state variables for the name modal and user name input fields
     const [showNameModal, setShowNameModal] = useState(false);
-    const [person, setPerson] = useState({ name: '', username: '', biography: '', avatarurl: '' });
+    const [person, setPerson] = useState({ name: '', username: '', biography: '', avatarurl: '', userid: '' });
+    const [friendRequests, setFriendRequests] = useState<null | { username: string; avatarurl: string; userid: string; }[]>(null);
+    const [friendIds, setFriendIds] = useState<string[]>([]);
+
+    const toast = useToast();
 
     // UseEffects ----------------------------------------------------------------------
 
@@ -50,14 +61,14 @@ export default function Profile() {
                     username: data.username,
                     biography: data.biography,
                     avatarurl: data.avatarurl,
+                    userid: data.userid,
                 });
             }
         };
         getProfile();
     }, []);
 
-    // get the user's friend requests
-    const [friendRequests, setFriendRequests] = useState([]);
+
     useEffect(() => {
         async function fetchFriendRequests() {
             // get my user id
@@ -74,8 +85,19 @@ export default function Profile() {
 
             if (friendRequestsError) {
                 console.error(friendRequestsError);
-            } else {
-                setFriendRequests(friendRequestsData[0].requests);
+                setFriendRequests([]);
+            }
+
+            if (friendRequestsData) {
+                const { data: friendAvatars } = await supabase
+                    .from('profiles')
+                    .select('username, avatarurl, userid')
+                    .in('userid', friendRequestsData[0].requests);
+
+                if (friendAvatars) {
+                    setFriendRequests(friendAvatars);
+                    setFriendIds(friendAvatars.map((friendRequest) => friendRequest.userid));
+                }
             }
         }
 
@@ -107,12 +129,65 @@ export default function Profile() {
         }
     };
 
+
+
+    function acceptFriend(friendUserId: string): MouseEventHandler<HTMLButtonElement> {
+
+        const handleAccept = async () => {
+
+            // Update friend request status in database
+            const { error } = await supabase
+                .from('friend_requests')
+                .update({ requests: friendIds.filter((item) => item !== friendUserId) })
+                .eq('userid', person.userid);
+
+            if (error) {
+                throw error;
+            }
+            else {
+                // get friends list
+                const { data: friends, error: error2 } = await supabase
+                    .from('profiles')
+                    .select('friends')
+                    .eq('username', person.username);
+
+                if (friends === null) {
+                    throw error2;
+                }
+
+                // Add friend to friends list
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .update({ friends: [...friends, friendUserId] })
+                    .eq('username', person.username);
+
+                if (error || error2) {
+                    throw error;
+                }
+            }
+
+
+            toast({
+                title: 'accepted friend request',
+                position: 'bottom',
+                status: 'success',
+                duration: 5000,
+                isClosable: false,
+            });
+        };
+
+        return handleAccept;
+    }
+
+
     const handleEditProfile = () => {
         setShowNameModal(true);
     };
 
 
-
+    function handleRemoveFriend(): MouseEventHandler<HTMLButtonElement> | undefined {
+        throw new Error('Function not implemented.');
+    }
 
     return (
         <CheckAndTitle title='Settings'>
@@ -146,7 +221,7 @@ export default function Profile() {
                                             onInput={(e) => {
                                                 e.currentTarget.value = e.currentTarget.value.replace(/[^a-zA-Z ]/g, '');
                                             }}
-                                            onChange={(e) => setPerson({ name: e.target.value, username: person.username, biography: person.biography, avatarurl: person.avatarurl })}
+                                            onChange={(e) => setPerson((prev) => ({ ...prev, name: e.target.value }))}
                                         />
                                     </FormControl>
                                     <FormControl mt={4}>
@@ -154,7 +229,7 @@ export default function Profile() {
                                         <Input
                                             placeholder="put a url here"
                                             value={person.avatarurl}
-                                            onChange={(e) => setPerson({ name: person.name, username: person.username, biography: person.biography, avatarurl: e.target.value })}
+                                            onChange={(e) => setPerson((prev) => ({ ...prev, avatarurl: e.target.value }))}
                                         />
                                     </FormControl>
                                 </ModalBody>
@@ -168,7 +243,7 @@ export default function Profile() {
                     )}
                 </Box>
 
-                <Box pt={12} pl={4} pr={4}>
+                <Box pt={12} pl={4} pr={4} w={'full'}>
                     <Heading as="h1" size="xl" mb={4} >
                         Settings
                     </Heading>
@@ -185,21 +260,60 @@ export default function Profile() {
                     <Textarea
                         fontSize="sm"
                         color="gray.500"
-                        mb={8}
+                        mb={4}
                         value={person.biography}
-                        onChange={(e) => setPerson({ name: person.name, username: person.username, biography: e.target.value, avatarurl: person.avatarurl })}
+                        onChange={(e) => setPerson((prev) => ({ ...prev, biography: e.target.value }))}
 
                     />
 
-                    <Badge colorScheme="blue" fontSize="md" mb={1}>Friend Requests</Badge>
+                    <Box bg={useColorModeValue('gray.100', 'gray.900')} rounded={'lg'} p={2} mb={4}>
+                        <Badge colorScheme="blue" fontSize="md" mb={1}>Friends</Badge>
 
-                    {friendRequests.map((friendRequest) => (
-                        <Box>
-                            <Avatar key={friendRequest} name={friendRequest} size={"lg"} src="" />
-                            <Text>{friendRequest}</Text>
-                            <Button>Accept</Button>
-                        </Box>
-                    ))}
+                        <Stack direction={'row'}>
+                            {/* {friendRequests?.length === 0 ? ( */}
+                            {/* <Text>No friends</Text> */}
+                            {/* ) : ( */}
+                            <Link to={'/profile/' + 'adi'} >
+                                <Box textAlign='center' p={3} >
+                                    <Flex direction="column" alignItems="center" position={'relative'}>
+                                        <Avatar name='adi' size="lg" />
+                                        <IconButton
+                                            aria-label="Remove friend"
+                                            icon={<CloseIcon />}
+                                            size="xs"
+                                            variant="ghost"
+                                            onClick={() => handleRemoveFriend()}
+                                            position="absolute"
+                                            top={-1}
+                                            right={-1}
+                                            bg="red.500"
+                                        />
+                                    </Flex>
+                                    <Text>adi</Text>
+                                </Box>
+                            </Link>
+                            {/* )} */}
+                        </Stack>
+                    </Box>
+
+                    <Box bg={useColorModeValue('gray.100', 'gray.900')} rounded={'lg'} p={2} mb={4}>
+                        <Badge colorScheme="blue" fontSize="md" mb={1}>Friend Requests</Badge>
+
+                        <Stack direction={'row'}>
+                            {friendRequests?.length === 0 ? (
+                                <Text>No friend requests</Text>
+                            ) : (friendRequests?.map((friendRequest) => (
+                                <Link to={'/profile/' + friendRequest.username} >
+                                    <Box textAlign='center' p={3} >
+                                        <Avatar key={friendRequest.username} src={friendRequest.avatarurl} size={"lg"} />
+                                        <Text>{friendRequest.username}</Text>
+                                        <Button onClick={acceptFriend(friendRequest.userid)}>Accept</Button>
+                                    </Box>
+                                </Link>
+
+                            )))}
+                        </Stack>
+                    </Box>
 
                 </Box>
             </Stack>
