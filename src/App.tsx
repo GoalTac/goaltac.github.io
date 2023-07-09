@@ -1,4 +1,4 @@
-import Calendar from './pages/Calendar';
+import Dashboard from './pages/TaskDashboard';
 import BetaPage from './pages/Beta';
 import Feed from './pages/Social';
 import Login from './pages/Login';
@@ -40,7 +40,7 @@ export default function App() {
 
         {/* TODO: conditional on authentication routing */}
         <Route element={<Root />}>
-          <Route path='calendar' element={<Calendar />} />
+          <Route path='calendar' element={<Dashboard />} />
           <Route path='social' element={<Feed />} />
           <Route path='settings' element={<Settings />} />
           <Route path='market' element={<Market />} />
