@@ -17,11 +17,7 @@ import {
     Input,
     Textarea,
     Badge,
-    useColorModeValue,
-    useToast,
-    Flex,
-    CloseButton,
-    IconButton,
+    Toast,
 } from '@chakra-ui/react';
 import { supabase } from '../supabase';
 import CheckAndTitle from '../components/CheckAndTitle';
@@ -34,11 +30,8 @@ export default function Profile() {
 
     // set up state variables for the name modal and user name input fields
     const [showNameModal, setShowNameModal] = useState(false);
-    const [person, setPerson] = useState({ name: '', username: '', biography: '', avatarurl: '', userid: '' });
-    const [friendRequests, setFriendRequests] = useState<null | { username: string; avatarurl: string; userid: string; }[]>(null);
-    const [friendIds, setFriendIds] = useState<string[]>([]);
-
-    const toast = useToast();
+    const [person, setPerson] = useState({ name: '', username: '', biography: '', avatarurl: '' });
+    const [friend, setFriend] = useState({ name: '', username: '', });
 
     // UseEffects ----------------------------------------------------------------------
 
@@ -185,9 +178,7 @@ export default function Profile() {
     };
 
 
-    function handleRemoveFriend(): MouseEventHandler<HTMLButtonElement> | undefined {
-        throw new Error('Function not implemented.');
-    }
+
 
     return (
         <CheckAndTitle title='Settings'>
@@ -299,21 +290,13 @@ export default function Profile() {
                     <Box bg={useColorModeValue('gray.100', 'gray.900')} rounded={'lg'} p={2} mb={4}>
                         <Badge colorScheme="blue" fontSize="md" mb={1}>Friend Requests</Badge>
 
-                        <Stack direction={'row'}>
-                            {friendRequests?.length === 0 ? (
-                                <Text>No friend requests</Text>
-                            ) : (friendRequests?.map((friendRequest) => (
-                                <Link to={'/profile/' + friendRequest.username} >
-                                    <Box textAlign='center' p={3} >
-                                        <Avatar key={friendRequest.username} src={friendRequest.avatarurl} size={"lg"} />
-                                        <Text>{friendRequest.username}</Text>
-                                        <Button onClick={acceptFriend(friendRequest.userid)}>Accept</Button>
-                                    </Box>
-                                </Link>
-
-                            )))}
-                        </Stack>
-                    </Box>
+                    {friendRequests.map((friendRequest) => (
+                        <Box>
+                            <Avatar key={friendRequest} name={friendRequest} size={"lg"} src="" />
+                            <Text>{friendRequest}</Text>
+                            <Button>Accept</Button>
+                        </Box>
+                    ))}
 
                 </Box>
             </Stack>

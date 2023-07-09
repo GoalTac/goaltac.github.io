@@ -42,7 +42,7 @@ function Calendar() {
         <Container maxWidth="container.lg" py={6} pl={0} ml={'2vw'} mr={'2vw'}>
 
           {/* calendar */}
-          <SimpleGrid columns={{ base: 1, md: 7 }} spacing={{ base: 16, md: 2 }} pt={10} pl={0} w={'95vw'}>
+          <SimpleGrid columns={{ base: 1, md: 7 }} spacing={{ base: 16, md: 2 }}pl={0} w={'95vw'}>
             {columns}
           </SimpleGrid>
 

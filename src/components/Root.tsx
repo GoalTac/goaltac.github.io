@@ -5,6 +5,19 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import { supabase } from '../supabase';
 
 export default function Root() {
+  return (
+    <div>
+      <HeaderNav />
+      <Box style={{ marginTop: '55px' }}>
+        <Outlet />
+      </Box>
+      
+    </div >
+  );
+};
+
+export function HeaderNav() {
+
   const { colorMode, toggleColorMode } = useColorMode();
   const [inputValue, setInputValue] = useState('');
   const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
@@ -54,9 +67,7 @@ export default function Root() {
     getProfile()
   }, []);
 
-  return (
-    <div>
-      <Flex
+  return (<Flex
         bg={colorMode === "light" ? 'gray.50' : 'gray.700'}
         p={1}
         pl={2}
@@ -117,8 +128,5 @@ export default function Root() {
             </MenuList>
           </Menu>
         </Box>
-      </Flex>
-      <Outlet />
-    </div >
-  );
-};
+      </Flex>);
+}

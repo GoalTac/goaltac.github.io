@@ -1,4 +1,4 @@
-import Calendar from './pages/Calendar';
+import Dashboard from './pages/TaskDashboard';
 import BetaPage from './pages/Beta';
 import Feed from './pages/Social';
 import Login from './pages/Login';
@@ -13,14 +13,20 @@ import ProfileView from './pages/ProfileView';
 
 import { Route, Routes } from 'react-router-dom';
 import Root from './components/Root';
+
 import Market from './pages/Market';
+import { useState } from 'react';
 
 
 // v1
 import Beta1 from './pages1/Beta';
 import TestRedirect from './components/TestRedirect';
+import CommunityCentral from './pages1/Communities/Dashboard/CommunityCentral';
+import InsideView from './pages1/Communities/Community/InsideView';
 
 export default function App() {
+
+  const [betaOne, setBetaOne] = useState(null)
 
   return (
 
@@ -34,17 +40,20 @@ export default function App() {
 
         {/* TODO: conditional on authentication routing */}
         <Route element={<Root />}>
-          <Route path='calendar' element={<Calendar />} />
+          <Route path='calendar' element={<Dashboard />} />
           <Route path='social' element={<Feed />} />
           <Route path='settings' element={<Settings />} />
           <Route path='market' element={<Market />} />
           <Route path='communities' element={<Communities />} />
           <Route path='/community/:communityName' element={<CommunityView />} />
+
+          <Route path='communities1' element={<CommunityCentral />} />
+          <Route path='/community1/:communityName' element={<InsideView />} />
           <Route path='/search/:searchElement' element={<Finder />} />
           <Route path='/profile/:profileName' element={<ProfileView />} />
         </Route>
 
-        <Route path='beta1' element={<Beta1 />} />
+        <Route path='beta1' element={<Beta1 />} />        
 
 
 

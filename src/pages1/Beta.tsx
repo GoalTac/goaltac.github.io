@@ -1,6 +1,6 @@
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import { Box, useColorMode, Spacer, Flex, Stack, VStack, HStack, Text, Button, Image, Avatar, Heading, useColorModeValue, Badge, IconButton } from "@chakra-ui/react";
+import { Box, useColorMode, Spacer, Flex, Stack, VStack, HStack, Text, Button, Image, Avatar, Heading, useColorModeValue, Badge, IconButton, Divider } from "@chakra-ui/react";
 import Canvas from "../components/Beta/Canvas";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -30,7 +30,7 @@ export default function BetaPageOne() {
 function VerisonOne() {
 
     function SignInButton() {
-        return <Link to='/signin'>
+        return <Link to='/login'>
             <Button variant='ghost'
                 padding='2rem'
                 fontSize='1.5rem'
@@ -51,14 +51,12 @@ function VerisonOne() {
             <Button variant='ghost'
                 padding='2rem'
                 fontSize='1.5rem'
-                borderWidth='1px'
-                borderColor='gray.900'
+                borderWidth='3px'
                 bgClip='text'
                 bgGradient='linear(to-l, teal.300, blue.500)'
                 borderRadius='1rem'
                 _hover={{
                     color: 'unset'
-
                 }}>
                 Sign Up
             </Button>
@@ -83,7 +81,7 @@ function VerisonOne() {
                 alignItems={['center', 'flex-start']}
                 textAlign={['center', 'start']}
                 id='product'>
-                <VStack rowGap='2rem'>
+                <VStack rowGap='2rem' marginBottom='6rem'>
                     <Box fontSize='4rem' fontWeight='700' lineHeight='1.1' bgGradient='linear(to-t, teal.300, blue.500)'
                         bgClip='text'>
                         Productive Together
@@ -109,6 +107,7 @@ function VerisonOne() {
                 mt='8rem'
                 px={['1rem', null, '6rem']}
                 py='3rem'
+                bgColor={useColorModeValue('gray.100','gray.700')}
                 position='relative'>
 
                 <VStack
@@ -226,23 +225,22 @@ function VerisonOne() {
 
             const icons = [
                 {
-                    icon: <FaFacebookSquare size={25} color='rgba(66, 103, 178)' />,
+                    icon: <FaFacebookSquare size={25} color={useColorModeValue('rgba(66, 103, 178)', '')} />,
                     href: '',
                     label: 'Facebook'
                 },
                 {
-                    icon: <FaLinkedin size={25} color='rgba(255,0,0)' />,
+                    icon: <FaLinkedin size={25} color={useColorModeValue('rgb(0,119,181)', '')} />,
                     href: 'https://www.linkedin.com/company/goaltac/',
                     label: 'LinkedIn'
                 },
                 {
-                    icon: <FaDiscord size={25} color='rgba(114,137,218)' />,
+                    icon: <FaDiscord size={25} color={useColorModeValue('rgb(114,137,218)', '')} />,
                     href: 'https://discord.gg/EzFPQDAKGf',
                     label: 'Discord'
-
                 },
                 {
-                    icon: <FaInstagram size={30} color='white' />,
+                    icon: <FaInstagram size={30} />,
                     href: '',
                     label: 'Instagram'
                 },
@@ -270,50 +268,68 @@ function VerisonOne() {
         const { toggleColorMode, colorMode } = useColorMode();
 
         return (
-            <Flex
-                maxW={measurements.maxWidth}
-                px='3rem'
-                w='100%'>
-                <Flex
-                    flexDirection='column'
-                    gap='1rem'
-                    alignItems='center'>
+            <VStack
+                justifyContent='center'
+                w={constants.maxWidth}
+                paddingX='3rem'>
+                <Stack
+                    flexDir={['column','row']}
+                    paddingX='2rem'
+                    maxWidth='100vw'
+                    width={constants.maxWidth}
+                    alignSelf='center'>
 
-                    <Image src={'GoalTac_Logo.png'} pt='5px' maxWidth='200px' />
-                    <HStack>
+                    <Image alignSelf={['center','left']} src={'GoalTac_Logo.png'} maxWidth='200px' />
+                    <Spacer/>
+                    <HStack alignSelf={['center','right']}>
                         <MediaIcons />
+                        <Button onClick={toggleColorMode} 
+                        variant='ghost' borderWidth='2px'>
+                            {useColorModeValue(<SunIcon />, <MoonIcon />)}
+                        </Button>
                     </HStack>
-                    <Button onClick={toggleColorMode}>
-                        {useColorModeValue(<SunIcon />, <MoonIcon />)}
-                    </Button>
-                </Flex>
-            </Flex>
+                    
+                </Stack>
+                <Stack flexDirection={['column', 'row']} 
+                paddingX='2rem'
+                maxWidth='100vw' width={constants.maxWidth}
+                justifyContent ={['center', 'left']}>
+                    <Text>
+                        Copyright @ 2023 GoalTac LLC. All rights reserved.
+                    </Text>
+                    <Spacer/>
+                    <Text>
+                        Privacy Policy
+                    </Text>
+                    <Spacer/>
+                    <Text>
+                        Terms of Service
+                    </Text>
+                </Stack>
+            </VStack>
         )
     }
 
-    const measurements = {
+    const constants = {
         maxWidth: '1400px',
-
+        lightMode: 'white',
+        darkMode: 'gray.800'
     }
 
     return (
-        <Flex
+        <Flex 
             flexDirection='column'
-            minH='100vh'
-            bgGradient={
-                useColorModeValue(
-                    'linear(to-b, teal.300, blue.500)', 'linear(to-b, gray.700, teal.700, blue.500)')}>
+            minH='100vh'>
 
-            <Flex justifyContent='center' alignItems='center' >
-                <Box overflowX='hidden'
-                    bgColor={useColorModeValue('white', 'gray.700')}
-                    maxW={measurements.maxWidth}>
+            <Flex justifyContent='center' alignItems='center'>
+                <Box overflowX='hidden' 
+                    bgColor={useColorModeValue(constants.lightMode, constants.darkMode)}
+                    maxW={constants.maxWidth}>
 
                     <Header />
 
                     <Box>
-                        <Flex
-                            paddingTop='6rem'
+                        <Flex paddingTop='6rem'
                             columnGap='6rem'
                             rowGap='2rem'
                             alignItems='center'
@@ -327,7 +343,7 @@ function VerisonOne() {
                         <Box>
                             <Features />
                             <Slider />
-                            <PreFooter />
+                            <PreFooter  />
                         </Box>
                     </Box>
 
@@ -337,18 +353,19 @@ function VerisonOne() {
 
             </Flex>
 
-            <Spacer alignSelf='center' w={measurements.maxWidth}
-                bgColor={useColorModeValue('white', 'gray.700')} />
+            <Spacer alignSelf='center' w={constants.maxWidth}
+                bgColor={useColorModeValue(constants.lightMode, constants.darkMode)} />
 
-            <HStack
-                minW='100%'
-                id='about'
-                bg='gray.900'
-                justifyContent='center'
+            <Flex id='footer'
+                flexDirection='column'
+                alignSelf='center'
+                w={constants.maxWidth}
+                bgColor={useColorModeValue(constants.lightMode, constants.darkMode)}
                 py='3rem'
                 bottom='0'>
+                <Divider marginBottom='3rem' />
                 <Footer />
-            </HStack>
+            </Flex>
 
         </Flex>
     );
