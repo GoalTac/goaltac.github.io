@@ -9,37 +9,39 @@ import {
 } from '@chakra-ui/react';
 import { FaMedal } from 'react-icons/fa';
 
-type Medal = {
-    id: number;
-    name: string;
-    price: number;
-    icon: JSX.Element;
-};
-
-const medals: Medal[] = [
-    {
-        id: 1,
-        name: 'Gold Medal',
-        price: 100,
-        icon: <FaMedal color="gold" size="2em" />,
-    },
-    {
-        id: 2,
-        name: 'Silver Medal',
-        price: 50,
-        icon: <FaMedal color="silver" size="2em" />,
-    },
-    {
-        id: 3,
-        name: 'Bronze Medal',
-        price: 25,
-        icon: <FaMedal color="peru" size="2em" />,
-    },
-];
-
 export default function Market() {
-    // Variables ----------------------------------------------------------------------
+    
+}
 
+export function MarketOld() {
+    // Variables ----------------------------------------------------------------------
+    type Medal = {
+        id: number;
+        name: string;
+        price: number;
+        icon: JSX.Element;
+    };
+    
+    const medals: Medal[] = [
+        {
+            id: 1,
+            name: 'Gold Medal',
+            price: 100,
+            icon: <FaMedal color="gold" size="2em" />,
+        },
+        {
+            id: 2,
+            name: 'Silver Medal',
+            price: 50,
+            icon: <FaMedal color="silver" size="2em" />,
+        },
+        {
+            id: 3,
+            name: 'Bronze Medal',
+            price: 25,
+            icon: <FaMedal color="peru" size="2em" />,
+        },
+    ];
     const [cart, setCart] = useState<Medal[]>([]);
 
     const handleBuy = (medal: Medal) => {
