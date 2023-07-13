@@ -17,6 +17,11 @@ import {
     Input,
     Textarea,
     Badge,
+    useColorModeValue,
+    useToast,
+    Flex,
+    CloseButton,
+    IconButton,
     Toast,
 } from '@chakra-ui/react';
 import { supabase } from '../supabase';
@@ -30,6 +35,11 @@ export default function Profile() {
 
     // set up state variables for the name modal and user name input fields
     const [showNameModal, setShowNameModal] = useState(false);
+    const [person, setPerson] = useState({ name: '', username: '', biography: '', avatarurl: '', userid: '' });
+    const [friendRequests, setFriendRequests] = useState<null | { username: string; avatarurl: string; userid: string; }[]>(null);
+    const [friendIds, setFriendIds] = useState<string[]>([]);
+
+    const toast = useToast();
     const [person, setPerson] = useState({ name: '', username: '', biography: '', avatarurl: '' });
     const [friend, setFriend] = useState({ name: '', username: '', });
 
@@ -177,7 +187,36 @@ export default function Profile() {
         setShowNameModal(true);
     };
 
+    
+    // add a friend request in the friend_requests table
+    const handleAddFriend = async () => {
+        // get the user's information
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) {
+            console.log('User not found');
+            return;
+        }
 
+        const { data, error } = await supabase
+            .from('friend_requests')
+            .update({ userid: user.id, requests: [friend.username]});
+
+        if (error) {
+            console.log(error);
+            return Toast({
+                title: "Error sending friend request.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
+        }
+        return Toast({
+            title: "Friend request sent.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+        });
+    };
 
 
     return (
@@ -290,6 +329,22 @@ export default function Profile() {
                     <Box bg={useColorModeValue('gray.100', 'gray.900')} rounded={'lg'} p={2} mb={4}>
                         <Badge colorScheme="blue" fontSize="md" mb={1}>Friend Requests</Badge>
 
+                        <Stack direction={'row'}>
+                            {friendRequests?.length === 0 ? (
+                                <Text>No friend requests</Text>
+                            ) : (friendRequests?.map((friendRequest) => (
+                                <Link to={'/profile/' + friendRequest.username} >
+                                    <Box textAlign='center' p={3} >
+                                        <Avatar key={friendRequest.username} src={friendRequest.avatarurl} size={"lg"} />
+                                        <Text>{friendRequest.username}</Text>
+                                        <Button onClick={acceptFriend(friendRequest.userid)}>Accept</Button>
+                                    </Box>
+                                </Link>
+
+                            )))}
+                        </Stack>
+                    </Box>
+
                     {friendRequests.map((friendRequest) => (
                         <Box>
                             <Avatar key={friendRequest} name={friendRequest} size={"lg"} src="" />
@@ -297,7 +352,20 @@ export default function Profile() {
                             <Button>Accept</Button>
                         </Box>
                     ))}
-
+                    <FormControl>
+                        <FormLabel>Add Friend</FormLabel>
+                        <Input
+                            placeholder="friend's username"
+                            value={friend.username}
+                            onInput={(e) => {
+                                e.currentTarget.value = e.currentTarget.value.replace(/[^a-zA-Z ]/g, '');
+                            }}
+                            // onSubmit={handleAddFriend}
+                        />
+                        <Button mt={4} onClick={handleAddFriend} w={"full"}>
+                            Send Request
+                        </Button>
+                    </FormControl>
                 </Box>
             </Stack>
         </CheckAndTitle>
