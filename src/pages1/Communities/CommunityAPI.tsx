@@ -106,8 +106,8 @@ export interface Member {
     uuid: string,
     communityPoints: Number
 }
-export interface Community {
 
+export interface Community {
     name: string
     pic: string
     tags: [string]

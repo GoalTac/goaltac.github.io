@@ -1,27 +1,19 @@
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import { Box, useColorMode, Spacer, Flex, Stack, VStack, HStack, Text, Button, Image, Avatar, Heading, useColorModeValue, Badge, IconButton, Divider } from "@chakra-ui/react";
-import Canvas from "../components/Beta/Canvas";
 import { Link, useNavigate } from "react-router-dom";
 import {
     FaDiscord,
     FaFacebookSquare,
     FaInstagram,
-    FaTwitter,
-    FaYoutube,
-    FaTiktok,
     FaLinkedin,
 } from 'react-icons/fa';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 
 // edit this file to change the content of the beta page
 import { contents, goalTacDesc, staffProfiles, responsive } from '../components/Beta/BetaContent';
-import { useEffect } from 'react';
-import { supabase } from '../supabase';
-import { useClickAnyWhere } from 'usehooks-ts';
 
 export default function BetaPageOne() {
-
     return (
         <VerisonOne />
     );
