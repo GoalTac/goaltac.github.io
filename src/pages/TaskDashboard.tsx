@@ -7,7 +7,7 @@ import { useState } from "react";
 
 export default function Dashboard() {
     const navigate = useNavigate();
-    const [displayedView, setDisplayedView] = useState<any>()
+    const [displayedView, setDisplayedView] = useState<any>(<Calendar/>)
 
 
     return(<Box>
