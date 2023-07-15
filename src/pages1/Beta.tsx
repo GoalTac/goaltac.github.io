@@ -293,7 +293,6 @@ function VerisonOne() {
                     <Text>
                         Privacy Policy
                     </Text>
-                    <Spacer/>
                     <Text>
                         Terms of Service
                     </Text>
