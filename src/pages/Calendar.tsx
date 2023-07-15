@@ -39,10 +39,10 @@ function Calendar() {
   return (
     <CheckAndTitle title='Calendar'>
       <DndProvider backend={HTML5Backend}>
-        <Container maxWidth="container.lg" py={6} pl={0} ml={'2vw'} mr={'2vw'}>
+        <Container maxWidth="container.lg" >
 
           {/* calendar */}
-          <SimpleGrid columns={{ base: 1, md: 7 }} spacing={{ base: 16, md: 2 }}pl={0} w={'95vw'}>
+          <SimpleGrid columns={{ base: 1, md: 7 }} spacing={{ base: 16, md: 2 }}>
             {columns}
           </SimpleGrid>
 

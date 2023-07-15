@@ -69,14 +69,16 @@ function Column({ column }: { column: ColumnType }) {
   return (
     <Box>
       <Heading fontSize="md" mb={0} letterSpacing="wide">
-        <Badge
-          px={1}
-          rounded="sm"
-          bg={useColorModeValue('gray.100', 'gray.900')}
-        >
-          {column}
-        </Badge>
-        <div style={{ float: 'right', fontSize: '8px', margin: 8 }}>{formattedDate}</div>
+        <Stack flexDirection='row' overflowX='clip'>
+          <Badge
+            px={1}
+            rounded="sm"
+            bg={useColorModeValue('gray.100', 'gray.900')}>
+            {column}
+          </Badge>
+          <div style={{ fontSize: '8px', margin: 8 }}>{formattedDate}</div>
+        </Stack>
+        
       </Heading>
 
       <Stack
