@@ -198,17 +198,15 @@ function GeneralInfoGrid({community}: any) {
       </HStack>
      
       <Spacer/>
-      {/**
-       * <StatComponent stats={{
+      <StatComponent stats={{
         title: 'Goals in Progress',
-        value: goalsWIP
+        value: 0
       }} />
       <Spacer/>
       <StatComponent stats={{
         title: 'Goals Completed',
-        value: goalsCompleted
+        value: 0
       }} />
-       */}
       
     </Flex>
   </Flex>);
@@ -219,13 +217,13 @@ function GeneralInfoGrid({community}: any) {
  * @returns Stats view
  */
 function StatsGrid({community}: any) {
-  const experience = 0//community.levelObj.exp
+  const experience = 100//community.levelObj.exp
   const levelObject = calculateLevel(experience)
   const level = calculateLevel(experience).level
   const expLeftover = calculateLevel(experience).experience
   const expPercent = experiencePercent(experience)
 
-  const totalPoints = 1000//community.totalPoints
+  const totalPoints = 0//community.totalPoints
 
   return (<Flex width='100%' 
     borderTop='2px'
@@ -249,9 +247,9 @@ function StatsGrid({community}: any) {
       
       <Spacer/>
       <Flex>
-        <CircularProgress value={expPercent} color='blue.300'>
+        <CircularProgress value={expPercent} color='blue.300' size='80px'>
           <CircularProgressLabel>
-            <VStack rowGap='0.5rem'>
+            <VStack>
               <Heading fontSize='1rem'>{level}</Heading>
               <Text fontSize='sm'>Level</Text>
             </VStack>
@@ -261,10 +259,8 @@ function StatsGrid({community}: any) {
       
       <Spacer/>
       <StatComponent stats={{
-        title: 'War W/L',
-        value: 2.1,
-        type: 'increase',
-        percent: '12%'
+        title: 'Battle W/L',
+        value: 0
       }} />
     </Flex>
 
@@ -277,7 +273,8 @@ function StatsGrid({community}: any) {
  * @returns 
  */
 function StatComponent({stats}: any) {
-  return (<StatGroup flexDirection='column'>
+  return (
+  <StatGroup flexDirection='column'>
     <Stat>
       <StatNumber fontSize='lg'>{formatNumber(stats.value)}</StatNumber>
       {stats.type && 
