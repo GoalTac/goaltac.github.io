@@ -40,7 +40,6 @@ export default function Profile() {
     const [friendIds, setFriendIds] = useState<string[]>([]);
 
     const toast = useToast();
-    const [person, setPerson] = useState({ name: '', username: '', biography: '', avatarurl: '' });
     const [friend, setFriend] = useState({ name: '', username: '', });
 
     // UseEffects ----------------------------------------------------------------------
@@ -312,7 +311,7 @@ export default function Profile() {
                                             icon={<CloseIcon />}
                                             size="xs"
                                             variant="ghost"
-                                            onClick={() => handleRemoveFriend()}
+                                            //onClick={() => handleRemoveFriend()}
                                             position="absolute"
                                             top={-1}
                                             right={-1}
@@ -345,13 +344,14 @@ export default function Profile() {
                         </Stack>
                     </Box>
 
-                    {friendRequests.map((friendRequest) => (
+
+                    {/*friendRequests.map((friendRequest) => (
                         <Box>
                             <Avatar key={friendRequest} name={friendRequest} size={"lg"} src="" />
                             <Text>{friendRequest}</Text>
                             <Button>Accept</Button>
                         </Box>
-                    ))}
+                    ))*/}
                     <FormControl>
                         <FormLabel>Add Friend</FormLabel>
                         <Input
