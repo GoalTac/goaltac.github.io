@@ -30,7 +30,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom';
 import { getCommunity } from './../CommunityAPI'
 import { uniqueId } from 'lodash';
-import Chat from '../../../components/Chat';
+import Chat from '../../../components/Chats/CommunityChat';
 import GoalDashboard from './Goals';
 /**
  * Contains all components of an individual community

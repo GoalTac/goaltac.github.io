@@ -23,38 +23,31 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
 import InsideView from '../Community/InsideView';
 import { getExampleCommunities } from '../Example';
-import { getAllCommunities, getPicture } from '../CommunityAPI';
+import { getAllCommunities, getPicture, Community } from '../CommunityAPI';
 import { Link } from "react-router-dom";
 import { RandomUUIDOptions } from 'crypto';
+import { Module } from './CommunityCentral';
 
 
   
-export default function CommunityList() {
-
-    //get all the communities to display
-    useEffect(() => {
-      const fetchCommunityData = async() => getAllCommunities().then((response) => {
-          setCommunities(response)
-        }
-      );
-      fetchCommunityData();
-    }, []);
-
-    const [communities, setCommunities] = useState<any>(null);
+export default function CommunityList({communities}: any ) {
     
 
     return (
-      <Flex marginX='auto' justifySelf='center' alignSelf='center'
-      width='fit-content' maxWidth={['', '60vw']} overflow='hidden' flexDirection={'column'}>
-        <CommunityListing communities={communities} />
+      <Flex justifySelf='center' alignSelf='center' width={['400px', '600px']}
+       overflow='hidden' flexDirection={'column'}>
+        <CommunityNav communities={communities} />
+        {communities && communities.map((community: any, index: Number) => (
+          <Module key={index} community={community}/>
+        ))}
       </Flex>
       
     );
   }
 
-  function CommunityListing({communities}: any) {
+  function CommunityNav({communities}: any) {
     return (
-    <Card bg={useColorModeValue('gray.50', 'gray.900')} boxShadow={'xl'}>
+    <Card bg={useColorModeValue('gray.50', 'gray.900')} boxShadow={'xl'} height='100px'>
       <CardHeader display="flex" justifyContent="space-between">
           <Button variant="solid" colorScheme="blue" width='fit-content'>
             Joined
@@ -67,48 +60,5 @@ export default function CommunityList() {
             Create
           </Button>
       </CardHeader>
-
-      <Divider borderColor="black"  borderWidth="1px"/>
-
-      {communities && communities.map((community: any, index: Number) => (
-        <Module key={index} community={community}/>
-      ))}
-
-      <CardFooter></CardFooter>
     </Card>);
   }
-
-
-
-
-
-/**
- * Component to display community in the community list
- *  
- * @param {*} community object
- * @returns A module to display in the dashboard
- */
-function Module({community}: any) {
-  const picture: string = getPicture(community);
-  return(<Box as={Link} to={`/community1/${community.name}`}>
-      <Card paddingY='10px'>
-        <HStack overflow='hidden'>
-            
-          <Image src={picture} marginY='auto'
-            alt={`${community.name} picture`}
-            boxSize='20%'
-            maxWidth='100px'
-            borderRadius='lg'/>
-          <Stack mt='6' spacing='3'>
-            <Heading size='md'>{community.name}</Heading>
-            <Text width='inherit'>
-              {community.description}
-            </Text>
-            <Text color='blue.600' fontSize='xl'>
-              Members: {community.members.length}
-            </Text>
-          </Stack>
-        </HStack>
-      </Card>
-  </Box>)
-}
