@@ -15,11 +15,10 @@ export default function ProfileView() {
     // get the user's information from Supabase and update the person state
     useEffect(() => {
         const getProfile = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
             const { data, error } = await supabase
                 .from('profiles')
                 .select('*')
-                .eq('userid', user?.id)
+                .eq('username', profileName)
                 .single();
 
             if (error) {

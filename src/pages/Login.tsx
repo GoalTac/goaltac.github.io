@@ -31,6 +31,32 @@ export default function Login() {
 
     // Functions ----------------------------------------------------------------------
 
+    const handleGoogleLogin = async () => {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                queryParams: {
+                    access_type: 'offline',
+                    prompt: 'consent',
+                },
+            },
+        })
+
+        if (error) {
+            toast({
+                title: error.message,
+                position: 'bottom',
+                status: 'error',
+                duration: 3000,
+                isClosable: false,
+            })
+            console.log(error)
+        } else {
+            console.log(data)
+            navigate('/calendar')
+        }
+    }
+
     const handleSubmit = async function (event: React.SyntheticEvent) {
         event.preventDefault();
         console.log("Submitting")
@@ -195,6 +221,7 @@ export default function Login() {
                                     variant={'solid'}
                                     leftIcon={<FcGoogle />}
                                     bg={"blackAlpha.600"} _hover={{ bg: "black" }}
+                                    onClick={handleGoogleLogin}
                                 >
                                     <Center>
                                         <Text>Sign in with Google</Text>

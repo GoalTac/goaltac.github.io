@@ -2,7 +2,7 @@ import { Badge, Box, Flex, Image, Text, useColorModeValue } from "@chakra-ui/rea
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../supabase";
-import Chat from "../components/Chat";
+import Chat from "../components/Chats/PrivateChat";
 import CheckAndTitle from "../components/CheckAndTitle";
 
 export default function Communities() {

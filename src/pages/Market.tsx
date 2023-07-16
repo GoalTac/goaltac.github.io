@@ -4,13 +4,100 @@ import {
     Badge,
     IconButton,
     Text,
+    Stack,
     VStack,
     HStack,
+    Icon,
+    Button,
 } from '@chakra-ui/react';
-import { FaMedal } from 'react-icons/fa';
+import { FaCoins, FaMedal, FaPencilAlt, FaRegCalendar, FaTshirt } from 'react-icons/fa';
+import { TbTargetArrow } from 'react-icons/tb';
+import { Center, Square, Circle } from '@chakra-ui/react' 
+import { Divider } from '@chakra-ui/react'
 
 export default function Market() {
-    
+    // UseEffect ----------------------------------------------------------------------
+    // Functions ----------------------------------------------------------------------
+
+    const [balance, setBalance] = useState(500);
+    return (
+        <Box p={10}>
+            <Center>
+                <Text fontSize="3xl" fontWeight="bold" mt={-50} mb={4}>
+                    Marketplace
+                </Text>
+            </Center>
+            <HStack justify={'right'} gridGap="3px" mt={-50} mb={12}>
+                <Text>{balance}</Text>
+                    <TbTargetArrow size="1em" />
+            </HStack>
+
+            <VStack
+            divider={<Divider borderColor='gray.200' />}
+            spacing={4}
+            align='stretch'
+            p={40}
+            mt={-150}
+            >
+                <Box>
+                    <Text fontSize="2xl" fontWeight="bold">
+                        Merch
+                    </Text>
+                </Box>
+                <Box>
+                    <HStack spacing={10}>
+                        <FaTshirt size="5em"/>
+                        <VStack>
+                            <Text mt={-35} fontSize="xl" fontWeight="bold">
+                                GoalTac Shirt
+                            </Text>   
+                            <Text>
+                                Description of shirt
+                            </Text>
+                        </VStack>
+                        <Button rightIcon={<TbTargetArrow size="1em" />}>
+                            Get For: 100
+                        </Button>
+                    </HStack>
+                </Box>
+
+                <Box>
+                    <HStack spacing={10}>
+                        <FaRegCalendar size="5em"/>
+                        <VStack>
+                            <Text mt={-35} fontSize="xl" fontWeight="bold">
+                                GoalTac Calendar
+                            </Text>   
+                            <Text>
+                                Description of calendar
+                            </Text>
+                        </VStack>
+                        <Button rightIcon={<TbTargetArrow size="1em" />}>
+                            Get For: 50
+                        </Button>
+                    </HStack>
+                </Box>
+
+                <Box>
+                    <HStack spacing={10}>
+                        <FaPencilAlt size="5em"/>
+                        <VStack>
+                            <Text mt={-35} fontSize="xl" fontWeight="bold">
+                                GoalTac Pencil
+                            </Text>   
+                            <Text>
+                                Description of pencil
+                            </Text>
+                        </VStack>
+                        <Button rightIcon={<TbTargetArrow size="1em" />}>
+                            Get For: 25
+                        </Button>
+                    </HStack>
+                </Box>
+            </VStack>
+        </Box>
+            
+    );
 }
 
 export function MarketOld() {
@@ -121,4 +208,4 @@ export function MarketOld() {
             </VStack>
         </Box>
     );
-}
+} 
