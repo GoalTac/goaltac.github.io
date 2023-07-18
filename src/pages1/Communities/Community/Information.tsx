@@ -177,8 +177,6 @@ function PrerequisitesGrid({community}: any) {
  */
 function GeneralInfoGrid({community}: any) {
 
-  console.log(community)
-
   const memberCount = community.members.length
   //const goalsWIP = community.goals.length
   //const goalsCompleted = community.goalsC.length
