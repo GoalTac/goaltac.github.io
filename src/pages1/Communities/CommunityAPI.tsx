@@ -16,7 +16,7 @@ export function getPicture(community: any) {
     return community.pic ? community.pic : './../GoalTac_TLogo.png'
 }
 
-export async function getCommunity(name: any)  {
+export async function getCommunityByName(name: any)  {
 
     const { data: communityData, error } = await supabase
         .from('communities')
@@ -30,6 +30,67 @@ export async function getCommunity(name: any)  {
     }
 
     return communityData;
+}
+
+/**
+ * Grab joined communities from a user
+ * @param userID uuid
+ * @returns all joined communities
+ */
+export async function getJoinedCommunities(userID: any)  {
+
+    const { data: communityData, error } = await supabase
+        .from('profiles')
+        .select('joinedCommunities')
+        .eq('userid', userID).single();
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+    if (communityData.joinedCommunities == null) {
+        return null
+    }
+
+    const communities = await getCommunityByID(communityData.joinedCommunities)
+    return communities;
+}
+
+export async function getCommunityByID(communityID: any)  {
+    const { data: communityData, error } = await supabase
+        .from('communities')
+        .select()
+        .in('communityid', communityID);
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    return communityData;
+}
+
+/**
+ * Grab requested communities from a user
+ * @param userID uuid
+ * @returns all requested communities
+ */
+export async function getRequestedCommunities(userID: any)  {
+
+    const { data: communityData, error } = await supabase
+        .from('profiles')
+        .select('reqCommunities')
+        .eq('userid', userID).single();
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+    if (communityData.reqCommunities == null) {
+        return null
+    }
+
+    const communities = await getCommunityByID(communityData.reqCommunities)
+    return communities;
 }
 
 export async function getUserCommunities(user: any) {
@@ -86,7 +147,7 @@ export async function updateCommunity(community: any) : Promise<void> {
  * @param member 
  * @returns 
  */
-export async function upSertMember(communityID: any, member: Member) {
+export async function upSertMember({communityID, member}: any) {
     const { error } = await supabase
         .from('communities')
         .upsert([ member ])
@@ -98,6 +159,15 @@ export async function upSertMember(communityID: any, member: Member) {
         console.error(error);
         return;
     }
+}
+
+export async function leaveCommunity(communityID: any, userID: any) {
+    console.log("CommunityID: "+communityID, "UserID: "+userID)
+
+}
+
+export async function joinCommunity(communityID: any, userID: any) {
+    console.log("CommunityID: "+communityID, "UserID: "+userID)
 }
 
 
