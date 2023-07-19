@@ -1,4 +1,4 @@
-import { Box, Flex, Text, IconButton, Drawer, DrawerOverlay, DrawerCloseButton, DrawerHeader, DrawerContent, DrawerBody, Avatar, AvatarBadge, InputGroup, Input, InputRightElement, Button, useColorMode, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, FormControl, ModalBody, FormLabel, ModalFooter, Toast, useToast, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, Text, IconButton, Drawer, DrawerOverlay, DrawerCloseButton, DrawerHeader, DrawerContent, DrawerBody, Avatar, AvatarBadge, InputGroup, Input, InputRightElement, Button, useColorMode, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, FormControl, ModalBody, FormLabel, ModalFooter, Toast, useToast, useColorModeValue, Spinner } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { FaCircle, FaRegPaperPlane, } from 'react-icons/fa';
 import { supabase } from '../../supabase';
@@ -186,7 +186,41 @@ export default function Chat() {
 
 
     return (
-        <>
+                        <Box bg={useColorModeValue('gray.100', 'gray.800')} boxShadow="md" p={3} mt={10} borderRadius="md">
+                            <Flex direction="column" height="85vh">
+                                <Box flex="1" mb={3} overflowY="scroll">
+                                    {messages.length > 0 ? messages.map((message, index) => (
+                                        <Flex key={index} justifyContent={message.sender === 'me' ? 'flex-end' : 'flex-start'} mb={2}>
+                                            {message.sender === 'other' && (
+                                                <Avatar size="xs" m={2} ml={0} src={message.avatarurl} />
+                                            )}
+                                            <Box maxW="70%" bg={message.sender === 'me' ? 'blue.500' : 'gray.200'} color={message.sender === 'me' ? 'white' : 'black'} px={3} py={1} borderRadius="md">
+                                                <Text fontSize="sm">{message.text}</Text>
+                                            </Box>
+                                        </Flex>
+                                    )) : <Spinner />}
+                                </Box>
+
+                                <form onSubmit={handleFormSubmit}>
+                                    <Flex alignItems="center">
+                                        <InputGroup>
+                                            <Input type="text" value={inputValue} onChange={handleInputChange} placeholder="Type a message" bg={useColorModeValue('gray.50', 'gray.700')} />
+                                            <InputRightElement>
+                                                <Button type="submit" aria-label="Send" size="xs" fontSize="10px" colorScheme="blue" variant="ghost" bg={useColorModeValue('gray.50', 'gray.700')} mr={2}>
+                                                    <FaRegPaperPlane />
+                                                </Button>
+                                            </InputRightElement>
+                                        </InputGroup>
+                                    </Flex>
+                                </form>
+                            </Flex>
+                        </Box>
+    )
+}
+
+/**
+ * 
+ * <>
             <Drawer placement="right" onClose={handleDrawerClose} isOpen={isDrawerOpen}>
                 <DrawerOverlay />
                 <DrawerContent>
@@ -227,11 +261,10 @@ export default function Chat() {
 
 
 
-            {/* chat button */}
             <Box position="fixed" bottom={4} right={4}>
                 <IconButton aria-label="Chat" icon={<ChatIcon />} onClick={handleChatClick} />
                 <Box as={FaCircle} color="red.500" position={'absolute'} right={-1} bottom={-1} size={'.8em'} />
             </Box>
         </>
-    )
-}
+ * 
+ */
