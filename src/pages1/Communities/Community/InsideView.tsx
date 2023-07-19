@@ -3,6 +3,7 @@ import Roster from './Roster'
 import { useState, useEffect, ReactElement } from 'react';
 import GoalTac_Logo from '../../../images/GoalTac_Logo.png'
 import {
+  Card,
     Divider,
     Flex,
     IconButton,
@@ -28,10 +29,11 @@ import {
 } from '@chakra-ui/react'
 import React from 'react'
 import { useParams } from 'react-router-dom';
-import { getCommunity } from './../CommunityAPI'
+import { getCommunityByName } from './../CommunityAPI'
 import { uniqueId } from 'lodash';
 import Chat from '../../../components/Chats/CommunityChat';
 import GoalDashboard from './Goals';
+import Calendar from './Calender';
 /**
  * Contains all components of an individual community
  * @param {community} The community object
@@ -40,20 +42,19 @@ export default function InsideView() {
 
     const { communityName } = useParams<{ communityName: string }>();
     const [community, setCommunity] = useState<any>();
+    const [view, setView] = useState<ReactElement>(<Chat/>);
 
     useEffect(() => {
-        const fetchCommunityData = async() => getCommunity(communityName).then((response) => {
+        const fetchCommunityData = async() => getCommunityByName(communityName).then((response) => {
             setCommunity( response );
             })
         fetchCommunityData();
     }, []);
 
-    const [view, setView] = useState<ReactElement>();
-    console.log(view)
     return(community && 
-        <Box className='Specific Community View' bg={useColorModeValue('gray.50', 'gray.700')}
+        <Card className='Specific Community View'
         borderRadius='20px'
-        marginX='auto' minWidth='fit-content' maxWidth='60vw' boxShadow='2xl' padding='10px'>
+        marginX='auto' maxW='fit-content' boxShadow='2xl' padding='10px'>
             <Header community={community}/>
             <HeaderNav setView={setView} community={community} />
             {view}
@@ -61,7 +62,7 @@ export default function InsideView() {
             <Box height='10vh'>
 
             </Box>
-        </Box>
+        </Card>
         
     );
 }
@@ -69,7 +70,7 @@ export default function InsideView() {
 function HeaderNav({setView, community}: any) {
 
     const navigation = [
-        ['calendar', <RiCalendarEventLine/>, <Roster community={community} />],
+        ['calendar', <RiCalendarEventLine/>, <Calendar community={community} />],
         ['goals', <TbTarget/>, <GoalDashboard community={community} />],
         ['people', <FaUserFriends/>, <Roster community={community} />],
         ['chat', <ChatIcon />, <Chat />]]
