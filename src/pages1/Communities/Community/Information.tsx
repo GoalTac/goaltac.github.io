@@ -112,7 +112,7 @@ function OverviewGrid({toggleExpandedView, expandedView, community}: any) {
         
         {/* Description */}
         <Text paddingX='20px' maxWidth='500px'>
-          {community.desc}
+          {community.description}
         </Text>
       </VStack>
     </Flex>
