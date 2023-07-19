@@ -32,6 +32,7 @@ export default function CommunityCentral() {
     return(<Flex>
         <Stack marginX='auto'
         flexWrap='wrap'
+        maxWidth='1200px'
         flexDirection={['column', 'row']} 
         justifyContent='center'>
             <CommunityList/>
@@ -215,7 +216,7 @@ export function Module({community}: any) {
 
 //sugested communities on the side content
 export function CommunitySuggested({communities}: any) {
-    return(<Box width={['','600px','fit-content']}>
+    return(<Box>
         <Card height='80px' marginBottom='20px'>
             <CardHeader display="flex" 
             justifyContent="space-between" 
