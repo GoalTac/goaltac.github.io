@@ -67,7 +67,7 @@ export default function Market() {
     const handleBuy = (items: Item) => {
         if (balance >= items.price) {
             setBalance(balance - items.price);
-            setCart([...cart, item]);
+            setCart([...cart, items]);
         } else {
             alert('Not enough balance!');
         }
