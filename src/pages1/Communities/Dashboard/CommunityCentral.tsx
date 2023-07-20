@@ -10,6 +10,7 @@ import Calendar from '../../../pages/Calendar';
 import { supabase } from '../../../supabase';
 import { RxExit } from 'react-icons/rx'
 import { LinkIcon, EditIcon, HamburgerIcon, RepeatIcon } from '@chakra-ui/icons'
+import { SessionProvider, useSession } from '../../../hooks/SessionProvider';
 
 
 /**
@@ -96,17 +97,20 @@ export function CommunityList() {
             
             overflow='hidden' 
             flexDirection={'column'}>
-                <CardHeader display="flex" justifyContent="space-between">
+                <CardHeader display="flex" justifyContent="space-between" columnGap='20px'>
                     <Button variant="ghost" colorScheme="blue" width='fit-content' 
+                    isActive={type == 'joined'}
                     onClick={()=>toggleType('joined')}>
                         Joined
                     </Button>
                     <Button variant="ghost" colorScheme="blue" width='fit-content'
+                    isActive={type == 'requested'}
                     onClick={()=> toggleType('requested')}>
                         Requested
                     </Button>
                     <Spacer/>
                     <Button variant="outline" colorScheme="blue" width='fit-content'
+                    isActive={type == 'create'}
                     onClick={()=> toggleType('create')}>
                         Create
                     </Button>
@@ -173,6 +177,7 @@ export function Module({community}: any) {
               </MenuItem>
               <MenuItem icon={<RxExit />} 
                 onClick={async()=>{
+
                     const { data: { user } } = await supabase.auth.getUser();
                     leaveCommunity(community.uuid, user?.id)
                     //send a successful leave toast
