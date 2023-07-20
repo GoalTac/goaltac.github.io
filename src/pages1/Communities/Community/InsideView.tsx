@@ -54,7 +54,7 @@ export default function InsideView() {
     return(community && 
         <Card className='Specific Community View'
         borderRadius='20px'
-        marginX='auto' maxW='fit-content' boxShadow='2xl' padding='10px'>
+        marginX='auto' maxW='800px' boxShadow='2xl' padding='10px'>
             <Header community={community}/>
             <HeaderNav setView={setView} community={community} />
             {view}
