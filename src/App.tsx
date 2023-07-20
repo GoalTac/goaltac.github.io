@@ -11,11 +11,12 @@ import PrivatePolicy from './pages/PrivatePolicy';
 import Finder from './pages/Finder';
 import ProfileView from './pages/ProfileView';
 
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Root from './components/Root';
 
 import Market from './pages/Market';
 import { useState } from 'react';
+import { useSession, useSupabaseClient } from '../src/hooks/SessionProvider';
 
 
 // v1
@@ -27,6 +28,13 @@ import InsideView from './pages1/Communities/Community/InsideView';
 export default function App() {
 
   const [betaOne, setBetaOne] = useState(null)
+  
+  function ProtectedRoute({ children, redirectPath }:any) {
+    const { user: user } = useSession();
+  
+    return user ? <Root /> : <Navigate to={redirectPath} replace={true} />;
+  }
+
 
   return (
 
@@ -40,6 +48,8 @@ export default function App() {
 
         {/* TODO: conditional on authentication routing */}
         <Route element={<Root />}>
+        <Route element={<ProtectedRoute redirectPath={'/signin'} />}>
+
           <Route path='calendar' element={<Dashboard />} />
           <Route path='social' element={<Feed />} />
           <Route path='settings' element={<Settings />} />
@@ -51,6 +61,7 @@ export default function App() {
           <Route path='/community1/:communityName' element={<InsideView />} />
           <Route path='/search/:searchElement' element={<Finder />} />
           <Route path='/profile/:profileName' element={<ProfileView />} />
+        </Route>
         </Route>
 
         <Route path='beta1' element={<Beta1 />} />        

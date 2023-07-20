@@ -3,16 +3,20 @@ import { useEffect, useState } from "react";
 import { FaUser, FaSignOutAlt, FaRegNewspaper, FaSearch, FaUsers, FaShoppingBag, FaCircle } from "react-icons/fa";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { supabase } from '../supabase';
+import { SessionProvider } from "../hooks/SessionProvider";
 
 export default function Root() {
   return (
-    <div>
-      <HeaderNav />
-      <Box marginTop='55px' overflowX='auto'>
-        <Outlet />
+    <SessionProvider supabase={supabase}>
+      <Box>
+        <HeaderNav />
+        <Box marginTop='55px' overflowX='auto'>
+          <Outlet />
+        </Box>
       </Box>
       
-    </div >
+      
+    </SessionProvider >
   );
 };
 
