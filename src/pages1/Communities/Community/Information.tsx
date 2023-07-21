@@ -164,6 +164,11 @@ function PrerequisitesGrid({community}: any) {
       }} />
       <Spacer/>
       <StatComponent stats={{
+        title: 'Date Created',
+        value: `${community.created_at.toString().split('T')[0]}`
+      }} />
+      <Spacer/>
+      <StatComponent stats={{
         title: 'Points Required',
         value: pointsRequired
       }} />
@@ -188,19 +193,19 @@ function GeneralInfoGrid({community}: any) {
       
       <HStack>
         <Icon boxSize='2rem'  as={GiPerson} />
-
         <StatComponent stats={{
           title: 'Members',
           value: memberCount
         }} />
       </HStack>
-     
       <Spacer/>
       <StatComponent stats={{
-        title: 'Goals in Progress',
-        value: 0
-      }} />
+          title: 'Goals in Progress',
+          value: 0
+        }} />
       <Spacer/>
+      
+      
       <StatComponent stats={{
         title: 'Goals Completed',
         value: 0

@@ -10,8 +10,8 @@ export default function Dashboard() {
     const [displayedView, setDisplayedView] = useState<any>(<Calendar/>)
 
 
-    return(<Box marginX='auto' borderWidth='2px' width='fit-content'>
-        <Flex padding={2} columnGap='4px'>
+    return(<Box marginX='auto' width='fit-content'>
+        <Flex padding={2} columnGap='4px' marginBottom='12px'>
             <Button onClick={() => setDisplayedView(<Calendar/>)}>Calendar</Button>
             <Button onClick={() => setDisplayedView(<List/>)}>List</Button>
         </Flex>
