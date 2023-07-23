@@ -27,9 +27,7 @@ export default function Market() {
     // UseEffect ----------------------------------------------------------------------
     // Functions ----------------------------------------------------------------------
 
-    const [balance, setBalance] = useState(500);
-    const { colorMode } = useColorMode()
-    
+    const [balance, setBalance] = useState(500);    
     type Item = {
         id: number;
         name: string;
@@ -75,29 +73,25 @@ export default function Market() {
 
     return (
         <Box>
-            <Text fontSize="4xl" fontWeight="bold" bgGradient='linear(to-t, teal.300, blue.500)' bgClip='text'
+            <Text
+            fontSize="4xl" fontWeight="bold" bgGradient='linear(to-t, teal.300, blue.500)' bgClip='text'
                     // mt={-50} 
                     // mb={-100}
                     textAlign={'center'}
                     >
                          Marketplace
             </Text>
-            <HStack justify={'right'} gridGap="3px" 
+            <HStack justify={'right'} gridGap="3px"
                 mt={-50} 
                 mb={50}
                 >
                 <Text>{balance}</Text>
                     <TbTargetArrow size="1em" />
             </HStack>
-            <Box w='50%'>
-                <Center><VStack
-                    divider={<Divider borderColor='gray.200' />}
-                    spacing={4}
-                    align='stretch'
-                    justify='center'
-                    p={100}
-                    mt={-150}
-                    >
+
+
+            <Flex flexDir='row' w='50vw' marginX='auto'>
+                <VStack divider={<Divider borderColor='gray.200' />}>
                         <Box>
                             <Text fontSize="3xl" fontWeight="bold" bgGradient='linear(to-t, teal.300, blue.500)' bgClip='text'>
                                 Merch
@@ -105,11 +99,11 @@ export default function Market() {
                         </Box>
 
                         {items.map((items) => (
-                            <Box>
+                            <Flex>
                                 <HStack spacing={10}>
                                     {items.icon}
                                     <VStack>
-                                        <Text mt={-35} fontSize="xl" fontWeight="bold">
+                                        <Text fontSize="xl" fontWeight="bold">
                                             {items.name}
                                         </Text>
                                         <Text>
@@ -120,59 +114,17 @@ export default function Market() {
                                         Get For: {items.price}
                                     </Button>
                                 </HStack>
-                            </Box>
+                            </Flex>
                         
 
                         ))}
-                </VStack></Center> 
-
-            </Box>
-
-            <Box w='50%'>
-                <Flex
-                    width={300}
-                    flexDirection='column' 
-                    position='relative'
-                    left={1100}
-                    rowGap='1rem' 
-                    mt={0}
-                    mb={400}
-                    borderColor={(colorMode == 'dark' ? 'yellow.500' : 'orange.300')}>
-                    <Image zIndex='hide' position='absolute' top='0px' right='0px' width='25%' src={premiumLogo}/>
-                    <VStack alignItems='left'>
-                        <Image width='50%' src={premiumName} />
-                        <Box paddingStart='0.6rem' rowGap='1rem'>
-                            <Heading fontSize='1.2rem'>
-                                Try Premium for free
-                            </Heading>
-                            <Text lineHeight='1.5rem'>
-                                No ads, more features, full access!
-                            </Text>
-                        </Box>
-                    </VStack>
-                        <Button borderRadius='15px'
-                            _active={{
-                                bgColor: 
-                                (colorMode == 'dark' ? 
-                                'rgb(236, 201, 75)' : 
-                                'rgb(251, 211, 141)')
-                            }}
-                            boxShadow={(colorMode == 'dark' ? 
-                            '0px 2px 8px rgb(214, 158, 46)' : 
-                            '0px 2px 8px rgb(237, 137, 54)')}
-                            textColor='white' 
-                            marginX='1rem' 
-                            borderWidth='1px' 
-                            _hover={{
-                                boxShadow: (colorMode == 'dark' ? 
-                            '0px 2px 14px rgb(214, 158, 46)' : 
-                            '0px 2px 14px rgb(237, 137, 54)')
-                            }}
-                            bgColor={(colorMode == 'dark' ? 'yellow.500' : 'orange.300')}>
-                            Try 1 week free!
-                        </Button>
-                    </Flex>
-            </Box>
+                </VStack>
+                <Flex>
+                   <Premium/> 
+                </Flex>
+                
+            </Flex>
+            
 
 
 
@@ -182,6 +134,51 @@ export default function Market() {
     );
 }
 
+function Premium(){
+    const { colorMode } = useColorMode()
+
+    return( <Flex
+        
+        width={300}
+        flexDirection='column' 
+        position='relative'
+        rowGap='1rem' 
+        borderColor={(colorMode == 'dark' ? 'yellow.500' : 'orange.300')}>
+        <Image zIndex='hide' position='absolute' top='0px' right='0px' width='25%' src={premiumLogo}/>
+        <VStack alignItems='left'>
+            <Image width='50%' src={premiumName} />
+            <Box paddingStart='0.6rem' rowGap='1rem'>
+                <Heading fontSize='1.2rem'>
+                    Try Premium for free
+                </Heading>
+                <Text lineHeight='1.5rem'>
+                    No ads, more features, full access!
+                </Text>
+            </Box>
+        </VStack>
+            <Button borderRadius='15px'
+                _active={{
+                    bgColor: 
+                    (colorMode == 'dark' ? 
+                    'rgb(236, 201, 75)' : 
+                    'rgb(251, 211, 141)')
+                }}
+                boxShadow={(colorMode == 'dark' ? 
+                '0px 2px 8px rgb(214, 158, 46)' : 
+                '0px 2px 8px rgb(237, 137, 54)')}
+                textColor='white' 
+                marginX='1rem' 
+                borderWidth='1px' 
+                _hover={{
+                    boxShadow: (colorMode == 'dark' ? 
+                '0px 2px 14px rgb(214, 158, 46)' : 
+                '0px 2px 14px rgb(237, 137, 54)')
+                }}
+                bgColor={(colorMode == 'dark' ? 'yellow.500' : 'orange.300')}>
+                Try 1 week free!
+            </Button>
+        </Flex>)
+}
 
 
 
