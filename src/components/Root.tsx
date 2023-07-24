@@ -10,7 +10,7 @@ export default function Root() {
     <SessionProvider supabase={supabase}>
       <Box>
         <HeaderNav />
-        <Box marginTop='55px' overflowX='auto'>
+        <Box marginTop='30px' overflowX='auto'>
           <Outlet />
         </Box>
       </Box>
