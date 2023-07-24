@@ -8,9 +8,11 @@ import 'react-vertical-timeline-component/style.min.css';
 import { FaChartBar, FaCheck, FaSearch, FaShoppingBag, FaStar, FaUser } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
 import { supabase } from './../../supabase';
+import { SessionProvider, useSession, useSupabaseClient } from './../../hooks/SessionProvider';
 import { ChatIcon } from '@chakra-ui/icons';
 import { uniqueId } from 'lodash';
 import { RandomUUIDOptions } from 'crypto';
+import { join } from 'path';
 
 export function getPicture(community: any) {
     return community.pic ? community.pic : './../GoalTac_TLogo.png'
@@ -54,6 +56,12 @@ export async function getJoinedCommunities(userID: any)  {
 
     const communities = await getCommunityByID(communityData.joinedCommunities)
     return communities;
+}
+
+export async function getMembers(community : any) {
+    if (!community[0].members) return null
+
+    return community.members;
 }
 
 export async function getCommunityByID(communityID: any)  {
@@ -147,27 +155,112 @@ export async function updateCommunity(community: any) : Promise<void> {
  * @param member 
  * @returns 
  */
-export async function upSertMember({communityID, member}: any) {
-    const { error } = await supabase
+export async function upsertMember(communityID : string, member: any) {
+    
+    const { data: data,error } = await supabase
         .from('communities')
-        .upsert([ member ])
-        .eq('communityID', communityID)
-        .select()
-        
+        .select('members')
+        .eq('communityid', communityID).single()
+    const { data: communities } = await supabase
+        .from('profiles')
+        .select('joinedCommunities')
+        .eq('userid', member.uuid).single()
 
     if (error) {
         console.error(error);
         return;
     }
+
+    let exists = false;
+    //check for duplicates
+    data.members.filter((dude: any) => {
+        if (dude.uuid == member.uuid) {
+            //updating the community points
+            dude.communityPoints = member.communityPoints
+            exists=true;
+        }
+    })
+
+    // Get the existing members array or initialize it as an empty array if it doesn't exist
+    const existingMembers = data ? data.members || [] : [];
+    const existingCommunities = communities ? communities.joinedCommunities || [] : [];
+
+    // Append the new member to the existing members array
+    const updatedMembers = (exists ? existingMembers : [...existingMembers, member])
+    const updatedCommunities =  existingCommunities.includes(communityID) ? existingCommunities : [...existingCommunities, communityID]
+    // Update the row with the updated members array
+    
+    await supabase
+      .from('communities')
+      .update({ members: updatedMembers })
+      .eq('communityid', communityID);
+    await supabase
+      .from('profiles')
+      .update({joinedCommunities: updatedCommunities})
+      .eq('userid', member.uuid).single();
 }
 
-export async function leaveCommunity(communityID: any, userID: any) {
-    console.log("CommunityID: "+communityID, "UserID: "+userID)
+export async function removeMember(communityID : string, member: any) {
+    const { data: data,error } = await supabase
+        .from('communities')
+        .select('members')
+        .eq('communityid', communityID).single()
+    const { data: communities } = await supabase
+        .from('profiles')
+        .select('joinedCommunities')
+        .eq('userid', member).single()
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+    //check for duplicates
+    const updatedMembers = data.members.filter((dude: any) => {
+        return dude.uuid != member
+    })
+    const updatedCommunities = communities?.joinedCommunities.filter((community: any) => {
+        return community != communityID
+    })
+    console.log(updatedCommunities)
+    // Update the row with the updated members array
+    
+    await supabase
+      .from('communities')
+      .update({ members: updatedMembers })
+      .eq('communityid', communityID);
+    await supabase
+      .from('profiles')
+      .update({ joinedCommunities: updatedCommunities })
+      .eq('userid', member);
+}
+
+
+export async function leaveCommunity(communityID: string, userID: string) {
+    removeMember(communityID, userID)
+
 
 }
 
-export async function joinCommunity(communityID: any, userID: any) {
-    console.log("CommunityID: "+communityID, "UserID: "+userID)
+/*
+//check first to make sure user isn't in the community
+    const { data: profileData } = await supabase
+        .from('profiles')
+        .select('joinedCommunities')
+        .eq('userid', userID).single();
+
+    const isJoined = profileData?.joinedCommunities.includes(communityID)
+ */
+
+export async function joinCommunity(communityID: string, userID: string) {
+    
+    upsertMember(communityID, {uuid: userID, communityPoints : "0"})
+    /**await supabase
+        .from('profiles')
+        .upsert([ communityID ])
+        .eq('userid', userID)
+        .select()*/
+        
+
 }
 
 

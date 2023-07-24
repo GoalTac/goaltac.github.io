@@ -61,20 +61,19 @@ export function CommunityList() {
     //what did the user press joined/requested communities?
     const [type, setType] = useState<String>('joined');
     const [loading, setLoading] = useState<Boolean>(true);
-
+    const { user: user } = useSession();
+    
     const toggleType = async(requestedType: String) => {
         setLoading(true)
-
-        //logic to display kind of communities user wants to show
-        const { data: { user } } = await supabase.auth.getUser();
         setType(requestedType)
+
         if (requestedType == 'joined') {
-            getJoinedCommunities(user?.id).then((response) => {
+            getJoinedCommunities(user?.['id']).then((response) => {
                 setCommunities(response)
                 setLoading(false)
             })
         } else if (requestedType == 'requested') {
-            getRequestedCommunities(user?.id).then((response) => {
+            getRequestedCommunities(user?.['id']).then((response) => {
                 console.log(response)
                 setCommunities(response)
                 setLoading(false)
@@ -160,6 +159,7 @@ export function Module({community}: any) {
     const link = `https://goaltac.net/community1/${community.name}`
     const { onCopy } = useClipboard(link);
     const navigate = useNavigate();
+    const { user: user } = useSession();
 
     function Options() {
         return(<Menu>
@@ -176,10 +176,11 @@ export function Module({community}: any) {
                 }}>Copy link
               </MenuItem>
               <MenuItem icon={<RxExit />} 
-                onClick={async()=>{
+                onClick={()=>{
+                    if(user) {
+                        leaveCommunity(community.communityid, user?.['id'])
 
-                    const { data: { user } } = await supabase.auth.getUser();
-                    leaveCommunity(community.uuid, user?.id)
+                    }
                     //send a successful leave toast
                 }}>Leave
               </MenuItem>
@@ -221,6 +222,9 @@ export function Module({community}: any) {
 
 //sugested communities on the side content
 export function CommunitySuggested({communities}: any) {
+
+    
+
     return(<Box>
         <Card height='80px' marginBottom='20px'>
             <CardHeader display="flex" 
@@ -245,6 +249,7 @@ export function CommunitySuggested({communities}: any) {
 export function ModulePreview({community}: any) {
     const picture: string = getPicture(community);
     const navigate = useNavigate();
+    const { user: user } = useSession();
 
 
     return(<HStack paddingBottom='10px'>
@@ -269,10 +274,11 @@ export function ModulePreview({community}: any) {
             
             <Button marginRight='auto' 
             borderRadius='full' 
-            onClick={async()=>{
-                const { data: { user } } = await supabase.auth.getUser();
-                joinCommunity(community.uuid, user?.id)
-                navigate(`/community1/${community.name}`);
+            onClick={()=>{
+                if (user) {
+                    joinCommunity(community.communityid, user?.['id'])
+                    navigate(`/community1/${community.name}`);
+                }
                 //send a successful join toast
             }}
             variant='outline'>Join</Button>
