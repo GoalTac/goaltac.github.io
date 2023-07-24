@@ -1,6 +1,6 @@
 import {
     Box,
-    Button, Card, useClipboard, Icon, useColorMode, Flex, HStack, Heading, List, Stack, Text, Image, Divider, VStack, CardHeader, useColorModeValue, Spacer, Spinner, IconButton, Menu, MenuButton, MenuItem, MenuList
+    Button, Card, useClipboard, Icon, useColorMode, Flex, HStack, Heading, List, Stack, Text, Image, Divider, VStack, CardHeader, useColorModeValue, Spacer, Spinner, IconButton, Menu, MenuButton, MenuItem, MenuList, FormControl, FormLabel, Input, Radio, RadioGroup, Textarea
 } from '@chakra-ui/react'
 import { useNavigate, Link } from 'react-router-dom';
 import { ReactNode, useEffect, useState } from 'react';
@@ -17,6 +17,7 @@ import { SessionProvider, useSession } from '../../../hooks/SessionProvider';
  * Brings all components of community page together
  * @returns Dashboard page
  */
+//TODO: Need to get this to auto update when someone leaves their community
 export default function CommunityCentral() {
 
     //get all the communities to display
@@ -74,19 +75,88 @@ export function CommunityList() {
             })
         } else if (requestedType == 'requested') {
             getRequestedCommunities(user?.['id']).then((response) => {
-                console.log(response)
                 setCommunities(response)
                 setLoading(false)
             })
+        } else if (requestedType == 'create') {
+            setCommunities(null)
+            setLoading(false)
         } else {
             setLoading(false)
             return null
         }
     }
 
+    function Create() {
+        const [name, setName] = useState<any>('');
+        const [description, setDescription] = useState<any>('');
+        const [pic, setPic] = useState<any>(null);
+        const [tags, setTags] = useState<any>(null);
+        const [isPublic, setIsPublic] = useState<any>(true);
+        const { user: user } = useSession()
+
+        const handleAddCommunity = async() => {
+            const community = {
+                created_at: new Date(),
+                name: name,
+                description: description,
+                pic: pic,
+                tags: tags,
+                score: 0,
+                isPublic: isPublic,
+                owner: user?.['id'],
+                members: [],
+                Tasks: []
+
+            }
+            await supabase.from('communities').insert([community]);
+
+            /** How to update profiles table too?
+             * const { data: communities } = await supabase
+                .from('profiles')
+                .select('joinedCommunities')
+                .eq('userid', user?.['id']).single()
+            const existingCommunities = communities ? communities.joinedCommunities || [] : [];
+            const updatedCommunities =  [...existingCommunities, communityID]
+             * 
+             */
+            
+
+
+
+        }
+
+
+        return(
+            <Box>
+                <FormControl>
+                    <FormLabel>Title</FormLabel>
+                    <Input placeholder="Title" value={name} onChange={(e) => setName(e.target.value)} />
+                </FormControl>
+
+                <FormControl mt={4}>
+                    <FormLabel>Description</FormLabel>
+                    <Textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                </FormControl>
+                <Button colorScheme="blue" mr={3} onClick={handleAddCommunity}>
+                    {'Save'}
+                </Button>
+            </Box>
+        )
+    }
+
 
     //Could be joined communities or requested communities
     const [communities, setCommunities] = useState<any>(null);
+
+    function Spinny() {
+        return <Flex paddingTop='60px' justifyContent='center' >
+        <Spinner speed='1s' size='xl' />
+        
+        <Spinner position='absolute'
+            speed='1.1s' size='xl' color='yellow' />
+    </Flex>
+    }
 
 
     return (<Box width={['400px', '600px']}>
@@ -117,15 +187,10 @@ export function CommunityList() {
             </Card>
             <Box>
                 {/* Display spinner when loading */}
-               {loading ? 
-                    <Flex paddingTop='60px' justifyContent='center' >
-                        <Spinner speed='1s' size='xl' />
-                        
-                        <Spinner position='absolute'
-                            speed='1.1s' size='xl' color='yellow' />
-                    </Flex> : 
+               {loading ? <Spinny/> : 
                 communities ? communities.map((community: any, index: Number) => (
-                <Module key={index} community={community}/> )):
+                <Module key={index} community={community}/> )) :
+                type == 'create' ? <Create/> :
                 <Heading paddingY='20px'>
                     Where are your communities?!
                 </Heading>

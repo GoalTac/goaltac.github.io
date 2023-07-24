@@ -131,22 +131,11 @@ export async function getAllCommunities() {
     return communityData;
 }
 
-export function insertCommunity(community: Community) : void {
-    
-}
-
-
-export async function updateCommunity(community: any) : Promise<void> {
-    const { error } = await supabase
-        .from('communities')
-        .update({ community })
-        .eq('communityID', community.communityID)
-        
-
-    if (error) {
-        console.error(error);
-        return;
-    }
+//for suggested communities
+export function getUnJoinedCommunities(userID: String) {
+    const allCommunities = getAllCommunities()
+    const joinedCommunities = getJoinedCommunities(userID)
+     
 }
 
 /**
@@ -221,7 +210,6 @@ export async function removeMember(communityID : string, member: any) {
     const updatedCommunities = communities?.joinedCommunities.filter((community: any) => {
         return community != communityID
     })
-    console.log(updatedCommunities)
     // Update the row with the updated members array
     
     await supabase
