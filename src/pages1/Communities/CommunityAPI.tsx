@@ -18,6 +18,7 @@ export function getPicture(community: any) {
     return community.pic ? community.pic : './../GoalTac_TLogo.png'
 }
 
+//returns the community that matches the name
 export async function getCommunityByName(name: any)  {
 
     const { data: communityData, error } = await supabase
@@ -34,9 +35,12 @@ export async function getCommunityByName(name: any)  {
     return communityData;
 }
 
+
 export function getTotalMembers(community : any) : Number {
     return community.members.length + 1
 }
+
+
 
 /**
  * Grab joined communities from a user
@@ -269,14 +273,20 @@ export interface Member {
     communityPoints: Number
 }
 
+export function getCommunity({community}: any) {
+    try {
+        return community as Community
+    } catch(error) {
+        return null
+    }
+}
+
 export interface Community {
     name: string
     pic: string
     tags: [string]
     description: string
     score: number
-    owner: string //uuid
-    members: [Member]
     tasks: [string] //replace with call to the task interface
     communityID: string //uuid
 }
