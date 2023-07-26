@@ -5,7 +5,7 @@ import {
 import { useNavigate, Link } from 'react-router-dom';
 import { ReactNode, useEffect, useState } from 'react';
 import InsideView from '../Community/InsideView';
-import { getAllCommunities, getJoinedCommunities, getPicture, getRequestedCommunities, joinCommunity, leaveCommunity } from '../CommunityAPI';
+import { getAllCommunities, getJoinedCommunities, getPicture, getRequestedCommunities, getTotalMembers, joinCommunity, leaveCommunity } from '../CommunityAPI';
 import Calendar from '../../../pages/Calendar';
 import { supabase } from '../../../supabase';
 import { RxExit } from 'react-icons/rx'
@@ -33,6 +33,7 @@ export default function CommunityCentral() {
 
     return(<Flex>
         <Stack marginX='auto'
+        paddingBottom='20px'
         flexWrap='wrap'
         maxWidth='1200px'
         flexDirection={['column', 'row']} 
@@ -185,7 +186,7 @@ export function CommunityList() {
                     </Button>
                 </CardHeader>
             </Card>
-            <Box>
+            <Box boxShadow='lg'>
                 {/* Display spinner when loading */}
                {loading ? <Spinny/> : 
                 communities ? communities.map((community: any, index: Number) => (
@@ -253,7 +254,7 @@ export function Module({community}: any) {
           </Menu>);
     }
 
-    return(<HStack overflow='hidden' padding='20px' boxShadow='xl' borderRadius='20px'>
+    return(<HStack overflow='hidden' padding='20px' borderRadius='20px'>
         <Box borderRadius='full'
         marginY='auto'
         overflow='hidden'
@@ -268,7 +269,7 @@ export function Module({community}: any) {
             <Box lineHeight='12px'>
                 <Heading fontSize='1.5rem'>{community.name}</Heading>
                 <Text color='gray' fontSize='1rem'>
-                    {community.members.length} members
+                    {getTotalMembers(community).toString()} members
                 </Text>
             </Box>
             
@@ -298,7 +299,7 @@ export function CommunitySuggested({communities}: any) {
                 Suggested
             </CardHeader>
         </Card>
-        <Box marginX='10px'>
+        <Box marginX='10px' boxShadow='lg'>
             {communities && communities.map((community: any, index: Number) => (
             <ModulePreview key={index} community={community} preview={true}/>))}
         </Box>
@@ -333,7 +334,7 @@ export function ModulePreview({community}: any) {
             <Box>
             <Heading size='md'>{community.name}</Heading> 
             <Text color='gray' fontSize='sm'>
-                    {community.members.length} members
+                    {getTotalMembers(community).toString()} members
                 </Text>
             </Box>
             

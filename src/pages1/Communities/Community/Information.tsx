@@ -23,7 +23,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import { calculateLevel, experiencePercent } from '../../../hooks/Utilities'
 import { formatNumber } from '../../../hooks/Utilities';
-import { getPicture } from '../CommunityAPI';
+import { getPicture, getTotalMembers } from '../CommunityAPI';
 import {
   GiArrowhead,
   GiPerson
@@ -33,6 +33,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,  
  } from '@chakra-ui/icons';
+ import { getUser } from '../../../hooks/Utilities';
 
  
 /**
@@ -86,6 +87,13 @@ export default function Header({community}: any) {
 function OverviewGrid({toggleExpandedView, expandedView, community}: any) {
 
   const picture: string = getPicture(community);
+  const [userName, setUserName] = useState<any>();
+    useEffect(() => {
+        const fetchUserName = () => getUser(community.owner).then((response) => {
+            setUserName(response?.name)
+        })
+        fetchUserName();
+      }, []);
   
   return (<Flex width='100%' 
     flexDirection='column'
@@ -109,11 +117,18 @@ function OverviewGrid({toggleExpandedView, expandedView, community}: any) {
         <Heading color='gray.500'>
           {community.name}
         </Heading>
+
+        {/* Owner */}
+        <Text paddingX='20px' maxWidth='500px' marginTop='-10px' color='gray.400'>
+          {userName}
+        </Text>
         
         {/* Description */}
         <Text paddingX='20px' maxWidth='500px'>
           {community.description}
         </Text>
+
+        
       </VStack>
     </Flex>
     <IconButton 
@@ -182,7 +197,7 @@ function PrerequisitesGrid({community}: any) {
  */
 function GeneralInfoGrid({community}: any) {
 
-  const memberCount = community.members.length
+  const memberCount = getTotalMembers(community)
   //const goalsWIP = community.goals.length
   //const goalsCompleted = community.goalsC.length
 

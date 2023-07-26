@@ -54,11 +54,8 @@ export default function App() {
           <Route path='social' element={<Feed />} />
           <Route path='settings' element={<Settings />} />
           <Route path='market' element={<Market />} />
-          <Route path='communities' element={<Communities />} />
-          <Route path='/community/:communityName' element={<CommunityView />} />
-
-          <Route path='communities1' element={<CommunityCentral />} />
-          <Route path='/community1/:communityName' element={<InsideView />} />
+          <Route path='communities' element={<CommunityCentral />} />
+          <Route path='/community/:communityName' element={<InsideView />} />
           <Route path='/search/:searchElement' element={<Finder />} />
           <Route path='/profile/:profileName' element={<ProfileView />} />
         </Route>

@@ -12,7 +12,7 @@ import { SessionProvider, useSession, useSupabaseClient } from './../../hooks/Se
 import { ChatIcon } from '@chakra-ui/icons';
 import { uniqueId } from 'lodash';
 import { RandomUUIDOptions } from 'crypto';
-import { join } from 'path';
+import { getUser } from './../../hooks/Utilities';
 
 export function getPicture(community: any) {
     return community.pic ? community.pic : './../GoalTac_TLogo.png'
@@ -32,6 +32,10 @@ export async function getCommunityByName(name: any)  {
     }
 
     return communityData;
+}
+
+export function getTotalMembers(community : any) : Number {
+    return community.members.length + 1
 }
 
 /**
@@ -207,6 +211,14 @@ export async function removeMember(communityID : string, member: any) {
     const updatedMembers = data.members.filter((dude: any) => {
         return dude.uuid != member
     })
+
+    if(updatedMembers.length < 1) {
+        const { error } = await supabase
+            .from('communities')
+            .delete()
+            .eq('communityid', communityID)
+    }
+
     const updatedCommunities = communities?.joinedCommunities.filter((community: any) => {
         return community != communityID
     })
