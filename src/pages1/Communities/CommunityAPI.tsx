@@ -40,6 +40,81 @@ export function getTotalMembers(community : any) : Number {
     return community.members.length + 1
 }
 
+export async function _getAllMembers(communityID : string) {
+    const { data: data, error } = await supabase
+        .from('community_relations')
+        .select('user_id')
+        .eq('community_id', communityID)
+        .single();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
+}
+
+//returns all members of a specific role
+export async function _getMembers(communityID: string, role : string) { 
+    const { data: data, error } = await supabase
+        .from('community_relations')
+        .select('user_id')
+        .eq('community_id', communityID)
+        .eq('roles', role)
+        .single();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
+}
+
+export async function _addMember(communityID : string, userID : string) {
+    const {data: data, error} = await supabase
+        .from('community_relations')
+        .upsert({community_id : communityID, user_id : userID})
+        .select();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
+}
+
+export async function _removeMember(communityID : string, userID : string) {
+    const {data: data, error} = await supabase
+        .from('community_relations')
+        .delete()
+        .eq('community_id', communityID)
+        .eq('user_id', userID)
+        .single();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
+}
+
+export async function _setMember(communityID : string, userID : string, role : Number, points : Number) {
+    const {data: data, error} = await supabase
+        .from('community_relations')
+        .upsert({community_id : communityID, user_id : userID, role : role, points : points})
+        .select();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
+}
+
+export async function getJoinedCommunities1(userID: string) {
+    
+}
+
 
 
 /**
@@ -64,12 +139,6 @@ export async function getJoinedCommunities(userID: any)  {
 
     const communities = await getCommunityByID(communityData.joinedCommunities)
     return communities;
-}
-
-export async function getMembers(community : any) {
-    if (!community[0].members) return null
-
-    return community.members;
 }
 
 export async function getCommunityByID(communityID: any)  {

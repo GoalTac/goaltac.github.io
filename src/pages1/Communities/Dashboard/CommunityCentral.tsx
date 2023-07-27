@@ -225,8 +225,6 @@ export function Module({community}: any) {
     const { onCopy } = useClipboard(link);
     const navigate = useNavigate();
     const { user: user } = useSession();
-    const test : Community | null = getCommunity({community})
-    console.log(test)
 
 
     function Options() {
