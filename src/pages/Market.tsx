@@ -16,11 +16,13 @@ import {
     Divider,
     useColorMode,
 } from '@chakra-ui/react';
-import { FaCoins, FaMedal, FaPencilAlt, FaRegCalendar, FaTshirt } from 'react-icons/fa';
+import { FaCoins, FaMedal, FaPencilAlt, FaRegCalendar, FaTshirt, FaShoppingCart } from 'react-icons/fa';
 import { TbTargetArrow } from 'react-icons/tb';
 
 import premiumLogo from '/public/premium_logo.png';
 import premiumName from '/public/premium_logo_name.png';
+
+import ReactCanvasConfetti from 'react-canvas-confetti';
 
 
 export default function Market() {
@@ -71,6 +73,56 @@ export default function Market() {
         }
     };
 
+    const displayItems = (items: Item[]) => {
+        if (cart.length === 0) {
+            alert('No items in cart');
+        } else {
+            <VStack>
+                 {cart.map((items) => (
+                            <Box
+                                key={items.id}
+                                borderWidth="1px"
+                                borderRadius="lg"
+                                overflow="hidden"
+                                p={4}
+                                w="100%"
+                            >
+                                <Text fontSize="xl" fontWeight="bold" mb={2}>
+                                    {items.name}
+                                </Text>
+                                <Text fontSize="lg" mb={2}>
+                                    Price: {items.price}
+                                </Text>
+                            </Box>
+                        ))}
+            </VStack>
+        }
+        // {cart.length === 0 ? (
+        //     <Text>No items in cart</Text>
+        // ) : (
+        //     <Text>Items in cart</Text>
+            // <VStack>
+            //     {cart.map((items) => (
+            //                 <Box
+            //                     key={items.id}
+            //                     borderWidth="1px"
+            //                     borderRadius="lg"
+            //                     overflow="hidden"
+            //                     p={4}
+            //                     w="100%"
+            //                 >
+            //                     <Text fontSize="xl" fontWeight="bold" mb={2}>
+            //                         {items.name}
+            //                     </Text>
+            //                     <Text fontSize="lg" mb={2}>
+            //                         Price: {items.price}
+            //                     </Text>
+            //                 </Box>
+            //             ))}
+            // </VStack>
+        // )}
+    };
+
     return (
         <Box>
             <Text
@@ -81,54 +133,96 @@ export default function Market() {
                     >
                          Marketplace
             </Text>
-            <HStack justify={'right'} gridGap="3px"
+            <HStack justify={'right'} gridGap="3px" 
                 mt={-50} 
                 mb={50}
+
                 >
                 <Text>{balance}</Text>
                     <TbTargetArrow size="1em" />
+                <IconButton
+                    aria-label="Cart"
+                    icon={<FaShoppingCart size="1em" />}
+                    onClick={
+                        cart.length === 0 ? () => alert('No items in cart') : () => alert('Items in cart')
+                        // <VStack>
+                        //      {cart.map((items) => (
+                        //                 <Box
+                        //                     key={items.id}
+                        //                     borderWidth="1px"
+                        //                     borderRadius="lg"
+                        //                     overflow="hidden"
+                        //                     p={4}
+                        //                     w="100%"
+                        //                 >
+                        //                     <Text fontSize="xl" fontWeight="bold" mb={2}>
+                        //                         {items.name}
+                        //                     </Text>
+                        //                     <Text fontSize="lg" mb={2}>
+                        //                         Price: {items.price}
+                        //                     </Text>
+                        //                 </Box>
+                        //             ))}
+                        // </VStack> 
+                    }
+                />
+            </HStack>
+
+            <HStack>
+                <Flex 
+                // flexDir='row' 
+                w='75vw' 
+                // marginX='auto' 
+                justify='center'
+                // borderWidth='10px'
+                >
+                    <VStack divider={<Divider borderColor='gray.200' />}
+                    // borderWidth={'10px'}
+                    >
+                            <Box>
+                                <Text fontSize="3xl" fontWeight="bold" bgGradient='linear(to-t, teal.300, blue.500)' bgClip='text'>
+                                    Merch
+                                </Text>
+                            </Box>
+
+                            {items.map((items) => (
+                                <Flex>
+                                    <HStack spacing={10}>
+                                        {items.icon}
+                                        <VStack>
+                                            <Text fontSize="xl" fontWeight="bold">
+                                                {items.name}
+                                            </Text>
+                                            <Text>
+                                                {items.description}
+                                            </Text>
+                                        </VStack>
+                                        <Button 
+                                        rightIcon={<TbTargetArrow size="1em" />}
+                                        onClick={() => handleBuy(items)}
+                                        isDisabled={balance < items.price}
+                                        >
+                                            Get For: {items.price}
+                                        </Button>
+                                    </HStack>
+                                </Flex>
+                            
+
+                            ))}
+                    </VStack>
+                    
+                </Flex>
+                <Flex 
+                    justify={'right'}
+                    w='25vw'
+                    >
+                    <Premium/> 
+                </Flex>
             </HStack>
 
 
-            <Flex flexDir='row' w='50vw' marginX='auto'>
-                <VStack divider={<Divider borderColor='gray.200' />}>
-                        <Box>
-                            <Text fontSize="3xl" fontWeight="bold" bgGradient='linear(to-t, teal.300, blue.500)' bgClip='text'>
-                                Merch
-                            </Text>
-                        </Box>
 
-                        {items.map((items) => (
-                            <Flex>
-                                <HStack spacing={10}>
-                                    {items.icon}
-                                    <VStack>
-                                        <Text fontSize="xl" fontWeight="bold">
-                                            {items.name}
-                                        </Text>
-                                        <Text>
-                                            {items.description}
-                                        </Text>
-                                    </VStack>
-                                    <Button rightIcon={<TbTargetArrow size="1em" />}>
-                                        Get For: {items.price}
-                                    </Button>
-                                </HStack>
-                            </Flex>
-                        
-
-                        ))}
-                </VStack>
-                <Flex>
-                   <Premium/> 
-                </Flex>
-                
-            </Flex>
-            
-
-
-
-        </Box>
+        </Box> 
         
             
     );
