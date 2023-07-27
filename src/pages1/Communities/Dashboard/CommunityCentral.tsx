@@ -5,7 +5,7 @@ import {
 import { useNavigate, Link } from 'react-router-dom';
 import { ReactNode, useEffect, useState } from 'react';
 import InsideView from '../Community/InsideView';
-import { getAllCommunities, getJoinedCommunities, getPicture, getRequestedCommunities, getTotalMembers, joinCommunity, leaveCommunity } from '../CommunityAPI';
+import { Community, getAllCommunities, getCommunity, getJoinedCommunities, getPicture, getRequestedCommunities, getTotalMembers, joinCommunity, leaveCommunity } from '../CommunityAPI';
 import Calendar from '../../../pages/Calendar';
 import { supabase } from '../../../supabase';
 import { RxExit } from 'react-icons/rx'
@@ -30,7 +30,6 @@ export default function CommunityCentral() {
     }, []);
 
     const [communities, setCommunities] = useState<any>(null);
-
     return(<Flex>
         <Stack marginX='auto'
         paddingBottom='20px'
@@ -226,6 +225,7 @@ export function Module({community}: any) {
     const { onCopy } = useClipboard(link);
     const navigate = useNavigate();
     const { user: user } = useSession();
+
 
     function Options() {
         return(<Menu>

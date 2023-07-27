@@ -18,6 +18,7 @@ export function getPicture(community: any) {
     return community.pic ? community.pic : './../GoalTac_TLogo.png'
 }
 
+//returns the community that matches the name
 export async function getCommunityByName(name: any)  {
 
     const { data: communityData, error } = await supabase
@@ -34,9 +35,87 @@ export async function getCommunityByName(name: any)  {
     return communityData;
 }
 
+
 export function getTotalMembers(community : any) : Number {
     return community.members.length + 1
 }
+
+export async function _getAllMembers(communityID : string) {
+    const { data: data, error } = await supabase
+        .from('community_relations')
+        .select('user_id')
+        .eq('community_id', communityID)
+        .single();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
+}
+
+//returns all members of a specific role
+export async function _getMembers(communityID: string, role : string) { 
+    const { data: data, error } = await supabase
+        .from('community_relations')
+        .select('user_id')
+        .eq('community_id', communityID)
+        .eq('roles', role)
+        .single();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
+}
+
+export async function _addMember(communityID : string, userID : string) {
+    const {data: data, error} = await supabase
+        .from('community_relations')
+        .upsert({community_id : communityID, user_id : userID})
+        .select();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
+}
+
+export async function _removeMember(communityID : string, userID : string) {
+    const {data: data, error} = await supabase
+        .from('community_relations')
+        .delete()
+        .eq('community_id', communityID)
+        .eq('user_id', userID)
+        .single();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
+}
+
+export async function _setMember(communityID : string, userID : string, role : Number, points : Number) {
+    const {data: data, error} = await supabase
+        .from('community_relations')
+        .upsert({community_id : communityID, user_id : userID, role : role, points : points})
+        .select();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
+}
+
+export async function getJoinedCommunities1(userID: string) {
+    
+}
+
+
 
 /**
  * Grab joined communities from a user
@@ -60,12 +139,6 @@ export async function getJoinedCommunities(userID: any)  {
 
     const communities = await getCommunityByID(communityData.joinedCommunities)
     return communities;
-}
-
-export async function getMembers(community : any) {
-    if (!community[0].members) return null
-
-    return community.members;
 }
 
 export async function getCommunityByID(communityID: any)  {
@@ -269,14 +342,20 @@ export interface Member {
     communityPoints: Number
 }
 
+export function getCommunity({community}: any) {
+    try {
+        return community as Community
+    } catch(error) {
+        return null
+    }
+}
+
 export interface Community {
     name: string
     pic: string
     tags: [string]
     description: string
     score: number
-    owner: string //uuid
-    members: [Member]
     tasks: [string] //replace with call to the task interface
     communityID: string //uuid
 }
