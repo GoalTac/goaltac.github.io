@@ -223,8 +223,9 @@ export function Module({community}: any) {
     const picture: string = getPicture(community);
     const link = `https://goaltac.net/community/${community.name}`
     const { onCopy } = useClipboard(link);
-    const navigate = useNavigate();
+    const navigatse = useNavigate();
     const { user: user } = useSession();
+//
 
 
     function Options() {
