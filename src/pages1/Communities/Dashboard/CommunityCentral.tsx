@@ -206,7 +206,7 @@ export function CommunityList() {
 }
 //to be used as the button UI to direct to the community
 export function CommunityCentralButton() {
-    return(<Link to='/communities1'>
+    return(<Link to='/communities'>
         <Button>
             Community
         </Button>
@@ -221,7 +221,7 @@ export function CommunityCentralButton() {
  */
 export function Module({community}: any) {
     const picture: string = getPicture(community);
-    const link = `https://goaltac.net/community1/${community.name}`
+    const link = `https://goaltac.net/community/${community.name}`
     const { onCopy } = useClipboard(link);
     const navigate = useNavigate();
     const { user: user } = useSession();
@@ -265,7 +265,7 @@ export function Module({community}: any) {
             </Box>
         </Box>
 
-        <Stack as={Link} to={`/community1/${community.name}`} marginStart='6rem'>
+        <Stack as={Link} to={`/community/${community.name}`} marginStart='6rem'>
             <Box lineHeight='12px'>
                 <Heading fontSize='1.5rem'>{community.name}</Heading>
                 <Text color='gray' fontSize='1rem'>
@@ -321,7 +321,7 @@ export function ModulePreview({community}: any) {
     return(<HStack paddingBottom='10px'>
         <Box borderRadius='full'
             as={Link} 
-            to={`/community1/${community.name}`}
+            to={`/community/${community.name}`}
             borderWidth='2px' 
             marginBottom='auto'>
                 <Box height='50px' width='50px'>
@@ -330,7 +330,7 @@ export function ModulePreview({community}: any) {
                 </Box>
                 
         </Box>
-        <VStack overflow='hidden' as={Link} to={`/community1/${community.name}`}>
+        <VStack overflow='hidden' as={Link} to={`/community/${community.name}`}>
             <Box>
             <Heading size='md'>{community.name}</Heading> 
             <Text color='gray' fontSize='sm'>
@@ -343,7 +343,7 @@ export function ModulePreview({community}: any) {
             onClick={()=>{
                 if (user) {
                     joinCommunity(community.communityid, user?.['id'])
-                    navigate(`/community1/${community.name}`);
+                    navigate(`/community/${community.name}`);
                 }
                 //send a successful join toast
             }}
