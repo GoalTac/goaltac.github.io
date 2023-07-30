@@ -32,9 +32,10 @@ export default function CommunityCentral() {
     const [communities, setCommunities] = useState<any>(null);
     return(<Flex>
         <Stack marginX='auto'
-        paddingBottom='20px'
+        paddingBottom='100px'
         flexWrap='wrap'
         maxWidth='1200px'
+
         flexDirection={['column', 'row']} 
         justifyContent='center'>
             <CommunityList/>
@@ -290,22 +291,20 @@ export function Module({community}: any) {
 //sugested communities on the side content
 export function CommunitySuggested({communities}: any) {
 
-    
-
-    return(<Box>
-        <Card height='80px' marginBottom='20px'>
+    return(<Box width={['400px', 'auto']}>
+        <Card height='80px'>
             <CardHeader display="flex" 
-            justifyContent="space-between" 
+            justifyContent="space-between"
             fontSize='2xl' margin='auto'>
                 Suggested
             </CardHeader>
         </Card>
-        <Box marginX='10px' boxShadow='lg'>
+        <Box padding='10px' boxShadow='lg'>
             {communities && communities.map((community: any, index: Number) => (
             <ModulePreview key={index} community={community} preview={true}/>))}
         </Box>
 
-        </Box>)
+    </Box>)
 }
 /**
  * Component to display community in the suggested list
