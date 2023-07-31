@@ -5,12 +5,13 @@ import {
 import { useNavigate, Link } from 'react-router-dom';
 import { ReactNode, useEffect, useState } from 'react';
 import InsideView from '../Community/InsideView';
-import { Community, getAllCommunities, getCommunity, getJoinedCommunities, getPicture, getRequestedCommunities, getTotalMembers, joinCommunity, leaveCommunity } from '../CommunityAPI';
+import { Community, _addMember, getAllCommunities, getCommunity, getJoinedCommunities, getPicture, getRequestedCommunities, getTotalMembers, leaveCommunity } from '../CommunityAPI';
 import Calendar from '../../../pages/Calendar';
 import { supabase } from '../../../supabase';
 import { RxExit } from 'react-icons/rx'
 import { LinkIcon, EditIcon, HamburgerIcon, RepeatIcon } from '@chakra-ui/icons'
 import { SessionProvider, useSession } from '../../../hooks/SessionProvider';
+import { toastError, toastSuccess } from '../../../hooks/Utilities';
 
 
 /**
@@ -64,6 +65,8 @@ export function CommunityList() {
     const [type, setType] = useState<String>('joined');
     const [loading, setLoading] = useState<Boolean>(true);
     const { user: user } = useSession();
+    const navigate = useNavigate()
+
     
     const toggleType = async(requestedType: String) => {
         setLoading(true)
@@ -110,26 +113,20 @@ export function CommunityList() {
                 Tasks: []
 
             }
-            await supabase.from('communities').insert([community]);
-
-            /** How to update profiles table too?
-             * const { data: communities } = await supabase
-                .from('profiles')
-                .select('joinedCommunities')
-                .eq('userid', user?.['id']).single()
-            const existingCommunities = communities ? communities.joinedCommunities || [] : [];
-            const updatedCommunities =  [...existingCommunities, communityID]
-             * 
-             */
             
+            const { error } = await supabase.from('communities').insert([community]);
+            if (!error) {
+                toggleType('joined')
+                toastSuccess('Created your community!')
 
-
-
+            } else {
+                toastError('There was an error creating your community')
+            }
         }
 
 
         return(
-            <Box>
+            <Box padding='20px'>
                 <FormControl>
                     <FormLabel>Title</FormLabel>
                     <Input placeholder="Title" value={name} onChange={(e) => setName(e.target.value)} />
@@ -342,7 +339,7 @@ export function ModulePreview({community}: any) {
             borderRadius='full' 
             onClick={()=>{
                 if (user) {
-                    joinCommunity(community.communityid, user?.['id'])
+                    _addMember(community.communityid, user?.['id'])
                     navigate(`/community/${community.name}`);
                 }
                 //send a successful join toast

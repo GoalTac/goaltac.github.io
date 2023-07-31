@@ -111,6 +111,8 @@ export async function _setMember(communityID : string, userID : string, role : N
     return data;
 }
 
+
+
 export async function getJoinedCommunities1(userID: string) {
     
 }
