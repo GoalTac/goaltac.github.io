@@ -1,8 +1,6 @@
 import { supabase } from './../supabase';
 import { useToast } from '@chakra-ui/react';
 
-const toast = useToast();
-
 // LEVELS ----------------------------------------------------------------------
 // Calculates the amount of experience needed to level up
 export function experienceNeeded(level: number) { return (level + 5) ** 4; }
@@ -55,6 +53,8 @@ export async function getUser(uuid: any) {
 
 // Toast System ----------------------------------------------------------------
 export function toastError(message: string) {
+    const toast = useToast();
+
     toast({
         title: "Error",
         description: message,
@@ -65,6 +65,7 @@ export function toastError(message: string) {
 }
 
 export function toastSuccess(message: string) {
+    const toast = useToast();
 
     toast({
         title: "Success",
