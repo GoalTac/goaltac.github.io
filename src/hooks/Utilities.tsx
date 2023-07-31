@@ -22,6 +22,7 @@ export function experiencePercent(exp: number) {
     const leftOverExp = levelObject.experience
     const expNeeded = experienceNeeded(level)
     const expPercent = (leftOverExp / expNeeded)
+    
 
     if (expPercent > 1) {
         console.log("Clan needs to be leveled up")
@@ -53,7 +54,7 @@ export async function getUser(uuid: any) {
 
 // Toast System ----------------------------------------------------------------
 export function toastError(message: string) {
-    const toast = useToast();
+    const toast = useToast()
 
     toast({
         title: "Error",
@@ -65,7 +66,7 @@ export function toastError(message: string) {
 }
 
 export function toastSuccess(message: string) {
-    const toast = useToast();
+    const toast = useToast()
 
     toast({
         title: "Success",

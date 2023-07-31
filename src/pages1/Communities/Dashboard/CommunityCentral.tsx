@@ -99,7 +99,9 @@ export function CommunityList() {
         const [isPublic, setIsPublic] = useState<any>(true);
         const { user: user } = useSession()
 
+
         const handleAddCommunity = async() => {
+            
             const community = {
                 created_at: new Date(),
                 name: name,
@@ -113,15 +115,19 @@ export function CommunityList() {
                 Tasks: []
 
             }
-            
+
+            //please someone fix this
             const { error } = await supabase.from('communities').insert([community]);
+
             if (!error) {
                 toggleType('joined')
                 toastSuccess('Created your community!')
-
             } else {
                 toastError('There was an error creating your community')
             }
+            return error
+        
+            
         }
 
 
