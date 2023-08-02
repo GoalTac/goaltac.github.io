@@ -1,11 +1,11 @@
 import {
     Box,
-    Button, Card, useClipboard, Icon, useColorMode, Flex, HStack, Heading, List, Stack, Text, Image, Divider, VStack, CardHeader, useColorModeValue, Spacer, Spinner, IconButton, Menu, MenuButton, MenuItem, MenuList, FormControl, FormLabel, Input, Radio, RadioGroup, Textarea
+    Button, Card,useToast, useClipboard, Icon, useColorMode, Flex, HStack, Heading, List, Stack, Text, Image, Divider, VStack, CardHeader, useColorModeValue, Spacer, Spinner, IconButton, Menu, MenuButton, MenuItem, MenuList, FormControl, FormLabel, Input, Radio, RadioGroup, Textarea
 } from '@chakra-ui/react'
 import { useNavigate, Link } from 'react-router-dom';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import InsideView from '../Community/InsideView';
-import { Community, _addMember, getAllCommunities, getCommunity, getJoinedCommunities, getPicture, getRequestedCommunities, getTotalMembers, leaveCommunity } from '../CommunityAPI';
+import { Community, _addCommunity, _addMember, getAllCommunities, getCommunity, getJoinedCommunities, getPicture, getRequestedCommunities, getTotalMembers, leaveCommunity } from '../CommunityAPI';
 import Calendar from '../../../pages/Calendar';
 import { supabase } from '../../../supabase';
 import { RxExit } from 'react-icons/rx'
@@ -50,118 +50,93 @@ export default function CommunityCentral() {
 
 
 //Listing for all communities user has joined or requested
+/**
+ * NEEDS TO BE COMPLETELY CHANGED
+ * SET A VAR TO {view} and set view to the react element
+ * @returns 
+ */
 export function CommunityList() {
 
-    //get the communities to display
-    useEffect(() => {
-        const fetchCommunityData = async() => {
-            toggleType(type)
-            
-        };
-        fetchCommunityData();
-    }, []);
-
-    //what did the user press joined/requested communities?
+    //Could be joined communities or requested communities
+    const [communities, setCommunities] = useState<any>(null);
+    const [view, setView] = useState<ReactElement>();
     const [type, setType] = useState<String>('joined');
     const [loading, setLoading] = useState<Boolean>(true);
     const { user: user } = useSession();
     const navigate = useNavigate()
 
-    
-    const toggleType = async(requestedType: String) => {
-        setLoading(true)
-        setType(requestedType)
-
-        if (requestedType == 'joined') {
-            getJoinedCommunities(user?.['id']).then((response) => {
-                setCommunities(response)
-                setLoading(false)
-            })
-        } else if (requestedType == 'requested') {
-            getRequestedCommunities(user?.['id']).then((response) => {
-                setCommunities(response)
-                setLoading(false)
-            })
-        } else if (requestedType == 'create') {
-            setCommunities(null)
-            setLoading(false)
-        } else {
-            setLoading(false)
-            return null
-        }
-    }
-
-    function Create() {
-        const [name, setName] = useState<any>('');
-        const [description, setDescription] = useState<any>('');
-        const [pic, setPic] = useState<any>(null);
-        const [tags, setTags] = useState<any>(null);
-        const [isPublic, setIsPublic] = useState<any>(true);
-        const { user: user } = useSession()
-
-
-        const handleAddCommunity = async() => {
-            
-            const community = {
-                created_at: new Date(),
-                name: name,
-                description: description,
-                pic: pic,
-                tags: tags,
-                score: 0,
-                isPublic: isPublic,
-                owner: user?.['id'],
-                members: [],
-                Tasks: []
-
-            }
-
-            //please someone fix this
-            const { error } = await supabase.from('communities').insert([community]);
-
-            if (!error) {
-                toggleType('joined')
-                toastSuccess('Created your community!')
+    useEffect(()=> {
+        if(loading) {
+            //first time loading the web page
+            if (!view) {
+                setJoinedView()
             } else {
-                toastError('There was an error creating your community')
+               setLoadingView() 
             }
-            return error
-        
-            
         }
+        if(!communities) {
+            setBlankView()
+        }
+    },[loading, type])
 
+    function setJoinedView() {
+        setLoading(true)
+        setType('joined')
+        getJoinedCommunities(user?.['id']).then((response) => {
+            setCommunities(response)
 
-        return(
-            <Box padding='20px'>
-                <FormControl>
-                    <FormLabel>Title</FormLabel>
-                    <Input placeholder="Title" value={name} onChange={(e) => setName(e.target.value)} />
-                </FormControl>
+            //sets the view variable to a box of joined communities
+            response ? setView(
+                <Box>
+                {response?.map((community: any, index: Number) => (
+                    <Module key={index} community={community}/> 
+                ))}
+                </Box>
+            ) : setBlankView()
+            setLoading(false)
+        })
+    }
+    function setRequestedView() {
+        setLoading(true)
+        setType('requested')
 
-                <FormControl mt={4}>
-                    <FormLabel>Description</FormLabel>
-                    <Textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
-                </FormControl>
-                <Button colorScheme="blue" mr={3} onClick={handleAddCommunity}>
-                    {'Save'}
-                </Button>
-            </Box>
+        getRequestedCommunities(user?.['id']).then((response) => {
+            setCommunities(response)
+            
+            //sets the view variable to a box of the requested modules
+            response ? setView(
+                <Box>
+                {response?.map((community: any, index: Number) => (
+                    <Module key={index} community={community}/> 
+                ))}
+                </Box>
+            ) : setBlankView()
+            setLoading(false)
+        })
+    }
+    function setLoadingView() {
+        setType('loading')
+
+        setView(
+            <Flex paddingTop='60px' justifyContent='center' >
+                <Spinner speed='1s' size='xl' />
+            </Flex>
         )
     }
+    function setBlankView() {
+        setType('blank')
 
-
-    //Could be joined communities or requested communities
-    const [communities, setCommunities] = useState<any>(null);
-
-    function Spinny() {
-        return <Flex paddingTop='60px' justifyContent='center' >
-        <Spinner speed='1s' size='xl' />
-        
-        <Spinner position='absolute'
-            speed='1.1s' size='xl' color='yellow' />
-    </Flex>
+        setView(<Heading paddingY='20px'>
+            Where are your communities?!
+        </Heading>)
     }
+    function resetView() {
+        setType('joined')
 
+        setLoading(true)
+        setCommunities(null)
+        setLoading(false)
+    }
 
     return (<Box width={['400px', '600px']}>
         <Card height='80px' 
@@ -173,34 +148,23 @@ export function CommunityList() {
                 <CardHeader display="flex" justifyContent="space-between" columnGap='20px'>
                     <Button variant="ghost" colorScheme="blue" width='fit-content' 
                     isActive={type == 'joined'}
-                    onClick={()=>toggleType('joined')}>
+                    onClick={()=>setJoinedView()}>
                         Joined
                     </Button>
                     <Button variant="ghost" colorScheme="blue" width='fit-content'
                     isActive={type == 'requested'}
-                    onClick={()=> toggleType('requested')}>
+                    onClick={()=> setRequestedView()}>
                         Requested
                     </Button>
                     <Spacer/>
                     <Button variant="outline" colorScheme="blue" width='fit-content'
                     isActive={type == 'create'}
-                    onClick={()=> toggleType('create')}>
+                    onClick={()=> setView(<CreateView/>)}>
                         Create
                     </Button>
                 </CardHeader>
             </Card>
-            <Box boxShadow='lg'>
-                {/* Display spinner when loading */}
-               {loading ? <Spinny/> : 
-                communities ? communities.map((community: any, index: Number) => (
-                <Module key={index} community={community}/> )) :
-                type == 'create' ? <Create/> :
-                <Heading paddingY='20px'>
-                    Where are your communities?!
-                </Heading>
-                }
-               
-            </Box>
+            {view}
 
         
         
@@ -285,6 +249,52 @@ export function Module({community}: any) {
         <Spacer/>
         <Options/>
     </HStack>)
+}
+
+function CreateView() {
+    const [name, setName] = useState<any>('');
+    const [description, setDescription] = useState<any>('');
+    const [pic, setPic] = useState<any>(null);
+    const [tags, setTags] = useState<any>(null);
+    const [isPublic, setIsPublic] = useState<any>(true);
+    const { user: user } = useSession()
+
+    
+    const handleAddCommunity = async() => {
+        const community = {
+            created_at: new Date(),
+            name: name,
+            description: description,
+            pic: pic,
+            tags: tags,
+            score: 0,
+            isPublic: isPublic,
+            owner: user?.['id'],
+            members: [],
+            Tasks: []
+        }
+        const { error } = await supabase.from('communities').insert([community]);
+        if (error) {
+            
+        }
+    }
+
+    return(
+        <Box padding='20px'>
+            <FormControl>
+                <FormLabel>Title</FormLabel>
+                <Input placeholder="Title" value={name} onChange={(e) => setName(e.target.value)} />
+            </FormControl>
+
+            <FormControl mt={4}>
+                <FormLabel>Description</FormLabel>
+                <Textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+            </FormControl>
+            <Button colorScheme="blue" mr={3} onClick={handleAddCommunity}>
+                {'Save'}
+            </Button>
+        </Box>
+    )
 }
 
 

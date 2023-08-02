@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Heading, Stack, Text, Image, useColorModeValue, Button, Progress, FormControl, FormLabel, Input, Textarea } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Heading, Stack, Text, Image, useColorModeValue, Button, Progress, FormControl, FormLabel, Input, Textarea, useToast } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
 import { VerticalTimeline } from 'react-vertical-timeline-component';
@@ -13,6 +13,7 @@ import { ChatIcon } from '@chakra-ui/icons';
 import { uniqueId } from 'lodash';
 import { RandomUUIDOptions } from 'crypto';
 import { getUser } from './../../hooks/Utilities';
+import { toastSuccess, toastError } from './../../hooks/Utilities';
 
 export function getPicture(community: any) {
     return community.pic ? community.pic : './../GoalTac_TLogo.png'
@@ -38,6 +39,18 @@ export async function getCommunityByName(name: any)  {
 
 export function getTotalMembers(community : any) : Number {
     return community.members.length + 1
+}
+
+export async function _addCommunity({community} : any) : Promise<Error | null> {
+    const { error } = await supabase.from('communities').insert([community]);
+
+    if (!error) {
+    } else {
+       
+        throw new Error(error.message)
+    }
+
+    return error
 }
 
 export async function _getAllMembers(communityID : string) {
@@ -348,6 +361,7 @@ export function getCommunity({community}: any) {
     try {
         return community as Community
     } catch(error) {
+        console.log(error)
         return null
     }
 }
