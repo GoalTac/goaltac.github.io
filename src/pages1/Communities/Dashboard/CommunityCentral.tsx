@@ -66,6 +66,7 @@ export function CommunityList() {
     const navigate = useNavigate()
 
     useEffect(()=> {
+        console.log(type)
         if(loading) {
             //first time loading the web page
             if (!view) {
@@ -73,9 +74,6 @@ export function CommunityList() {
             } else {
                setLoadingView() 
             }
-        }
-        if(!communities) {
-            setBlankView()
         }
     },[loading, type])
 
