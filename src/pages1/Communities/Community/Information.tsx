@@ -23,7 +23,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import { calculateLevel, experiencePercent } from '../../../hooks/Utilities'
 import { formatNumber } from '../../../hooks/Utilities';
-import { getPicture, getTotalMembers } from '../CommunityAPI';
+import { _getAllMembers, getPicture } from '../CommunityAPI';
 import {
   GiArrowhead,
   GiPerson
@@ -197,7 +197,7 @@ function PrerequisitesGrid({community}: any) {
  */
 function GeneralInfoGrid({community}: any) {
 
-  const memberCount = getTotalMembers(community)
+  const memberCount = _getAllMembers(community.community.id)
   //const goalsWIP = community.goals.length
   //const goalsCompleted = community.goalsC.length
 
