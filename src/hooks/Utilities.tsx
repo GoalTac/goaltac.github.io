@@ -44,7 +44,6 @@ export async function getUser(uuid: any) {
         .single();
 
     if (error) {
-        toastError(error.message);
         // console.error(error);
         return;
     }
@@ -53,6 +52,8 @@ export async function getUser(uuid: any) {
 }
 
 // Toast System ----------------------------------------------------------------
+/**
+ * Thisjust doesn't work
 export function toastError(message: string) {
     const toast = useToast()
 
@@ -75,4 +76,4 @@ export function toastSuccess(message: string) {
         duration: 9000,
         isClosable: true,
     })
-}
+}*/

@@ -29,7 +29,7 @@ import {
 } from '@chakra-ui/react'
 import React from 'react'
 import { useParams } from 'react-router-dom';
-import { getCommunityByName } from './../CommunityAPI'
+import { _getAllMembers, getCommunityByName } from './../CommunityAPI'
 import { uniqueId } from 'lodash';
 import Chat from '../../../components/Chats/CommunityChat';
 import GoalDashboard from './Goals';
@@ -69,10 +69,19 @@ export default function InsideView() {
 
 function HeaderNav({setView, community}: any) {
 
+    const [members, setMembers] = useState<any>([])
+
+    useEffect(()=> {
+      async function fetchMembers() {
+        setMembers(await _getAllMembers(community.community_id))
+      }
+      fetchMembers()
+    },[])
+
     const navigation = [
         ['calendar', <RiCalendarEventLine/>, <Calendar community={community} />],
         ['goals', <TbTarget/>, <GoalDashboard community={community} />],
-        ['people', <FaUserFriends/>, <Roster community={community} />],
+        ['people', <FaUserFriends/>, <Roster members={members} />],
         ['chat', <ChatIcon />, <Chat />]]
 
     

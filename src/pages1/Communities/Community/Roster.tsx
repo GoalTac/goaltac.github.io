@@ -18,19 +18,23 @@ import { formatNumber } from '../../../hooks/Utilities';
 import { JSXElementConstructor, Key, ReactElement, ReactFragment, ReactPortal } from 'react';
 import { getUser } from './../../../hooks/Utilities'
 import { useState, useEffect } from 'react';
-import { Member } from '../CommunityAPI';
+import { Member, _getAllMembers } from '../CommunityAPI';
 
 //roster has different viewables based on permission level
 /**
  * Displays the clan's roster
  * @param {*} param0
  */
-export default function Roster({community}: any) : ReactElement {
+export default function Roster({members}: any) : ReactElement {
 
-    const orderedPeople = numericalOrder(community.members)
+    function displayMembers() {
+        return members.map((personObj: Member, index: any) => 
+            <RowItem member={personObj} id={index} key ={index}/>)
+    }
 
+    //const orderedPeople = numericalOrder(members().then((response)=> {return response}))
     return (<Box minHeight='100%' paddingTop='20px'>
-        {orderedPeople}
+       {displayMembers()}
     </Box>)
     
 }
@@ -68,15 +72,15 @@ function numericalOrder(people: any) {
  * @returns Row display for roster
  */
 function RowItem({member, id}: any) {
+    console.log(member)
     
     const { colorMode } = useColorMode();
 
     //get username from uuid
     const [userName, setUserName] = useState<any>();
     useEffect(() => {
-        const fetchUserName = () => getUser(member.uuid).then((response) => {
+        const fetchUserName = () => getUser(member.user_id).then((response) => {
             setUserName(response?.name)
-            console.log(member)
         })
         fetchUserName();
       }, []);
@@ -93,9 +97,17 @@ function RowItem({member, id}: any) {
             </Heading>
             <Divider orientation='vertical' />
             <Text fontSize='1.5rem' paddingStart='0.5rem' maxWidth='200px'>
-                {userName ? userName : 'hi'}
+                {userName ? userName : 'undefined'}
             </Text>
-            <Spacer/>
+            
+
+        </HStack>
+    </Flex>);
+}
+
+/**
+ * 
+ * <Spacer/>
             <Flex borderColor='blue.200' 
                 backgroundColor={colorMode == 'dark' ? 'blue.700' : 'blue.100'}
                 borderRadius='10px'
@@ -109,7 +121,5 @@ function RowItem({member, id}: any) {
                 </Text>
                 <Icon boxSize='1.5rem' as={GiArrowhead}/>
             </Flex>
-
-        </HStack>
-    </Flex>);
-}
+ * 
+ */
