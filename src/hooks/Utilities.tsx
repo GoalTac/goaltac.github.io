@@ -1,5 +1,6 @@
+import { ReactElement } from 'react';
 import { supabase } from './../supabase';
-import { useToast } from '@chakra-ui/react';
+import { Flex, Stack, useToast } from '@chakra-ui/react';
 
 // LEVELS ----------------------------------------------------------------------
 // Calculates the amount of experience needed to level up
@@ -49,6 +50,22 @@ export async function getUser(uuid: any) {
     }
 
     return await user;
+}
+
+export function twoColumns(ElementOne : ReactElement, ElementTwo : ReactElement) : ReactElement{
+    return <Flex>
+        <Stack marginX='auto'
+        paddingBottom='100px'
+        flexWrap='wrap'
+        maxWidth='1200px'
+
+        flexDirection={['column', 'row']} 
+        justifyContent='center'>
+            {ElementOne}
+            {ElementTwo}
+        </Stack>
+        
+    </Flex>
 }
 
 // Toast System ----------------------------------------------------------------
