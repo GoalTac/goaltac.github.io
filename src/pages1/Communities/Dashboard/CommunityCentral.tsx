@@ -41,7 +41,7 @@ export default function CommunityCentral() {
                 setLoadingView()
                 
             }
-        },[loading, type])
+        },[])
 
         function Module({community}: any) {
             const picture: string = getPicture(community);
@@ -96,7 +96,12 @@ export default function CommunityCentral() {
                     </MenuItem>
                     <MenuItem icon={<RxExit />} 
                         onClick={()=>{ 
-                            (user && _removeMember(community.community_id, user?.['id']))
+                            if(user) {
+                                _removeMember(community.community_id, user?.['id']).finally(()=>{
+                                    setJoinedView() 
+                                })
+                               
+                            }
                             toast({
                                 title: "Success",
                                 description: `Left ${community.name}`,
@@ -182,7 +187,10 @@ export default function CommunityCentral() {
                         <Spacer/>
                         <Button variant="outline" colorScheme="blue" width='fit-content'
                         isActive={type == 'create'}
-                        onClick={()=> setView(<CreateView/>)}>
+                        onClick={()=> {
+                            setType('create')
+                            setView(<CreateView/>)
+                        }}>
                             Create
                         </Button>
                     </CardHeader>
