@@ -56,7 +56,7 @@ export async function getUser(uuid: any) {
 export function toastError(message: string) {
     const toast = useToast()
 
-    return toast({
+    toast({
         title: "Error",
         description: message,
         status: "error",
@@ -68,7 +68,7 @@ export function toastError(message: string) {
 export function toastSuccess(message: string) {
     const toast = useToast()
 
-    return toast({
+    toast({
         title: "Success",
         description: message,
         status: "success",
