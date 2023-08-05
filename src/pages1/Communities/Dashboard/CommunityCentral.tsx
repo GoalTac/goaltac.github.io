@@ -54,7 +54,7 @@ export default function CommunityCentral() {
                 _getAllMembers(community.community_id).then((response)=> {
                     setMembers(response)
                 })
-            },[members])
+            },[])
         
             
             return(<HStack overflow='hidden' padding='20px' borderRadius='20px'>
@@ -281,20 +281,45 @@ export default function CommunityCentral() {
                 pic: pic,
                 score: 0,
                 isPublic: isPublic,
-            }).then((response)=>{ //fix this setting community id to the wrong id
-                const uuid = response.community_id
-                _addMember({
+            }).then((response : any)=>{ //fix this setting community id to the wrong id
+
+                if(response.message) {
+                    toast({
+                        title: "Error",
+                        description: response.message,
+                        status: "error",
+                        duration: 9000,
+                        isClosable: true,
+                    })
+                    return
+                }
+
+                const uuid = response?.['community_id']
+                const addedMember = _addMember({
                     community_id: uuid, 
                     user_id: (user ? user?.['id'] : ''),
                     role: 'Owner'
                 })
-                toast({
-                    title: "Success",
-                    description: `Successfully created ${response.name}`,
-                    status: "success",
-                    duration: 9000,
-                    isClosable: true,
-                });
+                addedMember.then((response : any)=> {
+                    if(response.message) {
+                        toast({
+                            title: "Error",
+                            description: response.message,
+                            status: "error",
+                            duration: 9000,
+                            isClosable: true,
+                        })
+                    } else {
+                        toast({
+                            title: "Success",
+                            description: `Successfully created ${name}`,
+                            status: "success",
+                            duration: 9000,
+                            isClosable: true,
+                        })
+                    }
+                })
+                
                 setName('')
                 setDescription('')
                 setPic('')

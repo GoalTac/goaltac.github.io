@@ -66,7 +66,7 @@ export async function _addCommunity(community : any) {
         .select().single();
 
     if (error) {
-        throw new Error(error.message)
+        return error
     }
     return data
 }
@@ -122,8 +122,7 @@ export async function _addMember(relationship : any) {
         .select();
 
     if (error) {
-        toastError(error.message)
-        throw new Error(error.message)
+        return error
     }
 
     return data;
@@ -142,7 +141,7 @@ export function relationTemp(fields : any) {
 //put as input an object with part of the community's fields and then output the complete community object
 export function communityTemp(fields : any) {
     return {
-        name: fields.name ? fields.name : '',
+        name: fields.name ? `${fields.name}`.toLowerCase() : '',
         description: fields.description ? fields.description : '',
         pic: fields.pic ? fields.pic : '',
         score: fields.score ? fields.score : 0,
