@@ -99,6 +99,7 @@ function RowItem({member, id}: any) {
             <Text fontSize='1.5rem' paddingStart='0.5rem' maxWidth='200px'>
                 {userName ? userName : 'undefined'}
             </Text>
+            <Spacer/>
             
 
         </HStack>
