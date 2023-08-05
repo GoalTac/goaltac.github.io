@@ -1,6 +1,6 @@
 import {
     Box,
-    Button, Card,useToast, useClipboard, Icon, useColorMode, Flex, HStack, Heading, List, Stack, Text, Image, Divider, VStack, CardHeader, useColorModeValue, Spacer, Spinner, IconButton, Menu, MenuButton, MenuItem, MenuList, FormControl, FormLabel, Input, Radio, RadioGroup, Textarea
+    Button, Card, useToast, useClipboard, Icon, useColorMode, Flex, HStack, Heading, List, Stack, Text, Image, Divider, VStack, CardHeader, useColorModeValue, Spacer, Spinner, IconButton, Menu, MenuButton, MenuItem, MenuList, FormControl, FormLabel, Input, Radio, RadioGroup, Textarea
 } from '@chakra-ui/react'
 import { useNavigate, Link } from 'react-router-dom';
 import { ReactElement, ReactNode, useEffect, useState } from 'react';
@@ -21,7 +21,7 @@ import { toastError, toastSuccess } from '../../../hooks/Utilities';
 //TODO: Need to get this to auto update when someone leaves their community
 export default function CommunityCentral() {
     const { user: user } = useSession();
-
+    const toast = useToast();
 
     function CommunityList() {
         //Could be joined communities or requested communities
@@ -97,6 +97,13 @@ export default function CommunityCentral() {
                     <MenuItem icon={<RxExit />} 
                         onClick={()=>{ 
                             (user && _removeMember(community.community_id, user?.['id']))
+                            toast({
+                                title: "Success",
+                                description: `Left ${community.name}`,
+                                status: "success",
+                                duration: 9000,
+                                isClosable: true,
+                            });
                         }}>Leave
                     </MenuItem>
                     </MenuList>
@@ -152,54 +159,7 @@ export default function CommunityCentral() {
             setCommunities(null)
             setLoading(false)
         }
-        function CreateView() {
-            const [name, setName] = useState<any>('');
-            const [description, setDescription] = useState<any>('');
-            const [pic, setPic] = useState<any>(null);
-            const [isPublic, setIsPublic] = useState<any>(true);
-
-            const [community_id, setCommunity_id] = useState<any>('');
-            const [points, setPoints] = useState<any>(0);
-            const [role, setRole] = useState<any>(0);
-            const [status, setStatus] = useState<any>(1); //joined
-
-            setType('create')
         
-            const handleAddCommunity = async() => {
-                _addCommunity({
-                    name: name,
-                    description: description,
-                    pic: pic,
-                    score: 0,
-                    isPublic: isPublic,
-                }).then((response)=>{ //fix this setting community id to the wrong id
-                    const uuid = response.community_id
-                    _addMember({
-                        community_id: uuid, 
-                        user_id: (user ? user?.['id'] : ''),
-                        roles: 'Owner'
-                    })
-                })
-                
-            }
-        
-            return(
-                <Box padding='20px'>
-                    <FormControl>
-                        <FormLabel>Title</FormLabel>
-                        <Input placeholder="Title" value={name} onChange={(e) => setName(e.target.value)} />
-                    </FormControl>
-        
-                    <FormControl mt={4}>
-                        <FormLabel>Description</FormLabel>
-                        <Textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
-                    </FormControl>
-                    <Button colorScheme="blue" mt={3} onClick={handleAddCommunity}>
-                        {'Save'}
-                    </Button>
-                </Box>
-            )
-        }
 
         return (<Box width={['400px', '600px']}>
             <Card height='80px' 
@@ -234,6 +194,7 @@ export default function CommunityCentral() {
     //sugested communities on the side content
     function CommunitySuggested() {
         const [communities, setCommunities] = useState<any>([]);
+
         useEffect(()=>{
             async function fetchCommunities() {
                 setCommunities(await _getUnJoinedCommunities(user?.['id']))
@@ -244,7 +205,15 @@ export default function CommunityCentral() {
         function ModulePreview({community}: any) {
             const picture: string = getPicture(community);
             const navigate = useNavigate();
-            const [members, setMembers] = useState<any>(_getAllMembers(community.community_id))
+            const [members, setMembers] = useState<any>([])
+
+            useEffect(()=> {
+                async function fetchMembers() {
+                    setMembers(await _getAllMembers(community.community_id))
+                }
+                fetchMembers()
+            },[])
+
             return(<HStack paddingBottom='10px'>
                 <Box borderRadius='full'
                     as={Link} 
@@ -293,6 +262,64 @@ export default function CommunityCentral() {
                 <ModulePreview key={index} community={community} preview={true}/>))}
             </Box>
         </Box>)
+    }
+    function CreateView() {
+        const [name, setName] = useState<any>('');
+        const [description, setDescription] = useState<any>('');
+        const [pic, setPic] = useState<any>(null);
+        const [isPublic, setIsPublic] = useState<any>(true);
+
+        const [community_id, setCommunity_id] = useState<any>('');
+        const [points, setPoints] = useState<any>(0);
+        const [role, setRole] = useState<any>(0);
+        const [status, setStatus] = useState<any>(1); //joined
+    
+        const handleAddCommunity = async() => {
+            _addCommunity({
+                name: name,
+                description: description,
+                pic: pic,
+                score: 0,
+                isPublic: isPublic,
+            }).then((response)=>{ //fix this setting community id to the wrong id
+                const uuid = response.community_id
+                _addMember({
+                    community_id: uuid, 
+                    user_id: (user ? user?.['id'] : ''),
+                    role: 'Owner'
+                })
+                toast({
+                    title: "Success",
+                    description: `Successfully created ${response.name}`,
+                    status: "success",
+                    duration: 9000,
+                    isClosable: true,
+                });
+                setName('')
+                setDescription('')
+                setPic('')
+                setIsPublic('')
+
+            })
+            
+        }
+    
+        return(
+            <Box padding='20px'>
+                <FormControl>
+                    <FormLabel>Title</FormLabel>
+                    <Input placeholder="Title" value={name} onChange={(e) => setName(e.target.value)} />
+                </FormControl>
+    
+                <FormControl mt={4}>
+                    <FormLabel>Description</FormLabel>
+                    <Textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                </FormControl>
+                <Button colorScheme="blue" mt={3} onClick={handleAddCommunity}>
+                    {'Save'}
+                </Button>
+            </Box>
+        )
     }
 
     return(<Flex>

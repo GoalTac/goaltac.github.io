@@ -13,10 +13,34 @@ import { ChatIcon } from '@chakra-ui/icons';
 import { uniqueId } from 'lodash';
 import { RandomUUIDOptions } from 'crypto';
 import { getUser } from './../../hooks/Utilities';
-import { toastSuccess, toastError } from './../../hooks/Utilities';
+
 
 export function getPicture(community: any) {
     return community.pic ? community.pic : './../GoalTac_TLogo.png'
+}
+
+export function toastError(message: string) {
+    const toast = useToast()
+
+    toast({
+        title: "Error",
+        description: message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+    })
+}
+
+export function toastSuccess(message: string) {
+    const toast = useToast()
+
+    toast({
+        title: "Success",
+        description: message,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+    })
 }
 
 //returns the community that matches the name
@@ -39,6 +63,19 @@ export async function _addCommunity(community : any) {
     const { data: data, error } = await supabase
         .from('communities')
         .insert([communityTemp(community)])
+        .select().single();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+    return data
+}
+
+export async function _removeCommunity(community_id : any) {
+    const { data: data, error } = await supabase
+        .from('communities')
+        .delete()
+        .eq('community_id', community_id)
         .select().single();
 
     if (error) {
@@ -85,6 +122,7 @@ export async function _addMember(relationship : any) {
         .select();
 
     if (error) {
+        toastError(error.message)
         throw new Error(error.message)
     }
 
@@ -112,16 +150,26 @@ export function communityTemp(fields : any) {
     }
 }
 
+
 export async function _removeMember(communityID : string, userID : string) {
-    const {error} = await supabase
+    const {data: data,error} = await supabase
         .from('community_relations')
         .delete()
         .eq('community_id', communityID)
-        .eq('user_id', userID);
+        .eq('user_id', userID)
+        .select().single();
 
     if (error) {
         throw new Error(error.message)
     };
+    
+    const members = _getAllMembers(communityID).then((response)=>{
+        if (response.length <= 0) {
+            _removeCommunity(communityID)
+        }
+    })
+
+    return data;
 }
 
 export async function _setMember(relationship : any) {
