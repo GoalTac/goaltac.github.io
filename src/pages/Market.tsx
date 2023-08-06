@@ -30,9 +30,6 @@ import { TbTargetArrow } from 'react-icons/tb';
 import premiumLogo from '/public/premium_logo.png';
 import premiumName from '/public/premium_logo_name.png';
 
-import ReactCanvasConfetti from 'react-canvas-confetti';
-import { set } from 'lodash';
-
 
 export default function Market() {
     // UseEffect ----------------------------------------------------------------------

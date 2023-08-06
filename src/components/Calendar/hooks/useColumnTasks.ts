@@ -28,6 +28,7 @@ function useColumnTasks(column: ColumnType, colorOveride: string) {
         title: `New ${column} task`,
         color: colorOveride ? colorOveride : pickChakraRandomColor('.300'),
         column,
+        type: ''
       };
 
       return {

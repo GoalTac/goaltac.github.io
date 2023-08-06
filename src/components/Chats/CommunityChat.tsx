@@ -46,7 +46,7 @@ export default function Chat() {
 
         const { data, error } = await supabase
             .from('communities')
-            .select('communityid')
+            .select('community_id')
             .eq('name', location.pathname.split('/')[2].toLowerCase().replaceAll('%20', ' '));
 
         if (error) {
@@ -54,7 +54,7 @@ export default function Chat() {
             return;
         }
 
-        const communityId = data[0]?.communityid || '';
+        const communityId = data[0]?.community_id || '';
 
         setCurrentChatMessages(communityId);
 

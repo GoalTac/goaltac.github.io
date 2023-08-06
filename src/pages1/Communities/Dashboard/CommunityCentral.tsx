@@ -1,16 +1,17 @@
 import {
     Box,
-    Button, Card, useClipboard, Icon, useColorMode, Flex, HStack, Heading, List, Stack, Text, Image, Divider, VStack, CardHeader, useColorModeValue, Spacer, Spinner, IconButton, Menu, MenuButton, MenuItem, MenuList, FormControl, FormLabel, Input, Radio, RadioGroup, Textarea
+    Button, Card, useToast, useClipboard, Icon, useColorMode, Flex, HStack, Heading, List, Stack, Text, Image, Divider, VStack, CardHeader, useColorModeValue, Spacer, Spinner, IconButton, Menu, MenuButton, MenuItem, MenuList, FormControl, FormLabel, Input, Radio, RadioGroup, Textarea
 } from '@chakra-ui/react'
 import { useNavigate, Link } from 'react-router-dom';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import InsideView from '../Community/InsideView';
-import { Community, getAllCommunities, getCommunity, getJoinedCommunities, getPicture, getRequestedCommunities, getTotalMembers, joinCommunity, leaveCommunity } from '../CommunityAPI';
+import { Community, _addCommunity, _addMember, _getAllCommunities, _getAllMembers, _getJoinedCommunities, _getMembers, _getRequestedCommunities, _getUnJoinedCommunities, _removeMember, _setMember, getCommunity, getCommunityByName, getPicture } from '../CommunityAPI';
 import Calendar from '../../../pages/Calendar';
 import { supabase } from '../../../supabase';
 import { RxExit } from 'react-icons/rx'
 import { LinkIcon, EditIcon, HamburgerIcon, RepeatIcon } from '@chakra-ui/icons'
 import { SessionProvider, useSession } from '../../../hooks/SessionProvider';
+import { toastError, toastSuccess } from '../../../hooks/Utilities';
 
 
 /**
@@ -19,335 +20,352 @@ import { SessionProvider, useSession } from '../../../hooks/SessionProvider';
  */
 //TODO: Need to get this to auto update when someone leaves their community
 export default function CommunityCentral() {
-
-    //get all the communities to display
-    useEffect(() => {
-        const fetchCommunityData = async() => getAllCommunities().then((response) => {
-            setCommunities(response)
-            }
-        );
-        fetchCommunityData();
-    }, []);
-
-    const [communities, setCommunities] = useState<any>(null);
-    return(<Flex>
-        <Stack marginX='auto'
-        paddingBottom='20px'
-        flexWrap='wrap'
-        maxWidth='1200px'
-        flexDirection={['column', 'row']} 
-        justifyContent='center'>
-            <CommunityList/>
-            <CommunitySuggested communities={communities} />
-        </Stack>
-        
-    </Flex>);
-}
-
-
-
-
-//Listing for all communities user has joined or requested
-export function CommunityList() {
-
-    //get the communities to display
-    useEffect(() => {
-        const fetchCommunityData = async() => {
-            toggleType(type)
-            
-        };
-        fetchCommunityData();
-    }, []);
-
-    //what did the user press joined/requested communities?
-    const [type, setType] = useState<String>('joined');
-    const [loading, setLoading] = useState<Boolean>(true);
     const { user: user } = useSession();
-    
-    const toggleType = async(requestedType: String) => {
-        setLoading(true)
-        setType(requestedType)
+    const toast = useToast();
 
-        if (requestedType == 'joined') {
-            getJoinedCommunities(user?.['id']).then((response) => {
-                setCommunities(response)
+    function CommunityList() {
+        //Could be joined communities or requested communities
+        const [communities, setCommunities] = useState<any>(null);
+        const [view, setView] = useState<ReactElement>();
+        const [type, setType] = useState<String>('joined');
+        const [loading, setLoading] = useState<Boolean>(true);
+
+        useEffect(()=> {
+            
+            if(loading) {
+                //first time loading the web page
+                if (!view) {
+                    setJoinedView()
+                    return
+                }
+                setLoadingView()
+                
+            }
+        },[])
+
+        function Module({community}: any) {
+            const picture: string = getPicture(community);
+            const link = `https://goaltac.net/community/${community.name}`
+            const { onCopy } = useClipboard(link);
+            const { user: user } = useSession();
+            const [members, setMembers] = useState<any>([])
+            
+            useEffect(()=> {
+                _getAllMembers(community.community_id).then((response)=> {
+                    setMembers(response)
+                })
+            },[])
+        
+            
+            return(<HStack overflow='hidden' padding='20px' borderRadius='20px'>
+                <Box borderRadius='full'
+                marginY='auto'
+                overflow='hidden'
+                backgroundColor={useColorModeValue('gray.100', 'gray.700')} position='absolute'>
+                    <Box height='80px' width='80px'>
+                        <Image src={picture} 
+                    alt={`${community.name} picture`}/>
+                    </Box>
+                </Box>
+        
+                <Stack as={Link} to={`/community/${community.name}`} marginStart='6rem'>
+                    <Box lineHeight='12px'>
+                        <Heading fontSize='1.5rem'>{community.name}</Heading>
+                        <Text color='gray' fontSize='1rem'>
+                            {members.length} members
+                        </Text>
+                    </Box>
+                    
+                    <Text color='gray.400' marginStart='1.5rem' fontSize='1rem'>
+                        {community.description}
+                    </Text>
+                </Stack>
+                <Spacer/>
+                <Menu>
+                    <MenuButton
+                    as={IconButton}
+                    aria-label='Options'
+                    icon={<HamburgerIcon />}
+                    variant='ghost'/>
+                    <MenuList>
+                    <MenuItem icon={<LinkIcon />}
+                        onClick={() => {
+                            onCopy()
+                            
+                        }}>Copy link
+                    </MenuItem>
+                    <MenuItem icon={<RxExit />} 
+                        onClick={()=>{ 
+                            if(user) {
+                                _removeMember(community.community_id, user?.['id']).finally(()=>{
+                                    setJoinedView() 
+                                })
+                               
+                            }
+                            toast({
+                                title: "Success",
+                                description: `Left ${community.name}`,
+                                status: "success",
+                                duration: 9000,
+                                isClosable: true,
+                            });
+                        }}>Leave
+                    </MenuItem>
+                    </MenuList>
+                </Menu>
+            </HStack>)
+        }
+
+        async function setJoinedView() {
+            setLoading(true)
+            setType('joined')
+            const promisedCommunities = await _getJoinedCommunities(user?.['id']).finally(()=> {
                 setLoading(false)
             })
-        } else if (requestedType == 'requested') {
-            getRequestedCommunities(user?.['id']).then((response) => {
-                setCommunities(response)
+            setCommunities(promisedCommunities)
+            setView(<Box>
+                {promisedCommunities.map((community: any, index: Number) => (
+                    <Module key={index} community={community}/> 
+                ))}
+            </Box>) 
+        }
+        async function setRequestedView() {
+            setLoading(true)
+            setType('requested')
+            const promisedCommunities = await _getRequestedCommunities(user?.['id']).finally(()=> {
                 setLoading(false)
             })
-        } else if (requestedType == 'create') {
+            setCommunities(promisedCommunities)
+            setView(<Box>
+                {promisedCommunities.map((community: any, index: Number) => (
+                    <Module key={index} community={community}/> 
+                ))}
+            </Box>) 
+        }
+        function setLoadingView() {
+            setType('loading')
+
+            setView(
+                <Flex paddingTop='60px' justifyContent='center' >
+                    <Spinner speed='1s' size='xl' />
+                </Flex>
+            )
+        }
+        function setBlankView() {
+            setType('blank')
+            setView(<Heading paddingY='20px'>
+                Where are your communities?!
+            </Heading>)
+        }
+        function resetView() {
+            setType('joined')
+
+            setLoading(true)
             setCommunities(null)
             setLoading(false)
-        } else {
-            setLoading(false)
-            return null
         }
-    }
+        
 
-    function Create() {
+        return (<Box width={['400px', '600px']}>
+            <Card height='80px' 
+                justifySelf='center' 
+                alignSelf='center' 
+                
+                overflow='hidden' 
+                flexDirection={'column'}>
+                    <CardHeader display="flex" justifyContent="space-between" columnGap='20px'>
+                        <Button variant="ghost" colorScheme="blue" width='fit-content' 
+                        isActive={type == 'joined'}
+                        onClick={()=>setJoinedView()}>
+                            Joined
+                        </Button>
+                        <Button variant="ghost" colorScheme="blue" width='fit-content'
+                        isActive={type == 'requested'}
+                        onClick={()=> setRequestedView()}>
+                            Requested
+                        </Button>
+                        <Spacer/>
+                        <Button variant="outline" colorScheme="blue" width='fit-content'
+                        isActive={type == 'create'}
+                        onClick={()=> {
+                            setType('create')
+                            setView(<CreateView/>)
+                        }}>
+                            Create
+                        </Button>
+                    </CardHeader>
+                </Card>
+                {view}
+            </Box>);
+    }   
+
+    //sugested communities on the side content
+    function CommunitySuggested() {
+        const [communities, setCommunities] = useState<any>([]);
+
+        useEffect(()=>{
+            async function fetchCommunities() {
+                setCommunities(await _getUnJoinedCommunities(user?.['id']))
+            }
+            fetchCommunities()
+        },[])
+
+        function ModulePreview({community}: any) {
+            const picture: string = getPicture(community);
+            const navigate = useNavigate();
+            const [members, setMembers] = useState<any>([])
+
+            useEffect(()=> {
+                async function fetchMembers() {
+                    setMembers(await _getAllMembers(community.community_id))
+                }
+                fetchMembers()
+            },[])
+
+            return(<HStack paddingBottom='10px'>
+                <Box borderRadius='full'
+                    as={Link} 
+                    to={`/community/${community.name}`}
+                    borderWidth='2px' 
+                    marginBottom='auto'>
+                        <Box height='50px' width='50px'>
+                            <Image src={picture} 
+                        alt={`${community.name} picture`}/>
+                        </Box>
+                        
+                </Box>
+                <VStack overflow='hidden' as={Link} to={`/community/${community.name}`}>
+                    <Box>
+                    <Heading size='md'>{community.name}</Heading> 
+                    <Text color='gray' fontSize='sm'>
+                            {members.length} members
+                        </Text>
+                    </Box>
+                    
+                    <Button marginRight='auto' 
+                    borderRadius='full' 
+                    onClick={()=>{
+                        if (user) {
+                            _addMember({
+                                community_id : community.community_id, 
+                                user_id : user?.['id']})
+                            navigate(`/community/${community.name}`);
+                        }
+                        //send a successful join toast
+                    }}
+                    variant='outline'>Join</Button>
+                </VStack> 
+            </HStack>)
+        }
+        return(<Box width={['400px', 'auto']}>
+            <Card height='80px'>
+                <CardHeader display="flex" 
+                justifyContent="space-between"
+                fontSize='2xl' margin='auto'>
+                    Suggested
+                </CardHeader>
+            </Card>
+            <Box padding='10px' boxShadow='lg'>
+                {communities && communities.map((community: any, index: Number) => (
+                <ModulePreview key={index} community={community} preview={true}/>))}
+            </Box>
+        </Box>)
+    }
+    function CreateView() {
         const [name, setName] = useState<any>('');
         const [description, setDescription] = useState<any>('');
         const [pic, setPic] = useState<any>(null);
-        const [tags, setTags] = useState<any>(null);
         const [isPublic, setIsPublic] = useState<any>(true);
-        const { user: user } = useSession()
 
+        const [community_id, setCommunity_id] = useState<any>('');
+        const [points, setPoints] = useState<any>(0);
+        const [role, setRole] = useState<any>(0);
+        const [status, setStatus] = useState<any>(1); //joined
+    
         const handleAddCommunity = async() => {
-            const community = {
-                created_at: new Date(),
+            _addCommunity({
                 name: name,
                 description: description,
                 pic: pic,
-                tags: tags,
                 score: 0,
                 isPublic: isPublic,
-                owner: user?.['id'],
-                members: [],
-                Tasks: []
+            }).then((response : any)=>{ //fix this setting community id to the wrong id
 
-            }
-            await supabase.from('communities').insert([community]);
+                if(response.message) {
+                    toast({
+                        title: "Error",
+                        description: response.message,
+                        status: "error",
+                        duration: 9000,
+                        isClosable: true,
+                    })
+                    return
+                }
 
-            /** How to update profiles table too?
-             * const { data: communities } = await supabase
-                .from('profiles')
-                .select('joinedCommunities')
-                .eq('userid', user?.['id']).single()
-            const existingCommunities = communities ? communities.joinedCommunities || [] : [];
-            const updatedCommunities =  [...existingCommunities, communityID]
-             * 
-             */
+                const uuid = response?.['community_id']
+                const addedMember = _addMember({
+                    community_id: uuid, 
+                    user_id: (user ? user?.['id'] : ''),
+                    role: 'Owner'
+                })
+                addedMember.then((response : any)=> {
+                    if(response.message) {
+                        toast({
+                            title: "Error",
+                            description: response.message,
+                            status: "error",
+                            duration: 9000,
+                            isClosable: true,
+                        })
+                    } else {
+                        toast({
+                            title: "Success",
+                            description: `Successfully created ${name}`,
+                            status: "success",
+                            duration: 9000,
+                            isClosable: true,
+                        })
+                    }
+                })
+                
+                setName('')
+                setDescription('')
+                setPic('')
+                setIsPublic('')
+
+            })
             
-
-
-
         }
-
-
+    
         return(
-            <Box>
+            <Box padding='20px'>
                 <FormControl>
                     <FormLabel>Title</FormLabel>
                     <Input placeholder="Title" value={name} onChange={(e) => setName(e.target.value)} />
                 </FormControl>
-
+    
                 <FormControl mt={4}>
                     <FormLabel>Description</FormLabel>
                     <Textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
                 </FormControl>
-                <Button colorScheme="blue" mr={3} onClick={handleAddCommunity}>
+                <Button colorScheme="blue" mt={3} onClick={handleAddCommunity}>
                     {'Save'}
                 </Button>
             </Box>
         )
     }
 
+    return(<Flex>
+        <Stack marginX='auto'
+        paddingBottom='100px'
+        flexWrap='wrap'
+        maxWidth='1200px'
 
-    //Could be joined communities or requested communities
-    const [communities, setCommunities] = useState<any>(null);
-
-    function Spinny() {
-        return <Flex paddingTop='60px' justifyContent='center' >
-        <Spinner speed='1s' size='xl' />
-        
-        <Spinner position='absolute'
-            speed='1.1s' size='xl' color='yellow' />
-    </Flex>
-    }
-
-
-    return (<Box width={['400px', '600px']}>
-        <Card height='80px' 
-            justifySelf='center' 
-            alignSelf='center' 
-            
-            overflow='hidden' 
-            flexDirection={'column'}>
-                <CardHeader display="flex" justifyContent="space-between" columnGap='20px'>
-                    <Button variant="ghost" colorScheme="blue" width='fit-content' 
-                    isActive={type == 'joined'}
-                    onClick={()=>toggleType('joined')}>
-                        Joined
-                    </Button>
-                    <Button variant="ghost" colorScheme="blue" width='fit-content'
-                    isActive={type == 'requested'}
-                    onClick={()=> toggleType('requested')}>
-                        Requested
-                    </Button>
-                    <Spacer/>
-                    <Button variant="outline" colorScheme="blue" width='fit-content'
-                    isActive={type == 'create'}
-                    onClick={()=> toggleType('create')}>
-                        Create
-                    </Button>
-                </CardHeader>
-            </Card>
-            <Box boxShadow='lg'>
-                {/* Display spinner when loading */}
-               {loading ? <Spinny/> : 
-                communities ? communities.map((community: any, index: Number) => (
-                <Module key={index} community={community}/> )) :
-                type == 'create' ? <Create/> :
-                <Heading paddingY='20px'>
-                    Where are your communities?!
-                </Heading>
-                }
-               
-            </Box>
-
-        
-        
-        </Box>
-        
-    );
-}
-//to be used as the button UI to direct to the community
-export function CommunityCentralButton() {
-    return(<Link to='/communities1'>
-        <Button>
-            Community
-        </Button>
-    </Link>);
-}
-
-/**
- * Component to display community in the community list
- *  
- * @param {*} community object
- * @returns A module to display in the dashboard
- */
-export function Module({community}: any) {
-    const picture: string = getPicture(community);
-    const link = `https://goaltac.net/community1/${community.name}`
-    const { onCopy } = useClipboard(link);
-    const navigate = useNavigate();
-    const { user: user } = useSession();
-
-
-    function Options() {
-        return(<Menu>
-            <MenuButton
-              as={IconButton}
-              aria-label='Options'
-              icon={<HamburgerIcon />}
-              variant='ghost'/>
-            <MenuList>
-              <MenuItem icon={<LinkIcon />}
-                onClick={() => {
-                    onCopy()
-                    //send successful copied toast
-                }}>Copy link
-              </MenuItem>
-              <MenuItem icon={<RxExit />} 
-                onClick={()=>{
-                    if(user) {
-                        leaveCommunity(community.communityid, user?.['id'])
-
-                    }
-                    //send a successful leave toast
-                }}>Leave
-              </MenuItem>
-            </MenuList>
-          </Menu>);
-    }
-
-    return(<HStack overflow='hidden' padding='20px' borderRadius='20px'>
-        <Box borderRadius='full'
-        marginY='auto'
-        overflow='hidden'
-        backgroundColor={useColorModeValue('gray.100', 'gray.700')} position='absolute'>
-            <Box height='80px' width='80px'>
-                <Image src={picture} 
-            alt={`${community.name} picture`}/>
-            </Box>
-        </Box>
-
-        <Stack as={Link} to={`/community1/${community.name}`} marginStart='6rem'>
-            <Box lineHeight='12px'>
-                <Heading fontSize='1.5rem'>{community.name}</Heading>
-                <Text color='gray' fontSize='1rem'>
-                    {getTotalMembers(community).toString()} members
-                </Text>
-            </Box>
-            
-            <Text color='gray.400' marginStart='1.5rem' fontSize='1rem'>
-                {community.description}
-            </Text>
+        flexDirection={['column', 'row']} 
+        justifyContent='center'>
+            <CommunityList/>
+            <CommunitySuggested/>
         </Stack>
-        <Spacer/>
-        <Options/>
-    </HStack>)
-}
-
-
-
-
-
-//sugested communities on the side content
-export function CommunitySuggested({communities}: any) {
-
-    
-
-    return(<Box>
-        <Card height='80px' marginBottom='20px'>
-            <CardHeader display="flex" 
-            justifyContent="space-between" 
-            fontSize='2xl' margin='auto'>
-                Suggested
-            </CardHeader>
-        </Card>
-        <Box marginX='10px' boxShadow='lg'>
-            {communities && communities.map((community: any, index: Number) => (
-            <ModulePreview key={index} community={community} preview={true}/>))}
-        </Box>
-
-        </Box>)
-}
-/**
- * Component to display community in the suggested list
- *  
- * @param {*} community object
- * @returns A module to display in the dashboard
- */
-export function ModulePreview({community}: any) {
-    const picture: string = getPicture(community);
-    const navigate = useNavigate();
-    const { user: user } = useSession();
-
-
-    return(<HStack paddingBottom='10px'>
-        <Box borderRadius='full'
-            as={Link} 
-            to={`/community1/${community.name}`}
-            borderWidth='2px' 
-            marginBottom='auto'>
-                <Box height='50px' width='50px'>
-                    <Image src={picture} 
-                alt={`${community.name} picture`}/>
-                </Box>
-                
-        </Box>
-        <VStack overflow='hidden' as={Link} to={`/community1/${community.name}`}>
-            <Box>
-            <Heading size='md'>{community.name}</Heading> 
-            <Text color='gray' fontSize='sm'>
-                    {getTotalMembers(community).toString()} members
-                </Text>
-            </Box>
-            
-            <Button marginRight='auto' 
-            borderRadius='full' 
-            onClick={()=>{
-                if (user) {
-                    joinCommunity(community.communityid, user?.['id'])
-                    navigate(`/community1/${community.name}`);
-                }
-                //send a successful join toast
-            }}
-            variant='outline'>Join</Button>
-        </VStack> 
-    </HStack>)
+        
+    </Flex>);
 }

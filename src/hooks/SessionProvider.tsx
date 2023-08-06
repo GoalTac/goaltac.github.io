@@ -54,7 +54,7 @@ export const SessionProvider = ({ children, supabase }: any) => {
 
 SessionProvider.propTypes = {
   children: PropTypes.element,
-  supabase: PropTypes.element, //how to fix
+  supabase: undefined, //how to fix
 };
 
 export const useSession = () => useContext(SessionContext);

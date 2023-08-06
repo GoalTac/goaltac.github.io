@@ -23,7 +23,7 @@ import {
 import React, { useState, useEffect } from 'react';
 import { calculateLevel, experiencePercent } from '../../../hooks/Utilities'
 import { formatNumber } from '../../../hooks/Utilities';
-import { getPicture, getTotalMembers } from '../CommunityAPI';
+import { _getAllMembers, getPicture } from '../CommunityAPI';
 import {
   GiArrowhead,
   GiPerson
@@ -197,7 +197,24 @@ function PrerequisitesGrid({community}: any) {
  */
 function GeneralInfoGrid({community}: any) {
 
-  const memberCount = getTotalMembers(community)
+  const [members, setMembers] = useState<any>([])
+  const [completedCount, setCompletedCount] = useState(0)
+
+  //will be used to load all variables first before displaying them
+  function checkVariables() : boolean {
+    if (members && completedCount) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  useEffect(()=> {
+    async function fetchMemberCount() {
+      setMembers(await _getAllMembers(community.community_id))
+    }
+    fetchMemberCount()
+  },[])
   //const goalsWIP = community.goals.length
   //const goalsCompleted = community.goalsC.length
 
@@ -210,7 +227,7 @@ function GeneralInfoGrid({community}: any) {
         <Icon boxSize='2rem'  as={GiPerson} />
         <StatComponent stats={{
           title: 'Members',
-          value: memberCount
+          value: members.length
         }} />
       </HStack>
       <Spacer/>

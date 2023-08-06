@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Heading, Stack, Text, Image, useColorModeValue, Button, Progress, FormControl, FormLabel, Input, Textarea } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Heading, Stack, Text, Image, useColorModeValue, Button, Progress, FormControl, FormLabel, Input, Textarea, useToast } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 
 import { VerticalTimeline } from 'react-vertical-timeline-component';
@@ -14,8 +14,33 @@ import { uniqueId } from 'lodash';
 import { RandomUUIDOptions } from 'crypto';
 import { getUser } from './../../hooks/Utilities';
 
+
 export function getPicture(community: any) {
     return community.pic ? community.pic : './../GoalTac_TLogo.png'
+}
+
+export function toastError(message: string) {
+    const toast = useToast()
+
+    toast({
+        title: "Error",
+        description: message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+    })
+}
+
+export function toastSuccess(message: string) {
+    const toast = useToast()
+
+    toast({
+        title: "Success",
+        description: message,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+    })
 }
 
 //returns the community that matches the name
@@ -28,24 +53,42 @@ export async function getCommunityByName(name: any)  {
         .single();
 
     if (error) {
-        console.error(error);
-        return;
+        throw new Error(error.message)
     }
 
     return communityData;
 }
 
+export async function _addCommunity(community : any) {
+    const { data: data, error } = await supabase
+        .from('communities')
+        .insert([communityTemp(community)])
+        .select().single();
 
-export function getTotalMembers(community : any) : Number {
-    return community.members.length + 1
+    if (error) {
+        return error
+    }
+    return data
+}
+
+export async function _removeCommunity(community_id : any) {
+    const { data: data, error } = await supabase
+        .from('communities')
+        .delete()
+        .eq('community_id', community_id)
+        .select().single();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+    return data
 }
 
 export async function _getAllMembers(communityID : string) {
     const { data: data, error } = await supabase
         .from('community_relations')
         .select('user_id')
-        .eq('community_id', communityID)
-        .single();
+        .eq('community_id', communityID);
 
     if (error) {
         throw new Error(error.message)
@@ -70,38 +113,68 @@ export async function _getMembers(communityID: string, role : string) {
     return data;
 }
 
-export async function _addMember(communityID : string, userID : string) {
+export async function _addMember(relationship : any) {
     const {data: data, error} = await supabase
         .from('community_relations')
-        .upsert({community_id : communityID, user_id : userID})
+        .insert(
+            [relationTemp(relationship)]
+        )
         .select();
 
     if (error) {
-        throw new Error(error.message)
+        return error
     }
 
     return data;
 }
 
+export function relationTemp(fields : any) {
+    return {
+        user_id: fields.user_id ? fields.user_id : '',
+        community_id: fields.community_id ? fields.community_id : '',
+        role: fields.role ? fields.role : 'Member',
+        points: fields.points ? fields.points : 0,
+        status: fields.status ? fields.status : 1
+    }
+}
+
+//put as input an object with part of the community's fields and then output the complete community object
+export function communityTemp(fields : any) {
+    return {
+        name: fields.name ? `${fields.name}`.toLowerCase() : '',
+        description: fields.description ? fields.description : '',
+        pic: fields.pic ? fields.pic : '',
+        score: fields.score ? fields.score : 0,
+        isPublic: fields.isPublic ? fields.isPublic : true
+    }
+}
+
+
 export async function _removeMember(communityID : string, userID : string) {
-    const {data: data, error} = await supabase
+    const {data: data,error} = await supabase
         .from('community_relations')
         .delete()
         .eq('community_id', communityID)
         .eq('user_id', userID)
-        .single();
+        .select().single();
 
     if (error) {
         throw new Error(error.message)
-    }
+    };
+    
+    const members = _getAllMembers(communityID).then((response)=>{
+        if (response.length <= 0) {
+            _removeCommunity(communityID)
+        }
+    })
 
     return data;
 }
 
-export async function _setMember(communityID : string, userID : string, role : Number, points : Number) {
+export async function _setMember(relationship : any) {
     const {data: data, error} = await supabase
         .from('community_relations')
-        .upsert({community_id : communityID, user_id : userID, role : role, points : points})
+        .upsert(relationTemp(relationship))
         .select();
 
     if (error) {
@@ -111,47 +184,63 @@ export async function _setMember(communityID : string, userID : string, role : N
     return data;
 }
 
-export async function getJoinedCommunities1(userID: string) {
-    
+
+
+export async function _getJoinedCommunities(userID: any) {
+    const { data: data, error } = await supabase
+        .from('community_relations')
+        .select('community_id')
+        .eq('user_id', userID)
+        .eq('status', 1);
+    if (error) {
+        throw new Error(error.message)
+    } 
+
+    const communities = await Promise.all(data.map(async(id) => {
+        return await getCommunityByID(id.community_id)
+    }))
+    return communities;
 }
 
+export async function _getUnJoinedCommunities(userID : any) {
 
-
-/**
- * Grab joined communities from a user
- * @param userID uuid
- * @returns all joined communities
- */
-export async function getJoinedCommunities(userID: any)  {
-
-    const { data: communityData, error } = await supabase
-        .from('profiles')
-        .select('joinedCommunities')
-        .eq('userid', userID).single();
+    //get all community uuids
+    const { data: data, error } = await supabase
+    .from('communities')
+    .select('community_id');
 
     if (error) {
-        console.error(error);
-        return;
-    }
-    if (communityData.joinedCommunities == null) {
-        return null
-    }
+        throw new Error(error.message)
+    } 
 
-    const communities = await getCommunityByID(communityData.joinedCommunities)
+    const { data: relationalData } = await supabase
+        .from('community_relations')
+        .select('community_id')
+        .eq('user_id', userID);
+
+    const relationalIDs = relationalData?.map((id)=>{return id.community_id})
+    const unJoinedCommunities = data.filter((community)=>{
+        return !relationalIDs?.includes(community.community_id)
+    })
+
+    const communities = await Promise.all(unJoinedCommunities.map(async(id) => {
+        return await getCommunityByID(id.community_id)
+    }))
+
     return communities;
 }
 
 export async function getCommunityByID(communityID: any)  {
-    const { data: communityData, error } = await supabase
+    const { data: data, error } = await supabase
         .from('communities')
-        .select()
-        .in('communityid', communityID);
+        .select('*')
+        .eq('community_id', communityID)
+        .single();
     if (error) {
-        console.error(error);
-        return;
+        throw new Error(error.message)
     }
 
-    return communityData;
+    return data;
 }
 
 /**
@@ -159,23 +248,17 @@ export async function getCommunityByID(communityID: any)  {
  * @param userID uuid
  * @returns all requested communities
  */
-export async function getRequestedCommunities(userID: any)  {
-
-    const { data: communityData, error } = await supabase
-        .from('profiles')
-        .select('reqCommunities')
-        .eq('userid', userID).single();
-
+export async function _getRequestedCommunities(userID: any)  {
+    const { data: data, error } = await supabase
+    .from('community_relations')
+    .select('community_id')
+    .eq('user_id', userID)
+    .eq('status', 0);
     if (error) {
-        console.error(error);
-        return;
-    }
-    if (communityData.reqCommunities == null) {
-        return null
-    }
+        throw new Error(error.message)
+    } 
 
-    const communities = await getCommunityByID(communityData.reqCommunities)
-    return communities;
+    return data.map((id) => {return getCommunityByID(id)});
 }
 
 export async function getUserCommunities(user: any) {
@@ -188,39 +271,25 @@ export async function getAllCommunityNames() {
         .select('name');
 
     if (error) {
-        console.error(error);
-        return;
+        throw new Error(error.message)
     }
 
     return communityData;
 }
 
-export async function getAllCommunities() {
-    const { data: communityData, error } = await supabase
+export async function _getAllCommunities() {
+    const { data: data, error } = await supabase
         .from('communities')
         .select('*');
 
     if (error) {
-        console.error(error);
-        return;
+        throw new Error(error.message)
     }
-
-    return communityData;
-}
-
-//for suggested communities
-export function getUnJoinedCommunities(userID: String) {
-    const allCommunities = getAllCommunities()
-    const joinedCommunities = getJoinedCommunities(userID)
-     
+    return data;
 }
 
 /**
- * 
- * @param community 
- * @param member 
- * @returns 
- */
+
 export async function upsertMember(communityID : string, member: any) {
     
     const { data: data,error } = await supabase
@@ -314,27 +383,14 @@ export async function leaveCommunity(communityID: string, userID: string) {
 
 }
 
-/*
-//check first to make sure user isn't in the community
-    const { data: profileData } = await supabase
-        .from('profiles')
-        .select('joinedCommunities')
-        .eq('userid', userID).single();
-
-    const isJoined = profileData?.joinedCommunities.includes(communityID)
- */
 
 export async function joinCommunity(communityID: string, userID: string) {
     
     upsertMember(communityID, {uuid: userID, communityPoints : "0"})
-    /**await supabase
-        .from('profiles')
-        .upsert([ communityID ])
-        .eq('userid', userID)
-        .select()*/
         
 
 }
+*/
 
 
 export interface Member {
@@ -346,6 +402,7 @@ export function getCommunity({community}: any) {
     try {
         return community as Community
     } catch(error) {
+        console.log(error)
         return null
     }
 }
@@ -356,6 +413,5 @@ export interface Community {
     tags: [string]
     description: string
     score: number
-    tasks: [string] //replace with call to the task interface
-    communityID: string //uuid
+    community_id: string //uuid
 }

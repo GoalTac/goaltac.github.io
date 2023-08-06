@@ -1,14 +1,7 @@
 export const contents = [
+    
     {
         number: '01',
-        title: 'Have fun with it!',
-        text: `Goal execution is gamified and will help make work fun!
-            Reach significant milestones whilst competing with
-            your peers to accomplish shared goals through various
-            challenges and games. &#x1F60A;`,
-    },
-    {
-        number: '02',
         title: 'Meet new friends',
         text: `Join or create your own community specified towards a topic of choice!
             Communities are ranked based on how many points they earn. The more
@@ -17,7 +10,7 @@ export const contents = [
             a productive setting.`,
     },
     {
-        number: '03',
+        number: '02',
         title: 'Everything you need in one place',
         text: `Want to just organize your tasks? No problem.
             Want to use the app to meet other people? You can do that too.
@@ -25,12 +18,20 @@ export const contents = [
             jeopordizing your experience!`
     },
     {
-        number: '04',
+        number: '03',
         title: 'Superior organization',
         text: `We prioritize high customizability in task creation,
             which can be visualized in many ways! Use GoalTac to track
             progress towards any goal you aspire to accomplish.`,
-    }
+    },
+    {
+        number: '04',
+        title: 'Have fun with it!',
+        text: `Goal execution is gamified and will help make work fun!
+            Reach significant milestones whilst competing with
+            your peers to accomplish shared goals through various
+            challenges and games.`,
+    },
 ];
 
 export const goalTacDesc = [
