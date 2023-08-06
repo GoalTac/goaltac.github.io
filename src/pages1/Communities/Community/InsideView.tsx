@@ -3,6 +3,7 @@ import Roster from './Roster'
 import { useState, useEffect, ReactElement } from 'react';
 import GoalTac_Logo from '../../../images/GoalTac_Logo.png'
 import ProfileBackground from '../../../../public/ProfileBackground.svg'
+import { useNavigate, Link } from 'react-router-dom';
 
 import {
   Avatar,
@@ -29,7 +30,8 @@ import {
   } from 'react-icons/tb'
   import {
     FaUserFriends,
-    FaChalkboard
+    FaChalkboard,
+    FaArrowRight
   } from 'react-icons/fa'
   import {
     RiCalendarEventLine, RiNotification2Fill
@@ -58,12 +60,12 @@ import { formatNumber, getUser, twoColumns } from '../../../hooks/Utilities';
 export default function InsideView() {
 
     const { communityName } = useParams<{ communityName: string }>();
-    const [community, setCommunity] = useState<any>();
+    const [community, setCommunity] = useState<any>([]);
     const [view, setView] = useState<ReactElement>(<Chat/>);
-    const [members, setMembers] = useState<any>()
+    const [members, setMembers] = useState<any>([])
     const [loading, setLoading] = useState<Boolean>(true)
-
-    //load in the community variable asyncronously
+    
+        //load in the community variable asyncronously
     useEffect(() => {
 
       async function fetchCommunityData() {
@@ -99,7 +101,7 @@ export default function InsideView() {
           </Card>
         </Flex>
     }
-    console.log('hi')
+    
     //Statistics and such
     function SupportingContent() {
       return <Flex maxWidth='300px' width='max-content'>
@@ -247,29 +249,43 @@ export default function InsideView() {
     function Card_Roster() {
 
       function RenderAvatar({member} : any) {
+        const [profile, setProfile] = useState<{ [x: string]: any; } | undefined>(undefined)
 
-        async function getAvatarURL() {
-          const profile = await getUser(member.user_id)
-          setAvatarurl(profile?.['avatarurl'])
-        }
+        useEffect(()=> {
+          async function fetchProfile() {
+            const profile = await getUser(member.user_id)
+            setProfile(profile)
+          }
+          fetchProfile()
+        })
         
-        getAvatarURL()
-        const [avatarurl, setAvatarurl] = useState<string>('')
-        return <Avatar name={`${member.name}`} src={avatarurl ? avatarurl : ''} />
-
+        return (profile ? <Box as={Link} to={`/profile/${profile.name}`}>
+          <Avatar name={`${member.name}`} src={profile.avatarurl}  />
+        </Box> : <Avatar src='' />)
       }
 
-      return <Card height='300px' minWidth='200px' padding='20px' borderRadius={measurements.cards.borderRadius} position='relative'>
+      function RosterButton() {
+        return <Button variant='ghost' width='100%'>
+          <Heading size='xs' marginRight='5px'>
+            Show Everyone
+          </Heading>
+          <FaArrowRight />
+        </Button>
+      }
 
+      return <Card rowGap='20px' height='min-content' minWidth='200px' padding='20px' borderRadius={measurements.cards.borderRadius} position='relative'>
         <Heading size='sm'>
           {members && `${formatNumber(members.length)} Members`}
         </Heading>
 
         <AvatarGroup max={4} columnGap='5px'>
+          {/* ISSUE : Eventually we need to limit this 
+          to only map through a chunk of members at a time */}
           {members && members.map((member : any, id : number) => 
-            <RenderAvatar member={member} key={id} />
+            <RenderAvatar member={member} key={id}/>
           )}
         </AvatarGroup>
+        <RosterButton/>
       </Card>
     }
 
@@ -283,7 +299,6 @@ export default function InsideView() {
 }
 
 function HeaderNav({setView, community}: any) {
-
 
     const navigation = [
         ['calendar', <RiCalendarEventLine/>, <Calendar community={community} />],
