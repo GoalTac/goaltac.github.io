@@ -1,4 +1,4 @@
-import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge } from "@chakra-ui/react";
+import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge, useColorModeValue } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FaUser, FaSignOutAlt, FaRegNewspaper, FaSearch, FaUsers, FaShoppingBag, FaCircle } from "react-icons/fa";
 import { Link, Outlet, useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import { SessionProvider } from "../hooks/SessionProvider";
 export default function Root() {
   return (
     <SessionProvider supabase={supabase}>
-      <Box>
+      <Box backgroundColor={useColorModeValue('gray.50','')}>
         <HeaderNav />
         <Box marginTop='30px' overflowX='auto'>
           <Outlet />
