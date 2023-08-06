@@ -41,12 +41,12 @@ export function formatNumber(val: Number | String) {
 export async function getUser(uuid: any) {
     const { data: user, error } = await supabase
         .from('profiles')
-        .select('name')
+        .select('*')
         .eq('userid', uuid)
         .single();
 
     if (error) {
-        // console.error(error);
+        console.error(error);
         return;
     }
 
