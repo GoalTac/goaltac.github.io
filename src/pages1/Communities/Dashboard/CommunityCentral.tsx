@@ -11,7 +11,7 @@ import { supabase } from '../../../supabase';
 import { RxExit } from 'react-icons/rx'
 import { LinkIcon, EditIcon, HamburgerIcon, RepeatIcon } from '@chakra-ui/icons'
 import { SessionProvider, useSession } from '../../../hooks/SessionProvider';
-import { toastError, toastSuccess } from '../../../hooks/Utilities';
+import { twoColumns } from '../../../hooks/Utilities';
 
 
 /**
@@ -33,13 +33,12 @@ export default function CommunityCentral() {
         useEffect(()=> {
             
             if(loading) {
+                setLoadingView()
                 //first time loading the web page
                 if (!view) {
                     setJoinedView()
                     return
                 }
-                setLoadingView()
-                
             }
         },[])
 
@@ -51,9 +50,11 @@ export default function CommunityCentral() {
             const [members, setMembers] = useState<any>([])
             
             useEffect(()=> {
-                _getAllMembers(community.community_id).then((response)=> {
-                    setMembers(response)
-                })
+                async function getMembers() {
+                    setMembers(await _getAllMembers(community.community_id))
+                }
+                getMembers()
+                
             },[])
         
             
@@ -355,17 +356,7 @@ export default function CommunityCentral() {
         )
     }
 
-    return(<Flex>
-        <Stack marginX='auto'
-        paddingBottom='100px'
-        flexWrap='wrap'
-        maxWidth='1200px'
-
-        flexDirection={['column', 'row']} 
-        justifyContent='center'>
-            <CommunityList/>
-            <CommunitySuggested/>
-        </Stack>
-        
-    </Flex>);
+    return(
+        twoColumns(<CommunityList/>, <CommunitySuggested/>)
+    );
 }
