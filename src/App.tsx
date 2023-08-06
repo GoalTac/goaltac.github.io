@@ -48,7 +48,7 @@ export default function App() {
 
         {/* TODO: conditional on authentication routing */}
         <Route element={<Root />}>
-        <Route element={<ProtectedRoute redirectPath={'/signin'} />}>
+        <Route element={<ProtectedRoute redirectPath={'/login'} />}>
 
           <Route path='calendar' element={<Dashboard />} />
           <Route path='social' element={<Feed />} />
