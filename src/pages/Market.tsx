@@ -15,6 +15,14 @@ import {
     Center,
     Divider,
     useColorMode,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    MenuItemOption,
+    MenuGroup,
+    MenuOptionGroup,
+    MenuDivider,
 } from '@chakra-ui/react';
 import { FaCoins, FaMedal, FaPencilAlt, FaRegCalendar, FaTshirt, FaShoppingCart } from 'react-icons/fa';
 import { TbTargetArrow } from 'react-icons/tb';
@@ -23,6 +31,7 @@ import premiumLogo from '/public/premium_logo.png';
 import premiumName from '/public/premium_logo_name.png';
 
 import ReactCanvasConfetti from 'react-canvas-confetti';
+import { set } from 'lodash';
 
 
 export default function Market() {
@@ -64,6 +73,14 @@ export default function Market() {
 
     const [cart, setCart] = useState<Item[]>([]);
 
+    const [showBuy, setShowBuy] = useState(false);
+
+
+    const handleClick = () => {
+        setShowBuy(!showBuy);
+        };
+    
+
     const handleBuy = (items: Item) => {
         if (balance >= items.price) {
             setBalance(balance - items.price);
@@ -72,6 +89,30 @@ export default function Market() {
             alert('Not enough balance!');
         }
     };
+
+    function Buy() {
+        return (
+        <VStack>
+                     {cart.map((items) => (
+                                <Box
+                                    key={items.id}
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    overflow="hidden"
+                                    p={4}
+                                    w="100%"
+                                >
+                                    <Text fontSize="xl" fontWeight="bold" mb={2}>
+                                        {items.name}
+                                    </Text>
+                                    <Text fontSize="lg" mb={2}>
+                                        Price: {items.price}
+                                    </Text>
+                                </Box>
+                            ))}
+                </VStack>
+                )
+    }
 
     const displayItems = (items: Item[]) => {
         if (cart.length === 0) {
@@ -123,6 +164,22 @@ export default function Market() {
         // )}
     };
 
+    // const handleClick = () => {
+    //     if (cart.length !== 0) {
+    //       setOutput(
+    //         <Buy/>
+    //       );
+    //     } else {
+    //         alert('No items in cart');
+    //     }
+    //     };
+    
+    // const [showVStack, setShowVStack] = useState(false);
+
+    // const handleClick = () => {
+    // setShowVStack(!showVStack);
+    // };
+
     return (
         <Box>
             <Text
@@ -140,33 +197,48 @@ export default function Market() {
                 >
                 <Text>{balance}</Text>
                     <TbTargetArrow size="1em" />
-                <IconButton
+                <IconButton 
                     aria-label="Cart"
                     icon={<FaShoppingCart size="1em" />}
-                    onClick={
-                        cart.length === 0 ? () => alert('No items in cart') : () => alert('Items in cart')
-                        // <VStack>
-                        //      {cart.map((items) => (
-                        //                 <Box
-                        //                     key={items.id}
-                        //                     borderWidth="1px"
-                        //                     borderRadius="lg"
-                        //                     overflow="hidden"
-                        //                     p={4}
-                        //                     w="100%"
-                        //                 >
-                        //                     <Text fontSize="xl" fontWeight="bold" mb={2}>
-                        //                         {items.name}
-                        //                     </Text>
-                        //                     <Text fontSize="lg" mb={2}>
-                        //                         Price: {items.price}
-                        //                     </Text>
-                        //                 </Box>
-                        //             ))}
-                        // </VStack> 
-                    }
-                />
-            </HStack>
+                    onClick={handleClick}
+                    />
+        {showBuy && cart.length !== 0 && <Buy/>}
+
+
+                {/* <Menu>
+                    <MenuButton 
+                    as={IconButton} 
+                    icon={<FaShoppingCart size="1em" />}
+                    onClick={handleClick} 
+                    />
+                    <MenuList> */}
+                        {/* <MenuItem>Download</MenuItem>
+                        <MenuItem>Create a Copy</MenuItem>
+                        <MenuItem>Mark as Draft</MenuItem>
+                        <MenuItem>Delete</MenuItem>
+                        <MenuItem>Attend a Workshop</MenuItem> */}
+                        {/* <Box>
+                            {cart.map((items) => (
+                                <Box
+                                    key={items.id}
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                    // overflow="hidden"
+                                    // p={4}
+                                    // w="100%"
+                                >
+                                    <Text fontSize="lg" fontWeight="bold" mb={2}>
+                                        {items.name}
+                                    </Text>
+                                    <Text fontSize="lg" mb={2}>
+                                        Price: {items.price}
+                                    </Text>
+                                </Box>
+                            ))}
+                        </Box> */}
+                    {/* </MenuList>
+                </Menu> */}
+            </HStack> 
 
             <HStack>
                 <Flex 
@@ -273,6 +345,8 @@ function Premium(){
             </Button>
         </Flex>)
 }
+
+
 
 
 
