@@ -12,11 +12,22 @@ import { SessionProvider, useSession, useSupabaseClient } from './../../hooks/Se
 import { ChatIcon } from '@chakra-ui/icons';
 import { uniqueId } from 'lodash';
 import { RandomUUIDOptions } from 'crypto';
-import { getUser } from './../../hooks/Utilities';
 
 
 export function getPicture(community: any) {
-    return community.pic ? community.pic : './../GoalTac_TLogo.png'
+    return community?.['pic'] ? community?.['pic'] : './../GoalTac_TLogo.png'
+}
+
+//FOR CONSISTENCIES
+export const measurements = {
+    cards : {
+        borderRadius : '20px'
+    },
+    general : {
+        contentWidth : '20px',
+        rowGap : '20px',
+        colGap : '20px',
+    },
 }
 
 export function toastError(message: string) {
