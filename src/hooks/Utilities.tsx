@@ -1,6 +1,7 @@
 import { ReactElement } from 'react';
 import { supabase } from './../supabase';
 import { Flex, Stack, useToast } from '@chakra-ui/react';
+import { measurements } from '../pages1/Communities/CommunityAPI';
 
 // LEVELS ----------------------------------------------------------------------
 // Calculates the amount of experience needed to level up
@@ -58,8 +59,8 @@ export function twoColumns(ElementOne : ReactElement, ElementTwo : ReactElement)
         paddingBottom='100px'
         flexWrap='wrap'
         maxWidth='1200px'
-
-        flexDirection={['column', 'row']} 
+        columnGap={measurements.general.colGap}
+        flexDirection={'row'} 
         justifyContent='center'>
             {ElementOne}
             {ElementTwo}
