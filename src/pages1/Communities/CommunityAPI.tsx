@@ -109,13 +109,12 @@ export async function _getAllMembers(communityID : string) {
 }
 
 //returns all members of a specific role
-export async function _getMembers(communityID: string, role : string) { 
+export async function _getMembers(communityID: string, roles : string[]) { 
     const { data: data, error } = await supabase
         .from('community_relations')
-        .select('user_id')
+        .select('*')
         .eq('community_id', communityID)
-        .eq('roles', role)
-        .single();
+        .in('role', roles);
 
     if (error) {
         throw new Error(error.message)
