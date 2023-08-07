@@ -58,14 +58,14 @@ export default function CommunityCentral() {
             },[])
         
             
-            return(<HStack overflow='hidden' padding='20px' borderRadius='20px'>
-                <Box borderRadius='full'
-                marginY='auto'
-                overflow='hidden'
-                backgroundColor={useColorModeValue('gray.100', 'gray.700')} position='absolute'>
+            return(<HStack overflow='hidden' padding='20px' borderRadius='20px' borderWidth='1px'>
+                <Box borderRadius='full' alignSelf='baseline'
+                borderWidth='2px'
+                backgroundColor={useColorModeValue('gray.100', 'gray.700')} 
+                position='absolute'>
                     <Box height='80px' width='80px'>
                         <Image src={picture} 
-                    alt={`${community.name} picture`}/>
+                        alt={`${community.name} picture`}/>
                     </Box>
                 </Box>
         
@@ -77,13 +77,14 @@ export default function CommunityCentral() {
                         </Text>
                     </Box>
                     
-                    <Text color='gray.400' marginStart='1.5rem' fontSize='1rem'>
+                    <Text color='gray.400' maxWidth='300px' overflow='hidden' marginStart='1.5rem' fontSize='1rem'>
                         {community.description}
                     </Text>
                 </Stack>
                 <Spacer/>
                 <Menu>
                     <MenuButton
+                    alignSelf='baseline'
                     as={IconButton}
                     aria-label='Options'
                     icon={<HamburgerIcon />}
