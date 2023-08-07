@@ -8,6 +8,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   Avatar,
   AvatarGroup,
+  Badge,
   Button,
   ButtonGroup,
   Card,
@@ -15,7 +16,7 @@ import {
     Flex,
     FormControl,
     FormLabel,
-    Grid,
+    Text,
     HStack,
     Heading,
     IconButton,
@@ -23,6 +24,7 @@ import {
     Image,
     Select,
     Spinner,
+    Stack,
     VStack
 } from '@chakra-ui/react';
   import {
@@ -47,7 +49,7 @@ import {
 } from '@chakra-ui/react'
 import React from 'react'
 import { useParams } from 'react-router-dom';
-import { measurements, _getAllMembers, getCommunityByName, getPicture } from './../CommunityAPI'
+import { measurements, _getAllMembers, getCommunityByName, getPicture, _getMembers } from './../CommunityAPI'
 import { uniqueId } from 'lodash';
 import Chat from '../../../components/Chats/CommunityChat';
 import GoalDashboard from './Goals';
@@ -58,34 +60,53 @@ import { formatNumber, getUser, twoColumns } from '../../../hooks/Utilities';
  * @param {community} The community object
  */
 export default function InsideView() {
-
     const { communityName } = useParams<{ communityName: string }>();
     const [community, setCommunity] = useState<any>([]);
     const [view, setView] = useState<ReactElement>(<Chat/>);
     const [members, setMembers] = useState<any>([])
+    const [vipMembers, setVipMembers] = useState<any>([])
     const [loading, setLoading] = useState<Boolean>(true)
-    
-        //load in the community variable asyncronously
+    const darkOrLightColor = useColorModeValue('blue.200', 'blue.500')
+
+    //load in the community variable asyncronously
     useEffect(() => {
+      let promisedCommunity: any;
+      let promisedMembers: any;
+      let promisedVipMembers: any;
+      fetchCommunityData()
 
       async function fetchCommunityData() {
         const fetchedCommunity = getCommunityByName(communityName)
-        const promisedCommunity = await fetchedCommunity
-
-        setCommunity(promisedCommunity)
+        promisedCommunity = await fetchedCommunity
 
         //after fetching community, then fetch members
         fetchedCommunity.finally(()=> {
+
           async function fetchMembers() {
-            const promisedMembers = await _getAllMembers(promisedCommunity.community_id)
-            setMembers(promisedMembers)
-            setLoading(false)
+            const fetchedMembers = _getAllMembers(promisedCommunity.community_id)
+            promisedMembers = await fetchedMembers
+            render()
+          }
+          async function fetchVipMembers() {
+            const fetchedVipMembers = _getMembers(promisedCommunity.community_id, ['Owner', 'Admin', 'Moderator'])
+            promisedVipMembers = await fetchedVipMembers
+            render()
           }
           fetchMembers()
+          fetchVipMembers()
         })
-        
       }
-      fetchCommunityData();
+      function render() {
+        if (promisedCommunity && promisedMembers && promisedVipMembers) {
+          setCommunity(promisedCommunity)
+          setMembers(promisedMembers)
+          setVipMembers(promisedVipMembers)
+          setLoading(false)
+        } else {
+          setLoading(true)
+        }
+      }
+      
     }, []);
 
     //to display the group of toggleable views
@@ -104,8 +125,10 @@ export default function InsideView() {
     
     //Statistics and such
     function SupportingContent() {
-      return <Flex maxWidth='300px' width='max-content'>
+      return <Flex maxWidth='200px' width='max-content' 
+      rowGap={measurements.general.rowGap} flexDirection='column'>
         <Card_Roster/>
+        <Card_VIP />
       </Flex>
     }
     
@@ -125,7 +148,7 @@ export default function InsideView() {
       return <Card height='400px' borderRadius={measurements.cards.borderRadius} position='relative'>
 
         {/* BANNER: The height and width should be set to the size of the banner */}
-        <Box borderRadius='inherit' borderBottomRadius='unset' height='200px' overflow='clip'>
+        <Box borderRadius='inherit' borderBottomRadius='unset' height='50%' overflow='clip'>
           <Image src={ProfileBackground} />
         </Box>
 
@@ -135,21 +158,21 @@ export default function InsideView() {
           </Card>
         </Flex>
        
-        <ButtonGroup alignSelf='end' borderRadius='full' marginEnd='5%' color='blue.600'>
+        <ButtonGroup alignSelf='end' marginTop='10px' borderRadius='full' marginEnd='5%' color={darkOrLightColor}>
           <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<InfoOutlineIcon />} aria-label='Information'/>
           <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<RiNotification2Fill />} aria-label='Notifications'/>
           <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<SettingsIcon />} aria-label='Settings'/>
         </ButtonGroup>
 
         {/* TEXTS: Name and description */}
-        <Box marginTop='20px' marginStart='5%'>
+        <Box marginTop='10px' paddingX='5%'>
           <Heading>
             {(community ? community.name : '')}
           </Heading>
           <Box>
-            <Heading size='sm' marginStart='5%' color='gray'>
+            <Text size='sm' marginStart='5%'>
             {(community ? community.description : '')}
-            </Heading>
+            </Text>
           </Box>
           
         </Box>
@@ -247,6 +270,8 @@ export default function InsideView() {
     }
 
     function Card_Roster() {
+      const maxViewableRoster : number = 4
+      const limitedMembers = members.slice(0, maxViewableRoster)
 
       function RenderAvatar({member} : any) {
         const [profile, setProfile] = useState<{ [x: string]: any; } | undefined>(undefined)
@@ -257,10 +282,10 @@ export default function InsideView() {
             setProfile(profile)
           }
           fetchProfile()
-        })
+        },[])
         
         return (profile ? <Box as={Link} to={`/profile/${profile.name}`}>
-          <Avatar name={`${member.name}`} src={profile.avatarurl}  />
+          <Avatar name={`${profile.name}`} src={profile.avatarurl}  />
         </Box> : <Avatar src='' />)
       }
 
@@ -273,7 +298,9 @@ export default function InsideView() {
         </Button>
       }
 
-      return <Card rowGap='20px' height='min-content' minWidth='200px' padding='20px' borderRadius={measurements.cards.borderRadius} position='relative'>
+      return <Card rowGap='20px' height='min-content'
+       padding='20px' borderRadius={measurements.cards.borderRadius} 
+       position='relative' borderWidth='2px' borderColor={darkOrLightColor}>
         <Heading size='sm'>
           {members && `${formatNumber(members.length)} Members`}
         </Heading>
@@ -281,7 +308,7 @@ export default function InsideView() {
         <AvatarGroup max={4} columnGap='5px'>
           {/* ISSUE : Eventually we need to limit this 
           to only map through a chunk of members at a time */}
-          {members && members.map((member : any, id : number) => 
+          {members && limitedMembers.map((member : any, id : number) => 
             <RenderAvatar member={member} key={id}/>
           )}
         </AvatarGroup>
@@ -289,8 +316,51 @@ export default function InsideView() {
       </Card>
     }
 
+    function Card_VIP() {
 
+      function RenderAvatar({member} : any) {
+        const [profile, setProfile] = useState<{ [x: string]: any; } | undefined>(undefined)
+        
 
+        useEffect(()=> {
+          async function fetchProfile() {
+            const profile = await getUser(member.user_id)
+            setProfile(profile)
+          }
+          fetchProfile()
+        },[])
+
+        return (profile ? <Flex as={Link} to={`/profile/${profile.name}`}
+        flexDirection='column' rowGap={measurements.general.rowGap}>
+          <HStack>
+            <Avatar name={`${profile.name}`} src={profile.avatarurl}  />
+            <Box>
+              <Heading size='md'>
+                {profile.name}
+              </Heading>
+              <Badge variant='subtle' backgroundColor={darkOrLightColor}>
+                <Text fontSize='xs'>
+                  {member.role}
+                </Text>
+              </Badge>
+            </Box>
+          </HStack>
+          <Text fontSize='xs'>
+            {profile.biography}
+          </Text>
+        </Flex> : <Avatar src='' />)
+      }
+
+      return <Card rowGap='20px' height='min-content' minWidth='200px'
+       padding='20px' borderRadius={measurements.cards.borderRadius} 
+       position='relative' borderWidth='2px' borderColor={darkOrLightColor}>
+          {/* ISSUE : Eventually we need to limit this 
+          to only map through a chunk of members at a time */}
+          {members && vipMembers.map((member : any, id : number) => 
+            <RenderAvatar member={member} key={id}/>
+          )}
+      </Card>
+    }
 
     return(<Box width='max-content' marginX='auto' borderRadius='40px'>        
         {twoColumns( <MainContent/> , <SupportingContent/>)}
