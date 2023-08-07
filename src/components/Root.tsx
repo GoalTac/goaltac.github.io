@@ -1,19 +1,19 @@
-import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge, useColorModeValue } from "@chakra-ui/react";
+import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge, useColorModeValue, Stack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FaUser, FaSignOutAlt, FaRegNewspaper, FaSearch, FaUsers, FaShoppingBag, FaCircle } from "react-icons/fa";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { supabase } from '../supabase';
 import { SessionProvider } from "../hooks/SessionProvider";
-
+//change the color theme for light mode from white to gray.50
 export default function Root() {
   return (
     <SessionProvider supabase={supabase}>
-      <Box backgroundColor={useColorModeValue('gray.50','')}>
+      <Stack minHeight='100vh' position='relative'>
         <HeaderNav />
-        <Box marginTop='30px' overflowX='auto'>
+        <Box marginTop='35px'>
           <Outlet />
         </Box>
-      </Box>
+      </Stack>
       
       
     </SessionProvider >

@@ -5,7 +5,7 @@ import {
 import { useNavigate, Link } from 'react-router-dom';
 import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import InsideView from '../Community/InsideView';
-import { Community, _addCommunity, _addMember, _getAllCommunities, _getAllMembers, _getJoinedCommunities, _getMembers, _getRequestedCommunities, _getUnJoinedCommunities, _removeMember, _setMember, getCommunity, getCommunityByName, getPicture } from '../CommunityAPI';
+import { Community, _addCommunity, _addMember, _getAllCommunities, _getAllMembers, _getJoinedCommunities, _getMembers, _getRequestedCommunities, _getUnJoinedCommunities, _removeMember, _setMember, getCommunity, getCommunityByName, getPicture, measurements } from '../CommunityAPI';
 import Calendar from '../../../pages/Calendar';
 import { supabase } from '../../../supabase';
 import { RxExit } from 'react-icons/rx'
@@ -58,9 +58,11 @@ export default function CommunityCentral() {
             },[])
         
             
-            return(<HStack overflow='hidden' padding='20px' borderRadius='20px' borderWidth='1px'>
+            return(
+            <HStack overflow='hidden' padding='20px' borderRadius='20px' 
+            borderWidth='1px' marginY={measurements.general.rowGap}>
                 <Box borderRadius='full' alignSelf='baseline'
-                borderWidth='2px'
+                overflow='hidden'
                 backgroundColor={useColorModeValue('gray.100', 'gray.700')} 
                 position='absolute'>
                     <Box height='80px' width='80px'>
@@ -169,10 +171,9 @@ export default function CommunityCentral() {
         
 
         return (<Box width={['400px', '600px']}>
-            <Card height='80px' 
+            <Card height='80px'
                 justifySelf='center' 
                 alignSelf='center' 
-                
                 overflow='hidden' 
                 flexDirection={'column'}>
                     <CardHeader display="flex" justifyContent="space-between" columnGap='20px'>

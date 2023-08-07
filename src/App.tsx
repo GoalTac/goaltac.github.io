@@ -26,8 +26,6 @@ import CommunityCentral from './pages1/Communities/Dashboard/CommunityCentral';
 import InsideView from './pages1/Communities/Community/InsideView';
 
 export default function App() {
-
-  const [betaOne, setBetaOne] = useState(null)
   
   function ProtectedRoute({ children, redirectPath }:any) {
     const { user: user } = useSession();
