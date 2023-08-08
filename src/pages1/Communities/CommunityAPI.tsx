@@ -21,7 +21,8 @@ export function getPicture(community: any) {
 //FOR CONSISTENCIES
 export const measurements = {
     cards : {
-        borderRadius : '20px'
+        borderRadius : '20px',
+        width : '400px'
     },
     general : {
         contentWidth : '20px',
