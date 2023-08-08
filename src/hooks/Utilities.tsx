@@ -60,7 +60,7 @@ export function twoColumns(ElementOne : ReactElement, ElementTwo : ReactElement)
         flexWrap='wrap'
         maxWidth='1200px'
         columnGap={measurements.general.colGap}
-        flexDirection={'row'} 
+        flexDirection={['column','row']} 
         justifyContent='center'>
             {ElementOne}
             {ElementTwo}
