@@ -46,7 +46,6 @@ export default function CommunityCentral() {
             const picture: string = getPicture(community);
             const link = `https://goaltac.net/community/${community.name}`
             const { onCopy } = useClipboard(link);
-            const { user: user } = useSession();
             const [members, setMembers] = useState<any>([])
             
             useEffect(()=> {

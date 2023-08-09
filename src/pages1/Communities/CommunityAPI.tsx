@@ -99,7 +99,7 @@ export async function _removeCommunity(community_id : any) {
 export async function _getAllMembers(communityID : string) {
     const { data: data, error } = await supabase
         .from('community_relations')
-        .select('user_id')
+        .select('*')
         .eq('community_id', communityID);
 
     if (error) {
@@ -172,12 +172,24 @@ export async function _removeMember(communityID : string, userID : string) {
     if (error) {
         throw new Error(error.message)
     };
-    
+
+    const owner = await _getMembers(communityID, ['Owner']).then((response)=>{
+        //remove the community if the owner leaves
+        if(response) {
+            if (response[0]?.['user_id'] == userID) {
+                _removeCommunity(communityID)
+                return data
+            }
+        }
+    })
+
     const members = _getAllMembers(communityID).then((response)=>{
         if (response.length <= 0) {
             _removeCommunity(communityID)
+            return data
         }
     })
+    
 
     return data;
 }
@@ -200,7 +212,7 @@ export async function _setMember(relationship : any) {
 export async function _getJoinedCommunities(userID: any) {
     const { data: data, error } = await supabase
         .from('community_relations')
-        .select('community_id')
+        .select('*')
         .eq('user_id', userID)
         .eq('status', 1);
     if (error) {
@@ -262,7 +274,7 @@ export async function getCommunityByID(communityID: any)  {
 export async function _getRequestedCommunities(userID: any)  {
     const { data: data, error } = await supabase
     .from('community_relations')
-    .select('community_id')
+    .select('*')
     .eq('user_id', userID)
     .eq('status', 0);
     if (error) {
