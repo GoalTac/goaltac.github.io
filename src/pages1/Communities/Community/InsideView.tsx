@@ -1,9 +1,10 @@
 import Header from './Information'
 import Roster from './Roster'
-import { useState, useEffect, ReactElement } from 'react';
+import { useState, useEffect, ReactElement, useRef } from 'react';
 import GoalTac_Logo from '../../../images/GoalTac_Logo.png'
 import ProfileBackground from '../../../../public/ProfileBackground.svg'
 import { useNavigate, Link } from 'react-router-dom';
+import Carousel from 'react-multi-carousel';
 
 import {
   Avatar,
@@ -25,7 +26,13 @@ import {
     Select,
     Spinner,
     Stack,
-    VStack
+    VStack,
+    Spacer,
+    Progress,
+    Icon,
+    Input,
+    Textarea,
+    transition
 } from '@chakra-ui/react';
   import {
     TbTarget
@@ -33,7 +40,8 @@ import {
   import {
     FaUserFriends,
     FaChalkboard,
-    FaArrowRight
+    FaArrowRight,
+    FaHistory
   } from 'react-icons/fa'
   import {
     RiCalendarEventLine, RiNotification2Fill
@@ -41,7 +49,10 @@ import {
   import { 
     ChatIcon,
     InfoOutlineIcon,
-    SettingsIcon
+    SettingsIcon, 
+    CheckIcon,
+    InfoIcon,
+    ArrowForwardIcon
 } from '@chakra-ui/icons';
 import {
     Box,
@@ -55,6 +66,9 @@ import Chat from '../../../components/Chats/CommunityChat';
 import GoalDashboard from './Goals';
 import Calendar from './Calender';
 import { formatNumber, getUser, twoColumns } from '../../../hooks/Utilities';
+import { responsive, staffProfiles } from '../../../components/Beta/BetaContent';
+import { useSession } from '../../../hooks/SessionProvider';
+import { GiArrowhead, GiFastArrow } from 'react-icons/gi';
 /**
  * Contains all components of an individual community
  * @param {community} The community object
@@ -62,11 +76,11 @@ import { formatNumber, getUser, twoColumns } from '../../../hooks/Utilities';
 export default function InsideView() {
     const { communityName } = useParams<{ communityName: string }>();
     const [community, setCommunity] = useState<any>([]);
-    const [view, setView] = useState<ReactElement>(<Chat/>);
     const [members, setMembers] = useState<any>([])
     const [vipMembers, setVipMembers] = useState<any>([])
     const [loading, setLoading] = useState<Boolean>(true)
     const darkOrLightColor = useColorModeValue('blue.200', 'blue.500')
+    const { user: user } = useSession();
 
     //load in the community variable asyncronously
     useEffect(() => {
@@ -111,24 +125,27 @@ export default function InsideView() {
 
     //to display the group of toggleable views
     function MainContent() {
-      return <Flex maxWidth='600px' width='max-content' 
+      return <Flex maxWidth='600px'
       rowGap={measurements.general.rowGap} flexDirection='column'>
           <Card_Header />
+          <Card_Tasks/>
           <Card_Post />
-          <Card className='Specific Community View'
-          borderRadius='20px'
-          marginX='auto'  padding='10px'>
-            {view}
-          </Card>
+          <Heading>
+            Below this will be all the posts that people have made
+          </Heading>
         </Flex>
     }
-    
+
     //Statistics and such
     function SupportingContent() {
       return <Flex maxWidth='200px' width='max-content' 
       rowGap={measurements.general.rowGap} flexDirection='column'>
         <Card_Roster/>
         <Card_VIP />
+        {members.map((member : any)=> member.user_id).includes(user?.['id']) && 
+          <Card height='400px' padding='10px' borderRadius={measurements.cards.borderRadius}>
+            <Chat />           
+          </Card>}
       </Flex>
     }
     
@@ -153,16 +170,23 @@ export default function InsideView() {
         </Box>
 
         <Flex marginY='auto' borderRadius='inherit' left='5%' position='absolute' height='100%'>
-          <Card overflow='clip' borderRadius='inherit' borderColor='gray' borderWidth='2px' height='100px' width='100px' margin='auto' padding='10px'>
+          <Card borderRadius='inherit' borderColor='gray' borderWidth='2px' height='100px' width='100px' margin='auto' padding='10px'>
             <Image src={picture} />
+            <Badge variant='solid' height='min' width='min' marginTop='25px' marginX='auto' zIndex='9' borderWidth='1px'>
+              {community && (community.isPublic ? 'Public' : 'Private')}
+            </Badge>
           </Card>
         </Flex>
        
-        <ButtonGroup alignSelf='end' marginTop='10px' borderRadius='full' marginEnd='5%' color={darkOrLightColor}>
-          <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<InfoOutlineIcon />} aria-label='Information'/>
-          <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<RiNotification2Fill />} aria-label='Notifications'/>
-          <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<SettingsIcon />} aria-label='Settings'/>
-        </ButtonGroup>
+        <HStack alignSelf='end' marginEnd='10px' width='335px' marginTop='10px'>
+          <Spacer/>
+          <ButtonGroup borderRadius='full' color={darkOrLightColor}>
+            <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<InfoOutlineIcon />} aria-label='Information'/>
+            <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<RiNotification2Fill />} aria-label='Notifications'/>
+            <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<SettingsIcon />} aria-label='Settings'/>
+          </ButtonGroup>
+        </HStack>
+        
 
         {/* TEXTS: Name and description */}
         <Box marginTop='10px' paddingX='5%'>
@@ -170,7 +194,7 @@ export default function InsideView() {
             {(community ? community.name : '')}
           </Heading>
           <Box>
-            <Text size='sm' marginStart='5%'>
+            <Text size='sm' marginStart='5%' width={measurements.cards.width}>
             {(community ? community.description : '')}
             </Text>
           </Box>
@@ -188,11 +212,87 @@ export default function InsideView() {
       function ViewType() {
 
         function Task() {
-          return <Box height='100px'>
-            <Heading size='md' color='orange'>
-              This is under construction!
-            </Heading>
-          </Box>
+            const [name, setName] = useState<any>('');
+            const [description, setDescription] = useState<any>('');
+            const [pic, setPic] = useState<any>(null);
+            const [isPublic, setIsPublic] = useState<any>(true);
+            const [community_id, setCommunity_id] = useState<any>('');
+            const [points, setPoints] = useState<any>(0);
+            const [role, setRole] = useState<any>(0);
+            const [status, setStatus] = useState<any>(1); //joined
+        
+            const handleAddCommunity = async() => {
+              /*
+                _addCommunity({
+                    name: name,
+                    description: description,
+                    pic: pic,
+                    score: 0,
+                    isPublic: isPublic,
+                }).then((response : any)=>{ //fix this setting community id to the wrong id
+
+                    if(response.message) {
+                        toast({
+                            title: "Error",
+                            description: response.message,
+                            status: "error",
+                            duration: 9000,
+                            isClosable: true,
+                        })
+                        return
+                    }
+
+                    const uuid = response?.['community_id']
+                    const addedMember = _addMember({
+                        community_id: uuid, 
+                        user_id: (user ? user?.['id'] : ''),
+                        role: 'Owner'
+                    })
+                    addedMember.then((response : any)=> {
+                        if(response.message) {
+                            toast({
+                                title: "Error",
+                                description: response.message,
+                                status: "error",
+                                duration: 9000,
+                                isClosable: true,
+                            })
+                        } else {
+                            toast({
+                                title: "Success",
+                                description: `Successfully created ${name}`,
+                                status: "success",
+                                duration: 9000,
+                                isClosable: true,
+                            })
+                        }
+                    })
+                    
+                    setName('')
+                    setDescription('')
+                    setPic('')
+                    setIsPublic('')
+
+                })
+                */
+            }
+        
+            return(
+                <Box padding='20px'>
+                    <FormControl>
+                        <FormLabel>Title</FormLabel>
+                        <Input placeholder="Title" value={name} onChange={(e) => setName(e.target.value)} />
+                    </FormControl>
+        
+                    <FormControl mt={4}>
+                        <FormLabel>Description</FormLabel>
+                        <Textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                    </FormControl>
+                    <Button colorScheme="blue" mt={3} onClick={handleAddCommunity}>
+                        {'Save'}
+                    </Button>
+                </Box>
+            )
         }
         function Goal() {
           return <Box height='100px'>
@@ -251,7 +351,7 @@ export default function InsideView() {
               Create a Post
             </Heading>
           </Flex>
-
+          <Spacer/>
           <FormControl borderRadius={measurements.cards.borderRadius} 
           marginY='auto' marginX={measurements.general.rowGap} width='300px'>
             <Select placeholder='Select a post' defaultValue={type}
@@ -290,11 +390,10 @@ export default function InsideView() {
       }
 
       function RosterButton() {
-        return <Button variant='ghost' width='100%'>
-          <Heading size='xs' marginRight='5px'>
+        return <Button variant='ghost' width='100%' rightIcon={<FaArrowRight />}>
+          <Heading size='xs'>
             Show Everyone
           </Heading>
-          <FaArrowRight />
         </Button>
       }
 
@@ -362,34 +461,271 @@ export default function InsideView() {
       </Card>
     }
 
-    return(<Box width='max-content' marginX='auto' borderRadius='40px'>        
+    //STOP THIS RE RENDERING SO MUCH
+    function Card_Tasks() {
+      //will show score, task completion, and top performers
+      const [view, setView] = useState<ReactElement>(<TaskDisplay/>);
+      const [type, setType] = useState<string>('progress')
+      const exampleTasks : any = [
+        {
+          name: 'Do a backflip',
+          description: 'THE BEST BACKFLIP',
+          owner: '136021e3-4e2c-4ed2-8a32-06803fd800e5',
+          members: [''],
+          created_by: new Date(),
+          type: 'Number', //can be number, boolean, tasks
+          reward: 15
+        },
+        {
+          name: 'Do a frontflip',
+          description: 'THE BEST BACKFLIP',
+          owner: '136021e3-4e2c-4ed2-8a32-06803fd800e5',
+          members: [''],
+          created_by: new Date(),
+          type: 'Number', //can be number, boolean, tasks
+          reward: 15
+        },
+        {
+          name: 'Do a backflip',
+          description: 'THE BEST BACKFLIP',
+          owner: '136021e3-4e2c-4ed2-8a32-06803fd800e5',
+          members: [''],
+          created_by: new Date(),
+          type: 'Number', //can be number, boolean, tasks
+          reward: 10
+        },
+        {
+          name: 'Do a backflip',
+          description: 'THE BEST BACKFLIP',
+          owner: '136021e3-4e2c-4ed2-8a32-06803fd800e5',
+          members: [''],
+          created_by: new Date(),
+          type: 'Number', //can be number, boolean, tasks
+          reward: 10
+        },
+      ]
+      function TasksCarousel(TaskViews : any) {
+        return <Flex marginX='auto' flexDirection='column' overflow='clip' width={measurements.cards.width}>
+        <Carousel
+          additionalTransfrom={0}
+          arrows={false}
+          autoPlaySpeed={10000}
+          autoPlay={true}
+          centerMode={false}
+          className=""
+          containerClass="container-padding-bottom"
+          dotListClass=""
+          draggable
+          focusOnSelect={false}
+          infinite
+          itemClass=""
+          keyBoardControl
+          minimumTouchDrag={80}
+          pauseOnHover
+          renderArrowsWhenDisabled={false}
+          renderButtonGroupOutside={true}
+          renderDotsOutside={true}
+          responsive={{
+            desktop: {
+              breakpoint: {
+                max: 3000,
+                min: 1024
+              },
+              items: 1
+            },
+            mobile: {
+              breakpoint: {
+                max: 464,
+                min: 0
+              },
+              items: 1
+            },
+            tablet: {
+              breakpoint: {
+                max: 1024,
+                min: 464
+              },
+              items: 1
+            }
+          }}
+          rewind={true}
+          rewindWithAnimation={false}
+          rtl={false}
+          shouldResetAutoplay
+          showDots
+          sliderClass=""
+          slidesToSlide={1}
+          swipeable
+          >
+          {TaskViews}
+        </Carousel>
+      </Flex>
+      }
+
+      //create a list of react elements and push into carousel
+      function TaskDisplay() {
+        //creating a caraousel of goals which can be clicked on to view all the arrows made
+        //Should load all tasks and profiles before rendering individually
+        function Card_Goal(props : any) : ReactElement {
+          const task = props.task
+          const [selectedTab, setSelectedTab] = useState<Number>(0)
+          const [tab, setTab] = useState<ReactElement>()
+
+          return <Card minHeight='300px' borderWidth='1px' borderColor='gray'
+          marginX='40px' padding='20px' borderRadius={measurements.cards.borderRadius} 
+          position='relative' >
+            <Flex flexDirection='row'>
+              <Flex flexDirection='column'>
+                <Heading size='md'>
+                  {task ? task.name : 'Unknown'}
+                </Heading>
+                <Text marginStart='20px' fontSize='sm'>
+                  {task ? task.description : 'unknown'}
+                </Text>
+              </Flex>
+            </Flex>
+            
+            <Box position='absolute' right='20px'>
+              <IconButton isRound={true} variant='solid' zIndex='9'
+                colorScheme='green' aria-label='Done'
+                fontSize='20px' icon={<CheckIcon />} />
+              <Badge colorScheme='green' borderRadius='5px' padding='10px' paddingRight='25px' right='20px' position='absolute'>
+                {task ? task.reward : 0} pts
+              </Badge>
+            </Box>
+
+            <ButtonGroup position='absolute' right='-40px' flexDirection={'column'} zIndex='-1'>
+              {//Display all the existing community tasks for one goal
+              exampleTasks.map((task : any, id : number) => {
+                console.log('1')
+                return <Button variant='solid' onClick={()=>{
+                    setSelectedTab(id) 
+                  }}
+                  key={id} paddingRight='10px'
+                  right={(selectedTab == id ? '0px' : '10px')}
+                  colorScheme={(selectedTab == id ? 'green' : 'gray')}
+                  fontSize='20px' rightIcon={(selectedTab == id ? <TbTarget /> : <GiArrowhead/>)} />
+              })}
+            </ButtonGroup>
+
+            <Box position='absolute' right='20px' bottom='20px'>
+              <IconButton isRound={true} variant='ghost' zIndex='9'
+                _active={{paddingLeft: '100px', paddingRight: '10px'}}
+                colorScheme='blue' aria-label='Information'
+                fontSize='20px' icon={<InfoIcon />} />
+            </Box>
+
+          </Card>
+        }
+        
+        return TasksCarousel(
+          exampleTasks.map((task : any, id : any)=>{
+            return <Card_Goal task={task} key={id}/>
+          }))
+      }
+      
+      function TasksCompleted() {
+        //Should load all tasks and profiles before rendering individually
+        function TaskCompletedView(props : any) : ReactElement {
+          console.log('AH')
+          const task = props.task
+          const user = members ? members.filter((member : any) => member.user_id == task.owner)[0].user_id : null
+          const [profile, setProfile] = useState<{ [x: string]: any; } | undefined>()
+        
+          useEffect(()=> {
+            async function fetchProfile() {
+              const profile = await getUser(user)
+              setProfile(profile)
+            }
+            (user && fetchProfile())
+          },[])
+
+          return (profile ? <Card minHeight='300px' borderWidth='1px' borderColor='gray'
+          padding='20px' borderRadius={measurements.cards.borderRadius} 
+          position='relative' >
+            <Flex flexDirection='row'>
+              <Flex flexDirection='column'>
+                <Heading >
+                  {task ? task.name : 'Unknown'}
+                </Heading>
+                <Text marginStart='20px' fontSize='sm'>
+                  {task ? task.description : 'unknown'}
+                </Text>
+              </Flex>
+            </Flex>
+            
+            <Box position='absolute' right='20px'>
+              <IconButton isRound={true} variant='solid' zIndex='9'
+                colorScheme='green' aria-label='Done'
+                fontSize='20px' icon={<CheckIcon />} />
+              <Badge colorScheme='green' borderRadius='5px' padding='10px' paddingRight='25px' right='20px' position='absolute'>
+                {task ? task.reward : 0} pts
+              </Badge>
+            </Box>
+
+            <Box position='absolute' right='20px' bottom='20px'>
+              <IconButton isRound={true} variant='ghost' zIndex='9'
+                _active={{paddingLeft: '100px', paddingRight: '10px'}}
+                colorScheme='blue' aria-label='Information'
+                fontSize='20px' icon={<InfoIcon />} />
+                
+              {/**
+               * <Avatar name={`${profile.name}`} src={profile.avatarurl} />
+              <Badge colorScheme='gray' borderRadius='5px' bottom='0px' padding='10px' width='fit-content' paddingRight='30px' right='20px' position='absolute'>
+                {profile.name}
+              </Badge>
+               */}
+            </Box>
+
+          </Card> : <LoadingView/>)
+        }
+
+        return TasksCarousel(
+            exampleTasks.map((task : any, id : any)=>{
+              return <TaskCompletedView task={task} key={id}/>
+            }))
+      }
+
+      function TasksScheduled() {
+
+      }
+
+      return (<Card rowGap='20px' height='min-content'
+      padding='20px' borderRadius={measurements.cards.borderRadius} 
+      position='relative'>
+        <HStack>
+          <Heading>
+            Tasks
+          </Heading>
+          <Spacer/>
+          <ButtonGroup variant='ghost'>
+            <Button fontSize='xs' isActive={type == 'progress'} onClick={()=>{
+              setType('progress')}}>
+              In Progress
+            </Button>
+            <Button fontSize='xs' isActive={type == 'scheduled'} onClick={()=>{
+              setView(<TasksCompleted/>)
+              setType('scheduled')}}>
+              Scheduled
+            </Button>
+            <Button fontSize='xs' isActive={type == 'pending'} onClick={()=>{
+              setView(<TasksCompleted/>)
+              setType('pending')}}>
+              Pending
+            </Button>
+            <IconButton aria-label='completed' icon={<FaHistory/>} onClick={()=>{
+              setView(<TasksCompleted/>)
+              setType('completed')}} />
+          </ButtonGroup>
+        </HStack>
+        <Divider/>
+        {view}
+        
+      </Card>)
+    }
+
+    return(<Box marginX='auto' borderRadius='40px'>        
         {twoColumns( <MainContent/> , <SupportingContent/>)}
     </Box>
     );
-}
-
-function HeaderNav({setView, community}: any) {
-
-    const navigation = [
-        ['calendar', <RiCalendarEventLine/>, <Calendar community={community} />],
-        ['goals', <TbTarget/>, <GoalDashboard community={community} />],
-        ['chat', <ChatIcon />, <Chat />]]
-
-    
-    return (<VStack>
-    <Flex width='100%'>
-        {navigation.map((navItem, index) => {
-            return (
-            <IconButton key={index}
-              borderWidth='1px'
-              borderEndRadius='unset'
-              borderBlockEnd='unset'
-              width='100%'
-              variant='ghost'
-              fontSize='2rem'
-              onClick={() => setView(navItem[2])}
-              icon={navItem[1] as ReactElement} aria-label={navItem[0] as string}/>)})}
-      </Flex>
-    <Divider/>
-  </VStack>)
 }
