@@ -106,6 +106,7 @@ export default function SignUpPage() {
                                     />
                                     {/* Email */}
                                     <Input
+                                        isDisabled
                                         type='email'
                                         id='email'
                                         placeholder='Email Address'
@@ -123,6 +124,7 @@ export default function SignUpPage() {
                                     />
                                     {/* Password */}
                                     <Input
+                                        isDisabled
                                         type={showPassword ? 'text' : 'password'}
                                         placeholder='Password'
                                         id='password'
@@ -144,18 +146,6 @@ export default function SignUpPage() {
                                 bg={"whiteAlpha.300"} _hover={{ backgroundColor: 'whiteAlpha.400' }}
                             >
                                 Sign Up
-                            </Button>
-                            <Center>Or</Center>
-                            <Button
-                                w={'full'}
-                                maxW={'md'}
-                                variant={'solid'}
-                                leftIcon={<FcGoogle />}
-                                bg={"blackAlpha.600"} _hover={{ bg: "black" }}
-                            >
-                                <Center>
-                                    <Text>Sign up with Google</Text>
-                                </Center>
                             </Button>
                         </Stack>
                     </form>
