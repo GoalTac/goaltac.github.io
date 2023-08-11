@@ -195,7 +195,7 @@ export default function Login() {
                                             onChange={event => setPassword(event.target.value)}
                                         />
                                         <InputRightElement width='4.5rem'>
-                                            <Button h='1.75rem' size='sm' onClick={handleShowClick} bg={"whiteAlpha.300"} _hover={{ backgroundColor: 'whiteAlpha.400' }}>
+                                            <Button h='1.75rem' size='sm' onClick={handleShowClick} bg={password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}>
                                                 {showPassword ? 'hide' : 'show'}
                                             </Button>
                                         </InputRightElement>
@@ -211,7 +211,7 @@ export default function Login() {
                                     type='submit'
                                     variant='solid'
                                     width='full'
-                                    bg={"whiteAlpha.300"} _hover={{ backgroundColor: 'whiteAlpha.400' }}
+                                    bg={email && password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}
                                 >
                                     Login
                                 </Button>
@@ -220,7 +220,7 @@ export default function Login() {
                                     maxW={'md'}
                                     variant={'solid'}
                                     leftIcon={<FcGoogle />}
-                                    bg={"blackAlpha.600"} _hover={{ bg: "black" }}
+                                    bg={!email && !password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}
                                     onClick={handleGoogleLogin}
                                 >
                                     <Center>
