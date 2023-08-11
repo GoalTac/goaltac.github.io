@@ -13,6 +13,7 @@ import {
   Text,
   Flex,
   Image,
+  useToast,
 } from '@chakra-ui/react';
 import _ from 'lodash';
 import { memo, useState } from 'react';
@@ -54,10 +55,20 @@ function Task({
     setShowDeleteModal(true);
   };
 
+  const toast = useToast();
+
   const handleDeleteConfirm = () => {
     handleDelete(task.id);
     setShowDeleteModal(false);
+    toast({
+      title: "Task deleted.",
+      description: "Your task has been successfully deleted.",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
   };
+
 
   const handleDeleteCancel = () => {
     setShowDeleteModal(false);
