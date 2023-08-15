@@ -3,6 +3,8 @@ import { DeleteIcon } from '@chakra-ui/icons';
 import { FaEdit, FaCheck } from 'react-icons/fa';
 import { supabase } from './../supabase';
 import React, { useState, useEffect } from 'react';
+import Task from '../components/Calendar/Task';
+import { set, update } from 'lodash';
 
 //use tasktype to structure tasks
 type TaskType = {
@@ -170,29 +172,55 @@ export default function List() {
                 title: 'Task deleted',
                 position: 'top',
                 status: 'success',
+                description: 'Your task has been deleted successfully.',
                 duration: 2000,
                 isClosable: true,
             });
+
+        // What we have currently:
         setTaskData(taskData.filter((task) => task.id !== id));
+
+        // setTaskData(taskData.filter((task) => task.id !in [taskData]));
+        // setTaskData(taskData.filter((task) => task.id !in taskData));
+        // console.log(id);
+        // console.log(taskData);
+        // console.log(task.id)
         }
     
         setLoading(false);
         
     }
 
-    // const toast = useToast();
     const handleDeleteConfirm = () => {
+        handleDelete(currentTask?.id! as number);
+        // handleDelete(currentTask.id as number);
+        // handleDelete(newTask?.id! as number);
+        setShowDeleteModal(false);
+
+        // getTasks();
         // handleDelete(setTaskData.id);
         // handleDelete(setCurrentTask.id);
         // handleDelete(setTask.id);
-        handleDelete(task.id);
-        setShowDeleteModal(false);
-        toast({
-            title: 'Task deleted',
-            description: 'Your task has been deleted successfully.',
-            duration: 3000,
-            isClosable: true,
-            });
+        // handleDelete(task.id);
+        // handleDelete(currentTask.id);
+        // handleDelete(currentTask?.id as number)
+        // handleDelete(setNewTask?.id!);
+        // handleDelete(taskData.id as number);
+        // handleDelete(getTasks().id as number);
+        // handleDelete(currentTask?.id! as number);
+        // handleDelete(currentTask?.id! as number);
+        // handleDelete(setTask?.id! as number);
+        // handleDelete(newTask?.id! as number);
+        // handleDelete(currentTask?.id as number);
+        // handleDelete(getTask()?.id! as number);
+        // handleDelete(currentTask?.id! as number);
+        // handleDelete(setCurrentTask?.id! as number);
+        // toast({
+        //     title: 'Task deleted',
+        //     description: 'Your task has been deleted successfully.',
+        //     duration: 3000,
+        //     isClosable: true,
+        //     });
       };
 
     //changes completed boolean in supabase to true and false
