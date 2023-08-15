@@ -3,6 +3,8 @@ import { DeleteIcon } from '@chakra-ui/icons';
 import { FaEdit, FaCheck } from 'react-icons/fa';
 import { supabase } from './../supabase';
 import React, { useState, useEffect } from 'react';
+import Task from '../components/Calendar/Task';
+import { set, update } from 'lodash';
 
 //use tasktype to structure tasks
 type TaskType = {
@@ -32,6 +34,7 @@ export default function List() {
     const [loading, setLoading] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [currentTask, setCurrentTask] = useState<TaskType | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const toast = useToast();
 
 
@@ -140,6 +143,17 @@ export default function List() {
 
     //delete tasks from supabase
 
+    
+    const handleDeleteClick = () => {
+        setShowDeleteModal(true);
+      };
+    
+      
+    
+      const handleDeleteCancel = () => {
+        setShowDeleteModal(false);
+      };
+    
     async function handleDelete(id: number) {
         setLoading(true);
         const { error } = await supabase.from('todos').delete().eq('id', id);
@@ -158,14 +172,56 @@ export default function List() {
                 title: 'Task deleted',
                 position: 'top',
                 status: 'success',
+                description: 'Your task has been deleted successfully.',
                 duration: 2000,
                 isClosable: true,
             });
+
+        // What we have currently:
         setTaskData(taskData.filter((task) => task.id !== id));
+
+        // setTaskData(taskData.filter((task) => task.id !in [taskData]));
+        // setTaskData(taskData.filter((task) => task.id !in taskData));
+        // console.log(id);
+        // console.log(taskData);
+        // console.log(task.id)
         }
     
         setLoading(false);
+        
     }
+
+    const handleDeleteConfirm = () => {
+        handleDelete(currentTask?.id! as number);
+        // handleDelete(currentTask.id as number);
+        // handleDelete(newTask?.id! as number);
+        setShowDeleteModal(false);
+
+        // getTasks();
+        // handleDelete(setTaskData.id);
+        // handleDelete(setCurrentTask.id);
+        // handleDelete(setTask.id);
+        // handleDelete(task.id);
+        // handleDelete(currentTask.id);
+        // handleDelete(currentTask?.id as number)
+        // handleDelete(setNewTask?.id!);
+        // handleDelete(taskData.id as number);
+        // handleDelete(getTasks().id as number);
+        // handleDelete(currentTask?.id! as number);
+        // handleDelete(currentTask?.id! as number);
+        // handleDelete(setTask?.id! as number);
+        // handleDelete(newTask?.id! as number);
+        // handleDelete(currentTask?.id as number);
+        // handleDelete(getTask()?.id! as number);
+        // handleDelete(currentTask?.id! as number);
+        // handleDelete(setCurrentTask?.id! as number);
+        // toast({
+        //     title: 'Task deleted',
+        //     description: 'Your task has been deleted successfully.',
+        //     duration: 3000,
+        //     isClosable: true,
+        //     });
+      };
 
     //changes completed boolean in supabase to true and false
     async function handleCompletion(task: TaskType) {
@@ -236,7 +292,8 @@ export default function List() {
                     <IconButton
                     aria-label="delete-task"
                     icon={<DeleteIcon />}
-                    onClick={() => handleDelete(task.id)}
+                    // onClick={() => handleDelete(task.id)}
+                    onClick={handleDeleteClick}
                     isLoading={loading}
                     />
                 </Flex>
@@ -284,6 +341,22 @@ export default function List() {
                 <Button onClick={onClose}>Cancel</Button>
             </ModalFooter>
             </ModalContent>
+        </Modal>
+
+        <Modal isOpen={showDeleteModal} onClose={handleDeleteCancel}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Delete Task</ModalHeader>
+            <ModalBody>Are you sure you want to delete this task?</ModalBody>
+            <ModalFooter>
+              <Button colorScheme="red" mr={3} onClick={handleDeleteConfirm}>
+                Delete
+              </Button>
+              <Button variant="ghost" onClick={handleDeleteCancel}>
+                Cancel
+              </Button>
+            </ModalFooter>
+          </ModalContent>
         </Modal>
         </VStack>
     </Box>

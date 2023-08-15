@@ -29,18 +29,39 @@ import CheckAndTitle from '../components/CheckAndTitle';
 import { Link } from 'react-router-dom';
 import { CloseIcon } from '@chakra-ui/icons';
 
+type PersonType = {
+    name: string,
+    username: string,
+    biography: string,
+    avatarurl: string,
+    userid: string,
+}
+
+type FriendRequestType = {
+    username: string,
+    avatarurl: string,
+    
+}
+
+
 export default function Profile() {
 
     // Variables ----------------------------------------------------------------------
 
     // set up state variables for the name modal and user name input fields
+
+    //personal profile state variables
     const [showNameModal, setShowNameModal] = useState(false);
-    const [person, setPerson] = useState({ name: '', username: '', biography: '', avatarurl: '', userid: '' });
-    const [friendRequests, setFriendRequests] = useState<null | { username: string; avatarurl: string; userid: string; }[]>(null);
-    const [friendIds, setFriendIds] = useState<string[]>([]);
+    const [person, setPerson] = useState<PersonType>({ name: '', username: '', biography: '', avatarurl: '', userid: '' });
+
+    //friends state variables
+    const [friendUsername, setFriendUsername] = useState<string>('');
+    const [friendRequests, setFriendRequests] = useState<FriendRequestType[]>([]);
+
+    const [friends, setFriends] = useState<PersonType[]>([]);
 
     const toast = useToast();
-    const [friend, setFriend] = useState({ name: '', username: '', });
+    
 
     // UseEffects ----------------------------------------------------------------------
 
@@ -71,40 +92,100 @@ export default function Profile() {
     }, []);
 
 
+    //set friend requests
+
+    
     useEffect(() => {
-        async function fetchFriendRequests() {
-            // get my user id
+        const fetchFriendRequests = async () => {
             const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                console.log('User not found');
-                return;
-            }
-
-            const { data: friendRequestsData, error: friendRequestsError } = await supabase
-                .from('friend_requests')
-                .select('requests')
-                .eq('userid', user.id); // Replace 1 with the user ID of the current user
-
-            if (friendRequestsError) {
-                console.error(friendRequestsError);
-                setFriendRequests([]);
-            }
-
-            if (friendRequestsData) {
-                const { data: friendAvatars } = await supabase
-                    .from('profiles')
-                    .select('username, avatarurl, userid')
-                    .in('userid', friendRequestsData[0].requests);
-
-                if (friendAvatars) {
-                    setFriendRequests(friendAvatars);
-                    setFriendIds(friendAvatars.map((friendRequest) => friendRequest.userid));
+            
+            if (user) {
+                const { data: requests, error } = await supabase
+                    .from('friends')
+                    .select('relating_user')
+                    .eq('related_user', user.id)
+                    .eq('status', 1);
+        
+                if (error) {
+                    console.log(error);
+                }
+        
+                if (requests) {
+                    const requestsWithUsernames: (FriendRequestType | undefined)[] = await Promise.all(requests.map(async (request) => {
+                        const { data: user, error } = await supabase
+                            .from('profiles')
+                            .select('username, avatarurl')
+                            .eq('userid', request.relating_user)
+                            .single();
+        
+                        if (error) {
+                            console.log(error);
+                        }
+                        if (user) {
+                            return { username: user.username, avatarurl: user.avatarurl };
+                        }
+                    }));
+        
+                    setFriendRequests(requestsWithUsernames.filter((request): request is FriendRequestType => request !== undefined));
                 }
             }
-        }
-
+        };
         fetchFriendRequests();
     }, []);
+    
+    useEffect(() => {
+        const fetchFriends = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+    
+            if (user) {
+                const { data: friendsData1, error: error1 } = await supabase
+                    .from('friends')
+                    .select('related_user')
+                    .eq('relating_user', user.id)
+                    .eq('status', 2);
+    
+                const { data: friendsData2, error: error2 } = await supabase
+                    .from('friends')
+                    .select('relating_user')
+                    .eq('related_user', user.id)
+                    .eq('status', 2);
+    
+                if (error1 || error2) {
+                    console.log(error1, error2);
+                } else {
+                    const friendsData = [
+                        ...friendsData1.map(item => ({ userId: item.related_user })),
+                        ...friendsData2.map(item => ({ userId: item.relating_user }))
+                    ];
+    
+                    const friendsWithUsernames: (PersonType | undefined)[] = await Promise.all(friendsData.map(async (friend) => {
+                        const { data: user, error } = await supabase
+                            .from('profiles')
+                            .select('*')
+                            .eq('userid', friend.userId)
+                            .single();
+    
+                        if (error) {
+                            console.log(error);
+                        }
+                        if (user) {
+                            return {
+                                name: user.name,
+                                username: user.username,
+                                biography: user.biography,
+                                avatarurl: user.avatarurl,
+                                userid: user.userid,
+                            };
+                        }
+                    }));
+    
+                    setFriends(friendsWithUsernames.filter((friend): friend is PersonType => friend !== undefined));
+                }
+            }
+        };
+        fetchFriends();
+    }, []);
+    
 
     // Functions ----------------------------------------------------------------------
 
@@ -131,92 +212,168 @@ export default function Profile() {
         }
     };
 
+    //friends functions
+    const handleAddFriend = async () => { 
+
+        //get user profile
+        const { data: {user} } = await supabase.auth.getUser()
+
+        const { data: friend, error: friendError} = await supabase
+            .from('profiles')
+            .select('userid')
+            .eq('username', friendUsername)
+            .single();
 
 
-    function acceptFriend(friendUserId: string): MouseEventHandler<HTMLButtonElement> {
-
-        const handleAccept = async () => {
-
-            // Update friend request status in database
-            const { error } = await supabase
-                .from('friend_requests')
-                .update({ requests: friendIds.filter((item) => item !== friendUserId) })
-                .eq('userid', person.userid);
-
-            if (error) {
-                throw error;
-            }
-            else {
-                // get friends list
-                const { data: friends, error: error2 } = await supabase
-                    .from('profiles')
-                    .select('friends')
-                    .eq('username', person.username);
-
-                if (friends === null) {
-                    throw error2;
-                }
-
-                // Add friend to friends list
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .update({ friends: [...friends, friendUserId] })
-                    .eq('username', person.username);
-
-                if (error || error2) {
-                    throw error;
-                }
-            }
-
-
+        if (friendError) {
             toast({
-                title: 'accepted friend request',
-                position: 'bottom',
-                status: 'success',
-                duration: 5000,
-                isClosable: false,
+                title: "An error occurred.",
+                description: `There's no user with the username ${friendUsername}`,
+                status: "error",
+                duration: 9000,
+                isClosable: true,
             });
-        };
+            return;
+        }
 
-        return handleAccept;
-    }
+        if (!friend) {
+            toast({
+                title: "No such user found.",
+                description: `There's no user with the username ${friendUsername}`,
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+            return;
+        }
+        
+        const { error } = await supabase
+            .from('friends')
+            .insert({
+                relating_user: user?.id,
+                related_user: friend.userid ,
+                status: 1,
+            });
+
+        if (error){
+            toast({
+                title: "An error occurred.",
+                description: error.message,
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+
+        else {
+            toast({
+                title: "Friend request sent.",
+                description: `You have sent a friend request to ${friendUsername}`,
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            });
+            setFriendUsername(''); // clear the friend's username field
+        }
+    };
+
+    
+
+    const handleAcceptFriendRequest = async (request: FriendRequestType) => {
+        const { data: { user } } = await supabase.auth.getUser();
+    
+        const { data: friend, error: friendError } = await supabase
+            .from('profiles')
+            .select('userid')
+            .eq('username', request.username)
+            .single();
+    
+        if (friendError || !friend) {
+            toast({
+                title: "An error occurred.",
+                description: `Unable to find user ${request.username}`,
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+            return;
+        }
+    
+        const { error } = await supabase
+            .from('friends')
+            .update({
+                status: 2,
+            })
+            .eq('relating_user', friend.userid)
+            .eq('related_user', user?.id);
+    
+        if (error) {
+            toast({
+                title: "An error occurred.",
+                description: error.message,
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+        } else {
+            setFriends([...friends, {
+                name: request.username,
+                username: request.username,
+                biography: '',
+                avatarurl: request.avatarurl,
+                userid: friend.userid,
+            }]);
+            setFriendRequests(friendRequests.filter((fr) => fr.username !== request.username));
+            toast({
+                title: "Friend request accepted.",
+                description: `You are now friends with ${request.username}`,
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+    };
+    
+    const handleRemoveFriend = async (friendId: string) => {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        // Delete the friend relationship in the database
+        // where current user's ID is in either 'relating_user' or 'related_user' field
+        const { error: error1 } = await supabase
+            .from('friends')
+            .delete()
+            .match({
+                relating_user: user?.id,
+                related_user: friendId
+            });
+            
+        const { error: error2 } = await supabase
+            .from('friends')
+            .delete()
+            .match({
+                relating_user: friendId,
+                related_user: user?.id
+            });
+    
+        if (error1 || error2) {
+            console.log(error1, error2);
+            return;
+        }
+    
+        // Update the friends state to remove the friend from the UI
+        setFriends((prevFriends) => prevFriends.filter(friend => friend.userid !== friendId));
+    };
+    
 
 
+
+    
     const handleEditProfile = () => {
         setShowNameModal(true);
     };
 
     
-    // add a friend request in the friend_requests table
-    const handleAddFriend = async () => {
-        // get the user's information
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) {
-            console.log('User not found');
-            return;
-        }
-
-        const { data, error } = await supabase
-            .from('friend_requests')
-            .update({ userid: user.id, requests: [friend.username]});
-
-        if (error) {
-            console.log(error);
-            return Toast({
-                title: "Error sending friend request.",
-                status: "error",
-                duration: 3000,
-                isClosable: true,
-            });
-        }
-        return Toast({
-            title: "Friend request sent.",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-        });
-    };
-
+    
 
     return (
         <CheckAndTitle title='Settings'>
@@ -299,29 +456,26 @@ export default function Profile() {
                         <Badge colorScheme="blue" fontSize="md" mb={1}>Friends</Badge>
 
                         <Stack direction={'row'}>
-                            {/* {friendRequests?.length === 0 ? ( */}
-                            {/* <Text>No friends</Text> */}
-                            {/* ) : ( */}
-                            <Link to={'/profile/' + 'adi'} >
-                                <Box textAlign='center' p={3} >
+                            {friends.length === 0 && <Text>No friends yet</Text>}
+                            {friends.map((friend, i) => (
+                                <Box key={i} textAlign='center' p={3} >
                                     <Flex direction="column" alignItems="center" position={'relative'}>
-                                        <Avatar name='adi' size="lg" />
+                                        <Avatar size={"lg"} src={friend.avatarurl} />
                                         <IconButton
                                             aria-label="Remove friend"
                                             icon={<CloseIcon />}
                                             size="xs"
                                             variant="ghost"
-                                            //onClick={() => handleRemoveFriend()}
+                                            onClick={() => handleRemoveFriend(friend.userid)} // Need to implement this function to handle the removal of friends
                                             position="absolute"
                                             top={-1}
                                             right={-1}
                                             bg="red.500"
                                         />
                                     </Flex>
-                                    <Text>adi</Text>
+                                    <Text>{friend.username}</Text>
                                 </Box>
-                            </Link>
-                            {/* )} */}
+                            ))}
                         </Stack>
                     </Box>
 
@@ -329,40 +483,33 @@ export default function Profile() {
                         <Badge colorScheme="blue" fontSize="md" mb={1}>Friend Requests</Badge>
 
                         <Stack direction={'row'}>
-                            {friendRequests?.length === 0 ? (
-                                <Text>No friend requests</Text>
-                            ) : (friendRequests?.map((friendRequest) => (
-                                <Link to={'/profile/' + friendRequest.username} >
-                                    <Box textAlign='center' p={3} >
-                                        <Avatar key={friendRequest.username} src={friendRequest.avatarurl} size={"lg"} />
-                                        <Text>{friendRequest.username}</Text>
-                                        <Button onClick={acceptFriend(friendRequest.userid)}>Accept</Button>
-                                    </Box>
-                                </Link>
-
-                            )))}
+                            {friendRequests.length === 0 && <Text>No friend requests</Text>}
+                            {friendRequests.map((request, i) => (
+                            <Box key={i} textAlign='center' p={3} >
+                                <Avatar size={"lg"} src={request.avatarurl} />
+                                <Text>{request.username}</Text>
+                                <Button onClick={() => handleAcceptFriendRequest(request)}>Accept</Button>
+                                </Box>
+                            ))}
                         </Stack>
+
+
+
                     </Box>
 
-
-                    {/*friendRequests.map((friendRequest) => (
-                        <Box>
-                            <Avatar key={friendRequest} name={friendRequest} size={"lg"} src="" />
-                            <Text>{friendRequest}</Text>
-                            <Button>Accept</Button>
-                        </Box>
-                    ))*/}
+ 
                     <FormControl>
                         <FormLabel>Add Friend</FormLabel>
                         <Input
                             placeholder="friend's username"
-                            value={friend.username}
+                            value={friendUsername}
                             onInput={(e) => {
                                 e.currentTarget.value = e.currentTarget.value.replace(/[^a-zA-Z ]/g, '');
+                                setFriendUsername(e.currentTarget.value);
                             }}
-                            // onSubmit={handleAddFriend}
+                            
                         />
-                        <Button mt={4} onClick={handleAddFriend} w={"full"}>
+                        <Button mt={4} w={"full"} onClick={handleAddFriend}>
                             Send Request
                         </Button>
                     </FormControl>
