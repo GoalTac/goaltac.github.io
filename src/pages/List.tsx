@@ -144,19 +144,24 @@ export default function List() {
     //delete tasks from supabase
 
     
-    const handleDeleteClick = () => {
+    const handleDeleteClick = (task: TaskType) => {
+        setCurrentTask(task);
         setShowDeleteModal(true);
       };
     
       
     
       const handleDeleteCancel = () => {
+        setCurrentTask(null);
         setShowDeleteModal(false);
       };
     
     async function handleDelete(id: number) {
         setLoading(true);
-        const { error } = await supabase.from('todos').delete().eq('id', id);
+        const { error } = await supabase
+            .from('todos')
+            .delete()
+            .eq('id', id);
         if (error) {
             console.error(error);
             toast({
@@ -293,7 +298,7 @@ export default function List() {
                     aria-label="delete-task"
                     icon={<DeleteIcon />}
                     // onClick={() => handleDelete(task.id)}
-                    onClick={handleDeleteClick}
+                    onClick={() => handleDeleteClick(task)}
                     isLoading={loading}
                     />
                 </Flex>
