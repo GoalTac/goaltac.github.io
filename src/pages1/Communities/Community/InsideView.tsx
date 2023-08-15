@@ -505,15 +505,15 @@ export default function InsideView() {
         },
       ]
       function TasksCarousel(TaskViews : any) {
-        return <Flex marginX='auto' flexDirection='column' overflow='clip' width={measurements.cards.width}>
+        return <Flex marginX='auto' flexDirection='column' overflow='clip' width='100%'>
         <Carousel
           additionalTransfrom={0}
-          arrows={false}
+          arrows={true}
           autoPlaySpeed={10000}
           autoPlay={true}
           centerMode={false}
           className=""
-          containerClass="container-padding-bottom"
+          containerClass="container"
           dotListClass=""
           draggable
           focusOnSelect={false}
@@ -549,7 +549,7 @@ export default function InsideView() {
             }
           }}
           rewind={true}
-          rewindWithAnimation={false}
+          rewindWithAnimation={true}
           rtl={false}
           shouldResetAutoplay
           showDots
@@ -569,52 +569,58 @@ export default function InsideView() {
         function Card_Goal(props : any) : ReactElement {
           const task = props.task
           const [selectedTab, setSelectedTab] = useState<Number>(0)
-          const [tab, setTab] = useState<ReactElement>()
+          const [tab, setTab] = useState<ReactElement>(Card_View(task))
 
+          function Card_View(task : any) {
+            return <Flex>
+              <Flex flexDirection='row'>
+                <Flex flexDirection='column'>
+                  <Heading size='md'>
+                    {task ? task.name : 'Unknown'}
+                  </Heading>
+                  <Text marginStart='20px' fontSize='sm'>
+                    {task ? task.description : 'unknown'}
+                  </Text>
+                </Flex>
+              </Flex>
+              
+              <Box position='absolute' right='20px'>
+                <IconButton isRound={true} variant='solid' zIndex='9'
+                  colorScheme='green' aria-label='Done'
+                  fontSize='20px' icon={<CheckIcon />} />
+                <Badge colorScheme='green' borderRadius='5px' padding='10px' paddingRight='25px' right='20px' position='absolute'>
+                  {task ? task.reward : 0} pts
+                </Badge>
+              </Box>
+
+              <Box position='absolute' right='20px' bottom='20px'>
+                <IconButton isRound={true} variant='ghost' zIndex='9'
+                  _active={{paddingLeft: '100px', paddingRight: '10px'}}
+                  colorScheme='blue' aria-label='Information'
+                  fontSize='20px' icon={<InfoIcon />} />
+              </Box>
+            </Flex>
+          }
+
+          //console.log('1')
+          //NEED TO REDUCE RE RENDER AMOUNT. This is absurd
           return <Card minHeight='300px' borderWidth='1px' borderColor='gray'
           marginX='40px' padding='20px' borderRadius={measurements.cards.borderRadius} 
           position='relative' >
-            <Flex flexDirection='row'>
-              <Flex flexDirection='column'>
-                <Heading size='md'>
-                  {task ? task.name : 'Unknown'}
-                </Heading>
-                <Text marginStart='20px' fontSize='sm'>
-                  {task ? task.description : 'unknown'}
-                </Text>
-              </Flex>
-            </Flex>
-            
-            <Box position='absolute' right='20px'>
-              <IconButton isRound={true} variant='solid' zIndex='9'
-                colorScheme='green' aria-label='Done'
-                fontSize='20px' icon={<CheckIcon />} />
-              <Badge colorScheme='green' borderRadius='5px' padding='10px' paddingRight='25px' right='20px' position='absolute'>
-                {task ? task.reward : 0} pts
-              </Badge>
-            </Box>
-
+            {tab}
             <ButtonGroup position='absolute' right='-40px' flexDirection={'column'} zIndex='-1'>
               {//Display all the existing community tasks for one goal
               exampleTasks.map((task : any, id : number) => {
-                console.log('1')
                 return <Button variant='solid' onClick={()=>{
                     setSelectedTab(id) 
+                    setTab(Card_View(task))
                   }}
                   key={id} paddingRight='10px'
                   right={(selectedTab == id ? '0px' : '10px')}
                   colorScheme={(selectedTab == id ? 'green' : 'gray')}
-                  fontSize='20px' rightIcon={(selectedTab == id ? <TbTarget /> : <GiArrowhead/>)} />
+                  fontSize='20px' rightIcon={(0 == id ? <TbTarget /> : <GiArrowhead/>)} />
               })}
             </ButtonGroup>
-
-            <Box position='absolute' right='20px' bottom='20px'>
-              <IconButton isRound={true} variant='ghost' zIndex='9'
-                _active={{paddingLeft: '100px', paddingRight: '10px'}}
-                colorScheme='blue' aria-label='Information'
-                fontSize='20px' icon={<InfoIcon />} />
-            </Box>
-
           </Card>
         }
         
@@ -623,7 +629,7 @@ export default function InsideView() {
             return <Card_Goal task={task} key={id}/>
           }))
       }
-      
+
       function TasksCompleted() {
         //Should load all tasks and profiles before rendering individually
         function TaskCompletedView(props : any) : ReactElement {
