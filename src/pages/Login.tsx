@@ -75,7 +75,7 @@ export default function Login() {
             const { data } = await supabase.auth.signInWithPassword({
                 email, password
             })
-            console.log(data)
+            
             if (data.session) {
                 // it worked
                 navigate('/calendar')

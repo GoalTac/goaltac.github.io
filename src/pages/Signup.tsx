@@ -43,10 +43,29 @@ export default function SignUpPage() {
         event.preventDefault();
         console.log('submitting signup!');
 
+        if (email === "" || password === "") { //Can limit what is/isn't acceptable for a password (use methods for comparisons for more complicated checks)
+            toast({
+                title: "Seems that you forgot to enter an email or password!",
+                position: 'bottom',
+                status: 'error',
+                duration: 5000,
+                isClosable: false,
+            })
+            return
+        }
+
         try {
             // sign up
             const { data, error } = await supabase.auth.signUp({ email, password });
+
             if (error) {
+                toast({
+                    title: `${error}`,
+                    position: 'bottom',
+                    status: 'error',
+                    duration: 5000,
+                    isClosable: false,
+                })
                 throw error;
             }
 
@@ -62,8 +81,7 @@ export default function SignUpPage() {
 
         } catch (err) {
             return toast({
-                title: 'You may already have an account',
-                description: "Check your email for verification (might be under spam)",//(err as Error).message,
+                title: `${err}`,
                 status: 'error',
                 duration: 5000,
                 isClosable: true,
@@ -106,7 +124,6 @@ export default function SignUpPage() {
                                     />
                                     {/* Email */}
                                     <Input
-                                        isDisabled
                                         type='email'
                                         id='email'
                                         placeholder='Email Address'
@@ -124,7 +141,6 @@ export default function SignUpPage() {
                                     />
                                     {/* Password */}
                                     <Input
-                                        isDisabled
                                         type={showPassword ? 'text' : 'password'}
                                         placeholder='Password'
                                         id='password'
