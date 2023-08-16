@@ -1,5 +1,4 @@
 import Header from './Information'
-import Roster from './Roster'
 import { useState, useEffect, ReactElement, useRef } from 'react';
 import GoalTac_Logo from '../../../images/GoalTac_Logo.png'
 import ProfileBackground from '../../../../public/ProfileBackground.svg'
@@ -370,8 +369,7 @@ export default function InsideView() {
     }
 
     function Card_Roster() {
-      const maxViewableRoster : number = 4
-      const limitedMembers = members.slice(0, maxViewableRoster)
+      const maxViewableRoster : number = 2
 
       function RenderAvatar({member} : any) {
         const [profile, setProfile] = useState<{ [x: string]: any; } | undefined>(undefined)
@@ -404,10 +402,10 @@ export default function InsideView() {
           {members && `${formatNumber(members.length)} Members`}
         </Heading>
 
-        <AvatarGroup max={4} columnGap='5px'>
+        <AvatarGroup max={maxViewableRoster} columnGap='5px'>
           {/* ISSUE : Eventually we need to limit this 
           to only map through a chunk of members at a time */}
-          {members && limitedMembers.map((member : any, id : number) => 
+          {members && members.map((member : any, id : number) => 
             <RenderAvatar member={member} key={id}/>
           )}
         </AvatarGroup>
