@@ -18,7 +18,7 @@ export default function ProfileView() {
             const { data, error } = await supabase
                 .from('profiles')
                 .select('*')
-                .eq('name', profileName)
+                .eq('username', profileName)
                 .single();
 
             if (error) {
