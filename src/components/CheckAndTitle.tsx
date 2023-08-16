@@ -92,13 +92,14 @@ export default function CheckAndTitle({ title, children }: Props) {
     // get the user's information
     const { data: { user } } = await supabase.auth.getUser()
 
-    console.log(user?.id);
-
     const { data, error } = await supabase
       .from('profiles')
-      .insert({ username: userName, userid: user?.id });
+      .update({ username: userName})
+      .eq('userid', user?.id)
+      .select()
 
     if (error) {
+      console.log(error)
       toast({
         title: 'Username Taken',
         status: 'error',
@@ -106,7 +107,6 @@ export default function CheckAndTitle({ title, children }: Props) {
         isClosable: true,
       });
     } else {
-      console.log(data);
       setShowNameModal(false);
     }
   };
