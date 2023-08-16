@@ -4,6 +4,7 @@ import List from "./List";
 
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import Chat from "../components/Chats/PrivateChat";
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function Dashboard() {
         </Flex>
         
         {displayedView}
+        <Chat />
     </Box>
             
     )
