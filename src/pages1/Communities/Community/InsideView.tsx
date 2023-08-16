@@ -384,7 +384,7 @@ export default function InsideView() {
           fetchProfile()
         },[])
         
-        return (profile ? <Box as={Link} to={`/profile/${profile.name}`}>
+        return (profile ? <Box as={Link} to={`/profile/${profile.username}`}>
           <Avatar name={`${profile.name}`} src={profile.avatarurl}  />
         </Box> : <Avatar src='' />)
       }
@@ -429,7 +429,7 @@ export default function InsideView() {
           fetchProfile()
         },[])
 
-        return (profile ? <Flex as={Link} to={`/profile/${profile.name}`}
+        return (profile ? <Flex as={Link} to={`/profile/${profile.username}`}
         flexDirection='column' rowGap={measurements.general.rowGap}>
           <HStack>
             <Avatar name={`${profile.name}`} src={profile.avatarurl}  />
