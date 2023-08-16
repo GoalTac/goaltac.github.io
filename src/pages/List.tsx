@@ -182,14 +182,8 @@ export default function List() {
                 isClosable: true,
             });
 
-        // What we have currently:
         setTaskData(taskData.filter((task) => task.id !== id));
-
-        // setTaskData(taskData.filter((task) => task.id !in [taskData]));
-        // setTaskData(taskData.filter((task) => task.id !in taskData));
-        // console.log(id);
-        // console.log(taskData);
-        // console.log(task.id)
+        
         }
     
         setLoading(false);
@@ -198,34 +192,7 @@ export default function List() {
 
     const handleDeleteConfirm = () => {
         handleDelete(currentTask?.id! as number);
-        // handleDelete(currentTask.id as number);
-        // handleDelete(newTask?.id! as number);
         setShowDeleteModal(false);
-
-        // getTasks();
-        // handleDelete(setTaskData.id);
-        // handleDelete(setCurrentTask.id);
-        // handleDelete(setTask.id);
-        // handleDelete(task.id);
-        // handleDelete(currentTask.id);
-        // handleDelete(currentTask?.id as number)
-        // handleDelete(setNewTask?.id!);
-        // handleDelete(taskData.id as number);
-        // handleDelete(getTasks().id as number);
-        // handleDelete(currentTask?.id! as number);
-        // handleDelete(currentTask?.id! as number);
-        // handleDelete(setTask?.id! as number);
-        // handleDelete(newTask?.id! as number);
-        // handleDelete(currentTask?.id as number);
-        // handleDelete(getTask()?.id! as number);
-        // handleDelete(currentTask?.id! as number);
-        // handleDelete(setCurrentTask?.id! as number);
-        // toast({
-        //     title: 'Task deleted',
-        //     description: 'Your task has been deleted successfully.',
-        //     duration: 3000,
-        //     isClosable: true,
-        //     });
       };
 
     //changes completed boolean in supabase to true and false
@@ -297,7 +264,6 @@ export default function List() {
                     <IconButton
                     aria-label="delete-task"
                     icon={<DeleteIcon />}
-                    // onClick={() => handleDelete(task.id)}
                     onClick={() => handleDeleteClick(task)}
                     isLoading={loading}
                     />
