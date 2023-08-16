@@ -53,7 +53,7 @@ export default function Login() {
             console.log(error)
         } else {
             console.log(data)
-            navigate('/calendar')
+            navigate('/dashboard')
         }
     }
 
@@ -78,7 +78,7 @@ export default function Login() {
             
             if (data.session) {
                 // it worked
-                navigate('/calendar')
+                navigate('/dashboard')
 
             } else {
                 toast({
