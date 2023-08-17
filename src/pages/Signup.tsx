@@ -70,10 +70,19 @@ export default function SignUpPage() {
             }
 
             //Insert username and other data into profiles table
-            const { error: insertError } = await supabase.from('profiles').update([{ userid: data?.user?.id }]);
+
+            const { error: insertError } = await supabase.from('profiles').update([{ userid: data?.user?.id }]).eq('userid', data?.user?.id);
             if (insertError) {
                 throw insertError;
             }
+
+            toast({
+                title: "Successfully created account!",
+                position: 'bottom',
+                status: 'success',
+                duration: 5000,
+                isClosable: true,
+            })
 
             //Navigate to check your email page
             navigate('/checkyouremail');
@@ -86,6 +95,7 @@ export default function SignUpPage() {
                 duration: 5000,
                 isClosable: true,
             });
+            
         }
     };
 
@@ -148,7 +158,7 @@ export default function SignUpPage() {
                                         onChange={event => setPassword(event.target.value)}
                                     />
                                     <InputRightElement width='4.5rem'>
-                                        <Button h='1.75rem' size='sm' bg={"whiteAlpha.300"} _hover={{ backgroundColor: 'whiteAlpha.400' }} onClick={handleShowClick}>
+                                        <Button h='1.75rem' size='sm' bg={password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }} onClick={handleShowClick}>
                                             {showPassword ? 'hide' : 'show'}
                                         </Button>
                                     </InputRightElement>
@@ -159,7 +169,8 @@ export default function SignUpPage() {
                                 type='submit'
                                 variant='solid'
                                 width='full'
-                                bg={"whiteAlpha.300"} _hover={{ backgroundColor: 'whiteAlpha.400' }}
+                                // bg={"whiteAlpha.300"} _hover={{ backgroundColor: 'whiteAlpha.400' }}
+                                bg={email && password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}
                             >
                                 Sign Up
                             </Button>

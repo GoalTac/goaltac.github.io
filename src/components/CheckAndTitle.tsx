@@ -97,11 +97,10 @@ export default function CheckAndTitle({ title, children }: Props) {
       .update({ username: userName})
       .eq('userid', user?.id)
       .select()
-
     if (error) {
       console.log(error)
       toast({
-        title: 'Username Taken',
+        title: `${error}`,
         status: 'error',
         duration: 3000,
         isClosable: true,
