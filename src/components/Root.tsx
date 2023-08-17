@@ -81,10 +81,10 @@ export function HeaderNav() {
         right={0}
         zIndex={10}>
 
-        {/* logo to link to home (calendar) */}
+        {/* logo to link to home (dashboard) */}
         <Box display={showSearchBar ? 'block' : 'none'} position={"relative"}>
           <Badge position={"absolute"} right={-1} bottom={-1} bg={"rgb(15,15,15,.2)"} fontSize={'10px'}>10000</Badge>
-          <Link to="/calendar">
+          <Link to="/dashboard">
             <Image src="/logo.png" alt="Logo" boxSize="40px" minWidth="40px" />
           </Link>
         </Box>

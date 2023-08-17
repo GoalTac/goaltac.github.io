@@ -31,6 +31,11 @@ export default function App() {
 
     return (user) ? ((profile && profile?.['username']) ? <Root /> : <Tutorial/>) : <Navigate to={redirectPath} replace={true} />;
   }
+
+  //NOTE FOR LATER
+  //Need to direct user to tutorial react element when user is set, but profile is not
+  //Direct user to root if user is set and profile is set
+  //Direct user to login if user is not set and profile is not set
   
   return (
 
@@ -46,7 +51,7 @@ export default function App() {
         <Route element={<Root />}>
           <Route element={<ProtectedRoute redirectPath={'/login'} />}>
             <Route path='' element={<Dashboard />} />
-
+            <Route path='tutorial' element={<Tutorial />} />
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='social' element={<Feed />} />
             <Route path='settings' element={<Settings />} />
