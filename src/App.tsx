@@ -22,26 +22,20 @@ import { useSession, useSupabaseClient } from '../src/hooks/SessionProvider';
 // v1
 import CommunityCentral from './pages1/Communities/Dashboard/CommunityCentral';
 import InsideView from './pages1/Communities/Community/InsideView';
+import { Tutorial } from './pages/Tutorial';
 
 export default function App() {
   
   function ProtectedRoute({ children, redirectPath }:any) {
-    const { user: user } = useSession();
-  
-    return user ? <Root /> : <Navigate to={redirectPath} replace={true} />;
+    const { user: user, profile: profile } = useSession();
+
+    return (user) ? ((profile && profile?.['username']) ? <Root /> : <Tutorial/>) : <Navigate to={redirectPath} replace={true} />;
   }
-
-  function LandingPage({ children, redirectPath }:any) {
-    const { user: user } = useSession();
   
-    return user ? <Dashboard /> : <Navigate to={redirectPath} replace={true} />;
-  }
-
-
   return (
 
     <Routes>
-      <Route path='/' errorElement={<LandingPage />}>
+      <Route path='/'>
         <Route path='login' element={<Login />} />
         <Route path='signup' element={<SignUp />} />
         <Route path='checkyouremail' element={<CheckVerification />} />
@@ -51,7 +45,8 @@ export default function App() {
         {/* TODO: conditional on authentication routing  */}
         <Route element={<Root />}>
           <Route element={<ProtectedRoute redirectPath={'/login'} />}>
-          <Route path='' element={<LandingPage redirectPath={'/welcome'} />} />
+            <Route path='' element={<Dashboard />} />
+
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='social' element={<Feed />} />
             <Route path='settings' element={<Settings />} />
@@ -61,7 +56,7 @@ export default function App() {
             <Route path='/search/:searchElement' element={<Finder />} />
             <Route path='/profile/:profileName' element={<ProfileView />} />
           </Route>
-        </Route>    
+        </Route>
       </Route>
     </Routes>
   );

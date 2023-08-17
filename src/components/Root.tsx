@@ -15,9 +15,7 @@ export default function Root() {
           <Outlet />
         </Box>
       </Stack>
-      
-      
-    </SessionProvider >
+    </SessionProvider>
   );
 };
 
