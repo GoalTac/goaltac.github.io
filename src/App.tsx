@@ -5,7 +5,9 @@ import Login from './pages/Login';
 import Settings from './pages/Settings';
 import Communities from './pages/Communities';
 import SignUp from './pages/Signup';
+import ResetPassword from './pages/ResetPassword';
 import CheckVerification from './pages/CheckVerification';
+import CheckPassword from './pages/CheckPassword';
 import CommunityView from './pages/CommunityView';
 import PrivatePolicy from './pages/PrivatePolicy';
 import Finder from './pages/Finder';
@@ -41,6 +43,8 @@ export default function App() {
         <Route path='beta2' element={<BetaPage />} />
         <Route path='login' element={<Login />} />
         <Route path='signup' element={<SignUp />} />
+        <Route path='resetpassword' element={<ResetPassword />} />
+        <Route path='updatepass' element={<CheckPassword />} />
         <Route path='checkyouremail' element={<CheckVerification />} />
         <Route path='privatepolicy' element={<PrivatePolicy />} />
 

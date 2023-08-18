@@ -169,7 +169,6 @@ export default function SignUpPage() {
                                 type='submit'
                                 variant='solid'
                                 width='full'
-                                // bg={"whiteAlpha.300"} _hover={{ backgroundColor: 'whiteAlpha.400' }}
                                 bg={email && password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}
                             >
                                 Sign Up
