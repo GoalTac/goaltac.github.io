@@ -101,43 +101,43 @@ export default function Login() {
         }
     }
 
-    const ForgotPassword = async function () {
-        toast.closeAll() //Closes all previous opened toasts (makes spam clicking submit be less annoying)
-        if (email === "") { //Can limit what is/isn't acceptable for a password (use methods for comparisons for more complicated checks)
-            toast({
-                title: "Please enter your email to reset your password!",
-                position: 'bottom',
-                status: 'error',
-                duration: 5000,
-                isClosable: false,
-            })
-            return
-        }
+    // const ForgotPassword = async function () {
+    //     toast.closeAll() //Closes all previous opened toasts (makes spam clicking submit be less annoying)
+    //     if (email === "") { //Can limit what is/isn't acceptable for a password (use methods for comparisons for more complicated checks)
+    //         toast({
+    //             title: "Please enter your email to reset your password!",
+    //             position: 'bottom',
+    //             status: 'error',
+    //             duration: 5000,
+    //             isClosable: false,
+    //         })
+    //         return
+    //     }
 
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: '/updatepass',
-        });
+    //     const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    //         redirectTo: '/updatepass',
+    //     });
 
-        if (error) {
-            toast({
-                title: error.message,
-                position: 'bottom',
-                status: 'error',
-                duration: 3000,
-                isClosable: false,
-            })
-        }
+    //     if (error) {
+    //         toast({
+    //             title: error.message,
+    //             position: 'bottom',
+    //             status: 'error',
+    //             duration: 3000,
+    //             isClosable: false,
+    //         })
+    //     }
 
-        toast({
-            title: "Password reset email sent!",
-            position: 'bottom',
-            status: 'success',
-            duration: 5000,
-            isClosable: false,
-        })
+    //     toast({
+    //         title: "Password reset email sent!",
+    //         position: 'bottom',
+    //         status: 'success',
+    //         duration: 5000,
+    //         isClosable: false,
+    //     })
 
 
-    }
+    // }
 
     return (
 
