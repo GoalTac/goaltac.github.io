@@ -1,9 +1,10 @@
-import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge, useColorModeValue, Stack } from "@chakra-ui/react";
+import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge, useColorModeValue, Stack, LightMode } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FaUser, FaSignOutAlt, FaRegNewspaper, FaSearch, FaUsers, FaShoppingBag, FaCircle } from "react-icons/fa";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { supabase } from '../supabase';
 import { SessionProvider } from "../hooks/SessionProvider";
+import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 //change the color theme for light mode from white to gray.50
 export default function Root() {
   return (
@@ -14,9 +15,7 @@ export default function Root() {
           <Outlet />
         </Box>
       </Stack>
-      
-      
-    </SessionProvider >
+    </SessionProvider>
   );
 };
 
@@ -82,10 +81,10 @@ export function HeaderNav() {
         right={0}
         zIndex={10}>
 
-        {/* logo to link to home (calendar) */}
+        {/* logo to link to home (dashboard) */}
         <Box display={showSearchBar ? 'block' : 'none'} position={"relative"}>
           <Badge position={"absolute"} right={-1} bottom={-1} bg={"rgb(15,15,15,.2)"} fontSize={'10px'}>10000</Badge>
-          <Link to="/calendar">
+          <Link to="/dashboard">
             <Image src="/logo.png" alt="Logo" boxSize="40px" minWidth="40px" />
           </Link>
         </Box>
@@ -125,10 +124,20 @@ export function HeaderNav() {
               <AvatarBadge boxSize='1.25em' bg='red.500' />
             </MenuButton>
             <MenuList>
-              <Link to="/market"><MenuItem icon={<FaShoppingBag />} fontSize="sm">Market<Badge float={"right"} m={1}>242,301 pts</Badge></MenuItem></Link>
-              <Link to="/settings"><MenuItem icon={<FaUser />} fontSize="sm">Settings<Box as={FaCircle} color="red" float={"right"} m={1} /></MenuItem> </Link>
+                <MenuItem icon={<FaShoppingBag />} onClick={()=>navigate('/market')} fontSize="sm">
+                  Market
+                </MenuItem>
+
+                <MenuItem icon={<FaUser />} onClick={()=>navigate('/settings')} fontSize="sm">
+                  Settings
+                </MenuItem>
+
+                <MenuItem icon={colorMode=='dark' ? <MoonIcon/> : <SunIcon/>} onClick={toggleColorMode} fontSize="sm">
+                  {colorMode=='dark' ? 'Dark Mode' : 'Light Mode'}
+                  <Switch float='right' isChecked={colorMode === "dark"}  />
+                </MenuItem>
+
               <MenuItem icon={<FaSignOutAlt />} fontSize="sm" onClick={handleLogout}>Logout</MenuItem>
-              <MenuItem fontSize="sm">Dark Mode<Switch ml="auto" isChecked={colorMode === "dark"} onChange={toggleColorMode} /></MenuItem>
             </MenuList>
           </Menu>
         </Box>

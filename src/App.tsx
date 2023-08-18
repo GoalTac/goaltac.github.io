@@ -1,5 +1,5 @@
 import Dashboard from './pages/TaskDashboard';
-import BetaPage from './pages/Beta';
+import Landing from './pages/Beta';
 import Feed from './pages/Social';
 import Login from './pages/Login';
 import Settings from './pages/Settings';
@@ -22,53 +22,53 @@ import { useSession, useSupabaseClient } from '../src/hooks/SessionProvider';
 
 
 // v1
-import Beta1 from './pages1/Beta';
-import TestRedirect from './components/TestRedirect';
 import CommunityCentral from './pages1/Communities/Dashboard/CommunityCentral';
 import InsideView from './pages1/Communities/Community/InsideView';
+import { Tutorial } from './pages/Tutorial';
 
 export default function App() {
   
   function ProtectedRoute({ children, redirectPath }:any) {
-    const { user: user } = useSession();
-  
+    const { user: user, profile: profile } = useSession();
+
     return user ? <Root /> : <Navigate to={redirectPath} replace={true} />;
   }
 
-
+  //NOTE FOR LATER
+  //Need to direct user to tutorial react element when user is set, but profile is not
+  //Direct user to root if user is set and profile is set
+  //Direct user to login if user is not set and profile is not set
+  
   return (
 
     <Routes>
       <Route path='/'>
-        <Route path='beta2' element={<BetaPage />} />
         <Route path='login' element={<Login />} />
         <Route path='signup' element={<SignUp />} />
         <Route path='resetpassword' element={<ResetPassword />} />
         <Route path='updatepass' element={<CheckPassword />} />
         <Route path='checkyouremail' element={<CheckVerification />} />
-        <Route path='privatepolicy' element={<PrivatePolicy />} />
+        <Route path='privatepolicy' element={<PrivatePolicy />} />   
+        <Route path='welcome' element={<Landing />} />
 
-        {/* TODO: conditional on authentication routing */}
+        {/* TODO: conditional on authentication routing  */}
         <Route element={<Root />}>
-        <Route element={<ProtectedRoute redirectPath={'/login'} />}>
+          <Route element={<ProtectedRoute redirectPath={'/login'} />}>
+            <Route path='' element={<Dashboard />} />
+            
+            {/* Tutorial is here temporarily */}
+            <Route path='tutorial' element={<Tutorial />} />
 
-          <Route path='calendar' element={<Dashboard />} />
-          <Route path='social' element={<Feed />} />
-          <Route path='settings' element={<Settings />} />
-          <Route path='market' element={<Market />} />
-          <Route path='communities' element={<CommunityCentral />} />
-          <Route path='/community/:communityName' element={<InsideView />} />
-          <Route path='/search/:searchElement' element={<Finder />} />
-          <Route path='/profile/:profileName' element={<ProfileView />} />
+            <Route path='dashboard' element={<Dashboard />} />
+            <Route path='social' element={<Feed />} />
+            <Route path='settings' element={<Settings />} />
+            <Route path='market' element={<Market />} />
+            <Route path='communities' element={<CommunityCentral />} />
+            <Route path='/community/:communityName' element={<InsideView />} />
+            <Route path='/search/:searchElement' element={<Finder />} />
+            <Route path='/profile/:profileName' element={<ProfileView />} />
+          </Route>
         </Route>
-        </Route>
-
-        <Route path='beta1' element={<Beta1 />} />        
-
-
-
-        {/* Redirects */}
-        <Route path='' element={<TestRedirect link1='beta1' link2='beta2' />} />
       </Route>
     </Routes>
   );

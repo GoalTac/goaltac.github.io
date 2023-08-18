@@ -5,12 +5,14 @@ const SessionContext = createContext({
   user: null,
   session: null,
   supabase: {},
+  profile: null
 });
 
 export const SessionProvider = ({ children, supabase }: any) => {
   const [user, setUser] = useState<any>();
   const [session, setSession] = useState<any>();
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any>();
 
   useEffect(() => {
     const requestSession = async () => {
@@ -18,10 +20,23 @@ export const SessionProvider = ({ children, supabase }: any) => {
         data: { session },
         error,
       } = await supabase.auth.getSession();
+      
       if (error) throw error;
+
+      const { 
+        data: profileData, 
+        error: profileError 
+      } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('userid', session?.user.id).single()
+
+      if (profileError) throw profileError;
+
       setSession(session);
       setUser(session?.user);
       setLoading(false);
+      setProfile(profileData)
     };
 
     const { data: listener } = supabase.auth.onAuthStateChange(
@@ -29,6 +44,15 @@ export const SessionProvider = ({ children, supabase }: any) => {
         setSession(newSession);
         setUser(newSession?.user);
         setLoading(false);
+
+        const { 
+          data: profileData
+        } = supabase
+          .from('profiles')
+          .select('*')
+          .eq('userid', newSession?.user.id).single()
+        
+        setProfile(profileData)
       }
     );
 
@@ -43,6 +67,7 @@ export const SessionProvider = ({ children, supabase }: any) => {
     user,
     session,
     supabase,
+    profile,
   };
 
   return (
@@ -54,7 +79,7 @@ export const SessionProvider = ({ children, supabase }: any) => {
 
 SessionProvider.propTypes = {
   children: PropTypes.element,
-  supabase: PropTypes.object, //how to fix
+  supabase: PropTypes.object,
 };
 
 export const useSession = () => useContext(SessionContext);
