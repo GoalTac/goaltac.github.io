@@ -1,5 +1,5 @@
 import Dashboard from './pages/TaskDashboard';
-import Landing from './pages1/Beta';
+import Landing from './pages/Beta';
 import Feed from './pages/Social';
 import Login from './pages/Login';
 import Settings from './pages/Settings';
@@ -29,7 +29,7 @@ export default function App() {
   function ProtectedRoute({ children, redirectPath }:any) {
     const { user: user, profile: profile } = useSession();
 
-    return (user) ? ((profile && profile?.['username']) ? <Root /> : <Tutorial/>) : <Navigate to={redirectPath} replace={true} />;
+    return user ? <Root /> : <Navigate to={redirectPath} replace={true} />;
   }
 
   //NOTE FOR LATER
@@ -51,7 +51,10 @@ export default function App() {
         <Route element={<Root />}>
           <Route element={<ProtectedRoute redirectPath={'/login'} />}>
             <Route path='' element={<Dashboard />} />
+            
+            {/* Tutorial is here temporarily */}
             <Route path='tutorial' element={<Tutorial />} />
+
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='social' element={<Feed />} />
             <Route path='settings' element={<Settings />} />
