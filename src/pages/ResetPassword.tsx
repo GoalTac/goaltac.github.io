@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link, Form } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabase';
 import { Box, Button, Center, Flex, FormControl, FormHelperText, Heading, Input, InputGroup, InputLeftElement, InputRightElement, Stack, Text, chakra, useToast, Image, } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
@@ -45,6 +45,7 @@ export default function ResetPassword() {
     // };
 
     const ForgotPassword = async function () {
+        console.log("We are in ForgotPassword")
         toast.closeAll() //Closes all previous opened toasts (makes spam clicking submit be less annoying)
         if (email === "") { //Can limit what is/isn't acceptable for a password (use methods for comparisons for more complicated checks)
             toast({
@@ -62,6 +63,7 @@ export default function ResetPassword() {
         });
 
         if (error) {
+            console.log("Error: ", error)
             toast({
                 title: error.message,
                 position: 'bottom',
@@ -69,7 +71,7 @@ export default function ResetPassword() {
                 duration: 3000,
                 isClosable: false,
             })
-            return
+            // return
         }
 
         toast({
@@ -79,27 +81,49 @@ export default function ResetPassword() {
             duration: 5000,
             isClosable: false,
         })
-        return
+        // return
 
 
     }
 
     
     return (
-        <Form onSubmit={onSubmit}>
-            <Input
-                type='email'
-                placeholder='Email Address'
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-            />
-            <Button 
-            type="submit"
-            onClick={ForgotPassword}
-            >
-                Reset Password
-            </Button>
-        </Form>
+        <Flex
+            flexDirection='column'
+            width='100wh'
+            height='100vh'
+            justifyContent='center'
+            alignItems='center'
+            color="white"
+        >
+            <Canvas style={{ width: '100vw', height: '100vh', position: 'absolute', top: 0, left: 0, zIndex: -1, }} />
+            <Box>
+                <Stack
+                    flexDir='column'
+                    mb='2'
+                    justifyContent='center'
+                    alignItems='center'
+                >
+                    <Image src="logo.png" alt="Logo" boxSize="80px" />
+        <Box>
+            <FormControl onSubmit={onSubmit}>
+                <Input
+                    type='email'
+                    placeholder='Email Address'
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                />
+                <Button 
+                type="submit"
+                onClick={ForgotPassword}
+                >
+                    Reset Password
+                </Button>
+            </FormControl>
+        </Box>
+                </Stack>
+            </Box>
+        </Flex>
     );
 };
 
