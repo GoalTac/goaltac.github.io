@@ -1,0 +1,1 @@
+import{r as n}from"./react.bd6d2c26.js";var o=function(e,r){if(typeof e=="function"){e(r);return}e.current=r},p=function(e,r){var t=n.exports.useRef();return n.exports.useCallback(function(u){e.current=u,t.current&&o(t.current,null),t.current=r,r&&o(r,u)},[r])};export{p as u};
