@@ -1,6 +1,6 @@
 import { AtSignIcon } from "@chakra-ui/icons";
 import { Box, Button, Flex, FormControl, Image, Input, InputGroup, InputLeftElement, InputRightElement, Link, Spinner, Stack } from "@chakra-ui/react";
-import Canvas from "../components/Beta/Canvas";
+import Canvas from "../components/Canvas";
 
 export function Tutorial() {
     return (

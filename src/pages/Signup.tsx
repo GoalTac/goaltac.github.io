@@ -4,7 +4,7 @@ import { FcGoogle } from 'react-icons/fc';
 import { FaLock, FaUserAlt } from 'react-icons/fa';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabase';
-import Canvas from '../components/Beta/Canvas';
+import Canvas from '../components/Canvas';
 import { AtSignIcon } from '@chakra-ui/icons';
 
 const CFaLock = chakra(FaLock);

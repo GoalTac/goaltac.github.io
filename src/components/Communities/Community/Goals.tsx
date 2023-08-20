@@ -6,7 +6,7 @@ import {
     HiOutlineFolderAdd,
 } from 'react-icons/hi'
 import { IconBaseProps } from "react-icons";
-import { supabase } from './../../../supabase'
+import { supabase } from '../../../supabase'
 
 export default function GoalDashboard({community}: any) : ReactElement{
 

@@ -1,5 +1,5 @@
 import Dashboard from './pages/TaskDashboard';
-import Landing from './pages/Beta';
+import Landing from './pages/Landing';
 import Feed from './pages/Social';
 import Login from './pages/Login';
 import Settings from './pages/Settings';
@@ -20,8 +20,8 @@ import { useSession, useSupabaseClient } from '../src/hooks/SessionProvider';
 
 
 // v1
-import CommunityCentral from './pages1/Communities/Dashboard/CommunityCentral';
-import InsideView from './pages1/Communities/Community/InsideView';
+import CommunityCentral from './components/Communities/Dashboard/CommunityCentral';
+import InsideView from './components/Communities/Community/InsideView';
 import { Tutorial } from './pages/Tutorial';
 
 export default function App() {
