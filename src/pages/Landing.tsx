@@ -1,7 +1,6 @@
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import { Box, useColorMode, Spacer, Flex, Stack, VStack, HStack, Text, Button, Image, Avatar, Heading, useColorModeValue, Badge, IconButton, Divider } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Box, useColorMode, Spacer, Flex, Stack, VStack, HStack, Text, Button, Image, Avatar, Heading, useColorModeValue, Badge, IconButton, Divider, LinkBox, Link } from "@chakra-ui/react";
 import {
     FaDiscord,
     FaFacebookSquare,
@@ -9,39 +8,41 @@ import {
     FaLinkedin,
 } from 'react-icons/fa';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import logo_name from './../images/GoalTac_Logo.png'
+import logo from './../images/logo.png'
+import background_blur from './../images/background_noise.svg'
+import collaboration from './../images/collaboration.png'
 
 export default function LandingPage() {
 
     function SignInButton() {
-        return <Link to='/login'>
-            <Button variant='ghost'
+        return <Link href='/login'>
+            <Button variant='outline'
+                width='150px'
+                color='white'
                 padding='2rem'
                 fontSize='1.5rem'
-                bgClip='text'
-                bgGradient='linear(to-l, teal.300, blue.500)'
-                borderRadius='1rem'
+                borderRadius='unset'
                 _hover={{
-                    color: 'unset'
-
+                    fontSize: '1.4rem'
                 }}>
-                Sign In
+                Login
             </Button>
         </Link>
     }
 
     function SignUpButton() {
-        return <Link to='/signup'>
-            <Button variant='ghost'
+        return <Link href='/signup'>
+            <Button variant='solid'
+                width='200px'
+                backgroundColor='white'
                 padding='2rem'
                 fontSize='1.5rem'
-                borderWidth='3px'
-                bgClip='text'
-                bgGradient='linear(to-l, teal.300, blue.500)'
-                borderRadius='1rem'
+                borderRadius='unset'
                 _hover={{
-                    color: 'unset'
+                    fontSize: '1.6rem'
                 }}>
-                Sign Up
+                Get Started
             </Button>
         </Link>
     }
@@ -52,7 +53,23 @@ export default function LandingPage() {
             alignItems='center'
             px='3rem'
             py='2rem'>
-            <Image src={'GoalTac_Logo.png'} boxSize='17%' pr='2px' />
+            <Image src={logo_name} width='200px' />
+            <LinkBox color='white' fontSize='1.25rem' fontWeight='400' marginStart='80px' scrollBehavior='smooth' >
+                <Link href='#features' paddingX='30px' _hover={{textDecoration: 'none'}}>
+                    Features 
+                </Link>
+                <Link href='#research' paddingX='30px' _hover={{textDecoration: 'none'}}>
+                    Research
+                </Link>
+                <Link href='#staff' paddingX='30px' _hover={{textDecoration: 'none'}}>
+                    Staff
+                </Link>
+                <Link href='#updates' paddingX='30px' _hover={{textDecoration: 'none'}}>
+                    Updates
+                </Link>
+            </LinkBox>
+            <Spacer/>
+
             <SignInButton />
 
         </HStack>);
@@ -61,21 +78,25 @@ export default function LandingPage() {
     function Intro() {
         return (
             <Flex
+                position='relative'
                 alignItems={['center', 'flex-start']}
                 textAlign={['center', 'start']}
-                id='product'>
+                id='product' height='1000px'>
                 <VStack rowGap='2rem' marginBottom='6rem'>
-                    <Box fontSize='4rem' fontWeight='700' lineHeight='1.1' bgGradient='linear(to-t, teal.300, blue.500)'
-                        bgClip='text'>
-                        Productive Together
+                    <Box marginStart='150px' maxWidth='700px' textColor='white'>
+                        <Heading fontSize='4rem' fontWeight='300' lineHeight='1.1' marginY='50px'>
+                            Collaborate with others to help achieve your goals
+                        </Heading>
+                        <Text maxWidth={['90%', '80%']} lineHeight='1.4' fontWeight='200' fontSize='1.75rem' marginBottom='50px'>
+                            Why use GoalTac? Because GoalTac is the only website to effectively
+                            target procrastination at it's source with socialized productivity
+                            {/* Replace: Find your community now! */}
+                        </Text>
+                        <SignUpButton />
                     </Box>
-                    <Box maxWidth={['90%', '70%']} lineHeight='1.4' fontSize='1.5rem'>
-                        Have a goal that you want to work towards? Data shows that people may be
-                        inclined to feel more motivated and disciplined when they around like-minded peers.
-                        Join a community at GoalTac today to attack the goals you share together!
-                    </Box>
-                    <SignUpButton />
                 </VStack>
+                <Image src={collaboration} invert='white' width='30%' position='absolute' bottom='60' right='40' />
+
             </Flex>
         );
     }
@@ -232,7 +253,7 @@ export default function LandingPage() {
             return (
                 <HStack>
                     {icons.map((icon, index) => (
-                        <Link to={icon.href} target='_blank' key={index}>
+                        <Link href={icon.href} target='_blank' key={index}>
                             <IconButton
                                 variant='unstyled'
                                 cursor='pointer'
@@ -262,7 +283,7 @@ export default function LandingPage() {
                     width={constants.maxWidth}
                     alignSelf='center'>
 
-                    <Image alignSelf={['center','left']} src={'GoalTac_Logo.png'} maxWidth='200px' />
+                    <Image alignSelf={['center','left']} src={logo_name} maxWidth='200px' />
                     <Spacer/>
                     <HStack alignSelf={['center','right']}>
                         <MediaIcons />
@@ -299,30 +320,21 @@ export default function LandingPage() {
     }
 
     return (
-        <Flex 
-            flexDirection='column'
-            minH='100vh'>
-
-            <Flex justifyContent='center' alignItems='center'>
-                <Box overflowX='hidden' 
-                    bgColor={useColorModeValue(constants.lightMode, constants.darkMode)}
-                    maxW={constants.maxWidth}>
-
-                    <Header />
-
+        <Flex flexDirection='column' minH='100vh'>
+            <Flex>
+                <Box overflowX='hidden' width='100%'
+                    bgColor={useColorModeValue(constants.lightMode, constants.darkMode)} >
                     <Box>
-                        <Flex paddingTop='6rem'
-                            columnGap='6rem'
-                            rowGap='2rem'
-                            alignItems='center'
-                            paddingX='4rem'
-                            flexDirection={['column-reverse', 'row']}>
-                            <Intro />
-                            <Image src={'CreateTask.png'} maxW='400px' maxH='350px' borderRadius='12px' />
-                        </Flex>
+                       
+                        <Box backgroundImage={background_blur} backgroundSize='cover' maxWidth='100%' backgroundColor={constants.darkMode}>
+                            <Box maxW={constants.maxWidth} marginX='auto'>
+                                <Header />
+                                <Intro />
+                            </Box>
+                        </Box>
 
 
-                        <Box>
+                        <Box maxW={constants.maxWidth} marginX='auto'>
                             <Features />
                             <Slider />
                             <PreFooter  />
