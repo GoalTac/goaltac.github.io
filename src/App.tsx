@@ -52,7 +52,7 @@ export default function App() {
         {/* TODO: conditional on authentication routing  */}
         <Route element={<Root />}>
           <Route element={<ProtectedRoute redirectPath={'/login'} />}>
-            <Route path='' element={<Dashboard />} />
+            <Route index element={<Dashboard />} />
             
             {/* Tutorial is here temporarily */}
             <Route path='tutorial' element={<Tutorial />} />
