@@ -5,6 +5,8 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import { supabase } from '../supabase';
 import { SessionProvider } from "../hooks/SessionProvider";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import logo from './../images/logo.png'
+
 //change the color theme for light mode from white to gray.50
 export default function Root() {
   return (
@@ -85,7 +87,7 @@ export function HeaderNav() {
         <Box display={showSearchBar ? 'block' : 'none'} position={"relative"}>
           <Badge position={"absolute"} right={-1} bottom={-1} bg={"rgb(15,15,15,.2)"} fontSize={'10px'}>10000</Badge>
           <Link to="/dashboard">
-            <Image src="/logo.png" alt="Logo" boxSize="40px" minWidth="40px" />
+            <Image src={logo} alt="Logo" boxSize="40px" minWidth="40px" />
           </Link>
         </Box>
 

@@ -8,6 +8,12 @@ type Props = {
   children: React.ReactNode;
 };
 
+/*
+NOTICE
+THIS WILL BE REMOVED ~ My Phung
+
+*/
+
 export default function CheckAndTitle({ title, children }: Props) {
 
   // changes title
