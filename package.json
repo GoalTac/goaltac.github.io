@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
@@ -47,6 +49,7 @@
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-unicorn": "^43.0.2",
+    "gh-pages": "^6.0.0",
     "lodash": "^4.17.21",
     "prettier": "2.7.1",
     "typescript": "^4.6.4",
