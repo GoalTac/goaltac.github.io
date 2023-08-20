@@ -3,12 +3,10 @@ import Landing from './pages/Beta';
 import Feed from './pages/Social';
 import Login from './pages/Login';
 import Settings from './pages/Settings';
-import Communities from './pages/Communities';
 import SignUp from './pages/Signup';
 import ResetPassword from './pages/ResetPassword';
 import CheckVerification from './pages/CheckVerification';
 import CheckPassword from './pages/CheckPassword';
-import CommunityView from './pages/CommunityView';
 import PrivatePolicy from './pages/PrivatePolicy';
 import Finder from './pages/Finder';
 import ProfileView from './pages/ProfileView';
@@ -63,8 +61,11 @@ export default function App() {
             <Route path='social' element={<Feed />} />
             <Route path='settings' element={<Settings />} />
             <Route path='market' element={<Market />} />
-            <Route path='communities' element={<CommunityCentral />} />
-            <Route path='/community/:communityName' element={<InsideView />} />
+            <Route path='community'>
+              <Route index element={<CommunityCentral />} />
+              <Route path=':communityName' element={<InsideView />} />
+            </Route>
+            
             <Route path='/search/:searchElement' element={<Finder />} />
             <Route path='/profile/:profileName' element={<ProfileView />} />
           </Route>

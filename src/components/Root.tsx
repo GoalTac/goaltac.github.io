@@ -112,7 +112,7 @@ export function HeaderNav() {
         )}
 
         <Box position={'relative'}>
-          <IconButton as={Link} to="/communities" aria-label="Social" icon={<FaUsers />} fontSize="3xl" background="none" display={showSearchBar ? 'flex' : 'none'} float={"right"} ml={9} mr={9} />
+          <IconButton as={Link} to="/community" aria-label="Social" icon={<FaUsers />} fontSize="3xl" background="none" display={showSearchBar ? 'flex' : 'none'} float={"right"} ml={9} mr={9} />
           <Box as={FaCircle} color="red.500" position={'absolute'} right={8} bottom={0} size={'.8em'}/>
         </Box>
 
