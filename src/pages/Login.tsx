@@ -7,6 +7,8 @@ import { FaUserAlt, FaLock } from 'react-icons/fa';
 import Canvas from '../components/Canvas';
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
+import logo from './../images/GoalTac_TLogo.png'
+import background from './../images/background_blur.svg'
 
 
 export default function Login() {
@@ -148,6 +150,8 @@ export default function Login() {
             justifyContent='center'
             alignItems='center'
             color="white"
+            backgroundImage={background}
+            backgroundSize='cover'
         >
             <Canvas style={{ width: '100vw', height: '100vh', position: 'absolute', top: 0, left: 0, zIndex: -1, }} />
             <Box>
@@ -157,7 +161,7 @@ export default function Login() {
                     justifyContent='center'
                     alignItems='center'
                 >
-                    <Image src="logo.png" alt="Logo" boxSize="80px" />
+                    <Image src={logo} alt="Logo" width="200px" />
                     <Box>
                         <form onSubmit={handleSubmit}>
                             <Stack
@@ -211,22 +215,11 @@ export default function Login() {
                                     type='submit'
                                     variant='solid'
                                     width='full'
-                                    bg={email && password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}
+                                    bg={email && password ? 'whiteAlpha.600' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}
                                 >
                                     Login
                                 </Button>
-                                <Button
-                                    w={'full'}
-                                    maxW={'md'}
-                                    variant={'solid'}
-                                    leftIcon={<FcGoogle />}
-                                    bg={!email && !password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}
-                                    onClick={handleGoogleLogin}
-                                >
-                                    <Center>
-                                        <Text>Sign in with Google</Text>
-                                    </Center>
-                                </Button>
+                                
                             </Stack>
                         </form>
                     </Box>
