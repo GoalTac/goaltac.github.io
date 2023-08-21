@@ -6,6 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabase';
 import Canvas from '../components/Canvas';
 import { AtSignIcon } from '@chakra-ui/icons';
+import logo from './../images/GoalTac_TLogo.png'
 
 const CFaLock = chakra(FaLock);
 
@@ -116,7 +117,7 @@ export default function SignUpPage() {
             >
 
                 <Canvas style={{ width: '100vw', height: '100vh', position: 'absolute', top: 0, left: 0, zIndex: -1 }} />
-                <Image src="logo.png" alt="Logo" boxSize="80px" />
+                <Image src={logo} alt="Logo" width="200px" />
 
                 <Box>
                     <form onSubmit={handleSubmit}>
