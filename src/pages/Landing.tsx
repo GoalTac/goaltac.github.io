@@ -12,6 +12,9 @@ import logo_name from './../images/GoalTac_Logo.png'
 import logo from './../images/logo.png'
 import background_blur from './../images/background_noise.svg'
 import collaboration from './../images/collaboration.png'
+import one from './../images/ffflux.svg'
+import two from './../images/sssurf.svg'
+import bubble from './../images/bubble.svg'
 
 export default function LandingPage() {
 
@@ -19,14 +22,16 @@ export default function LandingPage() {
         return <Link href='/login'>
             <Button variant='outline'
                 width='150px'
-                color='white'
+                borderColor={useColorModeValue(constants.darkMode, constants.lightMode)}
                 padding='2rem'
                 fontSize='1.5rem'
                 borderRadius='unset'
                 _hover={{
-                    fontSize: '1.4rem'
+                    fontSize: '1.6rem'
                 }}>
-                Login
+                <Text color={useColorModeValue(constants.darkMode, constants.lightMode)}>
+                    Login
+                </Text>
             </Button>
         </Link>
     }
@@ -35,14 +40,17 @@ export default function LandingPage() {
         return <Link href='/signup'>
             <Button variant='solid'
                 width='200px'
-                backgroundColor='white'
+                backgroundColor={useColorModeValue(constants.darkMode, constants.lightMode)}
                 padding='2rem'
                 fontSize='1.5rem'
                 borderRadius='unset'
                 _hover={{
                     fontSize: '1.6rem'
                 }}>
-                Get Started
+                    <Text color={useColorModeValue(constants.lightMode, constants.darkMode)}>
+                        Get Started
+                    </Text>
+                
             </Button>
         </Link>
     }
@@ -54,7 +62,7 @@ export default function LandingPage() {
             px='3rem'
             py='2rem'>
             <Image src={logo_name} width='200px' />
-            <LinkBox color='white' fontSize='1.25rem' fontWeight='400' marginStart='80px' scrollBehavior='smooth' >
+            <LinkBox color={useColorModeValue(constants.darkMode, constants.lightMode)} fontSize='1.25rem' fontWeight='400' marginStart='80px' scrollBehavior='smooth' >
                 <Link href='#features' paddingX='30px' _hover={{textDecoration: 'none'}}>
                     Features 
                 </Link>
@@ -83,8 +91,8 @@ export default function LandingPage() {
                 textAlign={['center', 'start']}
                 id='product' height='1000px'>
                 <VStack rowGap='2rem' marginBottom='6rem'>
-                    <Box marginStart='150px' maxWidth='700px' textColor='white'>
-                        <Heading fontSize='4rem' fontWeight='300' lineHeight='1.1' marginY='50px'>
+                    <Box marginStart='150px' maxWidth='700px' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
+                        <Heading fontSize='4rem' fontWeight='300' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
                             Collaborate with others to help achieve your goals
                         </Heading>
                         <Text maxWidth={['90%', '80%']} lineHeight='1.4' fontWeight='200' fontSize='1.75rem' marginBottom='50px'>
@@ -95,7 +103,6 @@ export default function LandingPage() {
                         <SignUpButton />
                     </Box>
                 </VStack>
-                <Image src={collaboration} invert='white' width='30%' position='absolute' bottom='60' right='40' />
 
             </Flex>
         );
@@ -326,7 +333,7 @@ export default function LandingPage() {
                     bgColor={useColorModeValue(constants.lightMode, constants.darkMode)} >
                     <Box>
                        
-                        <Box backgroundImage={background_blur} backgroundSize='cover' maxWidth='100%' backgroundColor={constants.darkMode}>
+                        <Box backgroundImage={bubble} backgroundSize='cover' maxWidth='100%' backgroundColor={useColorModeValue(constants.lightMode, constants.darkMode)}>
                             <Box maxW={constants.maxWidth} marginX='auto'>
                                 <Header />
                                 <Intro />
