@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import CheckAndTitle from "../components/CheckAndTitle";
 
 export default function Finder() {
 
@@ -11,9 +10,7 @@ export default function Finder() {
     // Functions ----------------------------------------------------------------------
 
     return (
-        <CheckAndTitle title={'Search'}>
-            <br /><br /><br /><br />{searchElement}
-        </CheckAndTitle>
+        {searchElement}
     );
 
 }

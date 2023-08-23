@@ -1,6 +1,5 @@
 import { Avatar, Box, Heading, Stack, Text, Badge, Textarea, Flex } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import CheckAndTitle from "../components/CheckAndTitle";
 import { useEffect, useState } from "react";
 import { supabase } from '../supabase';
 
@@ -39,41 +38,39 @@ export default function ProfileView() {
     }, []);
 
     return (
-        <CheckAndTitle title='Settings'>
-            <Stack
-                direction={['column', null, 'row']}
-                mt={12}
-            >
-                <Box ml={["auto", 12]} mt={6} mr={["auto", 12]}>
-                    <Avatar boxSize={300} name={person.name} src={person.avatarurl} />
-                    <Heading as="h1" size="xl" mt={4}>
-                        {person.username}
-                    </Heading>
-                    <Text fontSize="lg" color="gray.500">
-                        {person.name}
-                    </Text>
-                </Box>
+        <Stack
+            direction={['column', null, 'row']}
+            mt={12}
+        >
+            <Box ml={["auto", 12]} mt={6} mr={["auto", 12]}>
+                <Avatar boxSize={300} name={person.name} src={person.avatarurl} />
+                <Heading as="h1" size="xl" mt={4}>
+                    {person.username}
+                </Heading>
+                <Text fontSize="lg" color="gray.500">
+                    {person.name}
+                </Text>
+            </Box>
 
-                <Box pt={12} pl={4} pr={4}>
-                    <Heading as="h1" size="xl" mb={4} >
-                        Profile
-                    </Heading>
-                    <Badge colorScheme="blue" fontSize="md" mb={1}>biography</Badge>
+            <Box pt={12} pl={4} pr={4}>
+                <Heading as="h1" size="xl" mb={4} >
+                    Profile
+                </Heading>
+                <Badge colorScheme="blue" fontSize="md" mb={1}>biography</Badge>
 
-                    <Textarea
-                        fontSize="sm"
-                        color="gray.500"
-                        mb={4}
-                        value={person.biography}
-                        readOnly
-                    />
+                <Textarea
+                    fontSize="sm"
+                    color="gray.500"
+                    mb={4}
+                    value={person.biography}
+                    readOnly
+                />
 
-                    <Flex>
-                        <Heading as="h1" size="md"  >Streak: <Badge colorScheme="blue" fontSize="lg" mb={1} mr={6}>{person.streak}</Badge></Heading>
-                        <Heading as="h1" size="md"  >Points: <Badge colorScheme="blue" fontSize="lg" mb={1} mr={6}>{person.points}</Badge></Heading>
-                    </Flex>
-                </Box>
-            </Stack>
-        </CheckAndTitle >
+                <Flex>
+                    <Heading as="h1" size="md"  >Streak: <Badge colorScheme="blue" fontSize="lg" mb={1} mr={6}>{person.streak}</Badge></Heading>
+                    <Heading as="h1" size="md"  >Points: <Badge colorScheme="blue" fontSize="lg" mb={1} mr={6}>{person.points}</Badge></Heading>
+                </Flex>
+            </Box>
+        </Stack>
     );
 }
