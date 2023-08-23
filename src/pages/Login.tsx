@@ -150,10 +150,8 @@ export default function Login() {
             justifyContent='center'
             alignItems='center'
             color="white"
-            backgroundImage={background}
             backgroundSize='cover'
         >
-            <Canvas style={{ width: '100vw', height: '100vh', position: 'absolute', top: 0, left: 0, zIndex: -1, }} />
             <Box>
                 <Stack
                     flexDir='column'

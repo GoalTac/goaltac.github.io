@@ -168,7 +168,7 @@ export default function SignUpPage() {
                 </form>
             </Box>
             <Link onClick={loading} to='/login'>
-                {isLoading == true ? <Spinner /> : 'Back to Login'}
+                Back to Login
             </Link>
         </Flex>
     );
