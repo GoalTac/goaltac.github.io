@@ -23,13 +23,27 @@ import { useSession, useSupabaseClient } from '../src/hooks/SessionProvider';
 import CommunityCentral from './components/Communities/Dashboard/CommunityCentral';
 import InsideView from './components/Communities/Community/InsideView';
 import { Tutorial } from './pages/Tutorial';
+import { Spinner } from '@chakra-ui/react';
 
 export default function App() {
   
   function ProtectedRoute({ children, redirectPath }:any) {
     const { user: user, profile: profile } = useSession();
+    const userName = profile?.['username']
 
-    return user ? <Root /> : <Navigate to={redirectPath} replace={true} />;
+    return user ? (userName ? <Root /> : <Tutorial/>) : <Navigate to={redirectPath} replace={true} />;
+  }
+
+  function TutorialRoute() {
+    const { user: user, profile: profile } = useSession();
+    const userName = profile?.['username']
+
+    return userName ? <Navigate to={'/dashboard'} replace={true} /> : <Tutorial/>;
+  }
+
+  //to show before actually loading the new route (how do we do that?)
+  function LoadingScreen() {
+    return <Spinner/>
   }
 
   //NOTE FOR LATER
@@ -55,7 +69,7 @@ export default function App() {
             <Route index element={<Dashboard />} />
             
             {/* Tutorial is here temporarily */}
-            <Route path='tutorial' element={<Tutorial />} />
+            <Route path='tutorial' element={<TutorialRoute />} />
 
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='social' element={<Feed />} />
