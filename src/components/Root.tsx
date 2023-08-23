@@ -3,16 +3,19 @@ import { useEffect, useState } from "react";
 import { FaUser, FaSignOutAlt, FaRegNewspaper, FaSearch, FaUsers, FaShoppingBag, FaCircle } from "react-icons/fa";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { supabase } from '../supabase';
-import { SessionProvider } from "../hooks/SessionProvider";
+import { SessionProvider, useSession } from "../hooks/SessionProvider";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import logo from './../images/logo.png'
 
 //change the color theme for light mode from white to gray.50
 export default function Root() {
+  const { user: user, profile: profile } = useSession();
+  const userName = profile?.['username']
+
   return (
     <SessionProvider supabase={supabase}>
       <Stack minHeight='100vh' position='relative'>
-        <HeaderNav />
+        {userName && <HeaderNav />}
         <Box marginTop='35px'>
           <Outlet />
         </Box>
