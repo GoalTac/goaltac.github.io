@@ -107,80 +107,69 @@ export default function SignUpPage() {
             height='100vh'
             justifyContent='center'
             alignItems='center'
-            color="white"
-        >
-            <Stack
-                flexDir='column'
-                mb='2'
-                justifyContent='center'
-                alignItems='center'
-            >
+            color="white">
 
-                <Canvas style={{ width: '100vw', height: '100vh', position: 'absolute', top: 0, left: 0, zIndex: -1 }} />
-                <Image src={logo} alt="Logo" width="200px" />
-
-                <Box>
-                    <form onSubmit={handleSubmit}>
-                        <Stack
-                            spacing={4}
-                            p='1rem'
-                            backgroundColor={'blackAlpha.400'}
-                            boxShadow='md'
+            <Image src={logo} alt="Logo" width="200px" marginBottom='10px' />
+            <Box>
+                <form onSubmit={handleSubmit}>
+                    <Stack
+                        spacing={4}
+                        p='1rem'
+                        backgroundColor={'blackAlpha.300'}
+                        boxShadow='md'>
+                        <FormControl>
+                            <InputGroup>
+                                <InputLeftElement
+                                    pointerEvents='none'
+                                    children={<AtSignIcon color='gray.300' />}
+                                />
+                                {/* Email */}
+                                <Input
+                                    type='email'
+                                    id='email'
+                                    placeholder='Email Address'
+                                    value={email}
+                                    onChange={event => setEmail(event.target.value)}
+                                />
+                            </InputGroup>
+                        </FormControl>
+                        <FormControl>
+                            <InputGroup>
+                                <InputLeftElement
+                                    pointerEvents='none'
+                                    color='gray.300'
+                                    children={<CFaLock color='gray.300' />}
+                                />
+                                {/* Password */}
+                                <Input
+                                    type={showPassword ? 'text' : 'password'}
+                                    placeholder='Password'
+                                    id='password'
+                                    value={password}
+                                    onChange={event => setPassword(event.target.value)}
+                                />
+                                <InputRightElement width='4.5rem'>
+                                    <Button h='1.75rem' size='sm' bg={password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }} onClick={handleShowClick}>
+                                        {showPassword ? 'hide' : 'show'}
+                                    </Button>
+                                </InputRightElement>
+                            </InputGroup>
+                        </FormControl>
+                        <Button
+                            borderRadius={5}
+                            type='submit'
+                            variant='solid'
+                            width='full'
+                            bg={email && password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}
                         >
-                            <FormControl>
-                                <InputGroup>
-                                    <InputLeftElement
-                                        pointerEvents='none'
-                                        children={<AtSignIcon color='gray.300' />}
-                                    />
-                                    {/* Email */}
-                                    <Input
-                                        type='email'
-                                        id='email'
-                                        placeholder='Email Address'
-                                        value={email}
-                                        onChange={event => setEmail(event.target.value)}
-                                    />
-                                </InputGroup>
-                            </FormControl>
-                            <FormControl>
-                                <InputGroup>
-                                    <InputLeftElement
-                                        pointerEvents='none'
-                                        color='gray.300'
-                                        children={<CFaLock color='gray.300' />}
-                                    />
-                                    {/* Password */}
-                                    <Input
-                                        type={showPassword ? 'text' : 'password'}
-                                        placeholder='Password'
-                                        id='password'
-                                        value={password}
-                                        onChange={event => setPassword(event.target.value)}
-                                    />
-                                    <InputRightElement width='4.5rem'>
-                                        <Button h='1.75rem' size='sm' bg={password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }} onClick={handleShowClick}>
-                                            {showPassword ? 'hide' : 'show'}
-                                        </Button>
-                                    </InputRightElement>
-                                </InputGroup>
-                            </FormControl>
-                            <Button
-                                borderRadius={5}
-                                type='submit'
-                                variant='solid'
-                                width='full'
-                                bg={email && password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}
-                            >
-                                Sign Up
-                            </Button>
-                        </Stack>
-                    </form>
-                </Box>
-                <Link onClick={loading} to='/login'>
-                    {isLoading == true ? <Spinner /> : 'Back to Login'}
-                </Link>
-            </Stack>
+                            Sign Up
+                        </Button>
+                    </Stack>
+                </form>
+            </Box>
+            <Link onClick={loading} to='/login'>
+                {isLoading == true ? <Spinner /> : 'Back to Login'}
+            </Link>
         </Flex>
     );
 }

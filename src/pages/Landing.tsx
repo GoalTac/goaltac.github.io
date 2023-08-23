@@ -1,33 +1,41 @@
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import { Box, useColorMode, Spacer, Flex, Stack, VStack, HStack, Text, Button, Image, Avatar, Heading, useColorModeValue, Badge, IconButton, Divider, LinkBox, Link } from "@chakra-ui/react";
+import { Box, useColorMode, Spacer, Flex, Stack, VStack, HStack, Text, Button, Image, Avatar, Heading, useColorModeValue, Badge, IconButton, Divider, LinkBox, Link, FormControl, Input, InputGroup, InputLeftElement, InputRightElement, useToast } from "@chakra-ui/react";
 import {
     FaDiscord,
     FaFacebookSquare,
     FaInstagram,
     FaLinkedin,
+    FaLock,
 } from 'react-icons/fa';
-import { MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { AtSignIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import logo_name from './../images/GoalTac_Logo.png'
 import logo from './../images/logo.png'
+import logo_stacked from './../images/GoalTac_TLogo.png'
+
 import background_blur from './../images/background_noise.svg'
 import collaboration from './../images/collaboration.png'
 import one from './../images/ffflux.svg'
 import two from './../images/sssurf.svg'
 import bubble from './../images/bubble.svg'
+import uconn_logo from './../images/CCEI-stacked_white.png'
+import SignUpPage from './../pages/Signup'
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { supabase } from '../supabase';
 
 export default function LandingPage() {
 
     function SignInButton() {
         return <Link href='/login'>
             <Button variant='outline'
-                width='150px'
+                width='8rem'
                 borderColor={useColorModeValue(constants.darkMode, constants.lightMode)}
-                padding='2rem'
-                fontSize='1.5rem'
+                padding='1.75rem'
+                fontSize='1.25rem'
                 borderRadius='unset'
                 _hover={{
-                    fontSize: '1.6rem'
+                    fontSize: '1.35rem'
                 }}>
                 <Text color={useColorModeValue(constants.darkMode, constants.lightMode)}>
                     Login
@@ -55,29 +63,183 @@ export default function LandingPage() {
         </Link>
     }
 
+    function SignUpBox() {
+        // Variables ----------------------------------------------------------------------
+
+        // navigates to check your email
+        const navigate = useNavigate();
+
+        // login stuff
+        const [showPassword, setShowPassword] = useState(false);
+        const toast = useToast();
+
+        //Check for an existing userName
+        //Pass the email and password into Supabase Signup Method
+        //-- Display any issues with sign up to the user
+        //(Must check that account has been made) Insert username and other data into profiles table
+        // Supabase
+        const [email, setEmail] = useState('')
+        const [password, setPassword] = useState('')
+
+        const [isLoading, setIsLoading] = useState(false); //for login loading
+        const loading = () => {
+            setIsLoading(true);
+            console.log(isLoading);
+        };
+
+        // UseEffect ----------------------------------------------------------------------
+
+        // Functions ----------------------------------------------------------------------
+        const handleShowClick = () => setShowPassword(!showPassword);
+
+        const handleSubmit = async (event: { preventDefault: () => void; }) => {
+            event.preventDefault();
+            console.log('submitting signup!');
+
+            if (email === "" || password === "") { //Can limit what is/isn't acceptable for a password (use methods for comparisons for more complicated checks)
+                toast({
+                    title: "Seems that you forgot to enter an email or password!",
+                    position: 'bottom',
+                    status: 'error',
+                    duration: 5000,
+                    isClosable: false,
+                })
+                return
+            }
+
+            try {
+                // sign up
+                const { data, error } = await supabase.auth.signUp({ email, password });
+
+                if (error) {
+                    toast({
+                        title: `${error}`,
+                        position: 'bottom',
+                        status: 'error',
+                        duration: 5000,
+                        isClosable: false,
+                    })
+                    throw error;
+                }
+
+                //Insert username and other data into profiles table
+
+                const { error: insertError } = await supabase.from('profiles').update([{ userid: data?.user?.id }]).eq('userid', data?.user?.id);
+                if (insertError) {
+                    throw insertError;
+                }
+
+                toast({
+                    title: "Successfully created account!",
+                    position: 'bottom',
+                    status: 'success',
+                    duration: 5000,
+                    isClosable: true,
+                })
+
+                //Navigate to check your email page
+                navigate('/checkyouremail');
+
+
+            } catch (err) {
+                return toast({
+                    title: `${err}`,
+                    status: 'error',
+                    duration: 5000,
+                    isClosable: true,
+                });
+                
+            }
+        };
+        return <Flex flexDirection='column' width='fit-content'><Image alignSelf='center' src={logo_stacked} alt="Logo" width="200px" marginBottom='10px' />
+        <Box>
+            <form onSubmit={handleSubmit}>
+                <Stack
+                    spacing={4}
+                    p='1rem'
+                    backgroundColor={'blackAlpha.300'}
+                    boxShadow='md'>
+                    <FormControl>
+                        <InputGroup>
+                            <InputLeftElement
+                                pointerEvents='none'
+                                children={<AtSignIcon color='gray.300' />}
+                            />
+                            {/* Email */}
+                            <Input
+                                type='email'
+                                id='email'
+                                placeholder='Email Address'
+                                value={email}
+                                onChange={event => setEmail(event.target.value)}
+                            />
+                        </InputGroup>
+                    </FormControl>
+                    <FormControl>
+                        <InputGroup>
+                            <InputLeftElement
+                                pointerEvents='none'
+                                color='gray.300'
+                                children={<FaLock color='gray.300' />}
+                            />
+                            {/* Password */}
+                            <Input
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder='Password'
+                                id='password'
+                                value={password}
+                                onChange={event => setPassword(event.target.value)}
+                            />
+                            <InputRightElement width='4.5rem'>
+                                <Button h='1.75rem' size='sm' bg={password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }} onClick={handleShowClick}>
+                                    {showPassword ? 'hide' : 'show'}
+                                </Button>
+                            </InputRightElement>
+                        </InputGroup>
+                    </FormControl>
+                    <Button
+                        borderRadius={5}
+                        type='submit'
+                        variant='solid'
+                        width='full'
+                        bg={email && password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}
+                    >
+                        Sign Up
+                    </Button>
+                </Stack>
+            </form>
+        </Box>
+    </Flex>
+    }
+
+    function LearnMoreButton() {
+        return <Link href='#features'>
+            <Button variant='outline'
+                width='200px'
+                borderColor={useColorModeValue(constants.darkMode, constants.lightMode)}
+                padding='2rem'
+                fontSize='1.5rem'
+                borderRadius='unset'
+                _hover={{
+                    fontSize: '1.6rem'
+                }}>
+                <Text color={useColorModeValue(constants.darkMode, constants.lightMode)}>
+                    Learn More
+                </Text>
+            </Button>
+        </Link>
+    }
+
     function Header() {
         return (<HStack
             justify='space-between'
             alignItems='center'
-            px='3rem'
-            py='2rem'>
-            <Image src={logo_name} width='200px' />
-            <LinkBox color={useColorModeValue(constants.darkMode, constants.lightMode)} fontSize='1.25rem' fontWeight='400' marginStart='80px' scrollBehavior='smooth' >
-                <Link href='#features' paddingX='30px' _hover={{textDecoration: 'none'}}>
-                    Features 
-                </Link>
-                <Link href='#research' paddingX='30px' _hover={{textDecoration: 'none'}}>
-                    Research
-                </Link>
-                <Link href='#staff' paddingX='30px' _hover={{textDecoration: 'none'}}>
-                    Staff
-                </Link>
-                <Link href='#updates' paddingX='30px' _hover={{textDecoration: 'none'}}>
-                    Updates
-                </Link>
-            </LinkBox>
+            px={['1rem','3rem']}
+            py={[null,'2rem']} overflowX='hidden'>
+            <Image src={logo_name} maxWidth='10rem' />
+            
             <Spacer/>
-
+            
             <SignInButton />
 
         </HStack>);
@@ -89,19 +251,23 @@ export default function LandingPage() {
                 position='relative'
                 alignItems={['center', 'flex-start']}
                 textAlign={['center', 'start']}
-                id='product' height='1000px'>
-                <VStack rowGap='2rem' marginBottom='6rem'>
-                    <Box marginStart='150px' maxWidth='700px' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
-                        <Heading fontSize='4rem' fontWeight='300' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
+                id='product' height='fit-content'>
+                <VStack rowGap='2rem' marginBottom='6rem' borderWidth='1px'>
+                    <Flex marginStart={['0px','150px']} marginX={['10px',null]} maxWidth='700px' flexDirection='column' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
+                        <Heading fontSize={['2rem','4rem']} fontWeight='300' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
                             Collaborate with others to help achieve your goals
                         </Heading>
-                        <Text maxWidth={['90%', '80%']} lineHeight='1.4' fontWeight='200' fontSize='1.75rem' marginBottom='50px'>
+                        <Text maxWidth={[null, '80%']} lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']} marginBottom='50px'>
                             Why use GoalTac? Because GoalTac is the only website to effectively
                             target procrastination at it's source with socialized productivity
                             {/* Replace: Find your community now! */}
                         </Text>
-                        <SignUpButton />
-                    </Box>
+                        <Flex flexDirection={['column','row']} gap='30px'>
+                           <SignUpButton /> 
+                           <LearnMoreButton />
+                        </Flex>
+                       
+                    </Flex>
                 </VStack>
 
             </Flex>
@@ -113,46 +279,48 @@ export default function LandingPage() {
         return (
             <Stack
                 id='features'
-                direction={['column', null, 'row']}
                 spacing='6rem'
                 mt='8rem'
                 px={['1rem', null, '6rem']}
                 py='3rem'
-                bgColor={useColorModeValue('gray.100','gray.700')}
-                position='relative'>
+                bgColor={useColorModeValue('gray.100','gray.700')}>
+                <Stack direction={['column', null, 'row']}
+                    maxWidth={constants.maxWidth} marginX='auto'
+                    position='relative'>
+                     <VStack
+                        alignItems={['center', null, 'flex-start']}
+                        textAlign={['center', null, 'left']}
+                        minWidth='50%'
+                        spacing='2rem'>
+                        <Heading fontSize='3rem' bgGradient='linear(to-t, teal.300, blue.500)' fontWeight='700' lineHeight='1.1' bgClip='text'>
+                            What is GoalTac?
+                        </Heading>
 
-                <VStack
-                    alignItems={['center', null, 'flex-start']}
-                    textAlign={['center', null, 'left']}
-                    minWidth='50%'
-                    spacing='2rem'>
-                    <Heading fontSize='3rem' bgGradient='linear(to-t, teal.300, blue.500)' fontWeight='700' lineHeight='1.1' bgClip='text'>
-                        What is GoalTac?
-                    </Heading>
+                        <VStack rowGap='2rem' paddingStart={['', null, '2rem']} maxWidth={['100%', '80%']} fontSize='1rem'>
+                            {goalTacDesc.map((desc, index) => (
+                                <Box key={index}>
+                                    <Heading fontSize='1rem'>{desc.name}</Heading>
+                                    <Text paddingStart={['', null, '2rem']}>
+                                        {desc.desc}
+                                    </Text>
+                                </Box>
+                            ))}
+                        </VStack>
+                    </VStack>
 
-                    <VStack rowGap='2rem' paddingStart={['', null, '2rem']} maxWidth={['100%', '80%']} fontSize='1rem'>
-                        {goalTacDesc.map((desc, index) => (
-                            <Box key={index}>
-                                <Heading fontSize='1rem'>{desc.name}</Heading>
-                                <Text paddingStart={['', null, '2rem']}>
-                                    {desc.desc}
-                                </Text>
-                            </Box>
+                    <VStack spacing='2rem'>
+                        {contents.map((vstack, index) => (
+                            <VStack key={index}>
+                                <Flex width='100%' alignItems='center'>
+                                    <Box p='.3rem 1rem' fontWeight='600'>{vstack.number}</Box>
+                                    <Box fontWeight='600' pl='20px'>{vstack.title}</Box>
+                                </Flex>
+                                <Box p='.3rem 1rem'>{vstack.text}</Box>
+                            </VStack>
                         ))}
                     </VStack>
-                </VStack>
-
-                <VStack spacing='2rem'>
-                    {contents.map((vstack, index) => (
-                        <VStack key={index}>
-                            <Flex width='100%' alignItems='center'>
-                                <Box p='.3rem 1rem' fontWeight='600'>{vstack.number}</Box>
-                                <Box fontWeight='600' pl='20px'>{vstack.title}</Box>
-                            </Flex>
-                            <Box p='.3rem 1rem'>{vstack.text}</Box>
-                        </VStack>
-                    ))}
-                </VStack>
+                </Stack>
+                
             </Stack>
         );
     }
@@ -210,7 +378,7 @@ export default function LandingPage() {
     function PreFooter() {
         return (<Stack
             id='careers'
-            direction={['column', null, 'row']}
+            direction={'column'}
             alignItems='center'
             justifyContent={['center', null, 'space-between']}
             marginY='6rem'
@@ -221,11 +389,20 @@ export default function LandingPage() {
                 fontSize={['35px', '4xl']}
                 fontWeight='700'
                 lineHeight='1.1'
-                maxWidth={['100%', null, '40%']}
                 textAlign={['center', 'left']}>
-                Be the change you want to see today.
+                Join a community for free at GoalTac
             </Box>
             <SignUpButton />
+            <Box>
+                <Text fontWeight='500' fontSize='1.5rem' textAlign='center'>
+                    Supported by
+                </Text>
+                <HStack>
+                    <Image width='200px' src={uconn_logo}/>
+                </HStack>
+            </Box>
+            
+            
         </Stack>
         );
     }
@@ -327,7 +504,7 @@ export default function LandingPage() {
     }
 
     return (
-        <Flex flexDirection='column' minH='100vh'>
+        <Flex flexDirection='column' minH='100vh' overflowX='hidden'>
             <Flex>
                 <Box overflowX='hidden' width='100%'
                     bgColor={useColorModeValue(constants.lightMode, constants.darkMode)} >
@@ -337,12 +514,13 @@ export default function LandingPage() {
                             <Box maxW={constants.maxWidth} marginX='auto'>
                                 <Header />
                                 <Intro />
+                                <SignUpBox/>
                             </Box>
                         </Box>
 
-
+                        <Features />
                         <Box maxW={constants.maxWidth} marginX='auto'>
-                            <Features />
+                            
                             <Slider />
                             <PreFooter  />
                         </Box>
@@ -360,7 +538,7 @@ export default function LandingPage() {
             <Flex id='footer'
                 flexDirection='column'
                 alignSelf='center'
-                w={constants.maxWidth}
+                maxW={constants.maxWidth}
                 bgColor={useColorModeValue(constants.lightMode, constants.darkMode)}
                 py='3rem'
                 bottom='0'>
