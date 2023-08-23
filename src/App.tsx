@@ -37,6 +37,7 @@ export default function App() {
   function TutorialRoute() {
     const { user: user, profile: profile } = useSession();
     const userName = profile?.['username']
+    console.log(userName)
 
     return userName ? <Navigate to={'/dashboard'} replace={true} /> : <Tutorial/>;
   }

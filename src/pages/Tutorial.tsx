@@ -26,7 +26,7 @@ export function Tutorial() {
         if (error) {
           console.log(error)
           toast({
-            title: `${error}`,
+            title: `There was an error with your user name!`,
             status: 'error',
             duration: 3000,
             isClosable: true,
@@ -45,7 +45,7 @@ export function Tutorial() {
         if (error) {
           console.log(error)
           toast({
-            title: `${error}`,
+            title: `There was an error with your display name!`,
             status: 'error',
             duration: 3000,
             isClosable: true,
@@ -54,7 +54,7 @@ export function Tutorial() {
         return (error == null ? true : false)
       };
     
-      const handleSubmit = async() => {
+      const handleSubmit = () => {
         const checkOne = handleDisplaySubmit()
         const checkTwo = handleNameSubmit()
 
@@ -63,7 +63,14 @@ export function Tutorial() {
                 setDisplayName('')
                 setUserName('')
             } else {
-                navigate('/')
+              toast({
+                  title: `Your profile was created!`,
+                  status: 'success',
+                  duration: 3000,
+                  isClosable: true,
+                });
+              navigate('/dashboard')
+              window.location.reload(); //I needed to do this for some reason. Nav didn't want to reload the page
             }
         })
         
