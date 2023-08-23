@@ -63,155 +63,6 @@ export default function LandingPage() {
         </Link>
     }
 
-    function SignUpBox() {
-        // Variables ----------------------------------------------------------------------
-
-        // navigates to check your email
-        const navigate = useNavigate();
-
-        // login stuff
-        const [showPassword, setShowPassword] = useState(false);
-        const toast = useToast();
-
-        //Check for an existing userName
-        //Pass the email and password into Supabase Signup Method
-        //-- Display any issues with sign up to the user
-        //(Must check that account has been made) Insert username and other data into profiles table
-        // Supabase
-        const [email, setEmail] = useState('')
-        const [password, setPassword] = useState('')
-
-        const [isLoading, setIsLoading] = useState(false); //for login loading
-        const loading = () => {
-            setIsLoading(true);
-            console.log(isLoading);
-        };
-
-        // UseEffect ----------------------------------------------------------------------
-
-        // Functions ----------------------------------------------------------------------
-        const handleShowClick = () => setShowPassword(!showPassword);
-
-        const handleSubmit = async (event: { preventDefault: () => void; }) => {
-            event.preventDefault();
-            console.log('submitting signup!');
-
-            if (email === "" || password === "") { //Can limit what is/isn't acceptable for a password (use methods for comparisons for more complicated checks)
-                toast({
-                    title: "Seems that you forgot to enter an email or password!",
-                    position: 'bottom',
-                    status: 'error',
-                    duration: 5000,
-                    isClosable: false,
-                })
-                return
-            }
-
-            try {
-                // sign up
-                const { data, error } = await supabase.auth.signUp({ email, password });
-
-                if (error) {
-                    toast({
-                        title: `${error}`,
-                        position: 'bottom',
-                        status: 'error',
-                        duration: 5000,
-                        isClosable: false,
-                    })
-                    throw error;
-                }
-
-                //Insert username and other data into profiles table
-
-                const { error: insertError } = await supabase.from('profiles').update([{ userid: data?.user?.id }]).eq('userid', data?.user?.id);
-                if (insertError) {
-                    throw insertError;
-                }
-
-                toast({
-                    title: "Successfully created account!",
-                    position: 'bottom',
-                    status: 'success',
-                    duration: 5000,
-                    isClosable: true,
-                })
-
-                //Navigate to check your email page
-                navigate('/checkyouremail');
-
-
-            } catch (err) {
-                return toast({
-                    title: `${err}`,
-                    status: 'error',
-                    duration: 5000,
-                    isClosable: true,
-                });
-                
-            }
-        };
-        return <Flex flexDirection='column' width='fit-content'><Image alignSelf='center' src={logo_stacked} alt="Logo" width="200px" marginBottom='10px' />
-        <Box>
-            <form onSubmit={handleSubmit}>
-                <Stack
-                    spacing={4}
-                    p='1rem'
-                    backgroundColor={'blackAlpha.300'}
-                    boxShadow='md'>
-                    <FormControl>
-                        <InputGroup>
-                            <InputLeftElement
-                                pointerEvents='none'
-                                children={<AtSignIcon color='gray.300' />}
-                            />
-                            {/* Email */}
-                            <Input
-                                type='email'
-                                id='email'
-                                placeholder='Email Address'
-                                value={email}
-                                onChange={event => setEmail(event.target.value)}
-                            />
-                        </InputGroup>
-                    </FormControl>
-                    <FormControl>
-                        <InputGroup>
-                            <InputLeftElement
-                                pointerEvents='none'
-                                color='gray.300'
-                                children={<FaLock color='gray.300' />}
-                            />
-                            {/* Password */}
-                            <Input
-                                type={showPassword ? 'text' : 'password'}
-                                placeholder='Password'
-                                id='password'
-                                value={password}
-                                onChange={event => setPassword(event.target.value)}
-                            />
-                            <InputRightElement width='4.5rem'>
-                                <Button h='1.75rem' size='sm' bg={password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }} onClick={handleShowClick}>
-                                    {showPassword ? 'hide' : 'show'}
-                                </Button>
-                            </InputRightElement>
-                        </InputGroup>
-                    </FormControl>
-                    <Button
-                        borderRadius={5}
-                        type='submit'
-                        variant='solid'
-                        width='full'
-                        bg={email && password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}
-                    >
-                        Sign Up
-                    </Button>
-                </Stack>
-            </form>
-        </Box>
-    </Flex>
-    }
-
     function LearnMoreButton() {
         return <Link href='#features'>
             <Button variant='outline'
@@ -235,7 +86,7 @@ export default function LandingPage() {
             justify='space-between'
             alignItems='center'
             px={['1rem','3rem']}
-            py={[null,'2rem']} overflowX='hidden'>
+            py={['1rem','2rem']} overflowX='hidden'>
             <Image src={logo_name} maxWidth='10rem' />
             
             <Spacer/>
@@ -252,10 +103,10 @@ export default function LandingPage() {
                 alignItems={['center', 'flex-start']}
                 textAlign={['center', 'start']}
                 id='product' height='fit-content'>
-                <VStack rowGap='2rem' marginBottom='6rem' borderWidth='1px'>
+                <VStack rowGap='2rem' marginBottom='6rem'>
                     <Flex marginStart={['0px','150px']} marginX={['10px',null]} maxWidth='700px' flexDirection='column' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
                         <Heading fontSize={['2rem','4rem']} fontWeight='300' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
-                            Collaborate with others to help achieve your goals
+                            Collaborate with others to achieve your goals
                         </Heading>
                         <Text maxWidth={[null, '80%']} lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']} marginBottom='50px'>
                             Why use GoalTac? Because GoalTac is the only website to effectively
@@ -376,31 +227,32 @@ export default function LandingPage() {
     }
 
     function PreFooter() {
-        return (<Stack
-            id='careers'
+        return (<Stack id='careers'
             direction={'column'}
             alignItems='center'
             justifyContent={['center', null, 'space-between']}
-            marginY='6rem'
+            rowGap='50px'
             py='3rem'
             px={['2rem', null, '7rem']}
             position='relative'>
-            <Box
-                fontSize={['35px', '4xl']}
-                fontWeight='700'
-                lineHeight='1.1'
-                textAlign={['center', 'left']}>
-                Join a community for free at GoalTac
-            </Box>
-            <SignUpButton />
-            <Box>
+            <Stack direction={['column']} gap={['20px','40px']} alignItems={'center'}>
+                <Heading fontSize={['35px', '4xl']}
+                    textAlign={'center'}
+                    fontWeight='400'
+                    lineHeight='1.1'>
+                    Join a community for free at GoalTac
+                </Heading>
+                <SignUpButton />
+            </Stack>
+            
+            <Stack>
                 <Text fontWeight='500' fontSize='1.5rem' textAlign='center'>
                     Supported by
                 </Text>
                 <HStack>
                     <Image width='200px' src={uconn_logo}/>
                 </HStack>
-            </Box>
+            </Stack>
             
             
         </Stack>
@@ -514,7 +366,6 @@ export default function LandingPage() {
                             <Box maxW={constants.maxWidth} marginX='auto'>
                                 <Header />
                                 <Intro />
-                                <SignUpBox/>
                             </Box>
                         </Box>
 
