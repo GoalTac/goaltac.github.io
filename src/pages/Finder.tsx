@@ -9,8 +9,10 @@ export default function Finder() {
     // UseEffect ----------------------------------------------------------------------
     // Functions ----------------------------------------------------------------------
 
-    return (
-        {searchElement}
+    return (<div>
+         {searchElement}
+    </div>
+       
     );
 
 }
