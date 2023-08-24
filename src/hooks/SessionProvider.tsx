@@ -19,22 +19,25 @@ export const SessionProvider = ({ children, supabase }: any) => {
       const { data: { session }, error } = await supabase.auth.getSession();
 
       if (error) throw error;
+
+      if(session) {
+        const { 
+          data: profileData, 
+          error: profileError 
+        } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('userid', session?.user.id).single()
+        if (profileError) throw profileError;
+        setProfile(profileData)
+      }
       
-      const { 
-        data: profileData, 
-        error: profileError 
-      } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('userid', session?.user.id).single()
 
 
-      if (profileError) throw profileError;
 
       setSession(session);
       setUser(session?.user);
       setLoading(false);
-      setProfile(profileData)
     };
 
     const { data: listener } = supabase.auth.onAuthStateChange(
@@ -43,14 +46,17 @@ export const SessionProvider = ({ children, supabase }: any) => {
         setUser(newSession?.user);
         setLoading(false);
 
-        const { 
-          data: profileData, error: error
-        } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('userid', newSession.user.id).single()
+        if (newSession) {
+          const { 
+            data: profileData, error: error
+          } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('userid', newSession.user.id).single()
+          
+          setProfile(profileData)
+        }
         
-        setProfile(profileData)
       }
     );
 

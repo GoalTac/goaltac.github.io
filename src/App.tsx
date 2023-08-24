@@ -31,8 +31,6 @@ export default function App() {
     const { user: user, profile: profile } = useSession();
     const userName = profile?.['username']
 
-    console.log(profile)
-
     return user ? (userName ? <Root /> : <Tutorial/>) : <Navigate to={redirectPath} replace={true} />;
   }
 
