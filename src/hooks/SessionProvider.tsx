@@ -16,13 +16,10 @@ export const SessionProvider = ({ children, supabase }: any) => {
 
   useEffect(() => {
     const requestSession = async () => {
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
-      
-      if (error) throw error;
+      const { data: { session }, error } = await supabase.auth.getSession();
 
+      if (error) throw error;
+      
       const { 
         data: profileData, 
         error: profileError 
@@ -30,6 +27,7 @@ export const SessionProvider = ({ children, supabase }: any) => {
         .from('profiles')
         .select('*')
         .eq('userid', session?.user.id).single()
+
 
       if (profileError) throw profileError;
 
@@ -40,17 +38,17 @@ export const SessionProvider = ({ children, supabase }: any) => {
     };
 
     const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event: any, newSession: any) => {
+      async(_event: any, newSession: any) => {
         setSession(newSession);
         setUser(newSession?.user);
         setLoading(false);
 
         const { 
-          data: profileData
-        } = supabase
+          data: profileData, error: error
+        } = await supabase
           .from('profiles')
           .select('*')
-          .eq('userid', newSession?.user.id).single()
+          .eq('userid', newSession.user.id).single()
         
         setProfile(profileData)
       }
@@ -62,7 +60,7 @@ export const SessionProvider = ({ children, supabase }: any) => {
       listener?.subscription.unsubscribe();
     };
   }, []);
-
+  
   const contextObject = {
     user,
     session,
