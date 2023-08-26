@@ -22,8 +22,33 @@ export async function _getAllTasks() {
  * @param communityID 
  */
 export async function _getCommunityTasks(communityID: string) {
-    //send the root tasks
+    
 }
+
+//user sends suggested task to community
+export async function _shareTasktoCommunity(taskID: string) {
+    
+}
+
+//community accepts suggested task from users
+export async function _acceptTaskfromCommunity(taskID: string) {
+    //duplicated task and sets owner to community
+}
+export async function _rejectTaskfromCommunity(taskID: string) {
+    
+}
+
+export async function _getSuggestedTasks(taskID: string) {
+    
+}
+export async function _addSuggestedTask(tasks: [{}]) {
+    
+}
+export async function _removeSuggestedTask(taskID: string) {
+    
+}
+
+
 
 
 
@@ -117,6 +142,9 @@ export async function _duplicateTask(taskID: string) {
 
 }
 
+export async function _shareTasktoUser(taskID: string) {
+
+}
 
 
 
