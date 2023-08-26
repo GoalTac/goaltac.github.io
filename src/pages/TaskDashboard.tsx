@@ -5,6 +5,7 @@ import List from "./List";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Chat from "../components/Chats/PrivateChat";
+import TaskDrawer from "../components/Tasks/TaskDrawer";
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -15,10 +16,11 @@ export default function Dashboard() {
         <Flex padding={2} columnGap='4px' marginBottom='12px'>
             <Button onClick={() => setDisplayedView(<Calendar/>)}>Calendar</Button>
             <Button onClick={() => setDisplayedView(<List/>)}>List</Button>
+            <Spacer/>
+            <TaskDrawer/>
         </Flex>
         
         {displayedView}
-        <Chat />
     </Box>
             
     )
