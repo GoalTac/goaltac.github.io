@@ -18,7 +18,9 @@ import collaboration from './../images/collaboration.png'
 import one from './../images/ffflux.svg'
 import two from './../images/sssurf.svg'
 import bubble from './../images/bubble.svg'
-import uconn_logo from './../images/CCEI-stacked_white.png'
+import uconn_dark_logo from './../images/CCEI-stacked_white.png'
+import uconn_light_logo from './../images/CCEI-stacked_blue.png'
+
 import SignUpPage from './../pages/Signup'
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -250,7 +252,7 @@ export default function LandingPage() {
                     Supported by
                 </Text>
                 <HStack>
-                    <Image width='200px' src={uconn_logo}/>
+                    <Image width='200px' src={useColorModeValue(uconn_light_logo, uconn_dark_logo)}/>
                 </HStack>
             </Stack>
             
