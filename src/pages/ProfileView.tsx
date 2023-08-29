@@ -45,10 +45,10 @@ export default function ProfileView() {
             <Box ml={["auto", 12]} mt={6} mr={["auto", 12]}>
                 <Avatar boxSize={300} name={person.name} src={person.avatarurl} />
                 <Heading as="h1" size="xl" mt={4}>
-                    {person.username}
+                    {person.name}
                 </Heading>
                 <Text fontSize="lg" color="gray.500">
-                    {person.name}
+                    {person.username}
                 </Text>
             </Box>
 
