@@ -25,7 +25,6 @@ import {
     Toast,
 } from '@chakra-ui/react';
 import { supabase } from '../supabase';
-import CheckAndTitle from '../components/CheckAndTitle';
 import { Link } from 'react-router-dom';
 import { CloseIcon } from '@chakra-ui/icons';
 
@@ -376,145 +375,142 @@ export default function Profile() {
     
 
     return (
-        <CheckAndTitle title='Settings'>
-            <Stack
-                direction={['column', null, 'row']}
-                mt={12}
-            >
-                <Box ml={["auto", 12]} mt={6} mr={["auto", 12]}>
-                    <Avatar boxSize={300} name={person.name} src={person.avatarurl} />
-                    <Heading as="h1" size="xl" mt={4}>
-                        {person.username}
-                    </Heading>
-                    <Text fontSize="lg" color="gray.500">
-                        {person.name}
-                    </Text>
-                    <Button mt={4} onClick={handleEditProfile} w={"full"}>
-                        Edit Profile
+        <Stack
+            direction={['column', null, 'row']}
+            mt={12}>
+            <Box ml={["auto", 12]} mt={6} mr={["auto", 12]}>
+                <Avatar boxSize={300} name={person.name} src={person.avatarurl} />
+                <Heading as="h1" size="xl" mt={4}>
+                    {person.username}
+                </Heading>
+                <Text fontSize="lg" color="gray.500">
+                    {person.name}
+                </Text>
+                <Button mt={4} onClick={handleEditProfile} w={"full"}>
+                    Edit Profile
+                </Button>
+                {/* modal for name and username */}
+                {showNameModal && (
+                    <Modal isOpen={showNameModal} onClose={() => setShowNameModal(false)}>
+                        <ModalOverlay />
+                        <ModalContent>
+                            <ModalHeader>Edit Profile Information</ModalHeader>
+                            <ModalBody>
+                                <FormControl>
+                                    <FormLabel>Full name</FormLabel>
+                                    <Input
+                                        placeholder="Uppercase and lowercase letters only"
+                                        value={person.name}
+                                        onInput={(e) => {
+                                            e.currentTarget.value = e.currentTarget.value.replace(/[^a-zA-Z ]/g, '');
+                                        }}
+                                        onChange={(e) => setPerson((prev) => ({ ...prev, name: e.target.value }))}
+                                    />
+                                </FormControl>
+                                <FormControl mt={4}>
+                                    <FormLabel>Avatar</FormLabel>
+                                    <Input
+                                        placeholder="put a url here"
+                                        value={person.avatarurl}
+                                        onChange={(e) => setPerson((prev) => ({ ...prev, avatarurl: e.target.value }))}
+                                    />
+                                </FormControl>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button colorScheme="blue" mr={3} onClick={handleNameSubmit}>
+                                    Submit
+                                </Button>
+                            </ModalFooter>
+                        </ModalContent>
+                    </Modal>
+                )}
+            </Box>
+
+            <Box pt={12} pl={4} pr={4} w={'full'}>
+                <Heading as="h1" size="xl" mb={4} >
+                    Settings
+                </Heading>
+                <Badge colorScheme="blue" fontSize="md" mb={1}>biography</Badge>
+                {person.biography !== '' && (
+                    <Button
+                        size="xs"
+                        float={"right"}
+                        onClick={handleNameSubmit}
+                    >
+                        Save
                     </Button>
-                    {/* modal for name and username */}
-                    {showNameModal && (
-                        <Modal isOpen={showNameModal} onClose={() => setShowNameModal(false)}>
-                            <ModalOverlay />
-                            <ModalContent>
-                                <ModalHeader>Edit Profile Information</ModalHeader>
-                                <ModalBody>
-                                    <FormControl>
-                                        <FormLabel>Full name</FormLabel>
-                                        <Input
-                                            placeholder="Uppercase and lowercase letters only"
-                                            value={person.name}
-                                            onInput={(e) => {
-                                                e.currentTarget.value = e.currentTarget.value.replace(/[^a-zA-Z ]/g, '');
-                                            }}
-                                            onChange={(e) => setPerson((prev) => ({ ...prev, name: e.target.value }))}
-                                        />
-                                    </FormControl>
-                                    <FormControl mt={4}>
-                                        <FormLabel>Avatar</FormLabel>
-                                        <Input
-                                            placeholder="put a url here"
-                                            value={person.avatarurl}
-                                            onChange={(e) => setPerson((prev) => ({ ...prev, avatarurl: e.target.value }))}
-                                        />
-                                    </FormControl>
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button colorScheme="blue" mr={3} onClick={handleNameSubmit}>
-                                        Submit
-                                    </Button>
-                                </ModalFooter>
-                            </ModalContent>
-                        </Modal>
-                    )}
-                </Box>
+                )}
+                <Textarea
+                    fontSize="sm"
+                    color="gray.500"
+                    mb={4}
+                    value={person.biography}
+                    onChange={(e) => setPerson((prev) => ({ ...prev, biography: e.target.value }))}
 
-                <Box pt={12} pl={4} pr={4} w={'full'}>
-                    <Heading as="h1" size="xl" mb={4} >
-                        Settings
-                    </Heading>
-                    <Badge colorScheme="blue" fontSize="md" mb={1}>biography</Badge>
-                    {person.biography !== '' && (
-                        <Button
-                            size="xs"
-                            float={"right"}
-                            onClick={handleNameSubmit}
-                        >
-                            Save
-                        </Button>
-                    )}
-                    <Textarea
-                        fontSize="sm"
-                        color="gray.500"
-                        mb={4}
-                        value={person.biography}
-                        onChange={(e) => setPerson((prev) => ({ ...prev, biography: e.target.value }))}
+                />
 
-                    />
+                <Box bg={useColorModeValue('gray.100', 'gray.900')} rounded={'lg'} p={2} mb={4}>
+                    <Badge colorScheme="blue" fontSize="md" mb={1}>Friends</Badge>
 
-                    <Box bg={useColorModeValue('gray.100', 'gray.900')} rounded={'lg'} p={2} mb={4}>
-                        <Badge colorScheme="blue" fontSize="md" mb={1}>Friends</Badge>
-
-                        <Stack direction={'row'}>
-                            {friends.length === 0 && <Text>No friends yet</Text>}
-                            {friends.map((friend, i) => (
-                                <Box key={i} textAlign='center' p={3} >
-                                    <Flex direction="column" alignItems="center" position={'relative'}>
-                                        <Avatar size={"lg"} src={friend.avatarurl} />
-                                        <IconButton
-                                            aria-label="Remove friend"
-                                            icon={<CloseIcon />}
-                                            size="xs"
-                                            variant="ghost"
-                                            onClick={() => handleRemoveFriend(friend.userid)} // Need to implement this function to handle the removal of friends
-                                            position="absolute"
-                                            top={-1}
-                                            right={-1}
-                                            bg="red.500"
-                                        />
-                                    </Flex>
-                                    <Text>{friend.username}</Text>
-                                </Box>
-                            ))}
-                        </Stack>
-                    </Box>
-
-                    <Box bg={useColorModeValue('gray.100', 'gray.900')} rounded={'lg'} p={2} mb={4}>
-                        <Badge colorScheme="blue" fontSize="md" mb={1}>Friend Requests</Badge>
-
-                        <Stack direction={'row'}>
-                            {friendRequests.length === 0 && <Text>No friend requests</Text>}
-                            {friendRequests.map((request, i) => (
+                    <Stack direction={'row'}>
+                        {friends.length === 0 && <Text>No friends yet</Text>}
+                        {friends.map((friend, i) => (
                             <Box key={i} textAlign='center' p={3} >
-                                <Avatar size={"lg"} src={request.avatarurl} />
-                                <Text>{request.username}</Text>
-                                <Button onClick={() => handleAcceptFriendRequest(request)}>Accept</Button>
-                                </Box>
-                            ))}
-                        </Stack>
-
-
-
-                    </Box>
-
- 
-                    <FormControl>
-                        <FormLabel>Add Friend</FormLabel>
-                        <Input
-                            placeholder="friend's username"
-                            value={friendUsername}
-                            onInput={(e) => {
-                                e.currentTarget.value = e.currentTarget.value.replace(/[^a-zA-Z ]/g, '');
-                                setFriendUsername(e.currentTarget.value);
-                            }}
-                            
-                        />
-                        <Button mt={4} w={"full"} onClick={handleAddFriend}>
-                            Send Request
-                        </Button>
-                    </FormControl>
+                                <Flex direction="column" alignItems="center" position={'relative'}>
+                                    <Avatar size={"lg"} src={friend.avatarurl} />
+                                    <IconButton
+                                        aria-label="Remove friend"
+                                        icon={<CloseIcon />}
+                                        size="xs"
+                                        variant="ghost"
+                                        onClick={() => handleRemoveFriend(friend.userid)} // Need to implement this function to handle the removal of friends
+                                        position="absolute"
+                                        top={-1}
+                                        right={-1}
+                                        bg="red.500"
+                                    />
+                                </Flex>
+                                <Text>{friend.username}</Text>
+                            </Box>
+                        ))}
+                    </Stack>
                 </Box>
-            </Stack>
-        </CheckAndTitle>
+
+                <Box bg={useColorModeValue('gray.100', 'gray.900')} rounded={'lg'} p={2} mb={4}>
+                    <Badge colorScheme="blue" fontSize="md" mb={1}>Friend Requests</Badge>
+
+                    <Stack direction={'row'}>
+                        {friendRequests.length === 0 && <Text>No friend requests</Text>}
+                        {friendRequests.map((request, i) => (
+                        <Box key={i} textAlign='center' p={3} >
+                            <Avatar size={"lg"} src={request.avatarurl} />
+                            <Text>{request.username}</Text>
+                            <Button onClick={() => handleAcceptFriendRequest(request)}>Accept</Button>
+                            </Box>
+                        ))}
+                    </Stack>
+
+
+
+                </Box>
+
+
+                <FormControl>
+                    <FormLabel>Add Friend</FormLabel>
+                    <Input
+                        placeholder="friend's username"
+                        value={friendUsername}
+                        onInput={(e) => {
+                            e.currentTarget.value = e.currentTarget.value.replace(/[^a-zA-Z ]/g, '');
+                            setFriendUsername(e.currentTarget.value);
+                        }}
+                        
+                    />
+                    <Button mt={4} w={"full"} onClick={handleAddFriend}>
+                        Send Request
+                    </Button>
+                </FormControl>
+            </Box>
+        </Stack>
     );
 }

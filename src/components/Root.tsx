@@ -3,14 +3,19 @@ import { useEffect, useState } from "react";
 import { FaUser, FaSignOutAlt, FaRegNewspaper, FaSearch, FaUsers, FaShoppingBag, FaCircle } from "react-icons/fa";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { supabase } from '../supabase';
-import { SessionProvider } from "../hooks/SessionProvider";
+import { SessionProvider, useSession } from "../hooks/SessionProvider";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import logo from './../images/logo.png'
+
 //change the color theme for light mode from white to gray.50
 export default function Root() {
+  const { user: user, profile: profile } = useSession();
+  const userName = profile?.['username']
+
   return (
     <SessionProvider supabase={supabase}>
       <Stack minHeight='100vh' position='relative'>
-        <HeaderNav />
+        {userName && <HeaderNav />}
         <Box marginTop='35px'>
           <Outlet />
         </Box>
@@ -85,7 +90,7 @@ export function HeaderNav() {
         <Box display={showSearchBar ? 'block' : 'none'} position={"relative"}>
           <Badge position={"absolute"} right={-1} bottom={-1} bg={"rgb(15,15,15,.2)"} fontSize={'10px'}>10000</Badge>
           <Link to="/dashboard">
-            <Image src="/logo.png" alt="Logo" boxSize="40px" minWidth="40px" />
+            <Image src={logo} alt="Logo" boxSize="40px" minWidth="40px" />
           </Link>
         </Box>
 
@@ -112,7 +117,7 @@ export function HeaderNav() {
         )}
 
         <Box position={'relative'}>
-          <IconButton as={Link} to="/communities" aria-label="Social" icon={<FaUsers />} fontSize="3xl" background="none" display={showSearchBar ? 'flex' : 'none'} float={"right"} ml={9} mr={9} />
+          <IconButton as={Link} to="/community" aria-label="Social" icon={<FaUsers />} fontSize="3xl" background="none" display={showSearchBar ? 'flex' : 'none'} float={"right"} ml={9} mr={9} />
           <Box as={FaCircle} color="red.500" position={'absolute'} right={8} bottom={0} size={'.8em'}/>
         </Box>
 

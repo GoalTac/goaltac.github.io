@@ -3,7 +3,6 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Column from '../components/Calendar/Column';
 import { ColumnType } from '../components/Calendar/utils/enums';
-import CheckAndTitle from '../components/CheckAndTitle';
 
 // helper function to get the columns for the calendar
 const getColumns = () => {
@@ -37,18 +36,16 @@ function Calendar() {
   // Functions ----------------------------------------------------------------------
 
   return (
-    <CheckAndTitle title='Calendar'>
-      <DndProvider backend={HTML5Backend}>
-        <Container maxWidth="container.lg" >
+    <DndProvider backend={HTML5Backend}>
+      <Container maxWidth="container.lg" >
 
-          {/* calendar */}
-          <SimpleGrid columns={{ base: 1, md: 7 }} spacing={{ base: 16, md: 2 }}>
-            {columns}
-          </SimpleGrid>
+        {/* calendar */}
+        <SimpleGrid columns={{ base: 1, md: 7 }} spacing={{ base: 16, md: 2 }}>
+          {columns}
+        </SimpleGrid>
 
-        </Container>
-      </DndProvider>
-    </CheckAndTitle>
+      </Container>
+    </DndProvider>
   );
 }
 

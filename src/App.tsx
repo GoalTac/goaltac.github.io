@@ -1,14 +1,12 @@
 import Dashboard from './pages/TaskDashboard';
-import Landing from './pages/Beta';
+import Landing from './pages/Landing';
 import Feed from './pages/Social';
 import Login from './pages/Login';
 import Settings from './pages/Settings';
-import Communities from './pages/Communities';
 import SignUp from './pages/Signup';
 import ResetPassword from './pages/ResetPassword';
 import CheckVerification from './pages/CheckVerification';
 import CheckPassword from './pages/CheckPassword';
-import CommunityView from './pages/CommunityView';
 import PrivatePolicy from './pages/PrivatePolicy';
 import Finder from './pages/Finder';
 import ProfileView from './pages/ProfileView';
@@ -22,16 +20,30 @@ import { useSession, useSupabaseClient } from '../src/hooks/SessionProvider';
 
 
 // v1
-import CommunityCentral from './pages1/Communities/Dashboard/CommunityCentral';
-import InsideView from './pages1/Communities/Community/InsideView';
+import CommunityCentral from './components/Communities/Dashboard/CommunityCentral';
+import InsideView from './components/Communities/Community/InsideView';
 import { Tutorial } from './pages/Tutorial';
+import { Spinner } from '@chakra-ui/react';
 
 export default function App() {
   
   function ProtectedRoute({ children, redirectPath }:any) {
     const { user: user, profile: profile } = useSession();
+    const userName = profile?.['username']
 
-    return user ? <Root /> : <Navigate to={redirectPath} replace={true} />;
+    return user ? (userName ? <Root /> : <Tutorial/>) : <Navigate to={redirectPath} replace={true} />;
+  }
+
+  function TutorialRoute() {
+    const { user: user, profile: profile } = useSession();
+    const userName = profile?.['username']
+
+    return userName ? <Navigate to={'/dashboard'} replace={true} /> : <Tutorial/>;
+  }
+
+  //to show before actually loading the new route (how do we do that?)
+  function LoadingScreen() {
+    return <Spinner/>
   }
 
   //NOTE FOR LATER
@@ -53,18 +65,21 @@ export default function App() {
 
         {/* TODO: conditional on authentication routing  */}
         <Route element={<Root />}>
-          <Route element={<ProtectedRoute redirectPath={'/login'} />}>
-            <Route path='' element={<Dashboard />} />
+          <Route element={<ProtectedRoute redirectPath={'/welcome'} />}>
+            <Route index element={<Dashboard />} />
             
             {/* Tutorial is here temporarily */}
-            <Route path='tutorial' element={<Tutorial />} />
+            <Route path='tutorial' element={<TutorialRoute />} />
 
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='social' element={<Feed />} />
             <Route path='settings' element={<Settings />} />
             <Route path='market' element={<Market />} />
-            <Route path='communities' element={<CommunityCentral />} />
-            <Route path='/community/:communityName' element={<InsideView />} />
+            <Route path='community'>
+              <Route index element={<CommunityCentral />} />
+              <Route path=':communityName' element={<InsideView />} />
+            </Route>
+            
             <Route path='/search/:searchElement' element={<Finder />} />
             <Route path='/profile/:profileName' element={<ProfileView />} />
           </Route>

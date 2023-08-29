@@ -7,8 +7,8 @@ import 'react-vertical-timeline-component/style.min.css';
 
 import { FaChartBar, FaCheck, FaSearch, FaShoppingBag, FaStar, FaUser } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
-import { supabase } from './../../supabase';
-import { SessionProvider, useSession, useSupabaseClient } from './../../hooks/SessionProvider';
+import { supabase } from '../../supabase';
+import { SessionProvider, useSession, useSupabaseClient } from '../../hooks/SessionProvider';
 import { ChatIcon } from '@chakra-ui/icons';
 import { uniqueId } from 'lodash';
 import { RandomUUIDOptions } from 'crypto';

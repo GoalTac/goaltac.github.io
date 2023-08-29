@@ -1,7 +1,7 @@
 import Header from './Information'
 import { useState, useEffect, ReactElement, useRef } from 'react';
 import GoalTac_Logo from '../../../images/GoalTac_Logo.png'
-import ProfileBackground from '../../../../public/ProfileBackground.svg'
+import ProfileBackground from '../../../images/ProfileBackground.svg'
 import { useNavigate, Link } from 'react-router-dom';
 import Carousel from 'react-multi-carousel';
 
@@ -59,13 +59,12 @@ import {
 } from '@chakra-ui/react'
 import React from 'react'
 import { useParams } from 'react-router-dom';
-import { measurements, _getAllMembers, getCommunityByName, getPicture, _getMembers } from './../CommunityAPI'
+import { measurements, _getAllMembers, getCommunityByName, getPicture, _getMembers } from '../CommunityAPI'
 import { uniqueId } from 'lodash';
-import Chat from '../../../components/Chats/CommunityChat';
+import Chat from '../../Chats/CommunityChat';
 import GoalDashboard from './Goals';
 import Calendar from './Calender';
 import { formatNumber, getUser, twoColumns } from '../../../hooks/Utilities';
-import { responsive, staffProfiles } from '../../../components/Beta/BetaContent';
 import { useSession } from '../../../hooks/SessionProvider';
 import { GiArrowhead, GiFastArrow } from 'react-icons/gi';
 /**

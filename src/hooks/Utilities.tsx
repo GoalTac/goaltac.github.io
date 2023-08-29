@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import { supabase } from './../supabase';
 import { Flex, Stack, useToast } from '@chakra-ui/react';
-import { measurements } from '../pages1/Communities/CommunityAPI';
+import { measurements } from '../components/Communities/CommunityAPI';
 
 // LEVELS ----------------------------------------------------------------------
 // Calculates the amount of experience needed to level up

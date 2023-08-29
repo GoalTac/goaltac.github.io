@@ -1,6 +1,6 @@
 import { Box, Button, ButtonGroup, Card, Container, Flex, HStack, Heading, Icon, SimpleGrid, Stack } from "@chakra-ui/react";
-import Column from "../../../components/Calendar/Column";
-import { ColumnType } from "../../../components/Calendar/utils/enums";
+import Column from "../../Calendar/Column";
+import { ColumnType } from "../../Calendar/utils/enums";
 import { AddIcon } from '@chakra-ui/icons'
 
 export default function Calendar({community}: any) {

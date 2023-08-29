@@ -27,8 +27,8 @@ import {
 import { FaCoins, FaMedal, FaPencilAlt, FaRegCalendar, FaTshirt, FaShoppingCart } from 'react-icons/fa';
 import { TbTargetArrow } from 'react-icons/tb';
 
-import premiumLogo from '/public/premium_logo.png';
-import premiumName from '/public/premium_logo_name.png';
+import premiumLogo from './../images/premium_logo.png';
+import premiumName from './../images/premium_logo_name.png';
 
 
 export default function Market() {
