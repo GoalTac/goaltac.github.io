@@ -7,6 +7,7 @@ import { supabase } from '../supabase';
 import Canvas from '../components/Canvas';
 import { AtSignIcon } from '@chakra-ui/icons';
 import logo from './../images/GoalTac_TLogo.png'
+import bubble from './../images/bubble.svg'
 
 const CFaLock = chakra(FaLock);
 
@@ -106,6 +107,7 @@ export default function SignUpPage() {
             width='100wh'
             height='100vh'
             justifyContent='center'
+            backgroundImage={bubble}
             alignItems='center'
             color="white">
 
@@ -115,8 +117,7 @@ export default function SignUpPage() {
                     <Stack
                         spacing={4}
                         p='1rem'
-                        backgroundColor={'blackAlpha.300'}
-                        boxShadow='md'>
+                        backgroundColor={'whiteAlpha.100'}>
                         <FormControl>
                             <InputGroup>
                                 <InputLeftElement
