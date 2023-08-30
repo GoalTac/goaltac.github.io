@@ -188,6 +188,7 @@ export default function InsideView() {
               <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<RiNotification2Fill />} aria-label='Notifications'/>
               <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<SettingsIcon />} aria-label='Settings'/>
             </ButtonGroup>
+            
           </HStack>
             <Text size='sm' height='100px' marginStart='30px' overflowY='scroll'>
             {(community ? community.description : '')}
