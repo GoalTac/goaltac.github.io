@@ -165,37 +165,33 @@ export default function InsideView() {
         {/* BANNER: The height and width should be set to the size of the banner */}
         <Box borderRadius='inherit' borderBottomRadius='unset' height='50%' overflow='clip'>
           <Image src={ProfileBackground} />
+          
         </Box>
 
-        <Flex marginY='auto' borderRadius='inherit' left='5%' position='absolute' height='100%'>
-          <Card borderRadius='inherit' borderColor='gray' borderWidth='2px' height='100px' width='100px' margin='auto' padding='10px'>
-            <Image src={picture} />
-            <Badge variant='solid' height='min' width='min' marginTop='25px' marginX='auto' zIndex='9' borderWidth='1px'>
-              {community && (community.isPublic ? 'Public' : 'Private')}
-            </Badge>
-          </Card>
-        </Flex>
        
-        <HStack alignSelf='end' marginEnd='10px' width='335px' marginTop='10px'>
-          <Spacer/>
-          <ButtonGroup borderRadius='full' color={darkOrLightColor}>
-            <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<InfoOutlineIcon />} aria-label='Information'/>
-            <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<RiNotification2Fill />} aria-label='Notifications'/>
-            <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<SettingsIcon />} aria-label='Settings'/>
-          </ButtonGroup>
-        </HStack>
         
-
         {/* TEXTS: Name and description */}
         <Box marginTop='10px' paddingX='5%'>
-          <Heading>
-            {(community ? community.name : '')}
-          </Heading>
-          <Box>
-            <Text size='sm' marginStart='5%' width={measurements.cards.width}>
+          <Flex borderRadius={measurements.cards.borderRadius} left='5%' position='absolute' marginTop='-90px'>
+            <Card borderRadius='inherit' borderColor='gray' borderWidth='2px' height='100px' width='100px' margin='auto' padding='10px'>
+              <Image src={picture} />
+              <Badge variant='solid' position='relative' height='min' width='min' marginTop='10px' marginX='auto' zIndex='9' borderWidth='1px'>
+                {community && (community.isPublic ? 'Public' : 'Private')}
+              </Badge>
+            </Card>
+          </Flex>
+          <HStack alignSelf='end' marginEnd='10px' marginTop='10px'>
+            <Heading> {(community ? community.name : '')} </Heading>
+            <Spacer/>
+            <ButtonGroup borderRadius='full' color={darkOrLightColor}>
+              <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<InfoOutlineIcon />} aria-label='Information'/>
+              <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<RiNotification2Fill />} aria-label='Notifications'/>
+              <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<SettingsIcon />} aria-label='Settings'/>
+            </ButtonGroup>
+          </HStack>
+            <Text size='sm' height='100px' marginStart='30px' overflowY='scroll'>
             {(community ? community.description : '')}
             </Text>
-          </Box>
           
         </Box>
          
