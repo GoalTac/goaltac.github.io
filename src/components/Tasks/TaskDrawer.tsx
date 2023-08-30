@@ -1,9 +1,10 @@
-import { AddIcon, ChevronDownIcon, InfoOutlineIcon, UpDownIcon } from "@chakra-ui/icons"
-import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge } from "@chakra-ui/react"
+import { AddIcon, CheckIcon, ChevronDownIcon, InfoOutlineIcon, UpDownIcon } from "@chakra-ui/icons"
+import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox } from "@chakra-ui/react"
 import React, { useRef, useState } from "react"
 import { _getUserTasks } from "./TaskAPI"
 import { useSession } from "../../hooks/SessionProvider"
 import { RiInformationFill } from "react-icons/ri"
+import { start } from "repl"
 
 export default function TaskDrawer() {
     
@@ -17,6 +18,7 @@ export default function TaskDrawer() {
     const [reward, setReward] = useState<any>(1)
     const { user: user } = useSession();
     const [tasks, setTasks] = useState<any>([])
+    const [selectedTasks, setSelectedTasks] = useState<any>([])
     const uuid = user ? user?.['id'] : ''
     
     React.useEffect(()=>{
@@ -24,13 +26,16 @@ export default function TaskDrawer() {
             const collectedTasks = await Promise.all(await _getUserTasks(uuid))
 
             setTasks(collectedTasks)
-            console.log(collectedTasks)
             return collectedTasks
         }
         fetchTasks()
     },[])
 
     const firstField = React.useRef(null)
+
+    const handleSubmit = () => {
+
+    }
     
 
     function TypeSelect() {
@@ -93,9 +98,9 @@ export default function TaskDrawer() {
     function TypeDisplay() {
         function NumberTypeDisplay() {
             return (
-                <InputGroup size='lg'>
+                <InputGroup size='lg' justifyContent='center'>
                     <InputLeftAddon children='Target'/>
-                    <NumberInput defaultValue={1} min={1} onChange={(e)=>{
+                    <NumberInput isDisabled defaultValue={1} min={1} onChange={(e)=>{
                         requirement.current = e }}>
                     <NumberInputField />
                     <NumberInputStepper>
@@ -112,7 +117,7 @@ export default function TaskDrawer() {
             requirement.current = 1;
             const [value, setValue] = useState(true)
             return (
-                <Flex columnGap={'20px'} alignItems='center'>
+                <Flex columnGap={'20px'} alignItems='center' justifyContent='center'>
                     <Badge variant={value==false ? 'subtle' : 'outline'} colorScheme={value==false ? 'unset' : 'red'}>Incomplete</Badge>
                     <Switch size='lg' isReadOnly onChange={()=>{
                         setValue(!value)
@@ -128,14 +133,45 @@ export default function TaskDrawer() {
          */
         function TasksTypeDisplay() {
 
-            function TaskListing() {
-                return tasks ? <Box>
-                    {tasks.map((task: any, id: any)=>{
-                        return <Flex key={id} justifyContent={'center'}>
+            function TaskButton({task, id}: any) {
+
+                return <Flex width='inherit'>
+                    <Flex flexDirection='column' width='100%'
+                        onClick={()=>{
+                            if (selectedTasks.includes(task)) { //remove the task
+                                const index = selectedTasks.indexOf(task)
+                                let newArray =[...selectedTasks]
+                                newArray.splice(index, 1)
+                                setSelectedTasks(newArray)
+                            } else {
+                                let newArray = [...selectedTasks, task]
+                                setSelectedTasks(newArray)
+                            }
+                        }}
+                        borderColor={selectedTasks.includes(task) ? 'blue.400' : 'border'}
+                        borderWidth='1px'
+                        cursor='pointer'
+                        borderRadius='md'
+                        px={5}
+                        py={3}>
+                        <Flex alignItems={'center'} gap='10px' flexDirection='row'>
+                            <Box boxSize='15px' borderWidth='2px' backgroundColor={selectedTasks.includes(task) ? 'blue.400' : 'border'}/>
                             {task}
-                        </Flex> //need to click to add
-                    })}
-                </Box> : <Box>
+                        </Flex>
+                    </Flex>
+                </Flex> //need to click to add
+            }
+
+            function TaskListing() {
+                return tasks ? 
+                    <Box height='200px' overflowY='scroll'>
+                        <Flex justifyContent='center' flexDirection='column' rowGap='2' width='inherit'>
+                        {tasks.map((task: any, id: any)=>{
+                            return <TaskButton key={id} task={task} id={id} /> //need to click to add
+                        })}
+                        </Flex>
+                    </Box>
+                 : <Box>
                     <Icon as={InfoOutlineIcon}/>
                     <Text>
                         You don't have any tasks
@@ -146,7 +182,7 @@ export default function TaskDrawer() {
 
 
             return (
-                <Box>
+                <Box width='inherit' height='inherit'>
                     {/* Display selected tasks */}
                     {/* Display all tasks */}
                     {/* Click tasks to add to selected task */}
@@ -208,37 +244,34 @@ export default function TaskDrawer() {
                     <FormHelperText>How do you want to measure the result?</FormHelperText>
 
                     <TypeSelect/>
-                    <Flex flexDir={'column'} marginY='40px' height='100px'>
-                        <Box marginX='auto'>
+                    <Flex flexDir={'column'}  width='100%' minHeight='100px'>
+                        <Box width='inherit' height='inherit'>
                             <TypeDisplay/>
                         </Box>
                     </Flex>
-                    
-                    
-
                 </FormControl>
 
-                <Box>
+                <FormControl>
                     <FormLabel htmlFor='duration'>Duration</FormLabel>
 
-                    <Flex flexDirection={'column'}>
+                    <Flex flexDirection={'column'} rowGap='10px'>
                         <Flex flexDir={'row'}>
-                            <FormLabel htmlFor='start'>Start</FormLabel>
+                            <FormHelperText width='50px' fontSize='14px'>Start</FormHelperText>
                         <Input placeholder="Select Date and Time"
                             size="md" onChange={(e)=>setStartDate(e.target.value)}
                             type="datetime-local" />
                         </Flex>
                         <Flex flexDirection='row'>
-                            <FormLabel htmlFor='end'>End</FormLabel>
-                        <Input placeholder="Select Date and Time"
-                            size="md" onChange={(e)=>setEndDate(e.target.value)}
-                            type="datetime-local" />
+                            <FormHelperText width='50px' fontSize='14px'>End</FormHelperText>
+                            <Input placeholder="Select Date and Time"
+                                size="md" onChange={(e)=>setEndDate(e.target.value)}
+                                type="datetime-local" />
                         </Flex>
                         
                         
                         
                     </Flex>
-                </Box>
+                </FormControl>
                 <Box>
                     <FormLabel htmlFor='reward'>Points rewarded: {reward}</FormLabel>
                     
@@ -260,7 +293,7 @@ export default function TaskDrawer() {
                 <Button variant='outline' mr={3} onClick={onClose}>
                 Cancel
                 </Button>
-                <Button colorScheme='blue'>Submit</Button>
+                <Button colorScheme='blue' onClick={handleSubmit}>Submit</Button>
             </DrawerFooter>
             </DrawerContent>
         </Drawer>
