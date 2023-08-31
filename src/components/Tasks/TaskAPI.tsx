@@ -130,8 +130,49 @@ export async function _deleteTask(taskID: string) {
  * Creates new task row
  * @param task 
  */
-export async function _addTask(task: {}) {
-    
+export async function _addTask(task: any) {
+    const start_date = task.start_date ? task.start_date : null
+    const end_date = task.end_date ? task.end_date : null
+    const name = task.name ? task.name : ''
+    const description = task.description ? task.description : ''
+    const requirement = task.requirement ? task.requirement : 1
+    const reward = task.reward ? task.reward : 1
+    const type = task.type ? task.type : 'Boolean'
+
+    const newTask = {
+        start_date: start_date,
+        end_date: end_date,
+        name: name,
+        description: description,
+        requirement: requirement,
+        reward: reward,
+        type: type
+    }
+    console.log(newTask)
+
+    const { data: data, error } = await supabase
+        .from('tasks')
+        .insert([newTask])
+        .select().single();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
+}
+
+export async function _getTaskbyID(taskID: string) {
+    const { data: data, error } = await supabase
+        .from('tasks')
+        .select()
+        .eq('uuid', taskID).single();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
 }
 
 /**
@@ -158,7 +199,21 @@ export async function _shareTasktoUser(taskID: string) {
  * @param userID 
  */
 export async function _getUserTasks(userID: string) {
-    return ['test','tess', 'help']
+
+    const { data: data, error } = await supabase
+        .from('task_user_relations')
+        .select('task_id')
+        .eq('user_id', userID)
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    const tasks = await Promise.all(data.map(async(id) => {
+        return await _getTaskbyID(id.task_id)
+    }))
+
+    return tasks;
 }
 
 /**
@@ -166,8 +221,25 @@ export async function _getUserTasks(userID: string) {
  * @param userID 
  * @param taskID 
  */
-export async function _addUserTask(userID: string, taskID: string) {
+export async function _addUserTask(userID: string | undefined, taskID: string) {
 
+    if (!userID) {
+        throw new Error('No user ID found')
+    }
+    const newRelation = {
+        task_id: taskID,
+        user_id: userID
+    }
+    const { data: data, error } = await supabase
+        .from('task_user_relations')
+        .insert([newRelation])
+        .select().single();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
 }
 
 /**
