@@ -43,7 +43,6 @@ export default function TaskDrawer() {
             setEndDate('')
             setType('Boolean')
             setReward(1)
-            setTasks([])
             setSelectedTasks([])
         }
 
@@ -84,8 +83,17 @@ export default function TaskDrawer() {
             onClose()
             clearTasks()
         })
+
+        //Relational data saving
         const taskID = createdTask.uuid
+
+        //Adds user as an owner of the task
         const task_user_relation = await _addUserTask(user?.['id'], taskID)
+
+        //If task is type 'Tasks', create a task_task_relation row
+
+        //if there is an error in creating any of these, delete createdTask and all proceeding variables
+
         console.log(createdTask, task_user_relation)
         
 
