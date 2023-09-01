@@ -1,4 +1,4 @@
-import{r as s}from"./react.56e6c9f0.js";import{i as v,g as w,r as j,j as B,p as T,m as Q,A as K,s as _,a as Y,c as Z,b as M}from"./@remix-run.2d8c01ab.js";import{j as h,a as A,F as H}from"./@chakra-ui.f2948015.js";/**
+import{r as s}from"./react.a13e5069.js";import{i as v,g as w,r as j,j as B,p as T,m as Q,A as K,s as _,a as Y,c as Z,b as M}from"./@remix-run.2d8c01ab.js";import{j as h,a as A,F as H}from"./@chakra-ui.4badee46.js";/**
  * React Router v6.11.2
  *
  * Copyright (c) Remix Software Inc.
