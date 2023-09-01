@@ -2,6 +2,7 @@ import { Avatar, Box, Heading, Stack, Text, Badge, Textarea, Flex } from "@chakr
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from '../supabase';
+import Chat from "../components/Chats/PrivateChat";
 
 export default function ProfileView() {
 
@@ -71,6 +72,7 @@ export default function ProfileView() {
                     <Heading as="h1" size="md"  >Points: <Badge colorScheme="blue" fontSize="lg" mb={1} mr={6}>{person.points}</Badge></Heading>
                 </Flex>
             </Box>
+            <Chat />
         </Stack>
     );
 }
