@@ -223,7 +223,6 @@ export default function Profile() {
             .eq('username', friendUsername)
             .single();
 
-
         if (friendError) {
             toast({
                 title: "An error occurred.",
