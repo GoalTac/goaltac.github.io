@@ -159,10 +159,9 @@ export default function SignUpPage() {
                         <Button
                             borderRadius={5}
                             type='submit'
-                            variant='solid'
+                            variant='outline'
                             width='full'
-                            bg={email && password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}
-                        >
+                            bg={email && password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'blackAlpha.100' }}>
                             Sign Up
                         </Button>
                     </Stack>
