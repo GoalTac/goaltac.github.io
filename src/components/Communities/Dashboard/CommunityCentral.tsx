@@ -60,25 +60,28 @@ export default function CommunityCentral() {
             return(
             <HStack overflow='hidden' padding='20px' borderRadius='20px' 
             borderWidth='1px' marginY={measurements.general.rowGap}>
-                <Box borderRadius='full' alignSelf='baseline'
-                overflow='hidden'
-                backgroundColor={useColorModeValue('gray.100', 'gray.700')} 
-                position='absolute'>
-                    <Box height='80px' width='80px'>
-                        <Image src={picture} 
-                        alt={`${community.name} picture`}/>
-                    </Box>
-                </Box>
+                
         
-                <Stack as={Link} to={`/community/${community.name}`} marginStart='6rem'>
-                    <Box lineHeight='12px'>
-                        <Heading fontSize='1.5rem'>{community.name}</Heading>
-                        <Text color='gray' fontSize='1rem'>
-                            {members.length} members
-                        </Text>
-                    </Box>
+                <Stack as={Link} to={`/community/${community.name}`}>
+                    <Flex columnGap='20px'>
+                        <Box borderRadius='full' alignSelf='baseline'
+                        overflow='hidden'
+                        backgroundColor={useColorModeValue('gray.100', 'gray.700')}>
+                            <Box height='60px' width='60px'>
+                                <Image src={picture} 
+                                alt={`${community.name} picture`}/>
+                            </Box>
+                        </Box>
+                        <Box lineHeight='12px'>
+                            <Heading fontSize='1.5rem'>{community.name}</Heading>
+                            <Text color='gray' fontSize='1rem'>
+                                {members.length} members
+                            </Text>
+                        </Box>
+                    </Flex>
+                
                     
-                    <Text color='gray.400' maxWidth='300px' overflow='hidden' marginStart='1.5rem' fontSize='1rem'>
+                    <Text color='gray.400' overflow='hidden' fontSize='1rem' marginStart='2rem'>
                         {community.description}
                     </Text>
                 </Stack>
@@ -169,7 +172,7 @@ export default function CommunityCentral() {
         }
         
 
-        return (<Box width={['400px', '600px']}>
+        return (<Box maxWidth={['375px','700px']}>
             <Card height='80px'
                 justifySelf='center' 
                 alignSelf='center' 
@@ -186,7 +189,9 @@ export default function CommunityCentral() {
                         onClick={()=> setRequestedView()}>
                             Requested
                         </Button>
+                        
                         <Spacer/>
+                        
                         <Button variant="outline" colorScheme="blue" width='fit-content'
                         isActive={type == 'create'}
                         onClick={()=> {
@@ -228,7 +233,6 @@ export default function CommunityCentral() {
                 <Box borderRadius='full'
                     as={Link} 
                     to={`/community/${community.name}`}
-                    borderWidth='2px' 
                     marginBottom='auto'>
                         <Box height='50px' width='50px'>
                             <Image src={picture} 
@@ -259,7 +263,7 @@ export default function CommunityCentral() {
                 </VStack> 
             </HStack>)
         }
-        return(<Box width={['400px', 'auto']}>
+        return(<Box>
             <Card height='80px'>
                 <CardHeader display="flex" 
                 justifyContent="space-between"
