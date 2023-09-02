@@ -698,7 +698,7 @@ export default function InsideView() {
             Tasks
           </Heading>
           <Spacer/>
-          <ButtonGroup variant='ghost'>
+          <ButtonGroup variant='outline'>
             <Button fontSize='xs' isActive={type == 'progress'} onClick={()=>{
               setType('progress')}}>
               In Progress

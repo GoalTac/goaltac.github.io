@@ -263,7 +263,7 @@ export default function CommunityCentral() {
                 </VStack> 
             </HStack>)
         }
-        return(<Box>
+        return(<Flex flexDirection='column' rowGap={measurements.general.colGap}>
             <Card height='80px'>
                 <CardHeader display="flex" 
                 justifyContent="space-between"
@@ -271,11 +271,11 @@ export default function CommunityCentral() {
                     Suggested
                 </CardHeader>
             </Card>
-            <Box padding='10px' boxShadow='lg'>
+            <Flex padding='10px' borderWidth='1px' flexDirection='column' borderRadius={measurements.cards.borderRadius}>
                 {communities && communities.map((community: any, index: Number) => (
                 <ModulePreview key={index} community={community} preview={true}/>))}
-            </Box>
-        </Box>)
+            </Flex>
+        </Flex>)
     }
     function CreateView() {
         const [name, setName] = useState<any>('');
