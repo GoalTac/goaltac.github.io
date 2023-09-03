@@ -142,10 +142,38 @@ export default function LandingPage() {
         );
     }
 
+    function IntroPreLaunch() {
+        return (
+            <Flex
+                position='relative'
+                alignItems={['center', 'flex-start']}
+                textAlign={['center', 'start']}
+                id='product' height='fit-content' minH={800}>
+                <VStack rowGap='2rem' marginBottom='6rem'>
+                    <Flex marginStart={[null,'150px']} marginX={['10px',null]} maxWidth='700px' flexDirection='column' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
+                        <Heading fontSize={['2rem','4rem']} fontWeight='300' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
+                            You're a little Early!
+                        </Heading>
+                        <Text maxWidth={[null, '80%']} lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']} marginBottom='50px'>
+                            Click on Get Started for email updates!
+                            {/* Replace: Find your community now! */}
+                        </Text>
+                        <Flex flexDirection={['column','row']} gap='30px'>
+                           <SignUpButton /> 
+                           <LearnMoreButton />
+                        </Flex>
+                       
+                    </Flex>
+                </VStack>
+
+            </Flex>
+        );
+    }
+
     function SocialFeature() {
 
         function CommunityFeature() {
-            return <Stack flexWrap={'wrap'} gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column','row']}>
+            return <Stack id='features' flexWrap={'wrap'} gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column','row']}>
                 <VStack flexGrow={1} width={['fit-content','300px']} alignSelf='center'>
                     <Heading>
                         Join your Community
@@ -328,7 +356,7 @@ export default function LandingPage() {
             </Stack>
         }
 
-        return (<Flex paddingY='50px' flexDirection='column' gap='100px' maxWidth={constants.maxWidth} marginX='auto'>
+        return (<Flex id='productivity' paddingY='50px' flexDirection='column' gap='100px' maxWidth={constants.maxWidth} marginX='auto'>
             <SimpleGrid marginX={['10px','50px']} spacing={['40px','100px']}>
                 <TaskCreateFeature/>
                 <CalendarFeature/>
@@ -527,7 +555,7 @@ export default function LandingPage() {
                         <Box backgroundImage={bubble} backgroundSize='cover' maxWidth='100%' backgroundColor={useColorModeValue(constants.lightMode, constants.darkMode)}>
                             <Box maxW={constants.maxWidth} marginX='auto'>
                                 <Header />
-                                <Intro />
+                                <IntroPreLaunch/>
                             </Box>
                         </Box>
                         <Box backgroundColor={useColorModeValue('blue.50','blackAlpha.300')}>
