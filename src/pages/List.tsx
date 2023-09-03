@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Text, VStack, Button, IconButton, useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, FormControl, FormLabel, Input, Textarea, Radio, RadioGroup, useDisclosure } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text, VStack, Button, IconButton, useToast, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, FormControl, FormLabel, Input, Textarea, Radio, RadioGroup, useDisclosure, useColorModeValue, useColorMode } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { FaEdit, FaCheck } from 'react-icons/fa';
 import { supabase } from './../supabase';
@@ -239,7 +239,7 @@ export default function List() {
             p={4} 
             boxShadow="xl" 
             key={task.id}
-            backgroundColor={task.completed ? "green.200" : "white"}
+            backgroundColor={task.completed ? "green.200" : 'initial'}
             >
             <Flex justifyContent="space-between" alignItems="flex-start">
                 <Flex alignItems="flex-start">

@@ -1,15 +1,16 @@
-import { AddIcon, ChevronDownIcon, InfoOutlineIcon, UpDownIcon } from "@chakra-ui/icons"
-import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge } from "@chakra-ui/react"
+import { AddIcon, CheckIcon, ChevronDownIcon, InfoOutlineIcon, UpDownIcon } from "@chakra-ui/icons"
+import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer } from "@chakra-ui/react"
 import React, { useRef, useState } from "react"
-import { _getUserTasks } from "./TaskAPI"
+import { _addTask, _addUserTask, _getUserTasks } from "./TaskAPI"
 import { useSession } from "../../hooks/SessionProvider"
 import { RiInformationFill } from "react-icons/ri"
+import { start } from "repl"
 
 export default function TaskDrawer() {
     
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [title, setTitle] = useState<any>()
-    const [description, setDescription] = useState<any>()
+    const [title, setTitle] = useState<string>('New Task')
+    const [description, setDescription] = useState<string>('')
     const [startDate, setStartDate] = useState<any>()
     const [endDate, setEndDate] = useState<any>()
     const [type, setType] = useState<any>('Boolean')
@@ -17,20 +18,87 @@ export default function TaskDrawer() {
     const [reward, setReward] = useState<any>(1)
     const { user: user } = useSession();
     const [tasks, setTasks] = useState<any>([])
+    const [selectedTasks, setSelectedTasks] = useState<any>([])
     const uuid = user ? user?.['id'] : ''
-    
+    const toast = useToast()
+
     React.useEffect(()=>{
         async function fetchTasks() {
             const collectedTasks = await Promise.all(await _getUserTasks(uuid))
 
             setTasks(collectedTasks)
-            console.log(collectedTasks)
             return collectedTasks
         }
         fetchTasks()
     },[])
 
     const firstField = React.useRef(null)
+
+    const handleSubmit = async() => {
+
+        function clearTasks() {
+            setTitle('')
+            setDescription('')
+            setStartDate('')
+            setEndDate('')
+            setType('Boolean')
+            setReward(1)
+            setSelectedTasks([])
+        }
+
+        function checks(): Boolean {
+            if (!title) {
+                toast({
+                    title: "Error",
+                    description: 'You need a title for your task!',
+                    status: "error",
+                    duration: 9000,
+                    isClosable: true,
+                })
+                return false
+            } else {
+                return true
+            }
+        }
+        if(!checks()) return;
+        
+        const newTask = {
+            start_date: startDate,
+            end_date: endDate,
+            name: title,
+            description: description,
+            requirement: requirement.current,
+            reward: reward,
+            type: type
+        }
+
+        const createdTask = await _addTask(newTask).finally(()=>{
+            toast({
+                title: "Success",
+                description: 'Successfully created your task!',
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            })
+            onClose()
+            clearTasks()
+        })
+
+        //Relational data saving
+        const taskID = createdTask.uuid
+
+        //Adds user as an owner of the task
+        const task_user_relation = await _addUserTask(user?.['id'], taskID)
+
+        //If task is type 'Tasks', create a task_task_relation row
+
+        //if there is an error in creating any of these, delete createdTask and all proceeding variables
+
+        console.log(createdTask, task_user_relation)
+        
+
+        
+    }
     
 
     function TypeSelect() {
@@ -93,7 +161,7 @@ export default function TaskDrawer() {
     function TypeDisplay() {
         function NumberTypeDisplay() {
             return (
-                <InputGroup size='lg'>
+                <InputGroup size='lg' justifyContent='center'>
                     <InputLeftAddon children='Target'/>
                     <NumberInput defaultValue={1} min={1} onChange={(e)=>{
                         requirement.current = e }}>
@@ -112,7 +180,7 @@ export default function TaskDrawer() {
             requirement.current = 1;
             const [value, setValue] = useState(true)
             return (
-                <Flex columnGap={'20px'} alignItems='center'>
+                <Flex columnGap={'20px'} alignItems='center' justifyContent='center'>
                     <Badge variant={value==false ? 'subtle' : 'outline'} colorScheme={value==false ? 'unset' : 'red'}>Incomplete</Badge>
                     <Switch size='lg' isReadOnly onChange={()=>{
                         setValue(!value)
@@ -128,14 +196,52 @@ export default function TaskDrawer() {
          */
         function TasksTypeDisplay() {
 
+            function TaskButton({task, id}: any) {
+
+                return <Flex width='inherit'>
+                    <Flex flexDirection='column' width='100%'
+                        onClick={()=>{
+                            if (selectedTasks.includes(task)) { //remove the task
+                                const index = selectedTasks.indexOf(task)
+                                let newArray =[...selectedTasks]
+                                newArray.splice(index, 1)
+                                setSelectedTasks(newArray)
+                            } else {
+                                let newArray = [...selectedTasks, task]
+                                setSelectedTasks(newArray)
+                            }
+                        }}
+                        borderColor={selectedTasks.includes(task) ? 'blue.400' : 'border'}
+                        borderWidth='1px'
+                        cursor='pointer'
+                        borderRadius='md'
+                        px={5}
+                        py={3}>
+                        <Flex alignItems={'center'} gap='10px' flexDirection='row'>
+                            <Box boxSize='15px' borderWidth='2px' backgroundColor={selectedTasks.includes(task) ? 'blue.400' : 'border'}/>
+                            <Text maxWidth={'200px'} height='20px' flexWrap={'unset'} overflowX={'hidden'}>
+                                {task.name}
+                            </Text>
+                            <Spacer/>
+                            <Text maxWidth={'200px'} textColor='gray' height='20px' flexWrap={'unset'} overflowX={'clip'}>
+                                {task.description}
+                            </Text>
+                            
+                        </Flex>
+                    </Flex>
+                </Flex> //need to click to add
+            }
+
             function TaskListing() {
-                return tasks ? <Box>
-                    {tasks.map((task: any, id: any)=>{
-                        return <Flex key={id} justifyContent={'center'}>
-                            {task}
-                        </Flex> //need to click to add
-                    })}
-                </Box> : <Box>
+                return tasks ? 
+                    <Box height='200px' overflowY='scroll'>
+                        <Flex justifyContent='center' flexDirection='column' rowGap='2' width='inherit'>
+                        {tasks.map((task: any, id: any)=>{
+                            return <TaskButton key={id} task={task} id={id} /> //need to click to add
+                        })}
+                        </Flex>
+                    </Box>
+                 : <Box>
                     <Icon as={InfoOutlineIcon}/>
                     <Text>
                         You don't have any tasks
@@ -146,7 +252,7 @@ export default function TaskDrawer() {
 
 
             return (
-                <Box>
+                <Box width='inherit' height='inherit'>
                     {/* Display selected tasks */}
                     {/* Display all tasks */}
                     {/* Click tasks to add to selected task */}
@@ -191,9 +297,11 @@ export default function TaskDrawer() {
                 <Stack spacing='24px'>
                 <Box>
                     <FormLabel htmlFor='title'>Title</FormLabel>
-                    <Input ref={firstField} id='title' value={title} isRequired
+                    <Input ref={firstField} id='title' value={title} aria-required={true}
                         onChange={e=>{setTitle(e.target.value)}}
-                        placeholder='Please enter a name for your task'/>
+                        errorBorderColor='crimson'
+                        isInvalid={title ? false : true}
+                        placeholder='A task name is required'/>
                 </Box>
 
                 <Box>
@@ -208,37 +316,35 @@ export default function TaskDrawer() {
                     <FormHelperText>How do you want to measure the result?</FormHelperText>
 
                     <TypeSelect/>
-                    <Flex flexDir={'column'} marginY='40px' height='100px'>
-                        <Box marginX='auto'>
+                    <Flex flexDir={'column'}  width='100%' minHeight='100px'>
+                        <Box width='inherit' height='inherit'>
                             <TypeDisplay/>
                         </Box>
                     </Flex>
-                    
-                    
-
                 </FormControl>
 
-                <Box>
+                <FormControl>
                     <FormLabel htmlFor='duration'>Duration</FormLabel>
+                    <FormHelperText>More features coming soon</FormHelperText>
 
-                    <Flex flexDirection={'column'}>
+                    <Flex flexDirection={'column'} rowGap='10px'>
                         <Flex flexDir={'row'}>
-                            <FormLabel htmlFor='start'>Start</FormLabel>
+                            <FormHelperText width='50px' fontSize='14px'>Start</FormHelperText>
                         <Input placeholder="Select Date and Time"
                             size="md" onChange={(e)=>setStartDate(e.target.value)}
                             type="datetime-local" />
                         </Flex>
                         <Flex flexDirection='row'>
-                            <FormLabel htmlFor='end'>End</FormLabel>
-                        <Input placeholder="Select Date and Time"
-                            size="md" onChange={(e)=>setEndDate(e.target.value)}
-                            type="datetime-local" />
+                            <FormHelperText width='50px' fontSize='14px'>End</FormHelperText>
+                            <Input placeholder="Select Date and Time"
+                                size="md" onChange={(e)=>setEndDate(e.target.value)}
+                                type="datetime-local" />
                         </Flex>
                         
                         
                         
                     </Flex>
-                </Box>
+                </FormControl>
                 <Box>
                     <FormLabel htmlFor='reward'>Points rewarded: {reward}</FormLabel>
                     
@@ -260,7 +366,7 @@ export default function TaskDrawer() {
                 <Button variant='outline' mr={3} onClick={onClose}>
                 Cancel
                 </Button>
-                <Button colorScheme='blue'>Submit</Button>
+                <Button colorScheme='blue' onClick={handleSubmit}>Submit</Button>
             </DrawerFooter>
             </DrawerContent>
         </Drawer>

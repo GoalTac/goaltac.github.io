@@ -217,12 +217,12 @@ export default function Profile() {
         //get user profile
         const { data: {user} } = await supabase.auth.getUser()
 
+        // get the profile of the friend being added
         const { data: friend, error: friendError} = await supabase
             .from('profiles')
             .select('userid')
             .eq('username', friendUsername)
             .single();
-
 
         if (friendError) {
             toast({
@@ -281,6 +281,7 @@ export default function Profile() {
     const handleAcceptFriendRequest = async (request: FriendRequestType) => {
         const { data: { user } } = await supabase.auth.getUser();
     
+        // get the profile of the friend being added
         const { data: friend, error: friendError } = await supabase
             .from('profiles')
             .select('userid')
