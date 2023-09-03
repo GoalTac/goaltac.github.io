@@ -172,7 +172,7 @@ export default function InsideView() {
         
         {/* TEXTS: Name and description */}
         <Box marginTop='10px' paddingX='5%'>
-          <Flex borderRadius={measurements.cards.borderRadius} left='5%' position='absolute' marginTop='-90px'>
+          <Flex borderRadius={measurements.cards.borderRadius} left='5%' position='absolute' marginTop='-150px'>
             <Card borderRadius='inherit' borderColor='gray' borderWidth='2px' height='100px' width='100px' margin='auto' padding='10px'>
               <Image src={picture} />
               <Badge variant='solid' position='relative' height='min' width='min' marginTop='10px' marginX='auto' zIndex='9' borderWidth='1px'>
