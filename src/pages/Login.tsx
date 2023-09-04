@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabase';
-import { Box, Button, Center, Flex, FormControl, FormHelperText, Heading, Input, InputGroup, InputLeftElement, InputRightElement, Stack, Text, chakra, useToast, Image, } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, FormControl, FormHelperText, Heading, Input, InputGroup, InputLeftElement, InputRightElement, Stack, Text, chakra, useToast, Image, useColorModeValue, } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import Canvas from '../components/Canvas';
@@ -9,6 +9,7 @@ const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 import logo from './../images/GoalTac_TLogo.png'
 import background from './../images/background_blur.svg'
+import bubble from './../images/bubble.svg'
 
 
 export default function Login() {
@@ -150,24 +151,20 @@ export default function Login() {
             justifyContent='center'
             alignItems='center'
             color="white"
-            backgroundSize='cover'
-        >
+            backgroundImage={bubble}
+            backgroundSize='cover'>
             <Box>
                 <Stack
                     flexDir='column'
                     mb='2'
                     justifyContent='center'
-                    alignItems='center'
-                >
+                    alignItems='center'>
                     <Image src={logo} alt="Logo" width="200px" />
                     <Box>
                         <form onSubmit={handleSubmit}>
                             <Stack
                                 spacing={4}
-                                p='1rem'
-                                backgroundColor={'blackAlpha.400'}
-                                boxShadow='md'
-                            >
+                                p='1rem'>
                                 <FormControl>
                                     <InputGroup>
                                         <InputLeftElement
@@ -211,10 +208,9 @@ export default function Login() {
                                 <Button
                                     borderRadius={5}
                                     type='submit'
-                                    variant='solid'
+                                    variant='outline'
                                     width='full'
-                                    bg={email && password ? 'whiteAlpha.600' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}
-                                >
+                                    bg={email && password ? 'whiteAlpha.600' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'blackAlpha.100' }}>
                                     Login
                                 </Button>
                                 
@@ -223,7 +219,7 @@ export default function Login() {
                     </Box>
                 </Stack>
             </Box>
-            <Box>
+            <Box textColor={useColorModeValue('black','white')}>
                 New Here?{' '}
                 <Link to='/signup'>
                     Sign Up

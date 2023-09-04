@@ -1,6 +1,6 @@
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import { Box, useColorMode, Spacer, Flex, Stack, VStack, HStack, Text, Button, Image, Avatar, Heading, useColorModeValue, Badge, IconButton, Divider, LinkBox, Link, FormControl, Input, InputGroup, InputLeftElement, InputRightElement, useToast } from "@chakra-ui/react";
+import { Box, useColorMode, Spacer, Flex, Stack, VStack, HStack, Text, Button, Image, Avatar, Heading, useColorModeValue, Badge, IconButton, Divider, LinkBox, Link, FormControl, Input, InputGroup, InputLeftElement, InputRightElement, useToast, ButtonGroup, Card, Grid, GridItem, Textarea, Editable, EditablePreview, EditableTextarea, EditableInput, SimpleGrid, AvatarGroup, Tag, Tooltip } from "@chakra-ui/react";
 import {
     FaDiscord,
     FaFacebookSquare,
@@ -8,10 +8,12 @@ import {
     FaLinkedin,
     FaLock,
 } from 'react-icons/fa';
-import { AtSignIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
+import { AddIcon, AtSignIcon, CheckIcon, InfoIcon, InfoOutlineIcon, MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
 import logo_name from './../images/GoalTac_Logo.png'
 import logo from './../images/logo.png'
 import logo_stacked from './../images/GoalTac_TLogo.png'
+import ProfileBackground from '../images/ProfileBackground.svg'
+import GoalTac_T_Logo from './../images/GoalTac_TLogo.png'
 
 import background_blur from './../images/background_noise.svg'
 import collaboration from './../images/collaboration.png'
@@ -20,11 +22,24 @@ import two from './../images/sssurf.svg'
 import bubble from './../images/bubble.svg'
 import uconn_dark_logo from './../images/CCEI-stacked_white.png'
 import uconn_light_logo from './../images/CCEI-stacked_blue.png'
+import community_header from './../images/Community_Header.png'
+import friend from './../images/Friends.png'
+import feed from './../images/Social_Post.png'
+import calendar from './../images/Calendar.png'
+import calendar_dark from './../images/Calendar_Dark.png'
+
+import task_drawer from './../images/Task_Drawer.png'
+import task_drawer_dark from './../images/Task_Drawer_Dark.png'
 
 import SignUpPage from './../pages/Signup'
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { ReactElement, useRef, useState } from 'react';
 import { supabase } from '../supabase';
+import { RiNotification2Fill } from 'react-icons/ri';
+import { getPicture, measurements } from '../components/Communities/CommunityAPI';
+import { TbTarget } from 'react-icons/tb';
+import { GiArrowhead } from 'react-icons/gi';
+import React from 'react';
 
 export default function LandingPage() {
 
@@ -104,9 +119,9 @@ export default function LandingPage() {
                 position='relative'
                 alignItems={['center', 'flex-start']}
                 textAlign={['center', 'start']}
-                id='product' height='fit-content'>
+                id='product' height='fit-content' minH={800}>
                 <VStack rowGap='2rem' marginBottom='6rem'>
-                    <Flex marginStart={['0px','150px']} marginX={['10px',null]} maxWidth='700px' flexDirection='column' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
+                    <Flex marginStart={[null,'150px']} marginX={['10px',null]} maxWidth='700px' flexDirection='column' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
                         <Heading fontSize={['2rem','4rem']} fontWeight='300' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
                             Collaborate with others to achieve your goals
                         </Heading>
@@ -127,55 +142,226 @@ export default function LandingPage() {
         );
     }
 
-    function Features() {
-
+    function IntroPreLaunch() {
         return (
-            <Stack
-                id='features'
-                spacing='6rem'
-                mt='8rem'
-                px={['1rem', null, '6rem']}
-                py='3rem'
-                bgColor={useColorModeValue('gray.100','gray.700')}>
-                <Stack direction={['column', null, 'row']}
-                    maxWidth={constants.maxWidth} marginX='auto'
-                    position='relative'>
-                     <VStack
-                        alignItems={['center', null, 'flex-start']}
-                        textAlign={['center', null, 'left']}
-                        minWidth='50%'
-                        spacing='2rem'>
-                        <Heading fontSize='3rem' bgGradient='linear(to-t, teal.300, blue.500)' fontWeight='700' lineHeight='1.1' bgClip='text'>
-                            What is GoalTac?
+            <Flex
+                position='relative'
+                alignItems={['center', 'flex-start']}
+                textAlign={['center', 'start']}
+                id='product' height='fit-content' minH={800}>
+                <VStack rowGap='2rem' marginBottom='6rem'>
+                    <Flex marginStart={[null,'150px']} marginX={['10px',null]} maxWidth='700px' flexDirection='column' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
+                        <Heading fontSize={['2rem','4rem']} fontWeight='300' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
+                            You're a little Early!
                         </Heading>
+                        <Text maxWidth={[null, '80%']} lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']} marginBottom='50px'>
+                            Click on Get Started for email updates!
+                            {/* Replace: Find your community now! */}
+                        </Text>
+                        <Flex flexDirection={['column','row']} gap='30px'>
+                           <SignUpButton /> 
+                           <LearnMoreButton />
+                        </Flex>
+                       
+                    </Flex>
+                </VStack>
 
-                        <VStack rowGap='2rem' paddingStart={['', null, '2rem']} maxWidth={['100%', '80%']} fontSize='1rem'>
-                            {goalTacDesc.map((desc, index) => (
-                                <Box key={index}>
-                                    <Heading fontSize='1rem'>{desc.name}</Heading>
-                                    <Text paddingStart={['', null, '2rem']}>
-                                        {desc.desc}
-                                    </Text>
-                                </Box>
-                            ))}
-                        </VStack>
-                    </VStack>
-
-                    <VStack spacing='2rem'>
-                        {contents.map((vstack, index) => (
-                            <VStack key={index}>
-                                <Flex width='100%' alignItems='center'>
-                                    <Box p='.3rem 1rem' fontWeight='600'>{vstack.number}</Box>
-                                    <Box fontWeight='600' pl='20px'>{vstack.title}</Box>
-                                </Flex>
-                                <Box p='.3rem 1rem'>{vstack.text}</Box>
-                            </VStack>
-                        ))}
-                    </VStack>
-                </Stack>
-                
-            </Stack>
+            </Flex>
         );
+    }
+
+    function SocialFeature() {
+
+        function CommunityFeature() {
+            return <Stack id='features' flexWrap={'wrap'} gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column','row']}>
+                <VStack flexGrow={1} width={['fit-content','300px']} alignSelf='center'>
+                    <Heading>
+                        Join your Community
+                    </Heading>
+                    <Text fontSize='20px'>
+                        Join like-minded people in their goals
+                    </Text>
+                </VStack>
+                <Card_Header/>
+            </Stack>}
+        function CommunityTaskFeature() {
+            return <Flex flexWrap='wrap-reverse' gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column-reverse','row']}>
+                <Card_Goal/>
+                <VStack alignSelf='center' flexGrow={1} width={['fit-content','300px']}>
+                    <Heading>
+                        Create Community Tasks
+                    </Heading>
+                    <Text fontSize='20px'>
+                        Share tasks with other people and collaborate on community-wide goals!
+                    </Text>
+                </VStack>
+            </Flex>
+        }
+
+        function SocialFeedFeature() {
+            return <Flex flexWrap='wrap-reverse' gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column-reverse','row']}>
+                <Image maxWidth='600px' width='50%' src={feed}/>
+                <VStack alignSelf='center' flexGrow={1} width={['fit-content','300px']}>
+                    <Heading>
+                        Post your Tasks
+                    </Heading>
+                    <Text fontSize='20px'>
+                        Comment, like, share, and post to your profile. Find your audience and help motivate others
+                    </Text>
+                </VStack>
+            </Flex>
+        }
+
+        function Card_Header() {
+      
+            return <Card maxWidth='600px' minWidth={constants.cardMinWidth} height='400px' backgroundColor={useColorModeValue(constants.lightMode, constants.darkMode)} borderRadius={measurements.cards.borderRadius} position='relative'>
+      
+              {/* BANNER: The height and width should be set to the size of the banner */}
+              <Box borderRadius='inherit' borderBottomRadius='unset' height='50%' overflow='clip'>
+                <Image src={ProfileBackground} />
+              </Box>
+      
+              {/* TEXTS: Name and description */}
+              <Box marginTop='10px' paddingX='5%'>
+                <Flex borderRadius='20px' left='5%' position='absolute' marginTop='-150px'>
+                  <Card borderRadius='inherit' backgroundColor={useColorModeValue(constants.lightMode, constants.darkMode)} borderColor='Background' borderWidth='1px' height='100px' width='100px' margin='auto' padding='10px'>
+                    <Image src={GoalTac_T_Logo} />
+                  </Card>
+                </Flex>
+                <HStack alignSelf='end' marginTop='10px'>
+                  <Heading> GoalTac</Heading>
+                  <Spacer/>
+                  <ButtonGroup borderRadius='full'>
+                    <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<InfoOutlineIcon />} aria-label='Information'/>
+                    <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<RiNotification2Fill />} aria-label='Notifications'/>
+                    <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<SettingsIcon />} aria-label='Settings'/>
+                    <Button colorScheme='green' variant='solid'>
+                        Join
+                    </Button>
+                  </ButtonGroup>
+                  
+                </HStack>
+                  <Text size='sm' height='150px' marginStart='30px' overflowY='scroll'>
+                    Sometimes we don't get things done on time; maybe it's because we don't want to! You may need a little push, and that's what we are here for. Keep accountability for each other and see your friends grow with you!
+                  </Text>
+                
+              </Box>
+               
+            </Card>
+        }
+
+        function Card_Goal() : ReactElement {
+            const task = {
+                name: 'Do 100 backflips',
+                description: 'This is pretty difficult. Follow the steps in the youtube tutorial!',
+                owner: '136021e3-4e2c-4ed2-8a32-06803fd800e5',
+                members: [''],
+                created_by: new Date(),
+                type: 'Number', //can be number, boolean, tasks
+                reward: 5
+              }
+            
+            
+            //NEED TO REDUCE RE RENDER AMOUNT. This is absurd
+            return <Card maxWidth='600px' backgroundColor={useColorModeValue(constants.lightMode,constants.darkMode)} minWidth={constants.cardMinWidth} height='300px'
+            padding='20px' borderRadius={measurements.cards.borderRadius} position='relative'>
+                
+                <Flex flexDirection='column' marginEnd='8rem'>
+                    <Editable defaultValue={task ? task.name : 'Unknown'} fontSize='2xl' fontWeight='bold'>
+                        <EditablePreview />
+                        <EditableInput />
+                    </Editable>
+                    <Text maxW={'600px'}>
+                        {task ? task.description : 'unknown'}
+                    </Text>
+                </Flex>
+                    
+                <Flex position='absolute' gap='20px' right='20px'>
+                    <Tooltip label="Amount contributed" aria-label='A tooltip'>
+                        <Badge colorScheme='red' borderRadius='5px' padding='10px'>
+                            43/100
+                        </Badge>
+                    </Tooltip>
+                    <Tooltip label="Points rewarded to community" aria-label='A tooltip'>
+                        <Badge colorScheme='green' borderRadius='5px' padding='10px'>
+                            {task ? task.reward : 0} pts
+                        </Badge>
+                    </Tooltip>
+                </Flex>
+
+                <Flex position='absolute' right='20px' bottom='20px'>
+                    <Button colorScheme='green' variant='solid' leftIcon={<AddIcon/>}>
+                        Add to Calendar
+                    </Button>
+                </Flex>
+
+                <Flex position='absolute' left='20px' bottom='20px'>
+                    <Tooltip label="Task participants" aria-label='A tooltip'>
+                        <AvatarGroup size='md' max={2}>
+                            <Avatar name='Nikhil G'/>
+                            <Avatar name='My Phung'/>
+                            <Avatar name='Aditiya C'/>
+                            <Avatar name='Andrew Rayski'/>
+                            <Avatar name='Mayur X'/>
+                            <Avatar name='Seth Pappalardo'/>
+                            <Avatar name='Jack C'/>
+                            <Avatar name='Michael S'/>
+                            <Avatar name='Jordan Hawkes'/>
+                            <Avatar name='Max H'/>
+                        </AvatarGroup>
+                    </Tooltip>
+                </Flex>
+                
+            </Card>
+        }
+
+        return (<Flex paddingY='50px' flexDirection='column' gap='100px' maxWidth={constants.maxWidth} marginX='auto'>
+            <SimpleGrid marginX={['10px','50px']} spacing={['40px','100px']}>
+                <CommunityFeature/>
+                <CommunityTaskFeature/>
+            </SimpleGrid>
+        </Flex>);
+    }
+
+    function ProductiveFeature() {
+
+        function CalendarFeature() {
+            return <Flex flexWrap='wrap-reverse' gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column-reverse','row']}>
+                <Image borderRadius={measurements.cards.borderRadius} maxWidth='800px' src={useColorModeValue(calendar, calendar_dark)}/>
+                <VStack alignSelf='center' flexGrow={1} width={['fit-content','300px']}>
+                    <Heading>
+                        Expansive Customization
+                    </Heading>
+                    <Text fontSize='20px'>
+                        Pivot from a top-level view to a focused view, or anything in between, with ease
+                    </Text>
+                </VStack>
+            </Flex>
+        }
+
+        function TaskCreateFeature() {
+
+            
+
+            return <Stack flexWrap={'wrap'} gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column','row']}>
+                <VStack flexGrow={1} width={['fit-content','300px']} alignSelf='center'>
+                    <Heading>
+                        Freedom to Create Tasks Your Way
+                    </Heading>
+                    <Text fontSize='20px'>
+                        Create your tasks the way you vision it with our many flexible options!
+                    </Text>
+                </VStack>
+                <Image borderRadius={measurements.cards.borderRadius} maxWidth='600px' src={useColorModeValue(task_drawer, task_drawer_dark)}/>
+            </Stack>
+        }
+
+        return (<Flex id='productivity' paddingY='50px' flexDirection='column' gap='100px' maxWidth={constants.maxWidth} marginX='auto'>
+            <SimpleGrid marginX={['10px','50px']} spacing={['40px','100px']}>
+                <TaskCreateFeature/>
+                <CalendarFeature/>
+            </SimpleGrid>
+        </Flex>);
     }
 
     function Slider() {
@@ -268,7 +454,7 @@ export default function LandingPage() {
             const icons = [
                 {
                     icon: <FaFacebookSquare size={25} color={useColorModeValue('rgba(66, 103, 178)', '')} />,
-                    href: '',
+                    href: 'https://www.facebook.com/goaltacmedia',
                     label: 'Facebook'
                 },
                 {
@@ -283,7 +469,7 @@ export default function LandingPage() {
                 },
                 {
                     icon: <FaInstagram size={30} />,
-                    href: '',
+                    href: 'https://www.instagram.com/goaltac/',
                     label: 'Instagram'
                 },
             ];
@@ -326,7 +512,7 @@ export default function LandingPage() {
                     <HStack alignSelf={['center','right']}>
                         <MediaIcons />
                         <Button onClick={toggleColorMode} 
-                        variant='ghost' borderWidth='2px'>
+                        variant='ghost'>
                             {useColorModeValue(<SunIcon />, <MoonIcon />)}
                         </Button>
                     </HStack>
@@ -334,18 +520,19 @@ export default function LandingPage() {
                 </Stack>
                 <Stack flexDirection={['column', 'row']} 
                 paddingX='2rem'
+                columnGap='20px'
                 maxWidth='100vw' width={constants.maxWidth}
                 justifyContent ={['center', 'left']}>
                     <Text>
                         Copyright @ 2023 GoalTac LLC. All rights reserved.
                     </Text>
                     <Spacer/>
-                    <Text>
+                    <Link href=''>
                         Privacy Policy
-                    </Text>
-                    <Text>
-                        Terms of Service
-                    </Text>
+                    </Link>
+                    <Link href=''>
+                        Terms of Sales
+                    </Link>
                 </Stack>
             </VStack>
         )
@@ -353,6 +540,7 @@ export default function LandingPage() {
 
     const constants = {
         maxWidth: '1400px',
+        cardMinWidth: '225px',
         lightMode: 'white',
         darkMode: 'gray.800'
     }
@@ -367,13 +555,15 @@ export default function LandingPage() {
                         <Box backgroundImage={bubble} backgroundSize='cover' maxWidth='100%' backgroundColor={useColorModeValue(constants.lightMode, constants.darkMode)}>
                             <Box maxW={constants.maxWidth} marginX='auto'>
                                 <Header />
-                                <Intro />
+                                <IntroPreLaunch/>
                             </Box>
                         </Box>
+                        <Box backgroundColor={useColorModeValue('blue.50','blackAlpha.300')}>
+                           <SocialFeature />
+                        </Box>
+                        <ProductiveFeature/>
 
-                        <Features />
                         <Box maxW={constants.maxWidth} marginX='auto'>
-                            
                             <Slider />
                             <PreFooter  />
                         </Box>
@@ -486,15 +676,15 @@ export const staffProfiles = [
         contact: '',
     },
     {
-        name: 'Nikhil Ghosh',
+        name: 'Mayur Somalinga',
         image: null,
         title: 'Developer',
-        desc: '',
-        badges: [''],
-        contact: '',
+        desc: 'Senior UConn Psychology Student — I used to be allergic to potatoes',
+        badges: ['music', 'academics', 'photography'],
+        contact: 'mayurapriyan.somalinga@uconn.edu',
     },
     {
-        name: 'Jack Cornell',
+        name: 'Nikhil Ghosh',
         image: null,
         title: 'Developer',
         desc: '',
@@ -521,14 +711,6 @@ export const staffProfiles = [
         name: 'Paolo Rangonese',
         image: null,
         title: 'Finance',
-        desc: '',
-        badges: [''],
-        contact: '',
-    },
-    {
-        name: 'Seth Pappalardo',
-        image: null,
-        title: 'Business',
         desc: '',
         badges: [''],
         contact: '',
