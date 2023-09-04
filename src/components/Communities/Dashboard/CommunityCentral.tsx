@@ -1,15 +1,15 @@
 import {
     Box,
-    Button, Card, useToast, useClipboard, Icon, useColorMode, Flex, HStack, Heading, List, Stack, Text, Image, Divider, VStack, CardHeader, useColorModeValue, Spacer, Spinner, IconButton, Menu, MenuButton, MenuItem, MenuList, FormControl, FormLabel, Input, Radio, RadioGroup, Textarea
+    Button, Card, useToast, useClipboard, Icon, useColorMode, Flex, HStack, Heading, List, Stack, Text, Image, Divider, VStack, CardHeader, useColorModeValue, Spacer, Spinner, IconButton, Menu, MenuButton, MenuItem, MenuList, FormControl, FormLabel, Input, Radio, RadioGroup, Textarea, Tooltip, useDisclosure, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, FormHelperText
 } from '@chakra-ui/react'
 import { useNavigate, Link } from 'react-router-dom';
-import { ReactElement, ReactNode, useEffect, useState } from 'react';
+import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
 import InsideView from '../Community/InsideView';
 import { Community, _addCommunity, _addMember, _getAllCommunities, _getAllMembers, _getJoinedCommunities, _getMembers, _getRequestedCommunities, _getUnJoinedCommunities, _removeMember, _setMember, getCommunity, getCommunityByName, getPicture, measurements } from '../CommunityAPI';
 import Calendar from '../../../pages/Calendar';
 import { supabase } from '../../../supabase';
 import { RxExit } from 'react-icons/rx'
-import { LinkIcon, EditIcon, HamburgerIcon, RepeatIcon } from '@chakra-ui/icons'
+import { LinkIcon, EditIcon, HamburgerIcon, RepeatIcon, InfoIcon, CheckIcon, AddIcon } from '@chakra-ui/icons'
 import { SessionProvider, useSession } from '../../../hooks/SessionProvider';
 import { twoColumns } from '../../../hooks/Utilities';
 
@@ -58,8 +58,8 @@ export default function CommunityCentral() {
         
             
             return(
-            <HStack overflow='hidden' padding='20px' borderRadius='20px' 
-            borderWidth='1px' marginY={measurements.general.rowGap}>
+            <HStack overflow='hidden' padding='20px' borderRadius='20px' backgroundColor={useColorModeValue('white','blackAlpha.200')}
+            borderWidth={useColorModeValue('1px','0px')} marginY={measurements.general.rowGap}>
                 
         
                 <Stack as={Link} to={`/community/${community.name}`}>
@@ -142,11 +142,23 @@ export default function CommunityCentral() {
                 setLoading(false)
             })
             setCommunities(promisedCommunities)
-            setView(<Box>
-                {promisedCommunities.map((community: any, index: Number) => (
-                    <Module key={index} community={community}/> 
-                ))}
-            </Box>) 
+            console.log(promisedCommunities)
+            if (promisedCommunities.length == 0) {
+                setView(
+                    <Flex marginX='auto' justifyContent={'center'} paddingTop='60px'>
+                    <Heading fontSize='2xl'>
+                        You have not requested any communities!
+                    </Heading>
+                    </Flex>
+                )
+            } else {
+                setView(<Box>
+                    {promisedCommunities.map((community: any, index: Number) => (
+                        <Module key={index} community={community}/> 
+                    ))}
+                </Box>) 
+            }
+           
         }
         function setLoadingView() {
             setType('loading')
@@ -170,9 +182,124 @@ export default function CommunityCentral() {
             setCommunities(null)
             setLoading(false)
         }
+        function CommunityDrawer() {
+            const { isOpen, onOpen, onClose } = useDisclosure()
+            const btnRef = React.useRef(null)
+            const [name, setName] = useState<any>('');
+            const [description, setDescription] = useState<any>('');
+            const [pic, setPic] = useState<any>(null);
+            const [isPublic, setIsPublic] = useState<any>(true);
+
+            const [community_id, setCommunity_id] = useState<any>('');
+            const [points, setPoints] = useState<any>(0);
+            const [role, setRole] = useState<any>(0);
+            const [status, setStatus] = useState<any>(1); //joined
+    
+            const handleAddCommunity = async() => {
+                _addCommunity({
+                    name: name,
+                    description: description,
+                    pic: pic,
+                    score: 0,
+                    isPublic: isPublic,
+                }).then((response : any)=>{ //fix this setting community id to the wrong id
+
+                    if(response.message) {
+                        toast({
+                            title: "Error",
+                            description: response.message,
+                            status: "error",
+                            duration: 9000,
+                            isClosable: true,
+                        })
+                        return
+                    }
+                    onClose()
+                    const uuid = response?.['community_id']
+                    const addedMember = _addMember({
+                        community_id: uuid, 
+                        user_id: (user ? user?.['id'] : ''),
+                        role: 'Owner'
+                    })
+                    addedMember.then((response : any)=> {
+                        if(response.message) {
+                            toast({
+                                title: "Error",
+                                description: response.message,
+                                status: "error",
+                                duration: 9000,
+                                isClosable: true,
+                            })
+                        } else {
+                            toast({
+                                title: "Success",
+                                description: `Successfully created ${name}`,
+                                status: "success",
+                                duration: 9000,
+                                isClosable: true,
+                            })
+                        }
+                    })
+                    
+                    setName('')
+                    setDescription('')
+                    setPic('')
+                    setIsPublic('')
+
+                })
+                
+            }
+          
+            return (
+              <>
+                <Button ref={btnRef} colorScheme='green' leftIcon={<AddIcon/>} onClick={onOpen}>
+                  Create
+                </Button>
+                <Drawer
+                  isOpen={isOpen}
+                  placement='right'
+                  onClose={onClose}
+                  finalFocusRef={btnRef}>
+                  <DrawerOverlay />
+                  <DrawerContent>
+                    <DrawerCloseButton />
+                    <DrawerHeader fontSize='lg'>Create your Community</DrawerHeader>
+          
+                    <DrawerBody>
+                        <Stack spacing='40px' fontSize='sm'>
+                            <FormControl>
+                                <FormLabel htmlFor='title'>Title</FormLabel>
+                                <Input placeholder='New community' value={name} onChange={(e) => setName(e.target.value)}/>
+                                <FormHelperText>Max of 20 characters</FormHelperText>
+                            </FormControl>
+                            <FormControl>
+                                <FormLabel htmlFor='description'>Description</FormLabel>
+                                <Textarea placeholder='What is your community about?' value={description} onChange={(e) => setDescription(e.target.value)}/>
+                            </FormControl>
+                            <FormControl>
+                                <FormLabel htmlFor='image'>Upload logo</FormLabel>
+                                <Input placeholder="Select a logo" isDisabled padding='10px' height='100%' alignSelf='center' size="sm" type="file" />
+                            </FormControl>
+                            
+                        </Stack>
+                            
+                      
+                    </DrawerBody>
+          
+                    <DrawerFooter>
+                      <Button variant='outline' mr={3} onClick={onClose}>
+                        Cancel
+                      </Button>
+                      <Button colorScheme='blue' onClick={handleAddCommunity}>Save</Button>
+                    </DrawerFooter>
+                  </DrawerContent>
+                </Drawer>
+              </>
+            )
+          }
         
 
-        return (<Box maxWidth={['375px','700px']}>
+        return (<Box width={['375px','700px']}>
             <Card height='80px'
                 justifySelf='center' 
                 alignSelf='center' 
@@ -192,14 +319,7 @@ export default function CommunityCentral() {
                         
                         <Spacer/>
                         
-                        <Button variant="outline" colorScheme="blue" width='fit-content'
-                        isActive={type == 'create'}
-                        onClick={()=> {
-                            setType('create')
-                            setView(<CreateView/>)
-                        }}>
-                            Create
-                        </Button>
+                        <CommunityDrawer/>
                     </CardHeader>
                 </Card>
                 {view}
@@ -264,101 +384,25 @@ export default function CommunityCentral() {
             </HStack>)
         }
         return(<Flex flexDirection='column' rowGap={measurements.general.colGap}>
-            <Card height='80px'>
+            <Card height='80px' position='relative'>
                 <CardHeader display="flex" 
                 justifyContent="space-between"
-                fontSize='2xl' margin='auto'>
+                fontSize='lg' margin='auto'>
                     Suggested
                 </CardHeader>
+                <Flex top='10px' right='10px' position='absolute' >
+                    <Tooltip label='Unjoined communities' >
+                        <InfoIcon boxSize={4} />
+                    </Tooltip>
+                </Flex>
+               
+                
             </Card>
             <Flex padding='10px' borderWidth='1px' flexDirection='column' borderRadius={measurements.cards.borderRadius}>
                 {communities && communities.map((community: any, index: Number) => (
                 <ModulePreview key={index} community={community} preview={true}/>))}
             </Flex>
         </Flex>)
-    }
-    function CreateView() {
-        const [name, setName] = useState<any>('');
-        const [description, setDescription] = useState<any>('');
-        const [pic, setPic] = useState<any>(null);
-        const [isPublic, setIsPublic] = useState<any>(true);
-
-        const [community_id, setCommunity_id] = useState<any>('');
-        const [points, setPoints] = useState<any>(0);
-        const [role, setRole] = useState<any>(0);
-        const [status, setStatus] = useState<any>(1); //joined
-    
-        const handleAddCommunity = async() => {
-            _addCommunity({
-                name: name,
-                description: description,
-                pic: pic,
-                score: 0,
-                isPublic: isPublic,
-            }).then((response : any)=>{ //fix this setting community id to the wrong id
-
-                if(response.message) {
-                    toast({
-                        title: "Error",
-                        description: response.message,
-                        status: "error",
-                        duration: 9000,
-                        isClosable: true,
-                    })
-                    return
-                }
-
-                const uuid = response?.['community_id']
-                const addedMember = _addMember({
-                    community_id: uuid, 
-                    user_id: (user ? user?.['id'] : ''),
-                    role: 'Owner'
-                })
-                addedMember.then((response : any)=> {
-                    if(response.message) {
-                        toast({
-                            title: "Error",
-                            description: response.message,
-                            status: "error",
-                            duration: 9000,
-                            isClosable: true,
-                        })
-                    } else {
-                        toast({
-                            title: "Success",
-                            description: `Successfully created ${name}`,
-                            status: "success",
-                            duration: 9000,
-                            isClosable: true,
-                        })
-                    }
-                })
-                
-                setName('')
-                setDescription('')
-                setPic('')
-                setIsPublic('')
-
-            })
-            
-        }
-    
-        return(
-            <Box padding='20px'>
-                <FormControl>
-                    <FormLabel>Title</FormLabel>
-                    <Input placeholder="Title" value={name} onChange={(e) => setName(e.target.value)} />
-                </FormControl>
-    
-                <FormControl mt={4}>
-                    <FormLabel>Description</FormLabel>
-                    <Textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
-                </FormControl>
-                <Button colorScheme="blue" mt={3} onClick={handleAddCommunity}>
-                    {'Save'}
-                </Button>
-            </Box>
-        )
     }
 
     return(
