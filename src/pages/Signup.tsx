@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react';
-import { Text, Center, Flex, Image, Input, Button, InputGroup, Stack, InputLeftElement, chakra, Box, FormControl, InputRightElement, useToast, Spinner } from '@chakra-ui/react';
+import { Text, Center, Flex, Image, Input, Button, InputGroup, Stack, InputLeftElement, chakra, Box, FormControl, InputRightElement, useToast, Spinner, useColorModeValue } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaLock, FaUserAlt } from 'react-icons/fa';
 import { useNavigate, Link } from 'react-router-dom';
@@ -117,7 +117,7 @@ export default function SignUpPage() {
                     <Stack
                         spacing={4}
                         p='1rem'
-                        backgroundColor={'whiteAlpha.100'}>
+                        backgroundColor={useColorModeValue('gray.50','blackAlpha.200')}>
                         <FormControl>
                             <InputGroup>
                                 <InputLeftElement
@@ -150,7 +150,7 @@ export default function SignUpPage() {
                                     onChange={event => setPassword(event.target.value)}
                                 />
                                 <InputRightElement width='4.5rem'>
-                                    <Button h='1.75rem' size='sm' bg={password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }} onClick={handleShowClick}>
+                                    <Button h='1.75rem' size='sm' bg={password ? 'whiteAlpha.400' : 'whiteAlpha.100'} _hover={{ backgroundColor: 'blackAlpha.100' }} onClick={handleShowClick}>
                                         {showPassword ? 'hide' : 'show'}
                                     </Button>
                                 </InputRightElement>
@@ -159,9 +159,9 @@ export default function SignUpPage() {
                         <Button
                             borderRadius={5}
                             type='submit'
-                            variant='outline'
+                            variant={useColorModeValue('outline','solid')}
                             width='full'
-                            bg={email && password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'blackAlpha.100' }}>
+                            bg={email && password ? 'whiteAlpha.400' : 'whiteAlpha.100'} _hover={{ backgroundColor: 'blackAlpha.100' }}>
                             Sign Up
                         </Button>
                     </Stack>

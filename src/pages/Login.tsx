@@ -162,7 +162,7 @@ export default function Login() {
                     <Image src={logo} alt="Logo" width="200px" />
                     <Box>
                         <form onSubmit={handleSubmit}>
-                            <Stack
+                            <Stack backgroundColor={useColorModeValue('gray.50','blackAlpha.200')}
                                 spacing={4}
                                 p='1rem'>
                                 <FormControl>
@@ -194,7 +194,7 @@ export default function Login() {
                                             onChange={event => setPassword(event.target.value)}
                                         />
                                         <InputRightElement width='4.5rem'>
-                                            <Button h='1.75rem' size='sm' onClick={handleShowClick} bg={password ? 'whiteAlpha.800' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'whiteAlpha.400' }}>
+                                            <Button h='1.75rem' size='sm' onClick={handleShowClick} bg={password ? 'whiteAlpha.400' : 'whiteAlpha.100'} _hover={{ backgroundColor: 'blackAlpha.100' }}>
                                                 {showPassword ? 'hide' : 'show'}
                                             </Button>
                                         </InputRightElement>
@@ -208,9 +208,9 @@ export default function Login() {
                                 <Button
                                     borderRadius={5}
                                     type='submit'
-                                    variant='outline'
+                                    variant={useColorModeValue('outline','solid')}
                                     width='full'
-                                    bg={email && password ? 'whiteAlpha.600' : 'whiteAlpha.300'} _hover={{ backgroundColor: 'blackAlpha.100' }}>
+                                    bg={email && password ? 'whiteAlpha.400' : 'whiteAlpha.100'} _hover={{ backgroundColor: 'blackAlpha.100' }}>
                                     Login
                                 </Button>
                                 
