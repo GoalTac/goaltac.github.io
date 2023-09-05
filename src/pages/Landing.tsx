@@ -146,15 +146,15 @@ export default function LandingPage() {
         return (
             <Flex
                 position='relative'
-                alignItems={['center', 'flex-start']}
-                textAlign={['center', 'start']}
+                alignItems={'center'}
+                textAlign={['center']}
                 id='product' height='fit-content' minH={800}>
-                <VStack rowGap='2rem' marginBottom='6rem'>
-                    <Flex marginStart={[null,'150px']} marginX={['10px',null]} maxWidth='700px' flexDirection='column' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
+                <VStack rowGap='2rem' marginBottom='6rem' marginX='auto'>
+                    <Flex maxWidth='700px' flexDirection='column' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
                         <Heading fontSize={['2rem','4rem']} fontWeight='300' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
                             You're a Little Early!
                         </Heading>
-                        <Text maxWidth={[null, '80%']} lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']} marginBottom='50px'>
+                        <Text maxWidth={[null, '90%']} lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']} marginBottom='50px'>
                             Click on Get Started for email updates!
                             {/* Replace: Find your community now! */}
                         </Text>
@@ -174,7 +174,7 @@ export default function LandingPage() {
 
         function CommunityFeature() {
             return <Stack id='features' flexWrap={'wrap'} gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column','row']}>
-                <VStack flexGrow={1} width={['fit-content','300px']} alignSelf='center'>
+                <VStack textAlign='center' flexGrow={1} width={['fit-content','300px']} alignSelf='center'>
                     <Heading>
                         Join your Community
                     </Heading>
