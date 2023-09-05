@@ -53,16 +53,13 @@ export default function Login() {
                 duration: 3000,
                 isClosable: false,
             })
-            console.log(error)
         } else {
-            console.log(data)
             navigate('/dashboard')
         }
     }
 
     const handleSubmit = async function (event: React.SyntheticEvent) {
         event.preventDefault();
-        console.log("Submitting")
         toast.closeAll() //Closes all previous opened toasts (makes spam clicking submit be less annoying)
         if (email === "" || password === "") { //Can limit what is/isn't acceptable for a password (use methods for comparisons for more complicated checks)
             toast({
@@ -100,7 +97,6 @@ export default function Login() {
                 duration: 3000,
                 isClosable: false,
             })
-            console.log(err)
         }
     }
 

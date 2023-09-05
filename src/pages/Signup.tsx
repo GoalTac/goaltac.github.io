@@ -33,7 +33,6 @@ export default function SignUpPage() {
     const [isLoading, setIsLoading] = useState(false); //for login loading
     const loading = () => {
         setIsLoading(true);
-        console.log(isLoading);
     };
 
     // UseEffect ----------------------------------------------------------------------
@@ -43,7 +42,6 @@ export default function SignUpPage() {
 
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
-        console.log('submitting signup!');
 
         if (email === "" || password === "") { //Can limit what is/isn't acceptable for a password (use methods for comparisons for more complicated checks)
             toast({
