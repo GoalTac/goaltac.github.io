@@ -145,10 +145,11 @@ export default function SignUpPage() {
                                     placeholder='Password'
                                     id='password'
                                     value={password}
+                                    color={useColorModeValue('black','white')}
                                     onChange={event => setPassword(event.target.value)}
                                 />
                                 <InputRightElement width='4.5rem'>
-                                    <Button h='1.75rem' size='sm' bg={password ? 'whiteAlpha.400' : 'whiteAlpha.100'} _hover={{ backgroundColor: 'blackAlpha.100' }} onClick={handleShowClick}>
+                                    <Button h='1.75rem' size='sm'bg={password ? 'whiteAlpha.400' : 'whiteAlpha.100'} _hover={{ backgroundColor: 'blackAlpha.100' }} onClick={handleShowClick}>
                                         {showPassword ? 'hide' : 'show'}
                                     </Button>
                                 </InputRightElement>
@@ -165,9 +166,11 @@ export default function SignUpPage() {
                     </Stack>
                 </form>
             </Box>
-            <Link onClick={loading} to='/login'>
-                Back to Login
-            </Link>
+            <Box textColor={useColorModeValue('black','white')}>
+                <Link to='/welcome'>
+                    Back to Welcome
+                </Link>
+            </Box>
         </Flex>
     );
 }

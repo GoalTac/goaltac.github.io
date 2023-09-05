@@ -187,6 +187,7 @@ export default function Login() {
                                             type={showPassword ? 'text' : 'password'}
                                             placeholder='Password'
                                             value={password}
+                                            color={useColorModeValue('black','white')}
                                             onChange={event => setPassword(event.target.value)}
                                         />
                                         <InputRightElement width='4.5rem'>
