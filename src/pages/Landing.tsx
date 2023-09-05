@@ -187,7 +187,7 @@ export default function LandingPage() {
         function CommunityTaskFeature() {
             return <Flex flexWrap='wrap-reverse' gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column-reverse','row']}>
                 <Card_Goal/>
-                <VStack alignSelf='center' flexGrow={1} width={['fit-content','300px']}>
+                <VStack textAlign={'center'} alignSelf='center' flexGrow={1} width={['fit-content','300px']}>
                     <Heading>
                         Create Community Tasks
                     </Heading>
@@ -214,7 +214,7 @@ export default function LandingPage() {
 
         function Card_Header() {
       
-            return <Card maxWidth='600px' minWidth={constants.cardMinWidth} height='400px' backgroundColor={useColorModeValue(constants.lightMode, constants.darkMode)} borderRadius={measurements.cards.borderRadius} position='relative'>
+            return <Card maxWidth='600px' minWidth={constants.cardMinWidth} height='400px' paddingBottom='10px' backgroundColor={useColorModeValue(constants.lightMode, constants.darkMode)} borderRadius={measurements.cards.borderRadius} position='relative'>
       
               {/* BANNER: The height and width should be set to the size of the banner */}
               <Box borderRadius='inherit' borderBottomRadius='unset' height='50%' overflow='clip'>
@@ -232,9 +232,6 @@ export default function LandingPage() {
                   <Heading> GoalTac</Heading>
                   <Spacer/>
                   <ButtonGroup borderRadius='full'>
-                    <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<InfoOutlineIcon />} aria-label='Information'/>
-                    <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<RiNotification2Fill />} aria-label='Notifications'/>
-                    <IconButton borderRadius='inherit' variant='ghost' color='inherit' icon={<SettingsIcon />} aria-label='Settings'/>
                     <Button colorScheme='green' variant='solid'>
                         Join
                     </Button>
@@ -291,7 +288,7 @@ export default function LandingPage() {
 
                 <Flex position='absolute' right='20px' bottom='20px'>
                     <Button colorScheme='green' variant='solid' leftIcon={<AddIcon/>}>
-                        Add to Calendar
+                        Add
                     </Button>
                 </Flex>
 
@@ -316,7 +313,7 @@ export default function LandingPage() {
         }
 
         return (<Flex paddingY='50px' flexDirection='column' gap='100px' maxWidth={constants.maxWidth} marginX='auto'>
-            <SimpleGrid marginX={['10px','50px']} spacing={['40px','100px']}>
+            <SimpleGrid marginX={['2px','50px']} spacing={['40px','100px']}>
                 <CommunityFeature/>
                 <CommunityTaskFeature/>
             </SimpleGrid>
@@ -326,16 +323,17 @@ export default function LandingPage() {
     function ProductiveFeature() {
 
         function CalendarFeature() {
-            return <Flex flexWrap='wrap-reverse' gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column-reverse','row']}>
-                <Image borderRadius={measurements.cards.borderRadius} maxWidth='800px' src={useColorModeValue(calendar, calendar_dark)}/>
-                <VStack alignSelf='center' flexGrow={1} width={['fit-content','300px']}>
-                    <Heading>
+            return <Flex flexWrap='wrap' gap={['40px','20px']} justifyContent={['center','space-evenly']} flexDirection={['column','row']}>
+                <VStack textAlign='center' alignSelf={'center'} flexGrow={1} width={['fit-content','300px']}>
+                    <Heading fontSize='2rem'>
                         Expansive Customization
                     </Heading>
-                    <Text fontSize='20px'>
+                    <Text fontSize='1rem'>
                         Pivot from a top-level view to a focused view, or anything in between, with ease
                     </Text>
                 </VStack>
+                <Image maxWidth='600px' width='100%' height='auto' src={useColorModeValue(calendar, calendar_dark)}/>
+
             </Flex>
         }
 
@@ -344,22 +342,24 @@ export default function LandingPage() {
             
 
             return <Stack flexWrap={'wrap'} gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column','row']}>
-                <VStack flexGrow={1} width={['fit-content','300px']} alignSelf='center'>
-                    <Heading>
+                <VStack textAlign={'center'} flexGrow={1} width={['fit-content','300px']} alignSelf='center'>
+                    <Heading fontSize='2rem'>
                         Freedom to Create Tasks Your Way
                     </Heading>
-                    <Text fontSize='20px'>
+                    <Text fontSize='1rem'>
                         Create your tasks the way you vision it with our many flexible options!
                     </Text>
+                    <Image maxWidth='600px' width='100%' height='auto' src={useColorModeValue(task_drawer, task_drawer_dark)}/>
                 </VStack>
-                <Image borderRadius={measurements.cards.borderRadius} maxWidth='600px' src={useColorModeValue(task_drawer, task_drawer_dark)}/>
+                
             </Stack>
         }
 
         return (<Flex id='productivity' paddingY='50px' flexDirection='column' gap='100px' maxWidth={constants.maxWidth} marginX='auto'>
-            <SimpleGrid marginX={['10px','50px']} spacing={['40px','100px']}>
-                <TaskCreateFeature/>
+            <SimpleGrid marginX={['2px','50px']} spacing={['40px','100px']}>
                 <CalendarFeature/>
+
+                <TaskCreateFeature/>
             </SimpleGrid>
         </Flex>);
     }
@@ -524,7 +524,7 @@ export default function LandingPage() {
                 maxWidth='100vw' width={constants.maxWidth}
                 justifyContent ={['center', 'left']}>
                     <Text>
-                        Copyright @ 2023 GoalTac LLC. All rights reserved.
+                        Copyright @ 2023 GoalTac LLC.
                     </Text>
                     <Spacer/>
                     <Link href=''>
