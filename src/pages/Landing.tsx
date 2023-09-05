@@ -152,7 +152,7 @@ export default function LandingPage() {
                 <VStack rowGap='2rem' marginBottom='6rem'>
                     <Flex marginStart={[null,'150px']} marginX={['10px',null]} maxWidth='700px' flexDirection='column' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
                         <Heading fontSize={['2rem','4rem']} fontWeight='300' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
-                            You're a little Early!
+                            You're a Little Early!
                         </Heading>
                         <Text maxWidth={[null, '80%']} lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']} marginBottom='50px'>
                             Click on Get Started for email updates!
