@@ -217,6 +217,18 @@ export default function Profile() {
         //get user profile
         const { data: {user} } = await supabase.auth.getUser()
 
+        // check if the user is trying to add themselves
+        if (friendUsername == person.username) {
+            toast({
+                title: "An error occurred.",
+                description: "You cannot add yourself as a friend.",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+            return;
+        }
+
         // get the profile of the friend being added
         const { data: friend, error: friendError} = await supabase
             .from('profiles')
