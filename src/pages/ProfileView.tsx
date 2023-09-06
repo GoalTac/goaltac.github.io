@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from '../supabase';
 import Chat from "../components/Chats/PrivateChat";
-import { CloseIcon } from "@chakra-ui/icons";
 
 export default function ProfileView() {
 
@@ -11,8 +10,8 @@ export default function ProfileView() {
     const { profileName } = useParams<{ profileName: string }>();
     const [person, setPerson] = useState({ name: '', username: '', biography: '', avatarurl: '', streak: 0, points: 0, id: ''});
     //friends state variables
-    const [friendUsername, setFriendUsername] = useState<string>('');
     const [friendStatus, setFriendStatus] = useState(0);
+    const [isFriendRequestSentByUser, setIsFriendRequestSentByUser] = useState(false);
 
     const toast = useToast();
 
@@ -52,16 +51,20 @@ export default function ProfileView() {
             const { data: {user} } = await supabase.auth.getUser();
 
             if (user) {
-                
+                // if the user's on their own profile page, they shouldn't be friends with themselves
+                if (user.id == person.id) {
+                    setFriendStatus(-1);
+                }
+
                 // Check both: if user is the "related_user" or the "relating_user"
                 const { data: data1, error:error1 } = await supabase
                     .from('friends')
-                    .select('status')
+                    .select('*')
                     .eq('related_user', user.id)
                     .eq('relating_user', person.id);
                 const { data: data2, error:error2 } = await supabase
                     .from('friends')
-                    .select('status')
+                    .select('*')
                     .eq('related_user', person.id)
                     .eq('relating_user', user.id);
                 if (error1 || error2) {
@@ -71,15 +74,17 @@ export default function ProfileView() {
                 else {
                     if (data1.length > 0) {
                         setFriendStatus(data1[0].status);
+                        if (friendStatus==1 && data1[0].relating_user == user.id) {
+                            setIsFriendRequestSentByUser(true);
+                        }
                     }
                     else if (data2.length > 0) {
                         setFriendStatus(data2[0].status);
+                        if (friendStatus==1 && data2[0].relating_user == user.id) {
+                            setIsFriendRequestSentByUser(true);
+                        }
                     }
                     console.log("Friend Status is: \n", friendStatus);
-                    // if friend status == 1, then one person has requested the other as a friend, but 
-                    // the request has not been accepted yet. 
-                    // We should distinguish if the user or the profile sent the request, so that 
-                    // it is displayed differently on this page, ie "Cancel Request you sent" vs "Accept Request from profile"
                 }
             }
         };
@@ -87,6 +92,7 @@ export default function ProfileView() {
     });
 
 
+    // ---- Friends Functions ----
     const handleAddFriend = async () => { 
         //get user profile
         const { data: {user} } = await supabase.auth.getUser()
@@ -192,9 +198,40 @@ export default function ProfileView() {
         }
     };
 
+    const handleCancelFriendRequest = async () => {
+        // just call handleRemoveFriend() because the friend relationship is already in the database (it just has a differnt status)
+        handleRemoveFriend();
+    }
 
-    // Messages functions: 
-    // to be implemented / checked. Not sure how /components/Chats/PrivateChat.tsx works, we just imported it
+    const handleAcceptFriendRequest = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        const { error } = await supabase
+            .from('friends')
+            .update({
+                status: 2,
+            })
+            .eq('relating_user', person.id)
+            .eq('related_user', user?.id);
+    
+        if (error) {
+            toast({
+                title: "An error occurred.",
+                description: error.message,
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+        } else {
+            toast({
+                title: "Friend request accepted.",
+                description: `You are now friends with ${person.name}`,
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            });
+        }
+    }
+
 
     return (
         <>
@@ -236,10 +273,16 @@ export default function ProfileView() {
                         colorScheme="blue" 
                         fontSize="md" 
                         mb={1}
-                        onClick={friendStatus==2 ? handleRemoveFriend : handleAddFriend 
-                            /* need to add a check for friendstatus==1*/ }
+                        onClick={
+                            friendStatus==2 ? handleRemoveFriend : 
+                            friendStatus==1 && isFriendRequestSentByUser ? handleCancelFriendRequest : 
+                            friendStatus==1 ? handleAcceptFriendRequest : 
+                            friendStatus==0 ? handleAddFriend : () => {}}
                     >
-                            {friendStatus==2 ? "Remove Friend" : friendStatus==0 ? "Add Friend" : "Cancel Friend Request"}
+                            {friendStatus==2 ? "Remove Friend" : 
+                            friendStatus==1  && isFriendRequestSentByUser ? "Cancel Friend Request" : 
+                            friendStatus==1 ? "Accept Friend Request from " + person.name :
+                            friendStatus==0 ? "Add Friend" : "You can't friend yourself"}
                     </Button>
                 </Box>
             </Box>
