@@ -1,14 +1,22 @@
-import { Box, Flex, Text, IconButton, Drawer, DrawerOverlay, DrawerCloseButton, DrawerHeader, DrawerContent, DrawerBody, Avatar, AvatarBadge, InputGroup, Input, InputRightElement, Button, useColorMode, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, FormControl, ModalBody, FormLabel, ModalFooter, Toast, useToast, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, Text, IconButton, Drawer, DrawerOverlay, DrawerCloseButton, DrawerHeader, DrawerContent, DrawerBody, Avatar, AvatarBadge, InputGroup, Input, InputRightElement, Button, useColorMode, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, FormControl, ModalBody, FormLabel, ModalFooter, Toast, useToast, useColorModeValue, Stack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { FaCircle, FaRegPaperPlane, } from 'react-icons/fa';
 import { supabase } from '../../supabase';
-import { ChatIcon } from '@chakra-ui/icons';
+import { ChatIcon, CloseIcon } from '@chakra-ui/icons';
 import { useLocation } from 'react-router-dom';
 
 interface Message {
     text: string;
     sender: 'me' | 'other';
     avatarurl: string;
+}
+
+type PersonType = {
+    name: string,
+    username: string,
+    biography: string,
+    avatarurl: string,
+    userid: string,
 }
 
 export default function Chat() {
@@ -23,7 +31,7 @@ export default function Chat() {
 
     // display friends on the top bar
     const [friendIdArr, setFriendIdArr] = useState<string[]>([]); // array of friend ids
-    const [friendAvatarArr, setFriendAvatarArr] = useState<string[]>([]); // array of friend ids avatars
+    const [friends, setFriends] = useState<PersonType[]>([]);
 
     // handles adding friends
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -47,9 +55,60 @@ export default function Chat() {
         fetchMyChatId();
     }, []);
 
+
+    // Copied from Settings.tsx 
     useEffect(() => {
-        getAllFriends();
-    }, [myChatId]);
+        const fetchFriends = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+    
+            if (user) {
+                const { data: friendsData1, error: error1 } = await supabase
+                    .from('friends')
+                    .select('related_user')
+                    .eq('relating_user', user.id)
+                    .eq('status', 2);
+    
+                const { data: friendsData2, error: error2 } = await supabase
+                    .from('friends')
+                    .select('relating_user')
+                    .eq('related_user', user.id)
+                    .eq('status', 2);
+    
+                if (error1 || error2) {
+                    console.log(error1, error2);
+                } else {
+                    const friendsData = [
+                        ...friendsData1.map(item => ({ userId: item.related_user })),
+                        ...friendsData2.map(item => ({ userId: item.relating_user }))
+                    ];
+    
+                    const friendsWithUsernames: (PersonType | undefined)[] = await Promise.all(friendsData.map(async (friend) => {
+                        const { data: user, error } = await supabase
+                            .from('profiles')
+                            .select('*')
+                            .eq('userid', friend.userId)
+                            .single();
+    
+                        if (error) {
+                            console.log(error);
+                        }
+                        if (user) {
+                            return {
+                                name: user.name,
+                                username: user.username,
+                                biography: user.biography,
+                                avatarurl: user.avatarurl,
+                                userid: user.userid,
+                            };
+                        }
+                    }));
+    
+                    setFriends(friendsWithUsernames.filter((friend): friend is PersonType => friend !== undefined));
+                }
+            }
+        };
+        fetchFriends();
+    }, []);
 
     // Functions ----------------------------------------------------------------------
 
@@ -64,33 +123,6 @@ export default function Chat() {
         }
 
     }
-
-    const getAllFriends = async () => {
-
-        // get all friends
-        const { data } = await supabase.from('profiles').select('friends').eq('userid', myChatId);
-
-        if (data && data[0] && data[0].friends) {
-            // fills in ids
-            setFriendIdArr(data[0].friends);
-
-            // current chat that shows up is the first friend
-            handleFriendClick(data[0].friends[0]);
-
-            // gets avatars
-            const { data: friendAvatars } = await supabase
-                .from('profiles')
-                .select('avatarurl')
-                .in('userid', data[0].friends);
-
-            // fills in avatars and sets current chat avatar
-            setFriendAvatarArr(friendAvatars?.map((avatar: { avatarurl: any; }) => avatar.avatarurl) || []);
-            setCurrentChatAvatar(friendAvatars?.[0]?.avatarurl || '');
-        } else {
-            setFriendIdArr([]);
-            setFriendAvatarArr([]);
-        }
-    };
 
     // use this function to change the favicon to the alert icon
     const useAlert = (() => {
@@ -271,7 +303,12 @@ export default function Chat() {
             return;
         }
 
-        const { error } = await supabase.from('messages').insert([{ text: inputValue, sender_id: myChatId, recipient_id: currentChatMessages }]);
+        const { error } = await supabase.from('messages').insert([{ 
+            text: inputValue, 
+            sender_id: myChatId, 
+            recipient_id: currentChatMessages 
+        }]);
+        console.log("Sender_id & recipient_id variables: ", myChatId, currentChatMessages);
         if (error) {
             console.error(error);
             return;
@@ -308,10 +345,11 @@ export default function Chat() {
 
         } else {
 
-            if (receivedMessages.length === 0 && sentMessages.length === 0) {
-                setMessages([]);
-                return;
-            }
+            // if (receivedMessages.length === 0 && sentMessages.length === 0) {
+            //     console.log("messages length = 0!!!!!")
+            //     setMessages([]);
+            //     return;
+            // }
 
             const avatarUrls = await getAvatarUrls(receivedMessages, sentMessages);
 
@@ -357,26 +395,26 @@ export default function Chat() {
                     <DrawerHeader>Friends</DrawerHeader>
                     <DrawerBody>
                         <Box>
-                            {friendIdArr && friendIdArr.slice(0, 4).map((friend: any, index: number) => (
-                                <Avatar
-                                    key={index}
-                                    src={friendAvatarArr[index]}
-                                    size="sm"
-                                    m={1}
-                                    mb={-10}
-                                    onClick={() => handleFriendClick(friendIdArr[index])}
-                                />
-                            ))}
-                            {friendIdArr && friendIdArr.length > 4 && (
-                                <Button size="sm" m={1}>
-                                    ...
-                                </Button>
-                            )}
-
                             <Button size="sm" m={1} float="right" onClick={handleAddFriend}>
                                 +
                             </Button>
                         </Box>
+                        <Stack direction={'row'}>
+                            {friends.length === 0 && <Text>No friends yet</Text>}
+                            {friends.map((friend, i) => (
+                                <Box key={i} textAlign='center' p={3} >
+                                    <Flex direction="column" alignItems="center" position={'relative'}>
+                                        <Avatar 
+                                            size={"lg"} 
+                                            src={friend.avatarurl} 
+                                            onClick={() => handleFriendClick(friend.userid)} 
+                                            />
+                                    </Flex>
+                                    <Text>{friend.username}</Text>
+                                </Box>
+                            ))}
+                        </Stack>
+
 
 
                         <Modal isOpen={isModalOpen} onClose={handleModalClose}>
