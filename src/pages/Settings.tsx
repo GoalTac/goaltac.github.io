@@ -226,6 +226,7 @@ export default function Profile() {
                 duration: 9000,
                 isClosable: true,
             });
+            setFriendUsername(''); // clear the friend's username field
             return;
         }
 
