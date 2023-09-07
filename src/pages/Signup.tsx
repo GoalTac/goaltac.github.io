@@ -128,6 +128,7 @@ export default function SignUpPage() {
                                     id='email'
                                     placeholder='Email Address'
                                     value={email}
+                                    textColor={useColorModeValue('black','white')}
                                     onChange={event => setEmail(event.target.value)}
                                 />
                             </InputGroup>
