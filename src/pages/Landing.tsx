@@ -8,7 +8,7 @@ import {
     FaLinkedin,
     FaLock,
 } from 'react-icons/fa';
-import { AddIcon, AtSignIcon, CheckIcon, InfoIcon, InfoOutlineIcon, MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
+import { AddIcon, AtSignIcon, CheckIcon, EmailIcon, InfoIcon, InfoOutlineIcon, MoonIcon, SettingsIcon, SunIcon } from '@chakra-ui/icons';
 import logo_name from './../images/GoalTac_Logo.png'
 import logo from './../images/logo.png'
 import logo_stacked from './../images/GoalTac_TLogo.png'
@@ -99,9 +99,9 @@ export default function LandingPage() {
     }
 
     function Header() {
-        return (<HStack
+        return (<Stack
             justify='space-between'
-            alignItems='center'
+            alignItems='center' flexDirection={['column','row']}
             px={['1rem','3rem']}
             py={['1rem','2rem']} overflowX='hidden'>
             <Image src={logo_name} maxWidth='10rem' />
@@ -110,7 +110,7 @@ export default function LandingPage() {
             
             <SignInButton />
 
-        </HStack>);
+        </Stack>);
     }
 
     function Intro() {
@@ -143,29 +143,89 @@ export default function LandingPage() {
     }
 
     function IntroPreLaunch() {
+        const email = useRef('')
+        const toastEmail = useToast({
+            title: "Email is not formatted correctly",
+            position: 'bottom',
+            status: 'error',
+            duration: 4000,
+            isClosable: true,
+        });
+        const toastDuplicate = useToast({
+            title: "This email has already been signed up",
+            position: 'bottom',
+            status: 'error',
+            duration: 4000,
+            isClosable: true,
+        });
+        const toastSuccess = useToast({
+            title: "Successfully signed up!",
+            position: 'bottom',
+            status: 'success',
+            duration: 4000,
+            isClosable: true,
+        });
+        const handleSubmit = (event: React.SyntheticEvent) => {
+            event.preventDefault();
+
+            const isEmail = (checkedEmail: string) => {
+                return String(checkedEmail)
+                    .toLowerCase()
+                    .match(
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                    );
+                };
+            if(!isEmail(email.current)) {
+                toastEmail()
+                return
+            }
+
+            async function addEmail(value: string) {
+                const { data:data, error } = await supabase
+                    .from('Email_Updates')
+                    .upsert({email: value})
+                    .select()
+
+                if (error) {
+                    if (error.code == '23505') {
+                        toastDuplicate()
+                    }
+                } else {
+                    toastSuccess()
+                }
+                return data
+            }
+            addEmail(email.current)
+        }
         return (
-            <Flex
-                position='relative'
+            <Flex position='relative'
                 alignItems={'center'}
                 textAlign={['center']}
-                id='product' height='fit-content' minH={800}>
+                id='product' height='fit-content' minH={[400,800]}>
                 <VStack rowGap='2rem' marginBottom='6rem' marginX='auto'>
-                    <Flex maxWidth='700px' flexDirection='column' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
+                    <Flex maxWidth='700px' flexDirection='column' alignItems='center' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
                         <Heading fontSize={['2rem','4rem']} fontWeight='300' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
                             You're a Little Early!
                         </Heading>
-                        <Text maxWidth={[null, '90%']} lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']} marginBottom='50px'>
-                            Click on Get Started for email updates!
-                            {/* Replace: Find your community now! */}
-                        </Text>
-                        <Flex flexDirection={['column','row']} gap='30px'>
-                           <SignUpButton /> 
-                           <LearnMoreButton />
+                        <Flex padding='2rem' maxWidth='80%' borderRadius={measurements.cards.borderRadius} boxShadow='lg' backgroundColor={useColorModeValue('gray.50', 'gray.900')} flexDirection='column' gap='30px'>
+                            <Text lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']} marginBottom='50px'>
+                                Add your email here to get the latest updates!
+                                {/* Replace: Find your community now! */}
+                            </Text>
+                            <FormControl>
+                                <Input type='email' height='4rem' fontSize='lg' placeholder='example@gmail.com'
+                                    onChange={(e)=>{email.current = e.currentTarget.value}} autoFocus={true}/>
+                            </FormControl>
+                            <Button fontSize='lg' height='3rem' leftIcon={<EmailIcon/>}
+                                onClick={(e)=>handleSubmit(e)}>
+                                Subscribe
+                            </Button>
                         </Flex>
                        
                     </Flex>
+                    
+                    <LearnMoreButton/>
                 </VStack>
-
             </Flex>
         );
     }
