@@ -183,7 +183,7 @@ export default function LandingPage() {
             async function addEmail(value: string) {
                 const { data:data, error } = await supabase
                     .from('Email_Updates')
-                    .upsert({email: value})
+                    .insert({email: value})
                     .select()
 
                 if (error) {
