@@ -1,11 +1,18 @@
 import { AddIcon, CheckIcon, ChevronDownIcon, InfoOutlineIcon, UpDownIcon } from "@chakra-ui/icons"
 import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer } from "@chakra-ui/react"
 import React, { useRef, useState } from "react"
-import { _addTask, _addUserTask, _getUserTasks } from "./TaskAPI"
+import { _addTask, _addUserTask, _getTaskLimit, _getUserTasks } from "./TaskAPI"
 import { useSession } from "../../hooks/SessionProvider"
 import { RiInformationFill } from "react-icons/ri"
 import { start } from "repl"
 
+/**
+ * TODO:
+ * 1. Limit user to a certain amount of tasks
+ * 2. Require user to follow bell curve model by limiting the max points
+ * 
+ * @returns Task Drawer component
+ */
 export default function TaskDrawer() {
     
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -16,7 +23,7 @@ export default function TaskDrawer() {
     const [type, setType] = useState<any>('Boolean')
     const requirement = useRef<any>(1)
     const [reward, setReward] = useState<any>(1)
-    const { user: user } = useSession();
+    const user = useSession().user //this rerenders the page tons of times
     const [tasks, setTasks] = useState<any>([])
     const [selectedTasks, setSelectedTasks] = useState<any>([])
     const [reoccurence, setReoccurence] = useState<string>('')
@@ -24,6 +31,7 @@ export default function TaskDrawer() {
     const uuid = user ? user?.['id'] : ''
     const toast = useToast()
 
+    //gets rid of 4 re-renders
     React.useEffect(()=>{
         async function fetchTasks() {
             const collectedTasks = await Promise.all(await _getUserTasks(uuid))
@@ -31,6 +39,7 @@ export default function TaskDrawer() {
             setTasks(collectedTasks)
             return collectedTasks
         }
+        
         fetchTasks()
     },[])
 
@@ -102,8 +111,7 @@ export default function TaskDrawer() {
         
 
         
-    }
-    
+    } 
 
     function TypeSelect() {
         function RadioCard(props: any) {
@@ -280,7 +288,6 @@ export default function TaskDrawer() {
 
         return <RenderSwitch/>
     }
-    
     
     return (
         <>
