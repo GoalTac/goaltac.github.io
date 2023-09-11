@@ -431,11 +431,11 @@ export default function LandingPage() {
             pt={"3rem"}>
             <Box fontSize={['30px', '4xl']} fontWeight='700' >Our Team</Box>
             <Carousel
-                removeArrowOnDeviceType={[
+                /*removeArrowOnDeviceType={[
                     'mobile',
                     'tablet',
                     'desktop',
-                ]}
+                ]}*/
                 showDots={true}
                 responsive={responsive}
                 autoPlay={true}
@@ -554,6 +554,11 @@ export default function LandingPage() {
             );
         }
         const { toggleColorMode, colorMode } = useColorMode();
+        
+        const handleToggle = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            e.preventDefault();
+            toggleColorMode();
+        }
 
         return (
             <VStack
@@ -571,8 +576,7 @@ export default function LandingPage() {
                     <Spacer/>
                     <HStack alignSelf={['center','right']}>
                         <MediaIcons />
-                        <Button onClick={toggleColorMode} 
-                        variant='ghost'>
+                        <Button onClick={(e)=>handleToggle(e)} variant='ghost'>
                             {useColorModeValue(<SunIcon />, <MoonIcon />)}
                         </Button>
                     </HStack>
