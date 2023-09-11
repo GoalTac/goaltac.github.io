@@ -19,6 +19,8 @@ export default function TaskDrawer() {
     const { user: user } = useSession();
     const [tasks, setTasks] = useState<any>([])
     const [selectedTasks, setSelectedTasks] = useState<any>([])
+    const [reoccurence, setReoccurence] = useState<string>('')
+
     const uuid = user ? user?.['id'] : ''
     const toast = useToast()
 
@@ -44,6 +46,7 @@ export default function TaskDrawer() {
             setType('Boolean')
             setReward(1)
             setSelectedTasks([])
+            setReoccurence('')
         }
 
         function checks(): Boolean {
@@ -69,7 +72,8 @@ export default function TaskDrawer() {
             description: description,
             requirement: requirement.current,
             reward: reward,
-            type: type
+            type: type,
+            reoccurence: reoccurence
         }
 
         const createdTask = await _addTask(newTask).finally(()=>{
@@ -277,6 +281,7 @@ export default function TaskDrawer() {
         return <RenderSwitch/>
     }
     
+    
     return (
         <>
         <Button leftIcon={<AddIcon/>} colorScheme='teal' onClick={onOpen}>
@@ -295,21 +300,22 @@ export default function TaskDrawer() {
 
             <DrawerBody marginTop='20px'>
                 <Stack spacing='24px'>
-                <Box>
+                <FormControl isRequired>
                     <FormLabel htmlFor='title'>Title</FormLabel>
                     <Input ref={firstField} id='title' value={title} aria-required={true}
                         onChange={e=>{setTitle(e.target.value)}}
                         errorBorderColor='crimson'
                         isInvalid={title ? false : true}
                         placeholder='A task name is required'/>
-                </Box>
+                </FormControl>
 
-                <Box>
+                <FormControl isRequired>
                     <FormLabel htmlFor='description'>Description</FormLabel>
+
                     <Textarea id='description' value={description}
                         onChange={e=>{setDescription(e.target.value)}}
                         placeholder='Describe your task. What should you do?'/>
-                </Box>
+                </FormControl>
 
                 <FormControl>
                     <FormLabel htmlFor='type'>Task type</FormLabel>
@@ -325,14 +331,13 @@ export default function TaskDrawer() {
 
                 <FormControl>
                     <FormLabel htmlFor='duration'>Duration</FormLabel>
-                    <FormHelperText>More features coming soon</FormHelperText>
 
-                    <Flex flexDirection={'column'} rowGap='10px'>
+                    <Flex flexDirection={'column'} rowGap='20px'>
                         <Flex flexDir={'row'}>
                             <FormHelperText width='50px' fontSize='14px'>Start</FormHelperText>
-                        <Input placeholder="Select Date and Time"
-                            size="md" onChange={(e)=>setStartDate(e.target.value)}
-                            type="datetime-local" />
+                            <Input placeholder="Select Date and Time"
+                                size="md" onChange={(e)=>setStartDate(e.target.value)}
+                                type="datetime-local" />
                         </Flex>
                         <Flex flexDirection='row'>
                             <FormHelperText width='50px' fontSize='14px'>End</FormHelperText>
@@ -340,12 +345,54 @@ export default function TaskDrawer() {
                                 size="md" onChange={(e)=>setEndDate(e.target.value)}
                                 type="datetime-local" />
                         </Flex>
-                        
+                        <Flex flexDirection='row' columnGap='20px' rowGap='10px' alignSelf='center'>
+                            <Text maxWidth='100px'>
+                                Does your task repeat?
+                            </Text>
+                            <Menu isLazy>
+                                <MenuButton width='200px' as={Button} rightIcon={<ChevronDownIcon />} variant='outline'>
+                                    {reoccurence.length > 0 ? reoccurence : 'None'}
+                                </MenuButton>
+                                <MenuList maxHeight='300px' overflowY='scroll'>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value=''>None</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every 1 day'>1 day</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every 2 days'>2 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every 3 days'>3 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every 4 days'>4 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every 5 days'>5 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every 6 days'>6 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every week'>1 week</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every 8 days'>8 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every 9 days'>9 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every 10 days'>10 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every 11 days'>11 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every 12 days'>12 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every 13 days'>13 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
+                                        value='Every 2 weeks'>2 weeks</MenuItem>
+                                </MenuList>
+                            </Menu>
+                        </Flex>
                         
                         
                     </Flex>
                 </FormControl>
-                <Box>
+
+                <FormControl>
                     <FormLabel htmlFor='reward'>Points rewarded: {reward}</FormLabel>
                     
                     <Slider size='lg' id='reward' defaultValue={1} min={1} max={5} step={1} onChange={value=>{setReward(value)}}>
@@ -356,7 +403,7 @@ export default function TaskDrawer() {
                             <Text fontSize='15' fontWeight='300' color='red'>{reward}</Text>
                         </SliderThumb>
                     </Slider>    
-                </Box>
+                </FormControl>
 
                 
                 </Stack>
