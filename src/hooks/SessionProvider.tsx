@@ -9,6 +9,7 @@ const SessionContext = createContext({
 });
 
 export const SessionProvider = ({ children, supabase }: any) => {
+  console.log('Session Provider: Reloads too much. FIX SOON!')
   const [user, setUser] = useState<any>();
   const [session, setSession] = useState<any>();
   const [loading, setLoading] = useState(true);
@@ -73,7 +74,6 @@ export const SessionProvider = ({ children, supabase }: any) => {
     supabase,
     profile,
   };
-
   return (
     <SessionContext.Provider value={contextObject}>
       {!loading ? children : null}
