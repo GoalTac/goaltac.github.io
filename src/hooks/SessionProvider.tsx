@@ -9,7 +9,6 @@ const SessionContext = createContext({
 });
 
 export const SessionProvider = ({ children, supabase }: any) => {
-  console.log('Session Provider: Reloads too much. FIX SOON!')
   const [user, setUser] = useState<any>();
   const [session, setSession] = useState<any>();
   const [loading, setLoading] = useState(true);
@@ -18,9 +17,10 @@ export const SessionProvider = ({ children, supabase }: any) => {
   useEffect(() => {
     const requestSession = async () => {
       const { data: { session }, error } = await supabase.auth.getSession();
-
+      
       if (error) throw error;
 
+      //re rendering too much is due to getting profile
       if(session) {
         const { 
           data: profileData, 
@@ -30,22 +30,23 @@ export const SessionProvider = ({ children, supabase }: any) => {
           .select('*')
           .eq('userid', session?.user.id).single()
         if (profileError) throw profileError;
-        setProfile(profileData)
+
+        function updateData() {
+          setProfile(profileData)
+          setSession(session);
+          setUser(session?.user);
+        }
+        updateData()
+        setLoading(false);
       }
+     
       
-
-
-
-      setSession(session);
-      setUser(session?.user);
-      setLoading(false);
+      
     };
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       async(_event: any, newSession: any) => {
-        setSession(newSession);
-        setUser(newSession?.user);
-        setLoading(false);
+       
 
         if (newSession) {
           const { 
@@ -54,8 +55,14 @@ export const SessionProvider = ({ children, supabase }: any) => {
             .from('profiles')
             .select('*')
             .eq('userid', newSession.user.id).single()
+          function updateData() {
+            setProfile(profileData)
+            setSession(newSession);
+            setUser(newSession?.user);
+          }
+          updateData()
           
-          setProfile(profileData)
+          setLoading(false);
         }
         
       }
