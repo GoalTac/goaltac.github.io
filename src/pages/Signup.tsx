@@ -40,7 +40,7 @@ export default function SignUpPage() {
     // Functions ----------------------------------------------------------------------
     const handleShowClick = () => setShowPassword(!showPassword);
 
-    const handleSubmit = async (event: { preventDefault: () => void; }) => {
+    const handleSubmit = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
 
         if (email === "" || password === "") { //Can limit what is/isn't acceptable for a password (use methods for comparisons for more complicated checks)
@@ -54,10 +54,40 @@ export default function SignUpPage() {
             return
         }
 
-        try {
-            // sign up
-            const { data, error } = await supabase.auth.signUp({ email, password });
+        async function addAccount() {
 
+            //functionality for checking duplicate email
+            async function checkDuplicate(email: any) {
+                const { data: data, error: error } = await supabase
+                    .from('Email_Updates')
+                    .select()
+                    .eq('email', email);
+                if (error) {
+                    if (error.code == "42501") {
+                        toast({
+                            title: "This email has already been signed up",
+                            position: 'bottom',
+                            status: 'error',
+                            duration: 4000,
+                            isClosable: true,
+                        });
+                    }
+                    return true
+                } else {
+                    return false
+                }
+                
+            }
+
+            //Check for duplicate email upon attempt sign up
+            const isDuplicate = await checkDuplicate(email)
+            if (isDuplicate) {
+                return false
+            }
+
+            //After checking for duplicate email, call supabase to authenticate new user
+            const { data, error } = await supabase
+                .auth.signUp({ email: email, password: password });
             if (error) {
                 toast({
                     title: `${error}`,
@@ -66,37 +96,57 @@ export default function SignUpPage() {
                     duration: 5000,
                     isClosable: false,
                 })
-                throw error;
+                throw Error(error.message);
             }
-
-            //Insert username and other data into profiles table
-
-            const { error: insertError } = await supabase.from('profiles').update([{ userid: data?.user?.id }]).eq('userid', data?.user?.id);
-            if (insertError) {
-                throw insertError;
-            }
-
-            toast({
-                title: "Successfully created account!",
-                position: 'bottom',
-                status: 'success',
-                duration: 5000,
-                isClosable: true,
-            })
-
-            //Navigate to check your email page
-            navigate('/checkyouremail');
-
-
-        } catch (err) {
-            return toast({
-                title: `${err}`,
-                status: 'error',
-                duration: 5000,
-                isClosable: true,
-            });
-            
+            return data
         }
+
+        /**
+         * After authenticating the user, add them to the email listing
+         * @param userData
+         */
+        async function addEmail(value: string) {
+            const { data:data, error } = await supabase
+                .from('Email_Updates')
+                .insert({email: value})
+                .select()
+            if (error) {
+                if (error.code == '23505') {
+                    toast({
+                        title: "This email has already been signed up",
+                        position: 'bottom',
+                        status: 'error',
+                        duration: 4000,
+                        isClosable: true,
+                    })
+                }
+                return false
+            } else {
+                return true
+            }
+
+        }
+        addAccount().then(async(data: any)=>{
+            if (!data) {
+                return
+            }
+            const email = data?.user?.email
+            const isSuccess = await addEmail(email)
+            if (isSuccess) {
+                //Navigate to check your email page
+                toast({
+                    title: "Account awaiting verification!",
+                    description: `Please check your email at ${email}`,
+                    position: 'bottom',
+                    status: 'success',
+                    duration: 100000,
+                    isClosable: true,
+                })
+            }
+        })
+        
+        
+            
     };
 
     return (
@@ -128,6 +178,7 @@ export default function SignUpPage() {
                                     id='email'
                                     placeholder='Email Address'
                                     value={email}
+                                    textColor={useColorModeValue('black','white')}
                                     onChange={event => setEmail(event.target.value)}
                                 />
                             </InputGroup>

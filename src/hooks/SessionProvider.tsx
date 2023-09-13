@@ -17,9 +17,10 @@ export const SessionProvider = ({ children, supabase }: any) => {
   useEffect(() => {
     const requestSession = async () => {
       const { data: { session }, error } = await supabase.auth.getSession();
-
+      
       if (error) throw error;
 
+      //re rendering too much is due to getting profile
       if(session) {
         const { 
           data: profileData, 
@@ -29,22 +30,23 @@ export const SessionProvider = ({ children, supabase }: any) => {
           .select('*')
           .eq('userid', session?.user.id).single()
         if (profileError) throw profileError;
-        setProfile(profileData)
+
+        function updateData() {
+          setProfile(profileData)
+          setSession(session);
+          setUser(session?.user);
+        }
+        updateData()
+        setLoading(false);
       }
+     
       
-
-
-
-      setSession(session);
-      setUser(session?.user);
-      setLoading(false);
+      
     };
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       async(_event: any, newSession: any) => {
-        setSession(newSession);
-        setUser(newSession?.user);
-        setLoading(false);
+       
 
         if (newSession) {
           const { 
@@ -53,8 +55,17 @@ export const SessionProvider = ({ children, supabase }: any) => {
             .from('profiles')
             .select('*')
             .eq('userid', newSession.user.id).single()
+
+          //useMemo to compare old and new Data to avoid unecessary loading
+          function updateData() {
+            setProfile(profileData)
+            setSession(newSession);
+            setUser(newSession?.user);
+          }
+          updateData()
           
-          setProfile(profileData)
+          
+          setLoading(false);
         }
         
       }
@@ -73,7 +84,6 @@ export const SessionProvider = ({ children, supabase }: any) => {
     supabase,
     profile,
   };
-
   return (
     <SessionContext.Provider value={contextObject}>
       {!loading ? children : null}

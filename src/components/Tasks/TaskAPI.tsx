@@ -114,8 +114,22 @@ export async function _removeChildTask(parentID: string, childID: string) {
  * @param taskID 
  * @param task 
  */
-export async function _setTask(taskID: string, task: {}) {
-    
+export async function _setTask(taskID: string, task: any) {
+    const { error } = await supabase
+    .from('tasks')
+    .update({start_date: task.start_date,
+            end_date: task.end_date, 
+            name: task.name, 
+            description: task.description, 
+            requirement: task.requirement, 
+            reward: task.reward, 
+            type: task.type})
+    .eq('id', taskID);
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
 }
 
 /**
@@ -123,7 +137,15 @@ export async function _setTask(taskID: string, task: {}) {
  * @param taskID
  */
 export async function _deleteTask(taskID: string) {
-    
+    const { error } = await supabase
+        .from('tasks')
+        .delete()
+        .eq('id', taskID);
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
 }
 
 /**
@@ -162,6 +184,29 @@ export async function _addTask(task: any) {
     return data;
 }
 
+/**
+ * returns object of the user's task limit, how many they have left to make, and 
+ * @param userID
+ * @returns returns object
+ */
+export async function _getTaskLimit(userID: string) {
+    const { data, count } = await supabase //returns number of tasks that the user has completed
+        .from('task_user_relations')
+        .select('*', { count: 'exact', head: true }).eq('user_id', userID)
+    /**
+     * retrieves the user's role from the database, and determines their task limit
+     */
+
+    const defaultTaskLimit = 20
+    const tasksLeft = defaultTaskLimit - (count ? count : 0)
+    return { 
+        limit: defaultTaskLimit,
+        available: tasksLeft,
+        data: data
+    }
+
+}
+
 export async function _getTaskbyID(taskID: string) {
     const { data: data, error } = await supabase
         .from('tasks')
@@ -181,9 +226,35 @@ export async function _getTaskbyID(taskID: string) {
  */
 export async function _duplicateTask(taskID: string) {
 
+    //get original task data
+    const duplicated_task = await _getTaskbyID(taskID);
+
+    //check if task does not exist
+    if (!duplicated_task) {
+        throw new Error('Task not found');
+    }
+    
+    //duplicate task in supabase
+    const { data, error } = await supabase
+        .from('tasks')
+        .insert([duplicated_task])
+        .single()
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
 }
 
-export async function _shareTasktoUser(taskID: string) {
+export async function _shareTasktoUser(taskID: string, userID: string) {
+    const { data, error } = await supabase 
+        .from('task_user_relations')
+        .insert({ task_id: taskID, user_id: userID})
+        .single()
+
+    if (error) {
+        throw new Error(error.message);
+    }
 
 }
 
@@ -248,6 +319,16 @@ export async function _addUserTask(userID: string | undefined, taskID: string) {
  * @param taskID 
  */
 export async function _deleteUserTask(userID: string, taskID: string) {
+    const { error } = await supabase
+        .from('task_user_relations')
+        .delete()
+        .eq('task_id', taskID)
+        .eq('user_id', userID);
+    
+    if (error) {
+        throw new Error(error.message);
+    }
+
 
 }
 
@@ -256,8 +337,37 @@ export async function _deleteUserTask(userID: string, taskID: string) {
  * @param userID 
  * @param taskID 
  */
-export async function _setUserTask(userID: string, taskID: string) {
 
+export async function _setUserTask(userID: string, taskID: string) {
+    const relationData = {
+        task_id: taskID,
+        user_id: userID
+    };
+
+    // check if a relation already exists
+    const { data } = await supabase
+        .from('task_user_relations')
+        .select('*')
+        .eq('task_id', taskID)
+        .eq('user_id', userID)
+        .single();
+
+    if (data) {
+        return data;
+
+    } else {
+        // if no relation create new one
+        const { data: newData, error } = await supabase
+            .from('task_user_relations')
+            .insert([relationData])
+            .single();
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        return newData;
+    }
 }
 
 /**
@@ -266,7 +376,19 @@ export async function _setUserTask(userID: string, taskID: string) {
  * @param taskID 
  */
 export async function _getProgress(userID: string, taskID: string) {
+    const { data, error } = await supabase
+        .from('task_user_relations')
+        .select('progress')
+        .eq('task_id', taskID)
+        .eq('user_id', userID)
+        .single();
 
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    // Return the progress value 
+    return data;
 }
 
 /**
@@ -276,6 +398,24 @@ export async function _getProgress(userID: string, taskID: string) {
  * @param progress 
  */
 export async function _addProgress(userID: string, taskID: string, progress: number) {
+    // get the current progress
+    const currentProgressObj = await _getProgress(userID, taskID);
+    const currentProgressValue = currentProgressObj ? currentProgressObj.progress : 0;
+
+    // calculate the updated progress
+    const updatedProgress = currentProgressValue + progress;
+
+    const { error } = await supabase
+        .from('task_user_relations')
+        .upsert({ 
+            user_id: userID,
+            task_id: taskID,
+            progress: updatedProgress 
+        });
+
+    if (error) {
+        throw new Error(error.message);
+    }
 
 }
 
@@ -285,10 +425,17 @@ export async function _addProgress(userID: string, taskID: string, progress: num
  * @param taskID 
  * @param progress 
  */
-export async function _deleteProgress(userID: string, taskID: string, progress: number) {
+export async function _deleteProgress(userID: string, taskID: string) {
+    const { error } = await supabase
+        .from('task_user_relations')
+        .update({ progress: 0 })
+        .eq('task_id', taskID)
+        .eq('user_id', userID);
 
+    if (error) {
+        throw new Error(error.message);
+    }
 }
-
 /**
  * Sets the progress of a task
  * @param userID 
@@ -296,7 +443,17 @@ export async function _deleteProgress(userID: string, taskID: string, progress: 
  * @param progress 
  */
 export async function _setProgress(userID: string, taskID: string, progress: number) {
+    const { error } = await supabase
+        .from('task_user_relations')
+        .upsert({ 
+            user_id: userID,
+            task_id: taskID,
+            progress: progress 
+        });
 
+    if (error) {
+        throw new Error(error.message);
+    }
 }
 
 /**
@@ -305,5 +462,5 @@ export async function _setProgress(userID: string, taskID: string, progress: num
  * @param taskID 
  */
 export async function _isComplete(userID: string, taskID: string) {
-
+    
 }

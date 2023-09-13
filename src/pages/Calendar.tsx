@@ -27,7 +27,7 @@ const getColumns = () => {
   });
 };
 
-function Calendar() {
+function Calendar(tasks: any) {
 
   // Variables ----------------------------------------------------------------------
   const columns = getColumns();

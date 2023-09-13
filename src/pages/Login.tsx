@@ -172,6 +172,7 @@ export default function Login() {
                                             type='email'
                                             placeholder='Email Address'
                                             value={email}
+                                            textColor={useColorModeValue('black','white')}
                                             onChange={event => setEmail(event.target.value)}
                                             _autofill={{ backgroundColor: 'transparent' }}
                                         />
