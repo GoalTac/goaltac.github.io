@@ -214,7 +214,7 @@ export default function LandingPage() {
                             </Text>
                             <FormControl>
                                 <Input type='email' height='4rem' fontSize='lg' placeholder='example@gmail.com'
-                                    onChange={(e)=>{email.current = e.currentTarget.value}} autoFocus={true}/>
+                                    onChange={(e)=>{email.current = e.currentTarget.value}}/>
                             </FormControl>
                             <Button fontSize='lg' height='3rem' leftIcon={<EmailIcon/>}
                                 onClick={(e)=>handleSubmit(e)}>
@@ -554,11 +554,6 @@ export default function LandingPage() {
             );
         }
         const { toggleColorMode, colorMode } = useColorMode();
-        
-        const handleToggle = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-            e.preventDefault();
-            toggleColorMode();
-        }
 
         return (
             <VStack
@@ -576,7 +571,7 @@ export default function LandingPage() {
                     <Spacer/>
                     <HStack alignSelf={['center','right']}>
                         <MediaIcons />
-                        <Button onClick={(e)=>handleToggle(e)} variant='ghost'>
+                        <Button onClick={toggleColorMode} variant='ghost'>
                             {useColorModeValue(<SunIcon />, <MoonIcon />)}
                         </Button>
                     </HStack>
