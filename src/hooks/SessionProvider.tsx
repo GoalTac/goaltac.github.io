@@ -55,12 +55,15 @@ export const SessionProvider = ({ children, supabase }: any) => {
             .from('profiles')
             .select('*')
             .eq('userid', newSession.user.id).single()
+
+          //useMemo to compare old and new Data to avoid unecessary loading
           function updateData() {
             setProfile(profileData)
             setSession(newSession);
             setUser(newSession?.user);
           }
           updateData()
+          
           
           setLoading(false);
         }

@@ -19,7 +19,7 @@ type TaskType = {
     tag: never[];
 };
 
-export default function List() {
+export default function List(tasks: any) {
     
     //state variables for tasks
 
