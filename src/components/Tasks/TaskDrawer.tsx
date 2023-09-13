@@ -26,7 +26,7 @@ export default function TaskDrawer() {
     const user = useSession().user //this rerenders the page tons of times
     const [tasks, setTasks] = useState<any>([])
     const [selectedTasks, setSelectedTasks] = useState<any>([])
-    const [reoccurence, setReoccurence] = useState<string>('')
+    const [reoccurence, setReoccurence] = useState<number>(1)
 
     const uuid = user ? user?.['id'] : ''
     const toast = useToast()
@@ -55,7 +55,7 @@ export default function TaskDrawer() {
             setType('Boolean')
             setReward(1)
             setSelectedTasks([])
-            setReoccurence('')
+            setReoccurence(0)
         }
 
         function checks(): Boolean {
@@ -358,39 +358,25 @@ export default function TaskDrawer() {
                             </Text>
                             <Menu isLazy>
                                 <MenuButton width='200px' as={Button} rightIcon={<ChevronDownIcon />} variant='outline'>
-                                    {reoccurence.length > 0 ? reoccurence : 'None'}
+                                    {reoccurence}
                                 </MenuButton>
                                 <MenuList maxHeight='300px' overflowY='scroll'>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value=''>None</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every 1 day'>1 day</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every 2 days'>2 days</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every 3 days'>3 days</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every 4 days'>4 days</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every 5 days'>5 days</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every 6 days'>6 days</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every week'>1 week</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every 8 days'>8 days</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every 9 days'>9 days</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every 10 days'>10 days</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every 11 days'>11 days</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every 12 days'>12 days</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every 13 days'>13 days</MenuItem>
-                                    <MenuItem onClick={(e)=>setReoccurence(e.currentTarget.value)} 
-                                        value='Every 2 weeks'>2 weeks</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(0)} 
+                                        value={0}>None</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(1)} 
+                                        value={1}>1 day</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(2)} 
+                                        value={2}>2 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(3)} 
+                                        value={3}>3 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(4)} 
+                                        value={4}>4 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(5)} 
+                                        value={5}>5 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(6)} 
+                                        value={6}>6 days</MenuItem>
+                                    <MenuItem onClick={(e)=>setReoccurence(7)} 
+                                        value={7}>1 week</MenuItem>
                                 </MenuList>
                             </Menu>
                         </Flex>
