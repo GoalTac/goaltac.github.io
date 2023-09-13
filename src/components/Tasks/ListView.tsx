@@ -1,4 +1,4 @@
-import { Avatar, Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, HStack, Heading, Icon, IconButton, Spacer, Text, useColorModeValue } from "@chakra-ui/react";
+import { Avatar, Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, HStack, Heading, Icon, IconButton, Spacer, Stack, Text, Tooltip, useColorModeValue, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { useSession } from "../../hooks/SessionProvider";
 import React from "react";
@@ -80,57 +80,60 @@ export default function ListView({tasks}: Task[] | any, {relations}: Relation[] 
             //TODO button hover reveal more time details
             //TODO on button click, change time
             const nextDate = nextDueDate(reoccurence, start_date, end_date)
-            return <Button variant='ghost' leftIcon={<CalendarIcon/>}>{nextDate ? nextDate.toLocaleString(undefined, {
+            return <Flex justifyContent='right' alignItems='center' columnGap='4px' fontSize='10px'><CalendarIcon/>{nextDate ? nextDate.toLocaleString(undefined, {
                 month: "short", day: "numeric"
-            }) : 'Soon!'}</Button>
+            }) : 'Soon?'}</Flex>
         }
         const ProgressIndicator = () => {
             //Should be taken from Task API eventually
-            const progress = 0
+            const progress = 0.9999
 
             //Should be from Task API eventually
             const isComplete = progress/requirement >= 1
 
-            return <HStack backgroundColor={isComplete ? 'green.200' : 'orange.200'} padding='5px'>
-                {isComplete ? <CheckCircleIcon/> : <FaHourglassHalf/>}
-                <Spacer/>
-                <Flex>
-                    {progress}/{requirement}
-                </Flex>
+            //there is a bug when progress is greater than 4 decimal points. Rounds to next whole number
+
+            return <HStack justifyContent='right'>
+                <Tooltip fontSize='8px' hasArrow label={`${progress}/${requirement}`}>
+                    <Text borderRadius='10px' backgroundColor={isComplete ? useColorModeValue('green.200','green.600') : useColorModeValue('orange.200','yellow.600')} fontSize='10px' paddingX='10px' width='fit-content'>
+                        {((progress/requirement) * 100).toFixed(2)}%
+                    </Text>
+                </Tooltip>
                 
             </HStack>
         }
+
+        const toast = useToast({colorScheme:'orange', isClosable: true, duration: 2000, variant:'solid', title:'Work in Progress', description: 'An edit module will pop up!'})
         
-        return <Flex padding='20px' backgroundColor={useColorModeValue('gray.50', 'gray.900')} width='fit-content'>
-            <Card backgroundColor='blue.400' overflow='hidden' minHeight='150px' maxHeight={['450px','300']} maxWidth='500px' size='md' flexDirection={['column','row']} alignItems={[null,'center']}>
-                <Flex padding='10px' gap='10px' marginStart='15px' backgroundColor='Background' height='inherit' minHeight='inherit' width='100%' maxHeight='inherit' flexDirection={['column','row']} alignItems={['center','start']}>
-                    <Flex flexDirection={'column'} maxW='300px'>
+        return <Card width='fit-content' margin='20px' backgroundColor='blue.400' overflow='hidden' minHeight='150px' maxHeight={['450px','300']} maxWidth='500px' size='md' flexDirection={['column','row']} alignItems={[null,'center']}>
+                <Flex onClick={()=>toast()} cursor='pointer' _hover={{backgroundColor:useColorModeValue('gray.100','gray.900')}} padding='10px' gap='10px' marginStart='15px' backgroundColor={useColorModeValue('white','gray.800')} height='inherit' minHeight='inherit' width='100%' maxHeight='inherit' flexDirection={['column','row']} alignItems={['center','start']}>
+                    <Flex flexDirection={'column'} maxW='300px' marginBottom='auto'>
                         <Heading textOverflow='ellipsis' whiteSpace='nowrap' overflow='hidden' maxW='inherit' fontWeight='500' fontSize='1.25rem' alignSelf={['center','start']} height='fit-content'>
                             {name}
                         </Heading>
-                        <CardBody maxHeight={['250px','200px']} overflow='scroll' alignSelf={['center','start']} maxW='inherit'>
+                        
+                        <Text marginStart='10px' maxHeight={['250px','200px']} overflow='scroll' alignSelf={['center','start']} maxW='inherit'>
                             {description}{description}{description}
-                        </CardBody>
+                        </Text>
                     </Flex>
-                    <Flex flexDirection={['row','column']}>
+                    <Flex flexDirection={['row','column']} minH='inherit'>
                         <TimeIndicator/>
+                        <Spacer/>
                         <ProgressIndicator/>
-
                     </Flex>
                 </Flex>
             </Card>
-        </Flex>
     }
 
     function RenderModules() {
 
         //merge progress from relations into tasks
 
-        return <div>
+        return <Stack flexWrap='wrap' marginX='auto' justifyContent='center' flexDirection='row'>
             {tasks.map((task: Task)=> {
                 return <Card_Module key={task.id} task={task}/>
             })}
-        </div>
+        </Stack>
     }
     return <RenderModules/>
 }
