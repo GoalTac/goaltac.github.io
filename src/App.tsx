@@ -25,6 +25,7 @@ import CommunityCentral from './components/Communities/Dashboard/CommunityCentra
 import InsideView from './components/Communities/Community/InsideView';
 import { Tutorial } from './pages/Tutorial';
 import { Spinner } from '@chakra-ui/react';
+import LandingPage from './pages/Landing';
 
 export default function App() {
   
@@ -55,6 +56,7 @@ export default function App() {
   return (
 
     <Routes>
+      <Route index element={<Landing />} />
       <Route path='/'>
         <Route path='login' element={<Login />} />
         <Route path='signup' element={<SignUp />} />
