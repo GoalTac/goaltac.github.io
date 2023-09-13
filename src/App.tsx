@@ -32,7 +32,6 @@ export default function App() {
   function ProtectedRoute({ children, redirectPath }:any) {
     const { user: user, profile: profile } = useSession();
     const userName = profile?.['username']
-    console.log(user)
 
     return user ? (userName ? <Root /> : <Tutorial/>) : <Navigate to={redirectPath} replace={true} />;
   }
