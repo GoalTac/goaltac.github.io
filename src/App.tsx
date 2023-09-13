@@ -25,12 +25,14 @@ import CommunityCentral from './components/Communities/Dashboard/CommunityCentra
 import InsideView from './components/Communities/Community/InsideView';
 import { Tutorial } from './pages/Tutorial';
 import { Spinner } from '@chakra-ui/react';
+import LandingPage from './pages/Landing';
 
 export default function App() {
   
   function ProtectedRoute({ children, redirectPath }:any) {
     const { user: user, profile: profile } = useSession();
     const userName = profile?.['username']
+    console.log(user)
 
     return user ? (userName ? <Root /> : <Tutorial/>) : <Navigate to={redirectPath} replace={true} />;
   }
@@ -55,6 +57,7 @@ export default function App() {
   return (
 
     <Routes>
+      <Route index element={<Landing />} />
       <Route path='/'>
         <Route path='login' element={<Login />} />
         <Route path='signup' element={<SignUp />} />
