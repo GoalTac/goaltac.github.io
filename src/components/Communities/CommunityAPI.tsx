@@ -12,10 +12,10 @@ import { SessionProvider, useSession, useSupabaseClient } from '../../hooks/Sess
 import { ChatIcon } from '@chakra-ui/icons';
 import { uniqueId } from 'lodash';
 import { RandomUUIDOptions } from 'crypto';
-
+import logo from '../../images/GoalTac_TLogo.png'
 
 export function getPicture(community: any) {
-    return community?.['pic'] ? community?.['pic'] : './../GoalTac_TLogo.png'
+    return community?.['pic'] ? community?.['pic'] : logo
 }
 
 //FOR CONSISTENCIES

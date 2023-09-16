@@ -204,7 +204,7 @@ export default function LandingPage() {
                 id='product' height='fit-content' minH={[400,800]}>
                 <VStack rowGap='2rem' marginBottom='6rem' marginX='auto'>
                     <Flex maxWidth='700px' flexDirection='column' alignItems='center' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
-                        <Heading fontSize={['2rem','4rem']} fontWeight='300' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
+                        <Heading fontSize={['2rem','4rem']} fontWeight='500' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
                             You're a Little Early!
                         </Heading>
                         <Flex padding='2rem' maxWidth='80%' borderRadius={measurements.cards.borderRadius} boxShadow='lg' backgroundColor={useColorModeValue('gray.50', 'gray.900')} flexDirection='column' gap='30px'>
