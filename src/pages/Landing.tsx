@@ -455,7 +455,7 @@ export default function LandingPage() {
                                     boxShadow: '0px 0px 2px gray',
                                 }}
                                 pt='2rem'>
-                                <Avatar size={'xl'} mb={4} pos={'relative'} bgGradient='radial(blue.500, teal.300)' />
+                                <Avatar size={'xl'} mb={4} pos={'relative'} src={staff.image ? staff.image : ''} bgGradient='radial(blue.500, teal.300)' />
                                 <Heading fontSize={'2xl'} fontFamily={'body'} >{staff.name} </Heading>
                                 <Text fontWeight={600} color={'gray.500'} mb={4}>{staff.title}</Text>
                                 <Text textAlign={'center'} color={useColorModeValue('gray.800', 'gray.200')} px={3}>{staff.desc}</Text>
@@ -706,7 +706,7 @@ export const goalTacDesc = [
 export const staffProfiles = [
     {
         name: 'My Phung',
-        image: null,
+        image: 'https://media.licdn.com/dms/image/D4E03AQGzcOT2TD9yeg/profile-displayphoto-shrink_400_400/0/1680054603274?e=1700697600&v=beta&t=Ezzap2gNI0qwtsjfN8vnvbNpfor2HSYWBHSuyaNpo3Q',
         title: 'Founder',
         desc: 'Entrepreneur, student, chess and guitar enthusiast. Chat with me on Discord @ Wrys#8935',
         badges: [
@@ -770,7 +770,7 @@ export const staffProfiles = [
         name: 'Paolo Rangonese',
         image: null,
         title: 'Finance',
-        desc: '',
+        desc: '"The snow goose need not bathe to make itself white. Neither need you do anything but be yourself." -Lao Tzu        ',
         badges: [''],
         contact: '',
     },
