@@ -73,7 +73,7 @@ export default function Root() {
           {/* logo to link to home (dashboard) */}
           <Box display={showSearchBar ? 'block' : 'none'} position={"relative"}>
             <Badge position={"absolute"} right={-1} bottom={-1} bg={"rgb(15,15,15,.2)"} fontSize={'10px'}>10000</Badge>
-            <Link to="/dashboard">
+            <Link to="/home">
               <Image src={logo} alt="Logo" boxSize="40px" minWidth="40px" />
             </Link>
           </Box>
