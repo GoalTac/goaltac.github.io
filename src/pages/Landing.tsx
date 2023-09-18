@@ -168,6 +168,11 @@ export default function LandingPage() {
         const handleSubmit = (event: React.SyntheticEvent) => {
             event.preventDefault();
 
+            /**
+             * Checks to see if the input string is a valid email type
+             * @param checkedEmail 
+             * @returns 
+             */
             const isEmail = (checkedEmail: string) => {
                 return String(checkedEmail)
                     .toLowerCase()
@@ -175,18 +180,25 @@ export default function LandingPage() {
                     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                     );
                 };
+            
+            //If it's not a valid email then it'll send an error toast
             if(!isEmail(email.current)) {
                 toastEmail()
                 return
             }
 
+            /**
+             * Inserts the user's email into the email list. Only accepts new users
+             * @param value 
+             * @returns 
+             */
             async function addEmail(value: string) {
                 const { data:data, error } = await supabase
                     .from('Email_Updates')
                     .insert({email: value})
                     .select()
 
-                if (error) {
+                if (error) { //send error for attempted pre-registered email
                     if (error.code == '23505') {
                         toastDuplicate()
                     }
