@@ -770,7 +770,7 @@ export const staffProfiles = [
         name: 'Paolo Rangonese',
         image: null,
         title: 'Finance',
-        desc: '"The snow goose need not bathe to make itself white. Neither need you do anything but be yourself." -Lao Tzu        ',
+        desc: 'Hard working enthusiasts, and beloved father. "The snow goose need not bathe to make itself white. Neither need you do anything but be yourself." -Lao Tzu',
         badges: [''],
         contact: '',
     },
