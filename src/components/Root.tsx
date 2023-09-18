@@ -68,7 +68,7 @@ export default function Root() {
           alignItems="center"
           position='sticky'
           top={0}
-          zIndex={99999}>
+          zIndex={10}>
 
           {/* logo to link to home (dashboard) */}
           <Box display={showSearchBar ? 'block' : 'none'} position={"relative"}>
