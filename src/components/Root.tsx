@@ -62,21 +62,18 @@ export default function Root() {
       getProfile()
     }, []);
 
-    return (<Flex
-          bg={colorMode === "light" ? 'gray.50' : 'gray.700'}
+    return (<Flex bg={colorMode === "light" ? 'gray.50' : 'gray.700'}
           p={1}
           pl={2}
           alignItems="center"
-          position="fixed"
+          position='sticky'
           top={0}
-          left={0}
-          right={0}
           zIndex={10}>
 
           {/* logo to link to home (dashboard) */}
           <Box display={showSearchBar ? 'block' : 'none'} position={"relative"}>
             <Badge position={"absolute"} right={-1} bottom={-1} bg={"rgb(15,15,15,.2)"} fontSize={'10px'}>10000</Badge>
-            <Link to="/dashboard">
+            <Link to="/home">
               <Image src={logo} alt="Logo" boxSize="40px" minWidth="40px" />
             </Link>
           </Box>
@@ -142,7 +139,7 @@ export default function Root() {
     <SessionProvider supabase={supabase}>
       <Stack minHeight='100vh' position='relative'>
         {userName && <HeaderNav />}
-        <Box marginTop='35px'>
+        <Box>
           <Outlet />
         </Box>
       </Stack>

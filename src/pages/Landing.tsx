@@ -47,10 +47,10 @@ export default function LandingPage() {
         return <Link href='/login'>
             <Button variant='outline'
                 width='8rem'
-                borderColor={useColorModeValue(constants.darkMode, constants.lightMode)}
                 padding='1.75rem'
                 fontSize='1.25rem'
                 borderRadius='unset'
+                backgroundColor={useColorModeValue('white', 'gray.900')}
                 _hover={{
                     fontSize: '1.35rem'
                 }}>
@@ -168,6 +168,11 @@ export default function LandingPage() {
         const handleSubmit = (event: React.SyntheticEvent) => {
             event.preventDefault();
 
+            /**
+             * Checks to see if the input string is a valid email type
+             * @param checkedEmail 
+             * @returns 
+             */
             const isEmail = (checkedEmail: string) => {
                 return String(checkedEmail)
                     .toLowerCase()
@@ -175,18 +180,25 @@ export default function LandingPage() {
                     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                     );
                 };
+            
+            //If it's not a valid email then it'll send an error toast
             if(!isEmail(email.current)) {
                 toastEmail()
                 return
             }
 
+            /**
+             * Inserts the user's email into the email list. Only accepts new users
+             * @param value 
+             * @returns 
+             */
             async function addEmail(value: string) {
                 const { data:data, error } = await supabase
                     .from('Email_Updates')
                     .insert({email: value})
                     .select()
 
-                if (error) {
+                if (error) { //send error for attempted pre-registered email
                     if (error.code == '23505') {
                         toastDuplicate()
                     }
@@ -204,10 +216,10 @@ export default function LandingPage() {
                 id='product' height='fit-content' minH={[400,800]}>
                 <VStack rowGap='2rem' marginBottom='6rem' marginX='auto'>
                     <Flex maxWidth='700px' flexDirection='column' alignItems='center' textColor={useColorModeValue(constants.darkMode, constants.lightMode)}>
-                        <Heading fontSize={['2rem','4rem']} fontWeight='300' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
+                        <Heading fontSize={['2rem','4rem']} fontWeight='500' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
                             You're a Little Early!
                         </Heading>
-                        <Flex padding='2rem' maxWidth='80%' borderRadius={measurements.cards.borderRadius} boxShadow='lg' backgroundColor={useColorModeValue('gray.50', 'gray.900')} flexDirection='column' gap='30px'>
+                        <Flex padding='2rem' maxWidth='80%' borderRadius={measurements.cards.borderRadius} boxShadow='lg' backgroundColor={useColorModeValue('white', 'gray.900')} flexDirection='column' gap='30px'>
                             <Text lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']} marginBottom='50px'>
                                 Add your email here to get the latest updates!
                                 {/* Replace: Find your community now! */}
@@ -455,7 +467,7 @@ export default function LandingPage() {
                                     boxShadow: '0px 0px 2px gray',
                                 }}
                                 pt='2rem'>
-                                <Avatar size={'xl'} mb={4} pos={'relative'} bgGradient='radial(blue.500, teal.300)' />
+                                <Avatar size={'xl'} mb={4} pos={'relative'} src={staff.image ? staff.image : ''} bgGradient='radial(blue.500, teal.300)' />
                                 <Heading fontSize={'2xl'} fontFamily={'body'} >{staff.name} </Heading>
                                 <Text fontWeight={600} color={'gray.500'} mb={4}>{staff.title}</Text>
                                 <Text textAlign={'center'} color={useColorModeValue('gray.800', 'gray.200')} px={3}>{staff.desc}</Text>
@@ -706,7 +718,7 @@ export const goalTacDesc = [
 export const staffProfiles = [
     {
         name: 'My Phung',
-        image: null,
+        image: 'https://media.licdn.com/dms/image/D4E03AQGzcOT2TD9yeg/profile-displayphoto-shrink_400_400/0/1680054603274?e=1700697600&v=beta&t=Ezzap2gNI0qwtsjfN8vnvbNpfor2HSYWBHSuyaNpo3Q',
         title: 'Founder',
         desc: 'Entrepreneur, student, chess and guitar enthusiast. Chat with me on Discord @ Wrys#8935',
         badges: [
@@ -770,7 +782,7 @@ export const staffProfiles = [
         name: 'Paolo Rangonese',
         image: null,
         title: 'Finance',
-        desc: '',
+        desc: 'Hard working enthusiasts, and beloved father. "The snow goose need not bathe to make itself white. Neither need you do anything but be yourself." -Lao Tzu',
         badges: [''],
         contact: '',
     },

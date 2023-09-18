@@ -26,6 +26,7 @@ import InsideView from './components/Communities/Community/InsideView';
 import { Tutorial } from './pages/Tutorial';
 import { Spinner } from '@chakra-ui/react';
 import LandingPage from './pages/Landing';
+import Homepage from './pages/Homepage';
 
 export default function App() {
   
@@ -40,7 +41,7 @@ export default function App() {
     const { user: user, profile: profile } = useSession();
     const userName = profile?.['username']
 
-    return userName ? <Navigate to={'/dashboard'} replace={true} /> : <Tutorial/>;
+    return userName ? <Navigate to={'/home'} replace={true} /> : <Tutorial/>;
   }
 
   //to show before actually loading the new route (how do we do that?)
@@ -70,12 +71,13 @@ export default function App() {
         {/* TODO: conditional on authentication routing  */}
         <Route element={<Root />}>
           <Route element={<ProtectedRoute redirectPath={'/welcome'} />}>
-            <Route index element={<Dashboard />} />
+            <Route index element={<Homepage />} />
             
             {/* Tutorial is here temporarily */}
             <Route path='tutorial' element={<TutorialRoute />} />
-
             <Route path='dashboard' element={<Dashboard />} />
+
+            <Route path='home' element={<Homepage />} />
             <Route path='social' element={<Feed />} />
             <Route path='settings' element={<Settings />} />
             <Route path='market' element={<Market />} />

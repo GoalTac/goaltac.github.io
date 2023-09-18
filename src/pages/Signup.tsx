@@ -53,41 +53,59 @@ export default function SignUpPage() {
             })
             return
         }
-
-        async function addAccount() {
-
-            //functionality for checking duplicate email
-            async function checkDuplicate(email: any) {
+        /**
+         * Checks if the input email is both in the email list, and if it is - also signed in already
+         * @param email
+         * @returns 
+         */
+        async function checkDuplicate(email: any) {
                 const { data: data, error: error } = await supabase
                     .from('Email_Updates')
                     .select()
-                    .eq('email', email);
+                    .eq('email', email).single();
                 if (error) {
-                    if (error.code == "42501") {
-                        toast({
-                            title: "This email has already been signed up",
-                            position: 'bottom',
-                            status: 'error',
-                            duration: 4000,
-                            isClosable: true,
-                        });
-                    }
-                    return true
-                } else {
                     return false
+                } else {
+                    if (data) {
+                        const signedIn : any = data?.['signed_in']
+                        if (signedIn) {
+                            return true //the user has both added their email and registered their account already
+                        } else {
+                            return false
+                        }
+                    } else {
+                        return false
+                    }
                 }
                 
             }
-
+        
+        /**
+         * Officially signs the user up if the email isn't duplicated
+         * @returns account data object
+         */
+        async function addAccount() {
             //Check for duplicate email upon attempt sign up
+            //if true, that means user's email has been registered and added to the email list
             const isDuplicate = await checkDuplicate(email)
             if (isDuplicate) {
+                toast({
+                    title: "This email has already been signed up",
+                    position: 'bottom',
+                    status: 'error',
+                    duration: 4000,
+                    isClosable: true,
+                });
                 return false
             }
 
             //After checking for duplicate email, call supabase to authenticate new user
-            const { data, error } = await supabase
-                .auth.signUp({ email: email, password: password });
+            //User could have email already added, or not yet
+            const { data, error } = await supabase.auth
+                .signUp({ email: email, password: password });
+
+            console.log(data)
+
             if (error) {
                 toast({
                     title: `${error}`,
@@ -106,9 +124,9 @@ export default function SignUpPage() {
          * @param userData
          */
         async function addEmail(value: string) {
-            const { data:data, error } = await supabase
+            const { data: data, error } = await supabase
                 .from('Email_Updates')
-                .insert({email: value})
+                .upsert({email: value, signed_in: true }, { onConflict: 'email', ignoreDuplicates: false }) //using upsert here because user may have added email to email list
                 .select()
             if (error) {
                 if (error.code == '23505') {
@@ -128,7 +146,7 @@ export default function SignUpPage() {
         }
         addAccount().then(async(data: any)=>{
             if (!data) {
-                return
+                return false
             }
             const email = data?.user?.email
             const isSuccess = await addEmail(email)
