@@ -54,7 +54,7 @@ export default function Login() {
                 isClosable: false,
             })
         } else {
-            navigate('/dashboard')
+            navigate('/home')
         }
     }
 
@@ -78,7 +78,7 @@ export default function Login() {
             
             if (data.session) {
                 // it worked
-                navigate('/dashboard')
+                navigate('/home')
 
             } else {
                 toast({

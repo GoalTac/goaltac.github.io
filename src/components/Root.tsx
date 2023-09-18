@@ -62,16 +62,13 @@ export default function Root() {
       getProfile()
     }, []);
 
-    return (<Flex
-          bg={colorMode === "light" ? 'gray.50' : 'gray.700'}
+    return (<Flex bg={colorMode === "light" ? 'gray.50' : 'gray.700'}
           p={1}
           pl={2}
           alignItems="center"
-          position="fixed"
+          position='sticky'
           top={0}
-          left={0}
-          right={0}
-          zIndex={10}>
+          zIndex={99999}>
 
           {/* logo to link to home (dashboard) */}
           <Box display={showSearchBar ? 'block' : 'none'} position={"relative"}>
@@ -142,7 +139,7 @@ export default function Root() {
     <SessionProvider supabase={supabase}>
       <Stack minHeight='100vh' position='relative'>
         {userName && <HeaderNav />}
-        <Box marginTop='35px'>
+        <Box>
           <Outlet />
         </Box>
       </Stack>
