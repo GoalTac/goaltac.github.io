@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect, createContext, SetStateAction } from 'react';
 import PropTypes from 'prop-types';
+import { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 
 const SessionContext = createContext({
   user: null,
@@ -13,6 +14,20 @@ export const SessionProvider = ({ children, supabase }: any) => {
   const [session, setSession] = useState<any>();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
+
+  /**
+   * To prevent updating duplicate sessions
+   * @param callback 
+   * @returns 
+   */
+  function onAuthStateChange(callback: (event : AuthChangeEvent, session: Session) => void) {
+    let currentSession: Session | null;
+    return supabase.auth.onAuthStateChange((event: any, session: any) => {
+      if (session?.user?.id == currentSession?.user?.id) return;
+      currentSession = session;
+      callback(event, session);
+    });
+  }
 
   useEffect(() => {
     const requestSession = async () => {
@@ -43,12 +58,11 @@ export const SessionProvider = ({ children, supabase }: any) => {
       
       
     };
+    
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async(_event: any, newSession: any) => {
-       
-
-        if (newSession) {
+    const { data: listener } = onAuthStateChange(async(event : any, newSession: any) => {
+        console.log(event)
+        if (session) {
           const { 
             data: profileData, error: error
           } = await supabase
