@@ -211,7 +211,19 @@ export default function Login() {
                                     bg={email && password ? 'whiteAlpha.400' : 'whiteAlpha.100'} _hover={{ backgroundColor: 'blackAlpha.100' }}>
                                     Login
                                 </Button>
-                                
+                                <Button w={'full'}
+                                    maxW={'md'}
+                                    variant={'solid'}
+                                    leftIcon={<FcGoogle />}
+                                    _hover={{ bg: "black" }}
+                                    onClick={()=>{
+                                        console.log(supabase)
+                                        supabase.auth.signInWithOAuth({
+                                            provider: 'google', options: { redirectTo: 'https://goaltac.net/dashboard' }
+                                        })
+                                    }}>
+                                        Sign in with Google
+                                </Button>
                             </Stack>
                         </form>
                     </Box>
