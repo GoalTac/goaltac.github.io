@@ -16,15 +16,17 @@ import { RxAvatar } from "react-icons/rx";
 import { TbTableOptions, TbTrendingUp } from "react-icons/tb";
 import { SlOptions, SlOptionsVertical } from "react-icons/sl";
 import { _getUserTasks } from "../components/Tasks/TaskAPI";
-import { useSession } from "../hooks/SessionProvider";
+import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
 import premiumName from './../images/premium_logo_name.png';
 import { useNavigate, useNavigation } from "react-router-dom";
+import { supabase } from "../supabase";
 export default function Homepage() {
     const [taskIDs, setTaskIDs] = useState<any>();
     const [loading, setLoading] = useState<Boolean>(true)
     const { user: user } = useSession();
+    const  useSupabase: any  = useSupabaseClient();
     const navigate = useNavigate()
 
     const [examples, setExamples] = useState<any>({
@@ -150,6 +152,27 @@ export default function Homepage() {
     function TaskManagement() {
         const [userTasks, setUserTasks] = useState<any>([]);
 
+        useEffect(()=> {
+            if (user == null) return
+            const taskChanges = useSupabase
+                .channel('any')
+                .on('postgres_changes',{
+                    schema: 'public', // Subscribes to the "public" schema in Postgres
+                    event: '*',       // Listen to all changes
+                    table: 'tasks'
+            },(payload: any) => fetchUserTasks()).subscribe()
+
+
+            async function fetchUserTasks() {
+                if(user) {
+                    setUserTasks(await _getUserTasks(user?.['id']))
+                }
+            }
+            fetchUserTasks().finally(()=>setLoading(false))
+        },[user?.['id']])
+
+        
+
         useEffect(()=>{
             async function fetchUserTasks() {
                 if(user) {
@@ -164,7 +187,7 @@ export default function Homepage() {
         
             return( <Card padding='10px'
                 flexDirection='column' 
-                position='relative'
+                position='relative' 
                 rowGap='1rem' 
                 borderColor={(colorMode == 'dark' ? 'yellow.500' : 'orange.300')}>
                 <Image zIndex='hide' position='absolute' top='0px' right='0px' width='25%' src={premiumLogo}/>
@@ -190,8 +213,7 @@ export default function Homepage() {
                         '0px 2px 8px rgb(214, 158, 46)' : 
                         '0px 2px 8px rgb(237, 137, 54)')}
                         textColor='white' 
-                        marginX='1rem' 
-                        borderWidth='1px' 
+                        marginX='1rem'  
                         _hover={{
                             boxShadow: (colorMode == 'dark' ? 
                         '0px 2px 14px rgb(214, 158, 46)' : 
