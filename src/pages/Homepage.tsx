@@ -196,7 +196,7 @@ export default function Homepage() {
                         </Text>
                     </Box>
                 </VStack>
-                    <Button borderRadius='15px'
+                    <Button 
                         _active={{
                             bgColor: 
                             (colorMode == 'dark' ? 
@@ -248,9 +248,9 @@ export default function Homepage() {
             } 
             return <Card marginY='20px'>
                 <SimpleGrid columns={1} spacing='20px' width='inherit' maxHeight='200px' overflowY='clip'>
-                    {!loading ? userTasks.map((task: any, id:number)=>{
+                    {userTasks.map((task: any, id:number)=>{
                         return <TaskModule key={id} task={task}/>
-                    }) : <Spinner/>}
+                    })}
                 </SimpleGrid>
                 <Button variant='ghost' onClick={()=>navigate('/dashboard')} size='sm'>Load more</Button>
             </Card>
