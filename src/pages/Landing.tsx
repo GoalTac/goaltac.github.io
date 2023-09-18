@@ -47,10 +47,10 @@ export default function LandingPage() {
         return <Link href='/login'>
             <Button variant='outline'
                 width='8rem'
-                borderColor={useColorModeValue(constants.darkMode, constants.lightMode)}
                 padding='1.75rem'
                 fontSize='1.25rem'
                 borderRadius='unset'
+                backgroundColor={useColorModeValue('white', 'gray.900')}
                 _hover={{
                     fontSize: '1.35rem'
                 }}>
@@ -219,7 +219,7 @@ export default function LandingPage() {
                         <Heading fontSize={['2rem','4rem']} fontWeight='500' lineHeight='1.1' marginTop='150px' marginBottom='50px'>
                             You're a Little Early!
                         </Heading>
-                        <Flex padding='2rem' maxWidth='80%' borderRadius={measurements.cards.borderRadius} boxShadow='lg' backgroundColor={useColorModeValue('gray.50', 'gray.900')} flexDirection='column' gap='30px'>
+                        <Flex padding='2rem' maxWidth='80%' borderRadius={measurements.cards.borderRadius} boxShadow='lg' backgroundColor={useColorModeValue('white', 'gray.900')} flexDirection='column' gap='30px'>
                             <Text lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']} marginBottom='50px'>
                                 Add your email here to get the latest updates!
                                 {/* Replace: Find your community now! */}

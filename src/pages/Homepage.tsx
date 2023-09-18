@@ -153,33 +153,27 @@ export default function Homepage() {
         const [userTasks, setUserTasks] = useState<any>([]);
 
         useEffect(()=> {
-            if (user == null) return
-            const taskChanges = useSupabase
-                .channel('any')
-                .on('postgres_changes',{
+            const taskChanges = useSupabase.channel('any').on('postgres_changes',{
                     schema: 'public', // Subscribes to the "public" schema in Postgres
                     event: '*',       // Listen to all changes
                     table: 'tasks'
-            },(payload: any) => fetchUserTasks()).subscribe()
-
+                },(payload: any) => {
+                    setLoading(true)
+                    fetchUserTasks().finally(()=>setLoading(false))
+            }).subscribe()
 
             async function fetchUserTasks() {
                 if(user) {
                     setUserTasks(await _getUserTasks(user?.['id']))
+                    setLoading(false) 
                 }
             }
-            fetchUserTasks().finally(()=>setLoading(false))
-        },[user?.['id']])
 
-        
+            fetchUserTasks()
 
-        useEffect(()=>{
-            async function fetchUserTasks() {
-                if(user) {
-                    setUserTasks(await _getUserTasks(user?.['id']))
-                }
-            }
-            fetchUserTasks().finally(()=>setLoading(false))
+            return () => {
+                taskChanges.unsubscribe();
+              };
         },[])
 
         function Premium(){
