@@ -225,7 +225,7 @@ export default function LandingPage() {
                                 {/* Replace: Find your community now! */}
                             </Text>
                             <FormControl>
-                                <Input type='email' height='4rem' fontSize='lg' placeholder='example@gmail.com'
+                                <Input autoFocus type='email' height='4rem' fontSize='lg' placeholder='example@gmail.com'
                                     onChange={(e)=>{email.current = e.currentTarget.value}}/>
                             </FormControl>
                             <Button fontSize='lg' height='3rem' leftIcon={<EmailIcon/>}
@@ -235,8 +235,8 @@ export default function LandingPage() {
                         </Flex>
                        
                     </Flex>
-                    
                     <LearnMoreButton/>
+                    
                 </VStack>
             </Flex>
         );
@@ -300,7 +300,7 @@ export default function LandingPage() {
                     <Image src={GoalTac_T_Logo} />
                   </Card>
                 </Flex>
-                <HStack alignSelf='end' marginTop='10px'>
+                <HStack alignSelf='end' marginY='10px'>
                   <Heading> GoalTac</Heading>
                   <Spacer/>
                   <ButtonGroup borderRadius='full'>
@@ -310,8 +310,8 @@ export default function LandingPage() {
                   </ButtonGroup>
                   
                 </HStack>
-                  <Text size='sm' height='150px' marginStart='30px' overflowY='scroll'>
-                    Sometimes we don't get things done on time; maybe it's because we don't want to! You may need a little push, and that's what we are here for. Keep accountability for each other and see your friends grow with you!
+                  <Text size='md' height='150px' marginStart='30px' overflowY='scroll'>
+                    Sometimes we don't get things done on time. You may need a little push, and that's what we are here for. Keep accountability for each other and see your friends grow with you!
                   </Text>
                 
               </Box>
@@ -359,9 +359,12 @@ export default function LandingPage() {
                 </Flex>
 
                 <Flex position='absolute' right='20px' bottom='20px'>
-                    <Button colorScheme='green' variant='solid' leftIcon={<AddIcon/>}>
-                        Add
-                    </Button>
+                    <Tooltip label='Add your tasks when you are done drafting!'>
+                        <Button colorScheme='green' variant='solid' leftIcon={<AddIcon/>}>
+                            Add
+                        </Button> 
+                    </Tooltip>
+                    
                 </Flex>
 
                 <Flex position='absolute' left='20px' bottom='20px'>
@@ -451,7 +454,7 @@ export default function LandingPage() {
                 showDots={true}
                 responsive={responsive}
                 autoPlay={true}
-                autoPlaySpeed={2000}
+                autoPlaySpeed={4000}
                 infinite={true}
                 focusOnSelect={true}
                 arrows={true}>
@@ -598,11 +601,14 @@ export default function LandingPage() {
                         Copyright @ 2023 GoalTac LLC.
                     </Text>
                     <Spacer/>
-                    <Link href=''>
+                    <Link href='/agreements'>
                         Privacy Policy
                     </Link>
-                    <Link href=''>
-                        Terms of Sales
+                    <Link href='/agreements'>
+                        Terms of Service
+                    </Link>
+                    <Link href='/versions'>
+                        Dev-Logs
                     </Link>
                 </Stack>
             </VStack>
