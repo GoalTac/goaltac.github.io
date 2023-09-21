@@ -1,11 +1,11 @@
-import { FormEvent, useState } from 'react';
-import { Text, Center, Flex, Image, Input, Button, InputGroup, Stack, InputLeftElement, chakra, Box, FormControl, InputRightElement, useToast, Spinner, useColorModeValue } from '@chakra-ui/react';
+import { FormEvent, useRef, useState } from 'react';
+import { Text, Center, Link, Flex, Image, Input, Button, InputGroup, Stack, InputLeftElement, chakra, Box, FormControl, InputRightElement, useToast, Spinner, useColorModeValue, Checkbox, LinkBox } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaLock, FaUserAlt } from 'react-icons/fa';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase';
 import Canvas from '../components/Canvas';
-import { AtSignIcon } from '@chakra-ui/icons';
+import { AtSignIcon, CheckIcon } from '@chakra-ui/icons';
 import logo from './../images/GoalTac_TLogo.png'
 import bubble from './../images/bubble.svg'
 
@@ -29,6 +29,7 @@ export default function SignUpPage() {
     // Supabase
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const agreementStatus = useRef(false)
 
     const [isLoading, setIsLoading] = useState(false); //for login loading
     const loading = () => {
@@ -46,6 +47,16 @@ export default function SignUpPage() {
         if (email === "" || password === "") { //Can limit what is/isn't acceptable for a password (use methods for comparisons for more complicated checks)
             toast({
                 title: "Seems that you forgot to enter an email or password!",
+                position: 'bottom',
+                status: 'error',
+                duration: 5000,
+                isClosable: false,
+            })
+            return
+        }
+        if (!agreementStatus) {
+            toast({
+                title: "Please accept the terms of use!",
                 position: 'bottom',
                 status: 'error',
                 duration: 5000,
@@ -224,19 +235,25 @@ export default function SignUpPage() {
                                 </InputRightElement>
                             </InputGroup>
                         </FormControl>
+                        <FormControl maxWidth='300px'>
+                            <Checkbox type='checkbox' isInvalid={!agreementStatus.current} onChange={(e)=>agreementStatus.current = e.target.checked}>
+                                Accept the <Link href='/agreements'>Terms of service</Link> and <Link href='/agreements'>Privacy policy</Link>
+                            </Checkbox>
+                        </FormControl>
+
                         <Button
                             borderRadius={5}
                             type='submit'
                             variant={useColorModeValue('outline','solid')}
                             width='full'
-                            bg={email && password ? 'whiteAlpha.400' : 'whiteAlpha.100'} _hover={{ backgroundColor: 'blackAlpha.100' }}>
+                            bg={email && password && agreementStatus ? 'whiteAlpha.400' : 'whiteAlpha.100'} _hover={{ backgroundColor: 'blackAlpha.100' }}>
                             Sign Up
                         </Button>
                     </Stack>
                 </form>
             </Box>
             <Box textColor={useColorModeValue('black','white')}>
-                <Link to='/welcome'>
+                <Link href='/welcome'>
                     Back to Welcome
                 </Link>
             </Box>
