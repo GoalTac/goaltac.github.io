@@ -1,5 +1,5 @@
 import { AddIcon, CheckIcon, ChevronDownIcon, InfoOutlineIcon, UpDownIcon } from "@chakra-ui/icons"
-import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer } from "@chakra-ui/react"
+import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer, Tooltip } from "@chakra-ui/react"
 import React, { useRef, useState } from "react"
 import { _addTask, _addUserTask, _getTaskLimit, _getUserTasks } from "./TaskAPI"
 import { useSession } from "../../hooks/SessionProvider"
@@ -20,7 +20,7 @@ export default function TaskDrawer() {
     const [description, setDescription] = useState<string>('')
     const [startDate, setStartDate] = useState<any>()
     const [endDate, setEndDate] = useState<any>()
-    const [type, setType] = useState<any>('Boolean')
+    const [type, setType] = useState<any>('Simple')
     const requirement = useRef<any>(1)
     const [reward, setReward] = useState<any>(1)
     const user = useSession().user //this rerenders the page tons of times
@@ -52,7 +52,7 @@ export default function TaskDrawer() {
             setDescription('')
             setStartDate('')
             setEndDate('')
-            setType('Boolean')
+            setType('Simple')
             setReward(1)
             setSelectedTasks([])
             setReoccurence(0)
@@ -141,25 +141,24 @@ export default function TaskDrawer() {
         }
 
         const options = [
-            {value:'Numbers', desc: 'Track progress'},
-            {value:'Boolean', desc: 'Set as complete'},
-            {value:'Tasks', desc: 'Complete tasks'}]
+            {value:'Progress', desc: 'Use numbers to make periodic updates'},
+            {value:'Simple', desc: 'Check your as done or leave it incomplete'},
+            {value:'Sub-Tasks', desc: 'Success dependent on status of tasks'}]
         const { getRootProps, getRadioProps } = useRadioGroup({
             name: 'Type',
-            defaultValue: 'boolean',
+            defaultValue: 'Simple',
             onChange: setType,
           })
         const group = getRootProps()
         
         return <HStack marginY='20px' {...group}>
             {options.map((option) => {
-                const value=option.value
+                const value = option.value
                 const radio = getRadioProps({ value })
                 return (
                 <RadioCard key={option.value} {...radio}>
                     <Heading fontSize='15px'>
-                        {value} 
-                        
+                        {value}
                     </Heading>
                     <Text fontSize='10px'>
                         {option.desc}
@@ -173,7 +172,12 @@ export default function TaskDrawer() {
     function TypeDisplay() {
         function NumberTypeDisplay() {
             return (
+                <Stack flexDirection='column'>
+                <Badge fontSize='1.25rem' colorScheme="red">This is currently a Work in Progress</Badge>
+                
                 <InputGroup size='lg' justifyContent='center'>
+
+                    
                     <InputLeftAddon children='Target'/>
                     <NumberInput defaultValue={1} min={1} onChange={(e)=>{
                         requirement.current = e }}>
@@ -183,7 +187,7 @@ export default function TaskDrawer() {
                         <NumberDecrementStepper />
                     </NumberInputStepper>
                     </NumberInput>
-                </InputGroup>
+                </InputGroup></Stack>
                 
             )
         }
@@ -246,13 +250,14 @@ export default function TaskDrawer() {
 
             function TaskListing() {
                 return tasks ? 
+                    <Box><Badge fontSize='1.25rem' colorScheme="red">This is currently a Work in Progress</Badge>
                     <Box height='200px' overflowY='scroll'>
                         <Flex justifyContent='center' flexDirection='column' rowGap='2' width='inherit'>
                         {tasks.map((task: any, id: any)=>{
                             return <TaskButton key={id} task={task} id={id} /> //need to click to add
                         })}
                         </Flex>
-                    </Box>
+                    </Box></Box>
                  : <Box>
                     <Icon as={InfoOutlineIcon}/>
                     <Text>
@@ -277,9 +282,9 @@ export default function TaskDrawer() {
 
         function RenderSwitch() {
             switch(type) {
-                case 'Numbers':
+                case 'Progress':
                     return <NumberTypeDisplay/>;
-                case 'Tasks':
+                case 'Sub-Tasks':
                     return <TasksTypeDisplay/>;
                 default:
                     return <BooleanTypeDisplay/>
@@ -335,8 +340,13 @@ export default function TaskDrawer() {
                         </Box>
                     </Flex>
                 </FormControl>
+                
+                {/*
 
-                <FormControl>
+
+
+                
+                <FormControl isDisabled>
                     <FormLabel htmlFor='duration'>Duration</FormLabel>
 
                     <Flex flexDirection={'column'} rowGap='20px'>
@@ -357,9 +367,12 @@ export default function TaskDrawer() {
                                 Does your task repeat?
                             </Text>
                             <Menu isLazy>
-                                <MenuButton width='200px' as={Button} rightIcon={<ChevronDownIcon />} variant='outline'>
-                                    {reoccurence}
-                                </MenuButton>
+                                <Tooltip label='Coming soon'>
+                                    <MenuButton isDisabled width='200px' as={Button} rightIcon={<ChevronDownIcon />} variant='outline'>
+                                        {reoccurence}
+                                    </MenuButton> 
+                                </Tooltip>
+                                
                                 <MenuList maxHeight='300px' overflowY='scroll'>
                                     <MenuItem onClick={(e)=>setReoccurence(0)} 
                                         value={0}>None</MenuItem>
@@ -384,6 +397,7 @@ export default function TaskDrawer() {
                         
                     </Flex>
                 </FormControl>
+                 */}
 
                 <FormControl>
                     <FormLabel htmlFor='reward'>Points rewarded: {reward}</FormLabel>
