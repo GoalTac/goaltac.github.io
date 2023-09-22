@@ -246,10 +246,10 @@ export default function LandingPage() {
                     </Flex>
                     <LearnMoreButton/>
                     <Link href={'https://discord.gg/EzFPQDAKGf'} target='_blank' aria-label='discord'>
-                                    <Button variant='outline' rightIcon={<FaDiscord/>} >
-                                        Join!
-                                    </Button>
-                                </Link>
+                        <Button colorScheme='telegram' variant='solid' rightIcon={<FaDiscord/>} >
+                            Discord
+                        </Button>
+                    </Link>
                 </VStack>
             </Flex>
         );
@@ -259,12 +259,12 @@ export default function LandingPage() {
 
         function CommunityFeature() {
             return <Stack id='features' flexWrap={'wrap'} gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column','row']}>
-                <VStack textAlign='center' flexGrow={1} width={['fit-content','300px']} alignSelf='center'>
+                <VStack textAlign='center' width={['fit-content','300px']} alignSelf='center'>
                     <Heading>
                         Join your Community
                     </Heading>
                     <Text fontSize='20px'>
-                        Join like-minded people in their goals
+                        People are looking for people like you to join their community
                     </Text>
                 </VStack>
                 <Card_Header/>
@@ -272,12 +272,12 @@ export default function LandingPage() {
         function CommunityTaskFeature() {
             return <Flex flexWrap='wrap-reverse' gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column-reverse','row']}>
                 <Card_Goal/>
-                <VStack textAlign={'center'} alignSelf='center' flexGrow={1} width={['fit-content','300px']}>
+                <VStack textAlign={'center'} alignSelf='center' width={['fit-content','300px']}>
                     <Heading>
-                        Create Community Tasks
+                        Share Tasks with Friends
                     </Heading>
                     <Text fontSize='20px'>
-                        Share tasks with other people and collaborate on community-wide goals!
+                        Share and collaborate on goals suggested by your community and friends!
                     </Text>
                 </VStack>
             </Flex>
@@ -286,7 +286,7 @@ export default function LandingPage() {
         function SocialFeedFeature() {
             return <Flex flexWrap='wrap-reverse' gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column-reverse','row']}>
                 <Image maxWidth='600px' width='50%' src={feed}/>
-                <VStack alignSelf='center' flexGrow={1} width={['fit-content','300px']}>
+                <VStack alignSelf='center' width={['fit-content','300px']}>
                     <Heading>
                         Post your Tasks
                     </Heading>
@@ -412,7 +412,7 @@ export default function LandingPage() {
 
         function CalendarFeature() {
             return <Flex flexWrap='wrap' gap={['40px','20px']} justifyContent={['center','space-evenly']} flexDirection={['column','row']}>
-                <VStack textAlign='center' alignSelf={'center'} flexGrow={1} width={['fit-content','300px']}>
+                <VStack textAlign='center' alignSelf={'center'} width={['fit-content','300px']}>
                     <Heading fontSize='2rem'>
                         Expansive Customization
                     </Heading>
