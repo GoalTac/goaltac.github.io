@@ -259,7 +259,7 @@ export default function Homepage() {
             </Card>
             
         }
-        return <Flex position='static'  pos='relative' rowGap='20px' maxWidth='200px'>
+        return <Flex position='static'  pos='relative' rowGap='20px' maxWidth={[null,'200px']}>
             <Box>
                 <Premium/>
                 <Box paddingTop='20px' position='sticky' flexWrap='wrap' top={0} height='min'>
