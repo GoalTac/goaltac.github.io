@@ -239,9 +239,12 @@ export default function Homepage() {
         function ListView() {
             function TaskModule({task}: any) {
                 return <HStack paddingLeft='20px'>
-                    <Text>
-                        {task.name}
-                    </Text>
+                    <Tooltip label='WIP. Will have option to delete, post, share task'>
+                        <Text>
+                            {task.name}
+                        </Text>
+                    </Tooltip>
+                    
                     <Spacer/>
                     <IconButton isDisabled variant='ghost' isRound colorScheme='gray' icon={<SlOptionsVertical />} aria-label='Settings Icon'/>
                 </HStack>
