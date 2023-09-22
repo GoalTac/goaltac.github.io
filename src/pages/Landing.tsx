@@ -165,6 +165,14 @@ export default function LandingPage() {
             duration: 4000,
             isClosable: true,
         });
+        const isEmail = (checkedEmail: string) => {
+            return String(checkedEmail)
+                .toLowerCase()
+                .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                );
+        };
+        const [correctEmail,setCorrectEmail] = useState(false)
         const handleSubmit = (event: React.SyntheticEvent) => {
             event.preventDefault();
 
@@ -173,13 +181,6 @@ export default function LandingPage() {
              * @param checkedEmail 
              * @returns 
              */
-            const isEmail = (checkedEmail: string) => {
-                return String(checkedEmail)
-                    .toLowerCase()
-                    .match(
-                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                    );
-                };
             
             //If it's not a valid email then it'll send an error toast
             if(!isEmail(email.current)) {
@@ -226,17 +227,29 @@ export default function LandingPage() {
                             </Text>
                             <FormControl>
                                 <Input autoFocus type='email' height='4rem' fontSize='lg' placeholder='example@gmail.com'
-                                    onChange={(e)=>{email.current = e.currentTarget.value}}/>
+                                    onChange={(e)=>{
+                                            email.current = e.currentTarget.value
+                                            if (isEmail(email.current)) {
+                                                setCorrectEmail(true)
+                                            } else {
+                                                setCorrectEmail(false)
+                                            }
+                                        }}/>
                             </FormControl>
-                            <Button fontSize='lg' height='3rem' leftIcon={<EmailIcon/>}
+                            <Button colorScheme={correctEmail ? 'blue' : 'gray'} fontSize='lg' paddingX='40px' leftIcon={<EmailIcon/>}
                                 onClick={(e)=>handleSubmit(e)}>
                                 Subscribe
                             </Button>
+                            
                         </Flex>
                        
                     </Flex>
                     <LearnMoreButton/>
-                    
+                    <Link href={'https://discord.gg/EzFPQDAKGf'} target='_blank' aria-label='discord'>
+                                    <Button variant='outline' rightIcon={<FaDiscord/>} >
+                                        Join!
+                                    </Button>
+                                </Link>
                 </VStack>
             </Flex>
         );
