@@ -153,7 +153,7 @@ export async function _deleteTask(taskID: string) {
  * @param task 
  */
 export async function _addTask(task: any) {
-    const start_date = task.start_date ? task.start_date : null
+    const start_date = task.start_date ? task.start_date : new Date()
     const end_date = task.end_date ? task.end_date : null
     const name = task.name ? task.name : ''
     const description = task.description ? task.description : ''

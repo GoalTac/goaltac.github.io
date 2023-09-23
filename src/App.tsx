@@ -11,6 +11,7 @@ import PrivatePolicy from './pages/PrivatePolicy';
 import Finder from './pages/Finder';
 import ProfileView from './pages/ProfileView';
 import Versions from './pages/Versions';
+import Agreements from './pages/Agreements';
 
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Root from './components/Root';
@@ -67,6 +68,7 @@ export default function App() {
         <Route path='privatepolicy' element={<PrivatePolicy />} />   
         <Route path='welcome' element={<Landing />} />
         <Route path='versions' element={<Versions />} />
+        <Route path='agreements' element={<Agreements />} />
 
         {/* TODO: conditional on authentication routing  */}
         <Route element={<Root />}>
