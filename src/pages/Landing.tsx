@@ -236,7 +236,7 @@ export default function LandingPage() {
                                             }
                                         }}/>
                             </FormControl>
-                            <Button colorScheme={correctEmail ? 'blue' : 'gray'} fontSize='lg' paddingX='40px' leftIcon={<EmailIcon/>}
+                            <Button height='50px' colorScheme={correctEmail ? 'blue' : 'gray'} fontSize='lg' paddingX='40px' leftIcon={<EmailIcon/>}
                                 onClick={(e)=>handleSubmit(e)}>
                                 Subscribe
                             </Button>
