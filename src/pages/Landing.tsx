@@ -221,7 +221,7 @@ export default function LandingPage() {
                             You're a Little Early!
                         </Heading>
                         <Flex padding='2rem' maxWidth='80%' borderRadius={measurements.cards.borderRadius} boxShadow='lg' backgroundColor={useColorModeValue('white', 'gray.900')} flexDirection='column' gap='30px'>
-                            <Text lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']} marginBottom='50px'>
+                            <Text lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']}>
                                 Add your email here to get the latest updates!
                                 {/* Replace: Find your community now! */}
                             </Text>
@@ -259,8 +259,8 @@ export default function LandingPage() {
 
         function CommunityFeature() {
             return <Stack id='features' flexWrap={'wrap'} gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column','row']}>
-                <VStack textAlign='center' width={['fit-content','300px']} alignSelf='center'>
-                    <Heading>
+                <VStack textAlign='center' width={['fit-content','300px']} alignSelf='center' rowGap='1rem'>
+                    <Heading width='80%' fontSize='1.75rem'>
                         Join your Community
                     </Heading>
                     <Text fontSize='20px'>
@@ -272,8 +272,8 @@ export default function LandingPage() {
         function CommunityTaskFeature() {
             return <Flex flexWrap='wrap-reverse' gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column-reverse','row']}>
                 <Card_Goal/>
-                <VStack textAlign={'center'} alignSelf='center' width={['fit-content','300px']}>
-                    <Heading>
+                <VStack textAlign={'center'} alignSelf='center' width={['fit-content','300px']} rowGap='1rem'>
+                    <Heading width='80%' fontSize='1.75rem'>
                         Share Tasks with Friends
                     </Heading>
                     <Text fontSize='20px'>
@@ -287,7 +287,7 @@ export default function LandingPage() {
             return <Flex flexWrap='wrap-reverse' gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column-reverse','row']}>
                 <Image maxWidth='600px' width='50%' src={feed}/>
                 <VStack alignSelf='center' width={['fit-content','300px']}>
-                    <Heading>
+                    <Heading width='80%'>
                         Post your Tasks
                     </Heading>
                     <Text fontSize='20px'>
@@ -299,22 +299,21 @@ export default function LandingPage() {
 
         function Card_Header() {
       
-            return <Card maxWidth='600px' minWidth={constants.cardMinWidth} height='400px' paddingBottom='10px' backgroundColor={useColorModeValue(constants.lightMode, constants.darkMode)} borderRadius={measurements.cards.borderRadius} position='relative'>
+            return <Card paddingBottom='40px' maxWidth='600px' minWidth={constants.cardMinWidth} maxHeight='300px' height='fit-content' backgroundColor={useColorModeValue(constants.lightMode, constants.darkMode)} borderRadius={measurements.cards.borderRadius} position='relative'>
       
               {/* BANNER: The height and width should be set to the size of the banner */}
-              <Box borderRadius='inherit' borderBottomRadius='unset' height='50%' overflow='clip'>
-                <Image src={ProfileBackground} />
+              <Box borderRadius='inherit' padding='20px' bgImage={ProfileBackground} borderBottomRadius='unset'>
+                <Flex borderRadius='20px' left='5%' alignSelf='left'>
+                  <Card borderRadius='inherit' backgroundColor={useColorModeValue(constants.lightMode, constants.darkMode)} borderColor='Background' borderWidth='1px' height='100px' width='100px' padding='10px'>
+                    <Image src={GoalTac_T_Logo} />
+                  </Card>
+                </Flex>
               </Box>
       
               {/* TEXTS: Name and description */}
               <Box marginTop='10px' paddingX='5%'>
-                <Flex borderRadius='20px' left='5%' position='absolute' marginTop='-150px'>
-                  <Card borderRadius='inherit' backgroundColor={useColorModeValue(constants.lightMode, constants.darkMode)} borderColor='Background' borderWidth='1px' height='100px' width='100px' margin='auto' padding='10px'>
-                    <Image src={GoalTac_T_Logo} />
-                  </Card>
-                </Flex>
                 <HStack alignSelf='end' marginY='10px'>
-                  <Heading> GoalTac</Heading>
+                  <Heading fontSize='3xl'> GoalTac</Heading>
                   <Spacer/>
                   <ButtonGroup borderRadius='full'>
                     <Button colorScheme='green' variant='solid'>
@@ -323,9 +322,9 @@ export default function LandingPage() {
                   </ButtonGroup>
                   
                 </HStack>
-                  <Text size='md' height='150px' marginStart='30px' overflowY='scroll'>
-                    Sometimes we don't get things done on time. You may need a little push, and that's what we are here for. Keep accountability for each other and see your friends grow with you!
-                  </Text>
+                <Text size='md' maxHeight='80px' overflowY='scroll' width='80%'>
+                It is frequently shown that working amongst a community of people who share the same goals as you helps to propell you to your goals and ambitions
+                </Text>
                 
               </Box>
                
@@ -349,11 +348,11 @@ export default function LandingPage() {
             padding='20px' borderRadius={measurements.cards.borderRadius} position='relative'>
                 
                 <Flex flexDirection='column' marginEnd='8rem'>
-                    <Editable defaultValue={task ? task.name : 'Unknown'} fontSize='2xl' fontWeight='bold'>
+                    <Editable width='80%' defaultValue={task ? task.name : 'Unknown'} fontSize='2xl' fontWeight='bold'>
                         <EditablePreview />
                         <EditableInput />
                     </Editable>
-                    <Text maxW={'600px'}>
+                    <Text maxW={'600px'} width='80%'>
                         {task ? task.description : 'unknown'}
                     </Text>
                 </Flex>
@@ -412,11 +411,11 @@ export default function LandingPage() {
 
         function CalendarFeature() {
             return <Flex flexWrap='wrap' gap={['40px','20px']} justifyContent={['center','space-evenly']} flexDirection={['column','row']}>
-                <VStack textAlign='center' alignSelf={'center'} width={['fit-content','300px']}>
-                    <Heading fontSize='2rem'>
+                <VStack textAlign='center' alignSelf={'center'} width={['fit-content','300px']} rowGap='1rem'>
+                    <Heading width='80%' fontSize='1.75rem'>
                         Expansive Customization
                     </Heading>
-                    <Text fontSize='1rem'>
+                    <Text fontSize='20px'>
                         Pivot from a top-level view to a focused view, or anything in between, with ease
                     </Text>
                 </VStack>
@@ -447,14 +446,13 @@ export default function LandingPage() {
             <SimpleGrid marginX={['2px','50px']} spacing={['40px','100px']}>
                 <CalendarFeature/>
 
-                <TaskCreateFeature/>
             </SimpleGrid>
         </Flex>);
     }
 
     function Slider() {
-        return (<Box
-            gap='2rem'
+        return (<Box backgroundColor={useColorModeValue('','gray.00')}
+            gap='2rem' paddingX='10px'
             textAlign='center'
             pt={"3rem"}>
             <Box fontSize={['30px', '4xl']} fontWeight='700' >Our Team</Box>
@@ -465,10 +463,12 @@ export default function LandingPage() {
                     'desktop',
                 ]}*/
                 showDots={true}
+                draggable={true}
                 responsive={responsive}
                 autoPlay={true}
                 autoPlaySpeed={4000}
                 infinite={true}
+                
                 focusOnSelect={true}
                 arrows={true}>
                 {staffProfiles.map((staff, index) => {
