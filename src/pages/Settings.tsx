@@ -233,7 +233,7 @@ export default function Profile() {
         // get the profile of the friend being added
         const { data: friend, error: friendError} = await supabase
             .from('profiles')
-            .select('userid')
+            .select('userid, avatarurl')
             .eq('username', friendUsername)
             .single();
 
@@ -248,6 +248,7 @@ export default function Profile() {
             return;
         }
 
+        // if there's no data from Supabase, the friend's username doesn't exist
         if (!friend) {
             toast({
                 title: "No such user found.",
@@ -259,7 +260,33 @@ export default function Profile() {
             return;
         }
         
-        const { error } = await supabase
+        // check if the user is already related to the person being added
+        const { data: friend1, error: existingFriendError } = await supabase
+            .from('friends')
+            .select('*')
+            .eq('relating_user', user?.id)
+            .eq('related_user', friend.userid);
+        const { data: friend2, error: existingFriendError2 } = await supabase
+            .from('friends')
+            .select('*')
+            .eq('relating_user', friend.userid)
+            .eq('related_user', user?.id);
+            
+        if (existingFriendError || existingFriendError2) {
+            console.log(existingFriendError, existingFriendError2);
+            toast({
+                title: "An error occurred.",
+                description: existingFriendError?.message || existingFriendError2?.message,
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+            return;
+        }
+
+        // if there's no data from supabase, create the friend request
+        if (friend1.length == 0 && friend2.length == 0) {
+            const { error } = await supabase
             .from('friends')
             .insert({
                 relating_user: user?.id,
@@ -267,17 +294,53 @@ export default function Profile() {
                 status: 1,
             });
 
-        if (error){
+            if (error){
+                console.log("the error was in friend1.length == 0 && friend2.length == 0")
+                toast({
+                    title: "An error occurred.",
+                    description: error.message,
+                    status: "error",
+                    duration: 9000,
+                    isClosable: true,
+                });
+            }
+
+            else {
+                toast({
+                    title: "Friend request sent.",
+                    description: `You have sent a friend request to ${friendUsername}`,
+                    status: "success",
+                    duration: 9000,
+                    isClosable: true,
+                });
+                setFriendUsername(''); // clear the friend's username field
+            }
+        }
+
+        // check if they're already friends
+        if (friend1.length > 0 && friend1[0].status==2 ||
+            friend2.length > 0 && friend2[0].status==2) {
             toast({
-                title: "An error occurred.",
-                description: error.message,
-                status: "error",
+                title: "Already friends.",
+                description: `You are already friends with ${friendUsername}`,
+                status: "info",
                 duration: 9000,
                 isClosable: true,
             });
+            setFriendUsername(''); // clear the friend's username field
+            return;
         }
-
-        else {
+        // if the friend already sent a friend request, accept it
+        if (friend2[0].status == 1) {
+            handleAcceptFriendRequest(
+                {username: friendUsername, avatarurl: friend.avatarurl});
+        }
+        
+        // if the user has already sent a friend request, don't create 
+        // a new Supabase entry. The other person might be planning 
+        // to accept later or ghosting them. 
+        // Output the same toast as if the friend request was sent.
+        if (friend1[0].status == 1) {
             toast({
                 title: "Friend request sent.",
                 description: `You have sent a friend request to ${friendUsername}`,
@@ -290,6 +353,7 @@ export default function Profile() {
     };
 
     
+        // TODO: add a way to cancel friend requests
 
     const handleAcceptFriendRequest = async (request: FriendRequestType) => {
         const { data: { user } } = await supabase.auth.getUser();

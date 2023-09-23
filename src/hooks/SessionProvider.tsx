@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect, createContext, SetStateAction } from 'react';
 import PropTypes from 'prop-types';
+import { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
 
 const SessionContext = createContext({
   user: null,
@@ -14,12 +15,27 @@ export const SessionProvider = ({ children, supabase }: any) => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
 
+  /**
+   * To prevent updating duplicate sessions
+   * @param callback 
+   * @returns 
+   */
+  function onAuthStateChange(callback: (event : AuthChangeEvent, session: Session) => void) {
+    let currentSession: Session | null;
+    return supabase.auth.onAuthStateChange((event: any, session: any) => {
+      if (session?.user?.id == currentSession?.user?.id) return;
+      currentSession = session;
+      callback(event, session);
+    });
+  }
+
   useEffect(() => {
     const requestSession = async () => {
       const { data: { session }, error } = await supabase.auth.getSession();
-
+      
       if (error) throw error;
 
+      //re rendering too much is due to getting profile
       if(session) {
         const { 
           data: profileData, 
@@ -29,32 +45,41 @@ export const SessionProvider = ({ children, supabase }: any) => {
           .select('*')
           .eq('userid', session?.user.id).single()
         if (profileError) throw profileError;
-        setProfile(profileData)
-      }
-      
 
-
-
-      setSession(session);
-      setUser(session?.user);
-      setLoading(false);
-    };
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async(_event: any, newSession: any) => {
-        setSession(newSession);
-        setUser(newSession?.user);
+        function updateData() {
+          setProfile(profileData)
+          setSession(session);
+          setUser(session?.user);
+        }
+        updateData()
         setLoading(false);
+      }
+     
+      
+      
+    };
+    
 
-        if (newSession) {
+    const { data: listener } = onAuthStateChange(async(event : any, newSession: any) => {
+        console.log(event)
+        if (session) {
           const { 
             data: profileData, error: error
           } = await supabase
             .from('profiles')
             .select('*')
             .eq('userid', newSession.user.id).single()
+
+          //useMemo to compare old and new Data to avoid unecessary loading
+          function updateData() {
+            setProfile(profileData)
+            setSession(newSession);
+            setUser(newSession?.user);
+          }
+          updateData()
           
-          setProfile(profileData)
+          
+          setLoading(false);
         }
         
       }
@@ -73,7 +98,6 @@ export const SessionProvider = ({ children, supabase }: any) => {
     supabase,
     profile,
   };
-
   return (
     <SessionContext.Provider value={contextObject}>
       {!loading ? children : null}

@@ -285,7 +285,7 @@ export async function _deleteTask(taskID: string) {
  * @param task 
  */
 export async function _addTask(task: any) {
-    const start_date = task.start_date ? task.start_date : null
+    const start_date = task.start_date ? task.start_date : new Date()
     const end_date = task.end_date ? task.end_date : null
     const name = task.name ? task.name : ''
     const description = task.description ? task.description : ''
@@ -314,6 +314,29 @@ export async function _addTask(task: any) {
     }
 
     return data;
+}
+
+/**
+ * returns object of the user's task limit, how many they have left to make, and 
+ * @param userID
+ * @returns returns object
+ */
+export async function _getTaskLimit(userID: string) {
+    const { data, count } = await supabase //returns number of tasks that the user has completed
+        .from('task_user_relations')
+        .select('*', { count: 'exact', head: true }).eq('user_id', userID)
+    /**
+     * retrieves the user's role from the database, and determines their task limit
+     */
+
+    const defaultTaskLimit = 20
+    const tasksLeft = defaultTaskLimit - (count ? count : 0)
+    return { 
+        limit: defaultTaskLimit,
+        available: tasksLeft,
+        data: data
+    }
+
 }
 
 export async function _getTaskbyID(taskID: string) {
