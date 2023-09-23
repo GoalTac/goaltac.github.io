@@ -57,37 +57,146 @@ export async function _removeSuggestedTask(taskID: string) {
  * TASK - TASK METHODS
  */
 
+//task-task-relations database structure
+//id, created_at, parent_id (uuid), child_id (uuid) 
+
 export async function _getRootTask(taskID: string) {
+    let isChild = true;
+    let currentTaskID = taskID;
 
+    while (isChild) {
+        const relation = await supabase
+            .from('task-task-relations')
+            .select('parent_id')
+            .eq('child_id', currentTaskID)
+            .single();
+
+        if (relation.data && relation.data.parent_id) {
+            currentTaskID = relation.data.parent_id;
+        } else {
+            isChild = false;
+        }
+    }
+
+    return await _getTaskbyID(currentTaskID);
 }
+
+
 export async function _getTaskTree(taskID: string) {
+//return array of all the tasks
+    // Start with the root task
+    const rootTask = await _getRootTask(taskID);
 
+    // Recursively fetch child tasks
+    async function fetchChildren(parentID: string) {
+        const children = await _getChildTasks(parentID);
+        for (const child of children) {
+            child.children = await fetchChildren(child.id);
+        }
+        return children;
+    }
+
+    rootTask.children = await fetchChildren(rootTask.id);
+    return rootTask;
 }
+
 export async function _getChildTasks(taskID: string) {
+    const { data, error } = await supabase
+        .from('task-task-relations')
+        .select('child_id')
+        .eq('parent_id', taskID);
 
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    if (!data) return [];
+
+    const tasks = await Promise.all(data.map(async (relation) => {
+        return await _getTaskbyID(relation.child_id);
+    }));
+
+    return tasks;
 }
 
-export async function _setTaskTree(tree: {}, taskID: string) {
 
+
+
+export async function _createRootTask(taskID: string) {
+    const relation = {
+        parent_id: taskID,
+        child_id: null
+    };
+    
+    const { error } = await supabase
+        .from('task-task-relations')
+        .insert([relation]);
+    
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    return relation;
 }
-export async function _setRootTask(taskID: string, newTask: {}) {
 
+export async function _addChildTask(parentTaskID: string, childTask: any) {
+    const newChild = await _addTask(childTask);
+    
+    // Check if parentTaskID exists as a root task
+    const { data: parentData, error: parentError } = await supabase
+        .from('task-task-relations')
+        .select('id')
+        .eq('parent_id', parentTaskID)
+        .eq('child_id', null)
+        .single();
+    
+    if (parentError) {
+        throw new Error(parentError.message);
+    }
+
+    // If parentTaskID doesn't exist as a root task, create it
+    if (!parentData) {
+        await _createRootTask(parentTaskID);
+    }
+
+    const relation = {
+        parent_id: parentTaskID,
+        child_id: newChild.id
+    };
+    
+    const { error: relationError } = await supabase
+        .from('task-task-relations')
+        .insert([relation]);
+    
+    if (relationError) {
+        throw new Error(relationError.message);
+    }
+
+    return relation;
 }
-export async function _setChildTasks(parentTaskID: string, childTasks: [{}]) {
 
-}
-
-export async function _addChildTask(parentTaskID: string) {
-
-}
 
 /**
  * Removes the root task, and sets it's highest priority child task as a root task
  * @param taskID 
  */
 export async function _removeRootTask(taskID: string) {
-    //child tasks would be orphans, and we can't have that so
-    //we have to remove all the child tasks too
+    const taskTree = await _getTaskTree(taskID);
+    
+    // Flatten the task tree for deletion
+    function flattenTasks(task: any) {
+        let flat = [task];
+        for (const child of task.children) {
+            flat = flat.concat(flattenTasks(child));
+        }
+        return flat;
+    }
+
+    const flatTasks = flattenTasks(taskTree);
+
+    for (const task of flatTasks) {
+        await _deleteTask(task.id);
+    }
 }
 
 /**
@@ -96,7 +205,19 @@ export async function _removeRootTask(taskID: string) {
  * @param position 
  */
 export async function _removeChildTask(parentID: string, childID: string) {
+    // Removing the relation
+    const { error: relError } = await supabase
+        .from('task-task-relations')
+        .delete()
+        .eq('parent_id', parentID)
+        .eq('child_id', childID);
 
+    if (relError) {
+        throw new Error(relError.message);
+    }
+
+    // Removing the child task and its descendants
+    await _removeRootTask(childID);
 }
 
 
@@ -137,16 +258,27 @@ export async function _setTask(taskID: string, task: any) {
  * @param taskID
  */
 export async function _deleteTask(taskID: string) {
+    // 
+    const { data, error: relationError } = await supabase
+        .from('task-task-relations')
+        .delete()
+        .or(`parent_id.eq.${taskID},child_id.eq.${taskID}`);
+
+    if (relationError) {
+        throw new Error(relationError.message);
+    }
+
+    //delete the task
     const { error } = await supabase
         .from('tasks')
         .delete()
         .eq('id', taskID);
 
     if (error) {
-        throw new Error(error.message)
+        throw new Error(error.message);
     }
-
 }
+
 
 /**
  * Creates new task row
@@ -188,7 +320,7 @@ export async function _getTaskbyID(taskID: string) {
     const { data: data, error } = await supabase
         .from('tasks')
         .select()
-        .eq('uuid', taskID).single();
+        .eq('id', taskID).single();
 
     if (error) {
         throw new Error(error.message)
@@ -439,5 +571,5 @@ export async function _setProgress(userID: string, taskID: string, progress: num
  * @param taskID 
  */
 export async function _isComplete(userID: string, taskID: string) {
-    
+
 }
