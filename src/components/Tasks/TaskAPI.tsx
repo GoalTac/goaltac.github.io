@@ -343,7 +343,7 @@ export async function _getTaskbyID(taskID: string) {
     const { data: data, error } = await supabase
         .from('tasks')
         .select()
-        .eq('id', taskID).single();
+        .eq('uuid', taskID).single();
 
     if (error) {
         throw new Error(error.message)

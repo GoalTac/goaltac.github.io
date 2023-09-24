@@ -45,7 +45,7 @@ export default function LandingPage() {
 
     function SignInButton() {
         return <Link href='/login'>
-            <Button variant='outline'
+            <Button variant='solid'
                 width='8rem'
                 padding='1.75rem'
                 fontSize='1.25rem'

@@ -5,23 +5,24 @@
  * 3. Sidebar for task display
  */
 
-import { Avatar, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue } from "@chakra-ui/react";
+import { Avatar, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import TaskDrawer from "../components/Tasks/TaskDrawer";
 import { twoColumns } from "../hooks/Utilities";
 import { FcLike, FcSettings } from "react-icons/fc";
-import { FaFilter, FaThumbsUp } from "react-icons/fa";
-import { ArrowDownIcon, ArrowUpIcon, ChatIcon, SettingsIcon, StarIcon } from "@chakra-ui/icons";
+import { FaFilter, FaThumbsUp, FaTrash } from "react-icons/fa";
+import { ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon } from "@chakra-ui/icons";
 import { RxAvatar } from "react-icons/rx";
 import { TbTableOptions, TbTrendingUp } from "react-icons/tb";
-import { SlOptions, SlOptionsVertical } from "react-icons/sl";
-import { _getUserTasks } from "../components/Tasks/TaskAPI";
+import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
+import { _deleteTask, _deleteUserTask, _getUserTasks } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
 import premiumName from './../images/premium_logo_name.png';
 import { useNavigate, useNavigation } from "react-router-dom";
 import { supabase } from "../supabase";
+import { GiBowString, GiPocketBow, GiPostOffice, GiPostStamp } from "react-icons/gi";
 export default function Homepage() {
     const [taskIDs, setTaskIDs] = useState<any>();
     const [loading, setLoading] = useState<Boolean>(true)
@@ -58,7 +59,7 @@ export default function Homepage() {
                     <Menu>
                     {({ isOpen }) => (
                         <>
-                        <MenuButton isActive={isOpen} variant='solid' colorScheme='gray' as={Button} rightIcon={(isOpen ? <ArrowUpIcon/> : <ArrowDownIcon/>)}>
+                        <MenuButton isActive={isOpen} variant='unstyled' colorScheme='gray' as={Button} rightIcon={(isOpen ? <ArrowUpIcon/> : <ArrowDownIcon/>)}>
                             Options
                         </MenuButton>
                         <MenuList>
@@ -156,7 +157,7 @@ export default function Homepage() {
             const taskChanges = useSupabase.channel('any').on('postgres_changes',{
                     schema: 'public', // Subscribes to the "public" schema in Postgres
                     event: '*',       // Listen to all changes
-                    table: 'tasks'
+                    table: 'task_user_relations'
                 },(payload: any) => {
                     setLoading(true)
                     fetchUserTasks().finally(()=>setLoading(false))
@@ -240,19 +241,38 @@ export default function Homepage() {
             function TaskModule({task}: any) {
                 return <HStack paddingLeft='20px'>
                     <Tooltip label='WIP. Will have option to delete, post, share task'>
-                        <Text>
+                        <Text fontSize='12px' fontWeight='400'>
                             {task.name}
                         </Text>
                     </Tooltip>
                     
                     <Spacer/>
-                    <IconButton isDisabled variant='ghost' isRound colorScheme='gray' icon={<SlOptionsVertical />} aria-label='Settings Icon'/>
+                    <Menu>
+                    {({ isOpen }) => (
+                        <>
+                        <MenuButton marginRight='-10px' leftIcon={<SlOptionsVertical />} isActive={isOpen} variant='unstyled' colorScheme='gray' as={Button}/>
+                        <MenuList>
+                            <MenuItem isDisabled icon={<EditIcon/>}>Edit</MenuItem>
+                            <MenuItem icon={<SlShareAlt/>}>Post</MenuItem>
+                            <MenuItem onClick={()=>{
+                                if (user) {
+                                    console.log('hi')
+                                   _deleteUserTask(user?.['id'], task.uuid)
+                                }
+                            }} icon={<FaTrash/>}>Delete</MenuItem>
+                        </MenuList>
+                        </>)}
+                    </Menu>
                 </HStack>
             } 
             return <Card marginY='20px'>
-                <SimpleGrid columns={1} spacing='20px' width='inherit' maxHeight='200px' overflowY='clip'>
+                <SimpleGrid columns={1} width='inherit' maxHeight='200px' overflowY='clip'>
                     {userTasks.map((task: any, id:number)=>{
-                        return <TaskModule key={id} task={task}/>
+                        return <Box key={id}>
+                            <TaskModule task={task}/>
+                            <Divider/>
+                        </Box>
+                        
                     })}
                 </SimpleGrid>
                 <Button variant='ghost' onClick={()=>navigate('/dashboard')} size='sm'>Load more</Button>
