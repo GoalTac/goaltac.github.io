@@ -30,6 +30,7 @@ export default function Root() {
     };
 
     // Handles the search bar changing its value
+    
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(event.target.value);
     };
