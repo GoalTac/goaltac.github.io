@@ -29,8 +29,7 @@ export default function Root() {
       navigate('/login');
     };
 
-    // Handles the search bar changing its value
-    
+    // Handles the search bar changing its value  
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(event.target.value);
     };
