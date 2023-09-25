@@ -396,6 +396,20 @@ export async function _shareTasktoUser(taskID: string, userID: string) {
 /**
  * TASK - USER METHODS
  */
+export async function _getUserRelations(userID: string) {
+
+    const { data: data, error } = await supabase
+        .from('task_user_relations')
+        .select('*')
+        .eq('user_id', userID)
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
+}
+
 
 /**
  * Get all tasks directly connected to the user
@@ -595,4 +609,28 @@ export async function _setProgress(userID: string, taskID: string, progress: num
  */
 export async function _isComplete(userID: string, taskID: string) {
 
+}
+
+/**
+ * Searches and packages for post information before posting
+ * @param taskID 
+ * @param userID 
+ */
+export async function _addPost(taskID: string, userID: string) {
+    const newTask = {
+        task_uuid: taskID,
+        user_uuid: userID
+    }
+    //console.log(newTask)
+
+    const { data: data, error } = await supabase
+        .from('posts')
+        .insert([newTask])
+        .select().single();
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
 }

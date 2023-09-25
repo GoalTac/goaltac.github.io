@@ -73,7 +73,6 @@ export default function TaskDrawer() {
             }
         }
         if(!checks()) return;
-        
         const newTask = {
             start_date: startDate,
             end_date: endDate,
@@ -101,7 +100,7 @@ export default function TaskDrawer() {
         const taskID = createdTask.uuid
 
         //Adds user as an owner of the task
-        const task_user_relation = await _addUserTask(user?.['id'], taskID)
+        await _addUserTask(user?.['id'], taskID)
 
         //If task is type 'Tasks', create a task_task_relation row
 
