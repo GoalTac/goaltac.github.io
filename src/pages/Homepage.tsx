@@ -256,7 +256,6 @@ export default function Homepage() {
                             <MenuItem icon={<SlShareAlt/>}>Post</MenuItem>
                             <MenuItem onClick={()=>{
                                 if (user) {
-                                    console.log('hi')
                                    _deleteUserTask(user?.['id'], task.uuid)
                                 }
                             }} icon={<FaTrash/>}>Delete</MenuItem>
@@ -285,7 +284,17 @@ export default function Homepage() {
                 <Box paddingTop='20px' position='sticky' flexWrap='wrap' top={0} height='min'>
                     <Analytics/>
                     <ListView/>
-                    <TaskDrawer/>                    
+                    <TaskDrawer/>
+                    {/**
+                     * 
+                     * Create a task drawer component that:
+                     * 1. Envelopes a button that can be clicked on 
+                     *      such that we can make the button open the task drawer
+                     * <TaskDrawer/>
+                     *      <ExampleButtonElement/>
+                     * </TaskDrawer>
+                     * 2. If user clicks on any element within the tags here it will act to open the drawer
+                     */}
                 </Box>
             </Box>
         </Flex>

@@ -107,7 +107,7 @@ export default function TaskDrawer() {
 
         //if there is an error in creating any of these, delete createdTask and all proceeding variables
 
-        console.log(createdTask, task_user_relation)
+        //console.log(createdTask, task_user_relation)
         
 
         
@@ -299,6 +299,10 @@ export default function TaskDrawer() {
         <Button leftIcon={<AddIcon/>} colorScheme='teal' onClick={onOpen}>
             Task
         </Button>
+        {/**
+         * 'isOpen' says that the drawer is currently open, 
+         * onOpen is a function 
+         */}
         <Drawer isOpen={isOpen} size='md'
             placement='right'
             onClose={onClose}

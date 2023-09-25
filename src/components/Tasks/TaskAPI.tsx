@@ -302,7 +302,7 @@ export async function _addTask(task: any) {
         reward: reward,
         type: type
     }
-    console.log(newTask)
+    //console.log(newTask)
 
     const { data: data, error } = await supabase
         .from('tasks')

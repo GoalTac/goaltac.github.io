@@ -3,7 +3,7 @@ import { DeleteIcon } from '@chakra-ui/icons';
 import { FaEdit, FaCheck } from 'react-icons/fa';
 import { supabase } from './../supabase';
 import React, { useState, useEffect } from 'react';
-import Task from '../components/Calendar/Task';
+import Task from '../components/Tasks/Calendar/Task';
 import { set, update } from 'lodash';
 
 //use tasktype to structure tasks
