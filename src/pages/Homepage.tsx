@@ -15,7 +15,7 @@ import { ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon 
 import { RxAvatar } from "react-icons/rx";
 import { TbTableOptions, TbTrendingUp } from "react-icons/tb";
 import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
-import { _addPost, _deleteTask, _deleteUserTask, _getAllTasks, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
+import { _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
@@ -32,23 +32,26 @@ export default function Homepage() {
     const navigate = useNavigate()
     const toast = useToast()
 
-    const [examples, setExamples] = useState<any>({
-        task_id: 0, //tasks
-        name: 'Example Task', //tasks
-        description: 'This is an example', //tasks
-        likes: 12,
-        comments: 32,
-        progress: 10, //task_user_relations
-        requirement: 100, //tasks
-        user_id: '136021e3-4e2c-4ed2-8a32-06803fd800e5', //will be some user's UUID  //task_user_relations
-        interests: [''],
-        created_at: new Date(),
-    })
+    const getPackagedInfo = (task: any, relations: any) => {
+        return {
+            progress: relations.progress,
+            task_id: relations.task_id,
+            user_id: relations.user_id,
+            description: task.description,
+            end_date: task.end_date,
+            name: task.name,
+            reoccurence: task.reoccurence,
+            reward: task.reward,
+            requirement: task.requirement,
+            start_date: task.start_date,
+            type: task.simple,
+            likes: 0, comments: 0
+        }
+    }
 
     function Post({taskInfo}: any) {
         const progress: number = taskInfo.progress
         const requirement: number = taskInfo.requirement
-        console.log(progress,requirement)
         const [userName, setUserName] = useState<String>('N/A')
         useEffect(()=>{
             async function fetchUserName() {
@@ -146,12 +149,22 @@ export default function Homepage() {
          * @returns Render of max posts allowable
          */
         function Posts() {
-            const rows = [];
-            for (let i = 0; i < 1; i++) {
-                rows.push(<Post taskInfo={examples} key={i}/>);
-            }
+
+            const [posts, setPosts] = useState<any>([])
+
+            useEffect(()=>{
+                async function fetchPosts() {
+                    const fetchedPosts = await Promise.all(await _getAllPostInfo())
+                    setPosts(fetchedPosts)
+                }
+                fetchPosts()
+            },[])
+
+
             return <SimpleGrid columns={1} spacing='20px'>
-                {rows}
+                {posts.map((post: any, id: number)=>{
+                    return <Post key={id} taskInfo={post}/>
+                })}
             </SimpleGrid>
         }
         return <Flex flexDirection='column' rowGap='20px' maxWidth='600px' width='fit-content'>
@@ -161,25 +174,7 @@ export default function Homepage() {
     }
 
     function TaskManagement() {
-        const [userTasks, setUserTasks] = useState<any>([]);
         const [tasksInfo, setTasksInfo] = useState<any>([]);
-
-        const getPackagedInfo = (task: any, relations: any) => {
-            return {
-                progress: relations.progress,
-                task_id: relations.task_id,
-                user_id: relations.user_id,
-                description: task.description,
-                end_date: task.end_date,
-                name: task.name,
-                reoccurence: task.reoccurence,
-                reward: task.reward,
-                requirement: task.requirement,
-                start_date: task.start_date,
-                type: task.simple,
-                likes: 0, comments: 0
-            }
-        }
 
         useEffect(()=> {
             const taskChanges = useSupabase.channel('any').on('postgres_changes',{
@@ -207,7 +202,6 @@ export default function Homepage() {
 
                     setTasksInfo(task_relations)
 
-                    setUserTasks(userTasks)
                     setLoading(false) 
                 }
             }
@@ -268,7 +262,7 @@ export default function Homepage() {
                 <StatGroup>
                     <Stat>
                         <StatLabel>Completed Tasks</StatLabel>
-                        <StatNumber>{userTasks.length}</StatNumber>
+                        <StatNumber>{tasksInfo.length}</StatNumber>
                         <StatHelpText>
                             <StatArrow type='increase' />23.36%    
                             (Week)
@@ -296,7 +290,6 @@ export default function Homepage() {
                             })
                             onClose()
                         })
-                        console.log(createdPost)
                     }                  
                     return (
                         <Modal scrollBehavior='inside' isCentered motionPreset='slideInBottom' closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
