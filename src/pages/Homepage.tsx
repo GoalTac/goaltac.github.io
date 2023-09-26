@@ -52,13 +52,22 @@ export default function Homepage() {
     function Post({taskInfo}: any) {
         const progress: number = taskInfo.progress
         const requirement: number = taskInfo.requirement
-        const [userName, setUserName] = useState<String>('N/A')
+        const [userName, setUserName] = useState<string>('N/A')
+        const [avatarURL, setAvatarURL] = useState<string>('')
+        const [displayName, setDisplayName] = useState<string>('N/A')
+
         useEffect(()=>{
             async function fetchUserName() {
                 const fetchedName = await getUser(taskInfo.user_id)
                 if (fetchedName) {
-                    const name = fetchedName ? fetchedName.name : 'N/A'
+                    const name = fetchedName.username
+                    const url = fetchedName.avatarurl
+                    const display = fetchedName.name
+
                     setUserName(name)
+                    setAvatarURL(url)
+                    setDisplayName(display)
+
                 }
             }
             fetchUserName()
@@ -89,7 +98,7 @@ export default function Homepage() {
             
             <Flex flexDirection='row'>
                 <Box marginRight='20px'>
-                    <Avatar name='My Phung' src='https://media.licdn.com/dms/image/D4E03AQGzcOT2TD9yeg/profile-displayphoto-shrink_800_800/0/1680054603274?e=2147483647&v=beta&t=2Orm7yEP0-ZgHvY4E5v9r9fQ11sXxSawk83FiQllBcs' />
+                    <Avatar name={displayName} src={avatarURL} />
                 </Box>
                 <Box overflowY='hidden' maxHeight='300px'>
                     <Heading fontSize='1rem'>
