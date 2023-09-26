@@ -5,7 +5,7 @@
  * 3. Sidebar for task display
  */
 
-import { Avatar, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue, useDisclosure, useToast } from "@chakra-ui/react";
+import { Avatar, Link, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue, useDisclosure, useToast } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import TaskDrawer from "../components/Tasks/TaskDrawer";
 import { getUser, twoColumns } from "../hooks/Utilities";
@@ -15,7 +15,7 @@ import { ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon 
 import { RxAvatar } from "react-icons/rx";
 import { TbTableOptions, TbTrendingUp } from "react-icons/tb";
 import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
-import { _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
+import { _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getPost, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
@@ -285,9 +285,11 @@ export default function Homepage() {
         function ListView() {
             function TaskModule({taskInfo}: any) {
                 const { isOpen, onOpen, onClose } = useDisclosure()
+                const [hasPosted, setHasPosted] = useState(true)
+
+                //highlight the task in the list that has already been posted
                 function PostModal() {  
                     const handlePost = async() => {
-                        onClose()
 
                         const createdPost = await _addPost(taskInfo.task_id, taskInfo.user_id).finally(()=>{
                             toast({
@@ -319,6 +321,29 @@ export default function Homepage() {
                     )
                 }
 
+                
+
+                useEffect(()=>{
+                    const isPost = async() => {
+                        //check if the post has already been made
+                        if (!taskInfo) {
+                            return false
+                        }
+                        const exists = await _getPost(taskInfo.task_id, taskInfo.user_id)
+                        if (exists.length > 0) {
+                            //so there is no need to change a variable to the same value
+                            if (!hasPosted) {
+                                setHasPosted(true)
+                            }
+                        } else {
+                            if (hasPosted) {
+                                setHasPosted(false)
+                            }
+                        }
+                    }
+                    isPost()
+                },[])
+                console.log(taskInfo)
                 return <HStack paddingLeft='20px'>
                     <Tooltip label='WIP. Will have option to delete, post, share task'>
                         <Text fontSize='12px' fontWeight='400'>
@@ -333,10 +358,11 @@ export default function Homepage() {
                         <MenuButton marginRight='-10px' leftIcon={<SlOptionsVertical />} isActive={isOpen} variant='unstyled' colorScheme='gray' as={Button}/>
                         <MenuList>
                             <MenuItem isDisabled icon={<EditIcon/>}>Edit</MenuItem>
-                            <MenuItem onClick={onOpen} icon={<SlShareAlt/>}>Post<PostModal/></MenuItem>
+                            
+                            {!hasPosted && <MenuItem onClick={onOpen} icon={<SlShareAlt/>}>Post<PostModal/></MenuItem>}
                             <MenuItem onClick={()=>{
                                 if (user) {
-                                   _deleteUserTask(user?.['id'], taskInfo.uuid)
+                                   _deleteUserTask(user?.['id'], taskInfo.task_id)
                                 }
                             }} icon={<FaTrash/>}>Delete</MenuItem>
                         </MenuList>

@@ -466,16 +466,24 @@ export async function _addUserTask(userID: string | undefined, taskID: string) {
  * @param taskID 
  */
 export async function _deleteUserTask(userID: string, taskID: string) {
-    const { error } = await supabase
+    const { error: error } = await supabase
         .from('task_user_relations')
         .delete()
         .eq('task_id', taskID)
         .eq('user_id', userID);
     
+    const { error: error2 } = await supabase
+        .from('posts')
+        .delete()
+        .eq('task_uuid', taskID)
+        .eq('user_uuid', userID);
+    
     if (error) {
         throw new Error(error.message);
     }
-
+    if (error2) {
+        throw new Error(error2.message);
+    }
 
 }
 
@@ -730,4 +738,17 @@ export async function _getAllPostInfo() {
     }))
     return getAllPackagedInfo
 
+}
+
+export async function _getPost(task_uuid: string, user_uuid: string) {
+    const { data: data, error } = await supabase
+        .from('posts')
+        .select('post_uuid')
+        .match({'task_uuid': task_uuid, 'user_uuid': user_uuid});
+    console.log(data)
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return data;
 }
