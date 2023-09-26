@@ -646,8 +646,7 @@ export async function _getPostInfo(task_uuid: string, user_uuid: string) {
     const {data: relation, error: relationError} = await supabase
         .from('task_user_relations')
         .select('*')
-        .eq('user_id', user_uuid)
-        .eq('task_id', task_uuid)
+        .match({'user_id': user_uuid,'task_id': task_uuid}).single()
     
     const {data: task, error: taskError} = await supabase
         .from('tasks')
@@ -660,8 +659,9 @@ export async function _getPostInfo(task_uuid: string, user_uuid: string) {
     if(taskError) {
         throw new Error(taskError.message)
     }
+
     const getPackagedInfo = (task: any, relation: any) => {
-        return {
+        const packaged = {
             progress: relation.progress,
             task_id: relation.task_id,
             user_id: relation.user_id,
@@ -675,6 +675,7 @@ export async function _getPostInfo(task_uuid: string, user_uuid: string) {
             type: task.simple,
             likes: 0, comments: 0
         }
+        return packaged
     }
     return getPackagedInfo(task, relation)
 }
