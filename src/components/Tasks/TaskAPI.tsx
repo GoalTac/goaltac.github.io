@@ -1,6 +1,18 @@
 import { error } from "console";
 import { supabase } from "../../supabase";
 
+export type Task = {
+    uuid: string;
+    created_at: Date;
+    name: string;
+    start_date: Date;
+    end_date: Date;
+    description: string;
+    requirement: number;
+    reward: number;
+    type: string;
+    reoccurence: number;
+};
 
 export async function _getAllTasks() {
     const { data: data, error } = await supabase
