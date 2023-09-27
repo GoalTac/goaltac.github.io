@@ -5,7 +5,7 @@
  * 3. Sidebar for task display
  */
 
-import { Avatar, Link, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue, useDisclosure, useToast } from "@chakra-ui/react";
+import { Avatar, Link, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue, useDisclosure, useToast, Skeleton, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import TaskDrawer from "../components/Tasks/TaskDrawer";
 import { getUser, twoColumns } from "../hooks/Utilities";
@@ -15,7 +15,7 @@ import { ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon 
 import { RxAvatar } from "react-icons/rx";
 import { TbTableOptions, TbTrendingUp } from "react-icons/tb";
 import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
-import { _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getPost, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
+import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getPost, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
@@ -24,6 +24,7 @@ import { useNavigate, useNavigation } from "react-router-dom";
 import { supabase } from "../supabase";
 import { GiBowString, GiPocketBow, GiPostOffice, GiPostStamp } from "react-icons/gi";
 import PostModal from "../components/Tasks/PostModal";
+import Chat from "../components/Chats/CommunityChat";
 export default function Homepage() {
     const [taskIDs, setTaskIDs] = useState<any>();
     const [loading, setLoading] = useState<Boolean>(true)
@@ -32,7 +33,7 @@ export default function Homepage() {
     const navigate = useNavigate()
     const toast = useToast()
 
-    const getPackagedInfo = (task: any, relations: any) => {
+    const getPackagedInfo = (task: Task, relations: any) => {
         return {
             progress: relations.progress,
             task_id: relations.task_id,
@@ -44,7 +45,7 @@ export default function Homepage() {
             reward: task.reward,
             requirement: task.requirement,
             start_date: task.start_date,
-            type: task.simple,
+            type: task.type,
             likes: 0, comments: 0
         }
     }
@@ -97,9 +98,9 @@ export default function Homepage() {
             </Stack>
             
             <Flex flexDirection='row'>
-                <Box marginRight='20px'>
+                <Link marginRight='20px' href={`/profile/${userName}`}>
                     <Avatar name={displayName} src={avatarURL} />
-                </Box>
+                </Link>
                 <Box overflowY='hidden' maxHeight='300px'>
                     <Heading fontSize='1rem'>
                         {taskInfo.name}
@@ -160,20 +161,36 @@ export default function Homepage() {
         function Posts() {
 
             const [posts, setPosts] = useState<any>([])
+            const [postsLoaded, setPostsLoaded] = useState<Boolean>(false)
 
+            const renderPosts = () => {}
             useEffect(()=>{
                 async function fetchPosts() {
+
+                    //to prevent any further attempts to load the posts
+                    if (postsLoaded) {
+                        return
+                    } else {
+                       setPostsLoaded(true) 
+                    }
+                    
+
                     const fetchedPosts = await Promise.all(await _getAllPostInfo())
                     setPosts(fetchedPosts)
                 }
                 fetchPosts()
-            },[])
+            },[postsLoaded])
 
 
             return <SimpleGrid columns={1} spacing='20px'>
-                {posts.map((post: any, id: number)=>{
+                {posts.length>0 ? 
+                posts.map((post: any, id: number)=>{
                     return <Post key={id} taskInfo={post}/>
-                })}
+                }) :
+                <Box padding='6' boxShadow='lg' bg='white' width='340px'>
+                    <SkeletonCircle size='10' />
+                    <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
+              </Box>}
             </SimpleGrid>
         }
         return <Flex flexDirection='column' rowGap='20px' maxWidth='600px' width='fit-content'>
@@ -181,7 +198,7 @@ export default function Homepage() {
             <Posts/>
         </Flex>
     }
-
+ 
     function TaskManagement() {
         const [tasksInfo, setTasksInfo] = useState<any>([]);
 
@@ -204,7 +221,7 @@ export default function Homepage() {
 
                     //get the task objects from the task IDs
                     const userTasks = await Promise.all(userTasksRelations.map(async(relation) => {
-                        const task = await _getTaskbyID(relation.task_id)
+                        const task: Task = await _getTaskbyID(relation.task_id) as Task
                         task_relations.push(getPackagedInfo(task, relation))
                         return task
                     }))
@@ -273,8 +290,7 @@ export default function Homepage() {
                         <StatLabel>Completed Tasks</StatLabel>
                         <StatNumber>{tasksInfo.length}</StatNumber>
                         <StatHelpText>
-                            <StatArrow type='increase' />23.36%    
-                            (Week)
+                            <StatArrow type='increase' />
                             
                         </StatHelpText>
                     </Stat>
@@ -321,8 +337,6 @@ export default function Homepage() {
                     )
                 }
 
-                
-
                 useEffect(()=>{
                     const isPost = async() => {
                         //check if the post has already been made
@@ -343,7 +357,6 @@ export default function Homepage() {
                     }
                     isPost()
                 },[])
-                console.log(taskInfo)
                 return <HStack paddingLeft='20px'>
                     <Tooltip label='WIP. Will have option to delete, post, share task'>
                         <Text fontSize='12px' fontWeight='400'>
@@ -387,7 +400,6 @@ export default function Homepage() {
         }
         return <Flex position='static'  pos='relative' rowGap='20px' maxWidth={[null,'200px']}>
             <Box>
-                <Premium/>
                 <Box paddingTop='20px' position='sticky' flexWrap='wrap' top={0} height='min'>
                     <Analytics/>
                     <ListView/>
