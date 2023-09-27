@@ -665,11 +665,11 @@ export async function _getPostInfo(posts: any[]){
         .in('task_id', taskUUIDs);
 
     // get all tasks in batch with one api call
-    const taskUUIDsUnique = [...new Set(taskUUIDs)]; // Remove duplicates
     const {data: tasks, error: taskError} = await supabase
         .from('tasks')
         .select('*')
-        .in('uuid', taskUUIDsUnique);
+        .in('uuid', taskUUIDs);
+
 
     if(relationError) {
         throw new Error(relationError.message)

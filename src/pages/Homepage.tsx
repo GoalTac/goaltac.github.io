@@ -24,7 +24,9 @@ import { useNavigate, useNavigation } from "react-router-dom";
 import { supabase } from "../supabase";
 import { GiBowString, GiPocketBow, GiPostOffice, GiPostStamp } from "react-icons/gi";
 import PostModal from "../components/Tasks/PostModal";
+import { render } from "react-dom";
 export default function Homepage() {
+    
     const [taskIDs, setTaskIDs] = useState<any>();
     const [loading, setLoading] = useState<Boolean>(true)
     const { user: user } = useSession();
