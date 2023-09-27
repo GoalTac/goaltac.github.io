@@ -26,6 +26,7 @@ import { GiBowString, GiPocketBow, GiPostOffice, GiPostStamp } from "react-icons
 import PostModal from "../components/Tasks/PostModal";
 import Chat from "../components/Chats/CommunityChat";
 export default function Homepage() {
+    
     const [taskIDs, setTaskIDs] = useState<any>();
     const { user: user } = useSession();
     const  useSupabase: any  = useSupabaseClient();

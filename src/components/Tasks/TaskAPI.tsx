@@ -681,6 +681,8 @@ export async function _getPostInfo(posts: any[]){
         .from('tasks')
         .select('*')
         .in('uuid', taskUUIDs);
+        .in('uuid', taskUUIDs);
+
 
     if(relationError) {
         throw new Error(relationError.message)
