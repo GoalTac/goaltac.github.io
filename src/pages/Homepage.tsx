@@ -163,7 +163,7 @@ export default function Homepage() {
 
             useEffect(()=>{
                 async function fetchPosts() {
-                    const fetchedPosts = await Promise.all(await _getAllPostInfo())
+                    const fetchedPosts = await _getAllPostInfo()
                     setPosts(fetchedPosts)
                 }
                 fetchPosts()
