@@ -25,8 +25,7 @@ import { supabase } from "../supabase";
 import { GiBowString, GiPocketBow, GiPostOffice, GiPostStamp } from "react-icons/gi";
 import PostModal from "../components/Tasks/PostModal";
 import { render } from "react-dom";
-export default function Homepage() {
-    
+export default function Homepage() {  
     const [taskIDs, setTaskIDs] = useState<any>();
     const [loading, setLoading] = useState<Boolean>(true)
     const { user: user } = useSession();
@@ -345,7 +344,6 @@ export default function Homepage() {
                     }
                     isPost()
                 },[])
-                console.log(taskInfo)
                 return <HStack paddingLeft='20px'>
                     <Tooltip label='WIP. Will have option to delete, post, share task'>
                         <Text fontSize='12px' fontWeight='400'>
