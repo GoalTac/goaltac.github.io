@@ -74,6 +74,25 @@ export default function Homepage() {
             fetchUserName()
         },[])
 
+        const handleLike = async() => {
+            //take the post ID
+            //take who liked the post
+            //To update the user's like status of that post
+            /**
+             * const { data: data, error: error } = await supabase
+                .from('post_liked')
+                .select('id')
+                .eq('user_uuid', taskInfo.user_id)
+                .eq('post_uuid', taskInfo.this_should_be_the_post_id);
+             */
+            
+            //Access the post_liked database and find whether or not a row exists given a user's ID and the post's ID
+            //If there is one, that means the post has been liked by this user
+                //Remove row
+            //If there isn't one, that means the post hasn't been liked
+                //Insert a row
+        }
+
         const isComplete = progress/requirement >= 1
 
         return <Card width='inherit' padding='20px' maxWidth='inherit' height='fit-content'>
@@ -113,7 +132,7 @@ export default function Homepage() {
             <Divider color='gray.300' paddingY='10px'/>
             <HStack flexDirection='row' >
                 <ButtonGroup paddingY='10px' columnGap='20px' variant='ghost' size='md' >
-                    <Button colorScheme='green' leftIcon={<FaThumbsUp />}>{taskInfo.likes}</Button>
+                    <Button colorScheme='green' leftIcon={<FaThumbsUp />} onClick={handleLike}>{taskInfo.likes}</Button>
                     <Button colorScheme='blue' leftIcon={<ChatIcon />}>{taskInfo.comments} comments</Button>
 
                 </ButtonGroup>
