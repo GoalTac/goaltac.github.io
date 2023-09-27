@@ -681,7 +681,6 @@ export async function _getPostInfo(posts: any[]){
         .from('tasks')
         .select('*')
         .in('uuid', taskUUIDs);
-        .in('uuid', taskUUIDs);
 
 
     if(relationError) {
@@ -738,7 +737,6 @@ export async function _getPost(task_uuid: string, user_uuid: string) {
         .from('posts')
         .select('post_uuid')
         .match({'task_uuid': task_uuid, 'user_uuid': user_uuid});
-    console.log(data)
     if (error) {
         throw new Error(error.message)
     }
