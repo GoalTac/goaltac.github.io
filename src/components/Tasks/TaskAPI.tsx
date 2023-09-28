@@ -651,7 +651,7 @@ export async function _addPost(taskID: string, userID: string) {
  */
 export async function _getPostInfo(posts: any[]){
 
-    const batch = posts.slice(0, 10);
+    const batch = posts
     const packagedData = [];
 
     const taskUUIDs = batch.map(post => post.task_uuid);
@@ -706,11 +706,12 @@ export async function _getPostInfo(posts: any[]){
     return packagedData
 }
 
-export async function _getAllPostInfo() {
+export async function _getAllPostInfo(offset: number) {
 
     const {data: posts, error: postError} = await supabase
         .from('posts')
         .select('*')
+        .range(offset, offset + 9)
     
     if (postError) {
         throw new Error(postError.message)

@@ -161,10 +161,11 @@ export default function Homepage() {
         function Posts() {
 
             const [posts, setPosts] = useState<any>([])
+            const [offset, setOffset] = useState<number>(0)
 
             useEffect(()=>{
                 async function fetchPosts() {
-                    const fetchedPosts = await _getAllPostInfo()
+                    const fetchedPosts = await _getAllPostInfo(offset)
                     setPosts(fetchedPosts)
                 }
                 fetchPosts()
@@ -175,8 +176,15 @@ export default function Homepage() {
                 {posts.map((post: any, id: number)=>{
                     return <Post key={id} taskInfo={post}/>
                 })}
+            <Button type="submit" aria-label="More" onClick={(loadMore)} fontSize="xl" ml={1} background="none"> More </Button>
             </SimpleGrid>
+            async function loadMore(): Promise<void> {
+                const morePosts = await _getAllPostInfo(offset + 10)
+                setOffset(offset + 10)
+                setPosts((posts: any) => [...posts, ...morePosts]);          }
         }
+        
+
         return <Flex flexDirection='column' rowGap='20px' maxWidth='600px' width='fit-content'>
             <Header/>
             <Posts/>
