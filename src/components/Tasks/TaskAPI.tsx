@@ -673,6 +673,16 @@ export async function _getPostInfo(task_uuid: string, user_uuid: string) {
         .select('*')
         .eq('uuid', task_uuid).single()
 
+    const {data: profile, error: profileError} = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('userid', user_uuid).single()
+
+    const {data: post, error: postError} = await supabase
+        .from('posts')
+        .select('*')
+        .match({'user_uuid': user_uuid,'task_uuid': task_uuid}).single()
+    
     if(relationError) {
         throw new Error(relationError.message)
     }
@@ -680,24 +690,35 @@ export async function _getPostInfo(task_uuid: string, user_uuid: string) {
         throw new Error(taskError.message)
     }
 
-    const getPackagedInfo = (task: any, relation: any) => {
+    if(profileError) {
+        throw new Error(profileError.message)
+    }
+    if(postError) {
+        throw new Error(postError.message)
+    }
+
+    const getPackagedInfo = (task: Task, relation: any, post: any, profile: any) => {
+        console.log(post)
         const packaged = {
-            progress: relation.progress,
-            task_id: relation.task_id,
-            user_id: relation.user_id,
-            description: task.description,
-            end_date: task.end_date,
-            name: task.name,
-            reoccurence: task.reoccurence,
-            reward: task.reward,
-            requirement: task.requirement,
-            start_date: task.start_date,
-            type: task.simple,
-            likes: 0, comments: 0
-        }
+                progress: relation.progress,
+                task_id: relation.task_id,
+                user_id: relation.user_id,
+                description: task.description,
+                end_date: task.end_date,
+                name: task.name,
+                reoccurence: task.reoccurence,
+                reward: task.reward,
+                requirement: task.requirement,
+                start_date: task.start_date,
+                type: task.type,
+                likes: post.likes, comments: 0,
+                post_id: post.post_id, avatarURL: profile.avatarurl,
+                userName: profile.username, displayName: profile.name
+    
+            }
         return packaged
     }
-    return getPackagedInfo(task, relation)
+    return getPackagedInfo(task as Task, relation, post, profile)
 }
 
 export async function _getAllPostInfo() {
@@ -757,7 +778,6 @@ export async function _getPost(task_uuid: string, user_uuid: string) {
         .from('posts')
         .select('post_uuid')
         .match({'task_uuid': task_uuid, 'user_uuid': user_uuid});
-    console.log(data)
     if (error) {
         throw new Error(error.message)
     }
