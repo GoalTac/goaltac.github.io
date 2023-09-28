@@ -194,8 +194,8 @@ export default function Homepage() {
             <Button type="submit" aria-label="More" onClick={(loadMore)} fontSize="xl" ml={1} background="none"> More </Button>
             </SimpleGrid>
             async function loadMore(): Promise<void> {
-                const morePosts = await _getAllPostInfo(offset + 1)
-                setOffset(offset + 1)
+                const morePosts = await _getAllPostInfo(offset + 10)
+                setOffset(offset + 10)
                 setPosts((posts: any) => [...posts, ...morePosts]);          }
         }
         

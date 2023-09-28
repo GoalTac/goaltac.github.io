@@ -698,7 +698,7 @@ export async function _getPostInfo(posts: any[]){
         throw new Error(profileError.message)
     }
 
-    const getPackagedInfo = (task: any, relation: any, profile: any) => {
+    const getPackagedInfo = (task: any, relation: any, profile: any, post: any) => {
         
         const packaged = {
             progress: relation.progress,
@@ -712,7 +712,8 @@ export async function _getPostInfo(posts: any[]){
             requirement: task.requirement,
             start_date: task.start_date,
             type: task.simple,
-            likes: 0, comments: 0,
+            likes: post.likes, comments: 0,
+            post_id: post.post_id, 
             avatarURL: profile.avatarurl,
             userName: profile.username, displayName: profile.name
         }
@@ -721,8 +722,9 @@ export async function _getPostInfo(posts: any[]){
     for (const relation of relations) {
         const task = tasks.find(task => task.uuid === relation.task_id);
         const profile = profiles.find(profile => profile.userid == relation.user_id)
-        if (task && profile) {
-            const packagedInfo = getPackagedInfo(task, relation, profile);
+        const post = posts.find(post => post.user_uuid == relation.user_id)
+        if (task && profile && post) {
+            const packagedInfo = getPackagedInfo(task, relation, profile, post);
             packagedData.push(packagedInfo);
         }
     }
@@ -734,7 +736,7 @@ export async function _getAllPostInfo(offset: number) {
     const {data: posts, error: postError} = await supabase
         .from('posts')
         .select('*')
-        .range(offset, offset )
+        .range(offset, offset + 9)
     
     if (postError) {
         throw new Error(postError.message)
