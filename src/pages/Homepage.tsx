@@ -191,7 +191,6 @@ export default function Homepage() {
                     <SkeletonCircle size='10' />
                     <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
               </Box>}
-              <Button type="submit" aria-label="More" onClick={(loadMore)} fontSize="xl" ml={1} background="none"> More </Button>
             <Button type="submit" aria-label="More" onClick={(loadMore)} fontSize="xl" ml={1} background="none"> More </Button>
             </SimpleGrid>
             async function loadMore(): Promise<void> {
