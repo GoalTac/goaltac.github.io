@@ -27,11 +27,13 @@ import PostModal from "../components/Tasks/PostModal";
 import Chat from "../components/Chats/CommunityChat";
 export default function Homepage() {
     const [taskIDs, setTaskIDs] = useState<any>();
-    const [loading, setLoading] = useState<Boolean>(true)
     const { user: user } = useSession();
     const  useSupabase: any  = useSupabaseClient();
     const navigate = useNavigate()
     const toast = useToast()
+    const [tasksLoaded, setTasksLoaded] = useState<Boolean>(false)
+    const [postsLoaded, setPostsLoaded] = useState<Boolean>(false)
+    const loading = () => {return tasksLoaded && postsLoaded}
 
     const getPackagedInfo = (task: Task, relations: any) => {
         return {
@@ -53,26 +55,11 @@ export default function Homepage() {
     function Post({taskInfo}: any) {
         const progress: number = taskInfo.progress
         const requirement: number = taskInfo.requirement
-        const [userName, setUserName] = useState<string>('N/A')
-        const [avatarURL, setAvatarURL] = useState<string>('')
-        const [displayName, setDisplayName] = useState<string>('N/A')
-
-        useEffect(()=>{
-            async function fetchUserName() {
-                const fetchedName = await getUser(taskInfo.user_id)
-                if (fetchedName) {
-                    const name = fetchedName.username
-                    const url = fetchedName.avatarurl
-                    const display = fetchedName.name
-
-                    setUserName(name)
-                    setAvatarURL(url)
-                    setDisplayName(display)
-
-                }
-            }
-            fetchUserName()
-        },[])
+        const userName: string = taskInfo.userName
+        const avatarURL: string = taskInfo.avatarURL
+        const displayName: string = taskInfo.displayName
+        const likes: number = taskInfo.likes
+        const isComplete = progress/requirement >= 1
 
         const handleLike = async() => {
             //take the post ID
@@ -93,7 +80,7 @@ export default function Homepage() {
                 //Insert a row
         }
 
-        const isComplete = progress/requirement >= 1
+        
 
         return <Card width='inherit' padding='20px' maxWidth='inherit' height='fit-content'>
             <Stack flexWrap='wrap' flexDirection='row' paddingBottom='10px'>
@@ -132,7 +119,7 @@ export default function Homepage() {
             <Divider color='gray.300' paddingY='10px'/>
             <HStack flexDirection='row' >
                 <ButtonGroup paddingY='10px' columnGap='20px' variant='ghost' size='md' >
-                    <Button colorScheme='green' leftIcon={<FaThumbsUp />} onClick={handleLike}>{taskInfo.likes}</Button>
+                    <Button colorScheme='green' leftIcon={<FaThumbsUp />} onClick={handleLike}>{likes}</Button>
                     <Button colorScheme='blue' leftIcon={<ChatIcon />}>{taskInfo.comments} comments</Button>
 
                 </ButtonGroup>
@@ -145,6 +132,7 @@ export default function Homepage() {
     }
 
     function SocialFeed() {
+        
         function Header() {
             return <Card maxWidth='inherit' padding='20px'>
                 <Stack flexDirection='row' >
@@ -178,31 +166,23 @@ export default function Homepage() {
          * @returns Render of max posts allowable
          */
         function Posts() {
+            
 
             const [posts, setPosts] = useState<any>([])
-            const [postsLoaded, setPostsLoaded] = useState<Boolean>(false)
 
-            const renderPosts = () => {}
             useEffect(()=>{
                 async function fetchPosts() {
-
-                    //to prevent any further attempts to load the posts
-                    if (postsLoaded) {
-                        return
-                    } else {
-                       setPostsLoaded(true) 
-                    }
                     
-
                     const fetchedPosts = await Promise.all(await _getAllPostInfo())
                     setPosts(fetchedPosts)
+                    setPostsLoaded(true)
                 }
                 fetchPosts()
             },[postsLoaded])
 
-
+            //PUT PROFILE INFO IN THE POST VARIABLE
             return <SimpleGrid columns={1} spacing='20px'>
-                {posts.length>0 ? 
+                {posts.length>0 && loading() ? 
                 posts.map((post: any, id: number)=>{
                     return <Post key={id} taskInfo={post}/>
                 }) :
@@ -227,13 +207,11 @@ export default function Homepage() {
                     event: '*',       // Listen to all changes
                     table: 'task_user_relations'
                 },(payload: any) => {
-                    setLoading(true)
-                    fetchUserTasks().finally(()=>setLoading(false))
+                    fetchUserTasks()
             }).subscribe()
 
             async function fetchUserTasks() {
                 if(user) {
-                    //all task IDs the user has relationship with
                     const userTasksRelations = await _getUserRelations(user?.['id'])
 
                     let task_relations: any[] = []
@@ -243,11 +221,10 @@ export default function Homepage() {
                         const task: Task = await _getTaskbyID(relation.task_id) as Task
                         task_relations.push(getPackagedInfo(task, relation))
                         return task
-                    }))
-
+                    })).finally(()=>{
+                        setTasksLoaded(true)
+                    })
                     setTasksInfo(task_relations)
-
-                    setLoading(false) 
                 }
             }
 
@@ -318,6 +295,7 @@ export default function Homepage() {
         </Card>
         }
         function ListView() {
+
             function TaskModule({taskInfo}: any) {
                 const { isOpen, onOpen, onClose } = useDisclosure()
                 const [hasPosted, setHasPosted] = useState(true)
@@ -403,7 +381,8 @@ export default function Homepage() {
                 </HStack>
             }
         
-            return <Card marginY='20px'>
+            return (tasksInfo.length > 0 && loading() ? 
+            <Card marginY='20px'>
                 <SimpleGrid columns={1} width='inherit' maxHeight='200px' overflowY='clip'>
                     {tasksInfo.map((taskInfo: any, id:number)=>{
                         return <Box key={id}>
@@ -414,7 +393,10 @@ export default function Homepage() {
                     })}
                 </SimpleGrid>
                 <Button variant='ghost' onClick={()=>navigate('/dashboard')} size='sm'>Load more</Button>
-            </Card>
+            </Card> : 
+            <Skeleton height='30px'>
+
+            </Skeleton>)
             
         }
         return <Flex position='static'  pos='relative' rowGap='20px' maxWidth={[null,'200px']}>
