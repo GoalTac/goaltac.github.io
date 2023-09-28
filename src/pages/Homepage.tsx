@@ -192,12 +192,15 @@ export default function Homepage() {
                     <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
               </Box>}
               <Button type="submit" aria-label="More" onClick={(loadMore)} fontSize="xl" ml={1} background="none"> More </Button>
+            <Button type="submit" aria-label="More" onClick={(loadMore)} fontSize="xl" ml={1} background="none"> More </Button>
             </SimpleGrid>
             async function loadMore(): Promise<void> {
                 const morePosts = await _getAllPostInfo(offset + 10)
                 setOffset(offset + 10)
                 setPosts((posts: any) => [...posts, ...morePosts]);          }
         }
+        
+
         return <Flex flexDirection='column' rowGap='20px' maxWidth='600px' width='fit-content'>
             <Header/>
             <Posts/>

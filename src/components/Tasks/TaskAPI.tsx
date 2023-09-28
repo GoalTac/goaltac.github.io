@@ -663,7 +663,7 @@ export async function _addPost(taskID: string, userID: string) {
  */
 export async function _getPostInfo(posts: any[]){
 
-    const batch = posts.slice(0, 10);
+    const batch = posts
     const packagedData = [];
 
     const taskUUIDs = batch.map(post => post.task_uuid);
