@@ -169,11 +169,11 @@ export default function Homepage() {
             
 
             const [posts, setPosts] = useState<any>([])
+            const [offset, setOffset] = useState<number>(0)
 
             useEffect(()=>{
                 async function fetchPosts() {
-                    
-                    const fetchedPosts = await Promise.all(await _getAllPostInfo())
+                    const fetchedPosts = await _getAllPostInfo(offset)
                     setPosts(fetchedPosts)
                     setPostsLoaded(true)
                 }
@@ -190,7 +190,12 @@ export default function Homepage() {
                     <SkeletonCircle size='10' />
                     <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
               </Box>}
+              <Button type="submit" aria-label="More" onClick={(loadMore)} fontSize="xl" ml={1} background="none"> More </Button>
             </SimpleGrid>
+            async function loadMore(): Promise<void> {
+                const morePosts = await _getAllPostInfo(offset + 10)
+                setOffset(offset + 10)
+                setPosts((posts: any) => [...posts, ...morePosts]);          }
         }
         return <Flex flexDirection='column' rowGap='20px' maxWidth='600px' width='fit-content'>
             <Header/>
