@@ -15,12 +15,16 @@ Something about this app
 ### Contributors
 
 - [My]() CEO
-- [Nikhil]() COO
-- [Adi](https://aditya-chandraker.me) Senior Dev or CTO
+- [Nikhil]() Dev
+- [Adi](https://aditya-chandraker.me) Senior Dev
 - [Colin]() Dev
 - [Andrew]() Dev
 - [Mayur]() Dev
 - [Ibrahima]() Dev
+- [Ben]() Dev
+- [Nehal]() Dev
+- [John-Michael]() Dev
+- [Matt]() Dev
 
 ## Versions
 
