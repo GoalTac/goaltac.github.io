@@ -661,17 +661,31 @@ export async function _addPost(taskID: string, userID: string) {
  * @param task_uuid 
  * @param user_uuid 
  */
-export async function _getPostInfo(task_uuid: string, user_uuid: string) {
-    //gets only one row of user relations
-    const {data: relation, error: relationError} = await supabase
+export async function _getPostInfo(posts: any[]){
+
+    const batch = posts
+    const packagedData = [];
+
+    const taskUUIDs = batch.map(post => post.task_uuid);
+    const userUUIDs = batch.map(post => post.user_uuid);
+
+    // get all relations in batch with one api call
+    const {data: relations, error: relationError} = await supabase
         .from('task_user_relations')
         .select('*')
-        .match({'user_id': user_uuid,'task_id': task_uuid}).single()
-    
-    const {data: task, error: taskError} = await supabase
+        .in('user_id', userUUIDs)
+        .in('task_id', taskUUIDs);
+
+    // get all tasks in batch with one api call
+    const {data: tasks, error: taskError} = await supabase
         .from('tasks')
         .select('*')
-        .eq('uuid', task_uuid).single()
+        .in('uuid', taskUUIDs);
+
+    const {data: profiles, error: profileError} = await supabase
+        .from('profiles')
+        .select('*')
+        .in('userid', userUUIDs);
 
     if(relationError) {
         throw new Error(relationError.message)
@@ -680,7 +694,12 @@ export async function _getPostInfo(task_uuid: string, user_uuid: string) {
         throw new Error(taskError.message)
     }
 
-    const getPackagedInfo = (task: any, relation: any) => {
+    if(profileError) {
+        throw new Error(profileError.message)
+    }
+
+    const getPackagedInfo = (task: any, relation: any, profile: any, post: any) => {
+        
         const packaged = {
             progress: relation.progress,
             task_id: relation.task_id,
@@ -693,63 +712,37 @@ export async function _getPostInfo(task_uuid: string, user_uuid: string) {
             requirement: task.requirement,
             start_date: task.start_date,
             type: task.simple,
-            likes: 0, comments: 0
+            likes: post.likes, comments: 0,
+            post_id: post.post_id, 
+            avatarURL: profile.avatarurl,
+            userName: profile.username, displayName: profile.name
         }
         return packaged
     }
-    return getPackagedInfo(task, relation)
+    for (const relation of relations) {
+        const task = tasks.find(task => task.uuid === relation.task_id);
+        const profile = profiles.find(profile => profile.userid == relation.user_id)
+        const post = posts.find(post => post.user_uuid == relation.user_id)
+        if (task && profile && post) {
+            const packagedInfo = getPackagedInfo(task, relation, profile, post);
+            packagedData.push(packagedInfo);
+        }
+    }
+    return packagedData
 }
 
-export async function _getAllPostInfo() {
+export async function _getAllPostInfo(offset: number) {
 
     const {data: posts, error: postError} = await supabase
         .from('posts')
         .select('*')
+        .range(offset, offset + 9)
     
     if (postError) {
         throw new Error(postError.message)
     }
-
-    const getPackagedInfo = async(post: any) => {
-        /* Figure out how to perform the same function, but only having to
-        call the database ONCE per batch of posts, instead of iterating
-        through each collected post to find it's information
-
-        example:
-        post = [1, 2, 3]
-        const posts = fetchPostInfo([post])
-        console.log(posts)
-        '[[allTasks], [allRelations]]'
-        getPackagedInfo(posts) -> returns [{info as seen in ine 663},{},{}]
-
-        what we have currently:
-        post = [1, 2, 3]
-        fetchPostInfo([post]) -> returns post.map((it)=>calls the database for info and packages it)
-        THIS IS INEFFICIENT BECAUSE WE CALL THE DATABASE EACH TIME FOR THE LENGTH OF THE LIST
-
-        const {data: relation, error: relationError} = await supabase
-            .from('task_user_relations')
-            .select('*')
-        
-        const {data: task, error: taskError} = await supabase
-            .from('tasks')
-            .select('*')
-
-        if(relationError) {
-            throw new Error(relationError.message)
-        }
-        if(taskError) {
-            throw new Error(taskError.message)
-        }*/
-        return await _getPostInfo(post.task_uuid, post.user_uuid)
-    }
-
-    const getAllPackagedInfo = await Promise.all(posts.map(async(it_post) => {
-        const info = await getPackagedInfo(it_post)
-        return info
-    }))
-    return getAllPackagedInfo
-
+    const packagedInfo = await _getPostInfo(posts);
+    return packagedInfo;
 }
 
 export async function _getPost(task_uuid: string, user_uuid: string) {
@@ -757,7 +750,6 @@ export async function _getPost(task_uuid: string, user_uuid: string) {
         .from('posts')
         .select('post_uuid')
         .match({'task_uuid': task_uuid, 'user_uuid': user_uuid});
-    console.log(data)
     if (error) {
         throw new Error(error.message)
     }
