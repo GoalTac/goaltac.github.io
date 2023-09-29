@@ -374,7 +374,7 @@ export default function SignUpPage() {
                     <Input focusBorderColor={useColorModeValue('green.500','green.200')} isRequired type='text' placeholder='Username'
                         value={userName}
                         onInput={(e) => {
-                        e.currentTarget.value = e.currentTarget.value.replace(/[^a-z0-9]/g, '');
+                        e.currentTarget.value = e.currentTarget.value.replace(/[^A-z0-9]/g, '').toLowerCase();
                         }}
                         onChange={(e) => setUserName(e.target.value)}/>
                     </InputGroup>

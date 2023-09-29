@@ -1,4 +1,4 @@
-import { Avatar, Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, HStack, Heading, Icon, IconButton, Spacer, Stack, Text, Tooltip, useColorModeValue, useToast } from "@chakra-ui/react";
+import { Avatar, Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, HStack, Heading, Icon, IconButton, Spacer, Stack, Switch, Text, Tooltip, useColorModeValue, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { useSession } from "../../hooks/SessionProvider";
 import React from "react";
@@ -7,34 +7,12 @@ import { now } from "lodash";
 import { start } from "repl";
 import { CalendarIcon, CheckCircleIcon } from "@chakra-ui/icons";
 import { FaHourglass, FaHourglassHalf, FaHourglassStart } from "react-icons/fa";
+import { Task, _addProgress, _deleteProgress } from "./TaskAPI";
 
-type Task = {
-    id: number;
-    created_at: Date;
-    start_date: Date | null;
-    end_date: Date | null;
-    name: string;
-    description: string | null;
-    requirement: number;
-    reward: number;
-    type: string;
-    reoccurence: string;
-    uuid: string;
-};
-
-type Relation = {
-    id: number;
-    created_at: Date;
-    progress: number | null;
-    task_id: string;
-    user_id: string;
-
-};
-
-export default function ListView({tasks}: Task[] | any, {relations}: Relation[] | any) {
+export default function ListView({tasks}: Task[] | any, {relations}: any) {
     const {profile: profile, user: user} = useSession()
 
-    function Card_Module({task}: Task | any, {relation}: Relation | any) {
+    function Card_Module({task}: Task | any) {
         const name = task.name ? task.name : 'Untitled'
         const created_at = task.created_at ? task.created_at : null
         const start_date = task.start_date ? new Date(task.start_date) : created_at
@@ -44,7 +22,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: Relation[] 
         const reward = task.reward ? task.reward : 1
         const type = task.type ? task.type : 'Boolean'
         const reoccurence = task.reoccurence ? task.reoccurence : 0
-
+        const [progress, setProgress ] = useState<number>(task.progress)
         const [avatar, setAvatar] = useState<any>()
 
         function nextDueDate(frequency: number, startDate: Date, endDate: Date | null) {
@@ -86,7 +64,6 @@ export default function ListView({tasks}: Task[] | any, {relations}: Relation[] 
         }
         const ProgressIndicator = () => {
             //Should be taken from Task API eventually
-            const progress = 0.9999
 
             //Should be from Task API eventually
             const isComplete = progress/requirement >= 1
@@ -105,21 +82,35 @@ export default function ListView({tasks}: Task[] | any, {relations}: Relation[] 
 
         const toast = useToast({colorScheme:'orange', isClosable: true, duration: 2000, variant:'solid', title:'Work in Progress', description: 'An edit module will pop up!'})
         
-        return <Card width='fit-content' margin='20px' backgroundColor='blue.400' overflow='hidden' minHeight='150px' maxHeight={['450px','300']} maxWidth='500px' size='md' flexDirection={['column','row']} alignItems={[null,'center']}>
-                <Flex onClick={()=>toast()} cursor='pointer' _hover={{backgroundColor:useColorModeValue('gray.100','gray.900')}} padding='10px' gap='10px' marginStart='15px' backgroundColor={useColorModeValue('white','gray.800')} height='inherit' minHeight='inherit' width='100%' maxHeight='inherit' flexDirection={['column','row']} alignItems={['center','start']}>
-                    <Flex flexDirection={'column'} maxW='300px' marginBottom='auto'>
+        return <Card width='fit-content' margin='20px' overflow='hidden' minHeight='150px' maxHeight={['450px','300px']} maxWidth='500px' size='md' flexDirection={['column','row']} alignItems={[null,'center']} >
+                <Flex height={['20px','100%']} onClick={()=>toast()} cursor='pointer' _hover={{backgroundColor:useColorModeValue('blue.200','blue.700')}} backgroundColor='blue.500' width={['100%','20px']}>
+                    
+                </Flex>
+                <Flex zIndex={1} padding='10px' gap='10px'  height='inherit' minHeight='inherit' maxHeight='inherit' flexDirection={['column','row']} alignItems={['center','start']}>
+                    <Flex flexDirection={'column'} maxW='300px'>
                         <Heading textOverflow='ellipsis' whiteSpace='nowrap' overflow='hidden' maxW='inherit' fontWeight='500' fontSize='1.25rem' alignSelf={['center','start']} height='fit-content'>
                             {name}
                         </Heading>
                         
                         <Text marginStart='10px' maxHeight={['250px','200px']} overflow='scroll' alignSelf={['center','start']} maxW='inherit'>
-                            {description}{description}{description}
+                            {description}
                         </Text>
-                    </Flex>
-                    <Flex flexDirection={['row','column']} minH='inherit'>
-                        <TimeIndicator/>
-                        <Spacer/>
-                        <ProgressIndicator/>
+                        <Flex flexDir={['row']} alignItems='center' gap='20px' width='100%' position='absolute' bottom='1'>
+                            <ProgressIndicator/>
+                            <TimeIndicator/>
+                            <Switch defaultChecked={progress > 0} onChange={(e)=>{
+                                const value = e.currentTarget.checked
+                                console.log(value)
+                                //pretty bad!!
+                                if (value) {
+                                    _addProgress(task.user_id, task.task_id,1)
+                                    setProgress(1)
+                                } else {
+                                    _deleteProgress(task.user_id, task.task_id)
+                                    setProgress(0)
+                                }
+                            }} />
+                        </Flex>
                     </Flex>
                 </Flex>
             </Card>
@@ -130,9 +121,9 @@ export default function ListView({tasks}: Task[] | any, {relations}: Relation[] 
         //merge progress from relations into tasks
 
         return <Stack flexWrap='wrap' marginX='auto' justifyContent='center' flexDirection='row'>
-            {tasks.map((task: Task)=> {
-                return <Card_Module key={task.id} task={task}/>
-            })}
+            {tasks.length> 0 ? tasks.map((task: Task, id: number)=> {
+                return <Card_Module key={id} task={task}/>
+            }) : <Text>You don't appear to have any tasks!</Text>}
         </Stack>
     }
     return <RenderModules/>

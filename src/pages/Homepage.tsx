@@ -5,48 +5,135 @@
  * 3. Sidebar for task display
  */
 
-import { Avatar, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue } from "@chakra-ui/react";
+import { Avatar, Link, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue, useDisclosure, useToast, Skeleton, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import TaskDrawer from "../components/Tasks/TaskDrawer";
-import { twoColumns } from "../hooks/Utilities";
+import { getUser, twoColumns } from "../hooks/Utilities";
 import { FcLike, FcSettings } from "react-icons/fc";
-import { FaFilter, FaThumbsUp } from "react-icons/fa";
-import { ArrowDownIcon, ArrowUpIcon, ChatIcon, SettingsIcon, StarIcon } from "@chakra-ui/icons";
+import { FaFilter, FaThumbsUp, FaTrash } from "react-icons/fa";
+import { ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon } from "@chakra-ui/icons";
 import { RxAvatar } from "react-icons/rx";
 import { TbTableOptions, TbTrendingUp } from "react-icons/tb";
-import { SlOptions, SlOptionsVertical } from "react-icons/sl";
-import { _getUserTasks } from "../components/Tasks/TaskAPI";
+import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
+import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getPost, _getTaskInfo, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
 import premiumName from './../images/premium_logo_name.png';
 import { useNavigate, useNavigation } from "react-router-dom";
 import { supabase } from "../supabase";
+import { GiBowString, GiPocketBow, GiPostOffice, GiPostStamp } from "react-icons/gi";
+import PostModal from "../components/Tasks/PostModal";
+import Chat from "../components/Chats/CommunityChat";
 export default function Homepage() {
+    
     const [taskIDs, setTaskIDs] = useState<any>();
-    const [loading, setLoading] = useState<Boolean>(true)
     const { user: user } = useSession();
     const  useSupabase: any  = useSupabaseClient();
     const navigate = useNavigate()
+    const toast = useToast()
+    const [tasksLoaded, setTasksLoaded] = useState<Boolean>(false)
+    const [postsLoaded, setPostsLoaded] = useState<Boolean>(false)
+    const loading = () => {return tasksLoaded && postsLoaded}
 
-    const [examples, setExamples] = useState<any>({
-        taskID: 0,
-        title: 'Example Task',
-        description: 'This is an example',
-        likes: 12,
-        comments: 32,
-        progress: 10,
-        requirement: 100,
-        poster: 'Wrys', //will be some user's UUID
-        interests: ['Boxing'],
-        created_at: new Date(),
-        image: 'https://www.goaltac.net/assets/Calendar.bdf78867.png'
-    })
+    const getPackagedInfo = (task: Task, relations: any) => {
+        return {
+            progress: relations.progress,
+            task_id: relations.task_id,
+            user_id: relations.user_id,
+            description: task.description,
+            end_date: task.end_date,
+            name: task.name,
+            reoccurence: task.reoccurence,
+            reward: task.reward,
+            requirement: task.requirement,
+            start_date: task.start_date,
+            type: task.type,
+            likes: 0, comments: 0
+        }
+    }
+
+    function Post({taskInfo}: any) {
+        const progress: number = taskInfo.progress
+        const requirement: number = taskInfo.requirement
+        const userName: string = taskInfo.userName
+        const avatarURL: string = taskInfo.avatarURL
+        const displayName: string = taskInfo.displayName
+        const likes: number = taskInfo.likes
+        const isComplete = progress/requirement >= 1
+
+        const handleLike = async() => {
+            //take the post ID
+            //take who liked the post
+            //To update the user's like status of that post
+            /**
+             * const { data: data, error: error } = await supabase
+                .from('post_liked')
+                .select('id')
+                .eq('user_uuid', taskInfo.user_id)
+                .eq('post_uuid', taskInfo.this_should_be_the_post_id);
+             */
+            
+            //Access the post_liked database and find whether or not a row exists given a user's ID and the post's ID
+            //If there is one, that means the post has been liked by this user
+                //Remove row
+            //If there isn't one, that means the post hasn't been liked
+                //Insert a row
+        }
+
+        
+
+        return <Card width='inherit' padding='20px' maxWidth='inherit' height='fit-content'>
+            <Stack flexWrap='wrap' flexDirection='row' paddingBottom='10px'>
+                <HStack flexDir={'row'}>
+                    <Text fontWeight='500'>
+                        {taskInfo.interests}
+                    </Text>
+                    <Text fontWeight='200'>
+                        - {userName}
+                    </Text>
+                </HStack>
+                <Spacer/>
+                <HStack>
+                    <Tooltip fontSize='8px' hasArrow label={`${progress}/${requirement}`}>
+                        <Badge variant='subtle' borderRadius='3px' colorScheme={isComplete ? 'green' : 'orange'} fontSize='10px' paddingX='10px' paddingY='2px' width='fit-content'>
+                            {((progress/requirement) * 100).toFixed(2)}%
+                        </Badge>
+                    </Tooltip>
+            
+                </HStack>
+            </Stack>
+            
+            <Flex flexDirection='row'>
+                <Link marginRight='20px' href={`/profile/${userName}`}>
+                    <Avatar name={displayName} src={avatarURL} />
+                </Link>
+                <Box overflowY='hidden' maxHeight='300px'>
+                    <Heading fontSize='1rem'>
+                        {taskInfo.name}
+                    </Heading>  
+                    <Text>
+                        {taskInfo.description}
+                    </Text>
+                </Box>
+            </Flex>
+            <Divider color='gray.300' paddingY='10px'/>
+            <HStack flexDirection='row' >
+                <ButtonGroup paddingY='10px' columnGap='20px' variant='ghost' size='md' >
+                    <Button colorScheme='green' leftIcon={<FaThumbsUp />} onClick={handleLike}>{likes}</Button>
+                    <Button colorScheme='blue' leftIcon={<ChatIcon />}>{taskInfo.comments} comments</Button>
+
+                </ButtonGroup>
+                <Spacer/>
+                <IconButton isDisabled variant='ghost' isRound colorScheme='gray' icon={<SlOptions />} aria-label='Settings Icon'/>
+            </HStack>
+                
+                
+        </Card>
+    }
 
     function SocialFeed() {
-        function OptionMenu() {
-
-        }
+        
         function Header() {
             return <Card maxWidth='inherit' padding='20px'>
                 <Stack flexDirection='row' >
@@ -58,7 +145,7 @@ export default function Homepage() {
                     <Menu>
                     {({ isOpen }) => (
                         <>
-                        <MenuButton isActive={isOpen} variant='solid' colorScheme='gray' as={Button} rightIcon={(isOpen ? <ArrowUpIcon/> : <ArrowDownIcon/>)}>
+                        <MenuButton isActive={isOpen} variant='unstyled' colorScheme='gray' as={Button} rightIcon={(isOpen ? <ArrowUpIcon/> : <ArrowDownIcon/>)}>
                             Options
                         </MenuButton>
                         <MenuList>
@@ -80,92 +167,63 @@ export default function Homepage() {
          * @returns Render of max posts allowable
          */
         function Posts() {
-            function Post() {
-                const progress: number = examples.progress
-                const requirement: number = examples.requirement
-    
-                const isComplete = progress/requirement >= 1
-    
-                return <Card width='inherit' padding='20px' maxWidth='inherit' height='fit-content'>
-                    <Stack flexWrap='wrap' flexDirection='row' paddingBottom='10px'>
-                        <HStack flexDir={'row'}>
-                            <Text fontWeight='500'>
-                                {examples.interests}
-                            </Text>
-                            <Text fontWeight='200'>
-                                - {examples.poster}
-                            </Text>
-                        </HStack>
-                        <Spacer/>
-                        <HStack>
-                            <Tooltip fontSize='8px' hasArrow label={`${progress}/${requirement}`}>
-                                <Badge variant='subtle' borderRadius='3px' colorScheme={isComplete ? 'green' : 'orange'} fontSize='10px' paddingX='10px' paddingY='2px' width='fit-content'>
-                                    {((progress/requirement) * 100).toFixed(2)}%
-                                </Badge>
-                            </Tooltip>
-                    
-                        </HStack>
-                    </Stack>
-                    
-                    <Flex flexDirection='row'>
-                        <Box marginRight='20px'>
-                            <Avatar name='My Phung' src='https://media.licdn.com/dms/image/D4E03AQGzcOT2TD9yeg/profile-displayphoto-shrink_800_800/0/1680054603274?e=2147483647&v=beta&t=2Orm7yEP0-ZgHvY4E5v9r9fQ11sXxSawk83FiQllBcs' />
-                        </Box>
-                        <Box overflowY='hidden' maxHeight='300px'>
-                            <Heading>
-                                {examples.title}
-                            </Heading>  
-                            <Text>
-                                {examples.description}
-                            </Text>
-                            <Image src={examples.image}/>
-                        </Box>
-                    </Flex>
-                    <Divider color='gray.300' paddingY='10px'/>
-                    <HStack flexDirection='row' >
-                        <ButtonGroup paddingY='10px' columnGap='20px' variant='ghost' size='md' >
-                            <Button colorScheme='green' leftIcon={<FaThumbsUp />}>{examples.likes}</Button>
-                            <Button colorScheme='blue' leftIcon={<ChatIcon />}>{examples.comments} comments</Button>
+            
 
-                        </ButtonGroup>
-                        <Spacer/>
-                        <IconButton isDisabled variant='ghost' isRound colorScheme='gray' icon={<SlOptions />} aria-label='Settings Icon'/>
-                    </HStack>
-                        
-                        
-                </Card>
-            }
-            const rows = [];
-            for (let i = 0; i < 10; i++) {
-                rows.push(<Post key={i}/>);
-            }
+            const [posts, setPosts] = useState<any>([])
+            const [offset, setOffset] = useState<number>(0)
+
+            useEffect(()=>{
+                async function fetchPosts() {
+                    const fetchedPosts = await _getAllPostInfo(offset)
+                    setPosts(fetchedPosts)
+                    setPostsLoaded(true)
+                }
+                fetchPosts()
+            },[postsLoaded])
+
+            //PUT PROFILE INFO IN THE POST VARIABLE
             return <SimpleGrid columns={1} spacing='20px'>
-                {rows}
+                {posts.length>0 && loading() ? 
+                posts.map((post: any, id: number)=>{
+                    return <Post key={id} taskInfo={post}/>
+                }) :
+                <Box padding='6' boxShadow='lg' bg='white' width='340px'>
+                    <SkeletonCircle size='10' />
+                    <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
+              </Box>}
+            <Button type="submit" aria-label="More" onClick={(loadMore)} fontSize="xl" ml={1} background="none"> More </Button>
             </SimpleGrid>
+            async function loadMore(): Promise<void> {
+                const morePosts = await _getAllPostInfo(offset + 10)
+                setOffset(offset + 10)
+                setPosts((posts: any) => [...posts, ...morePosts]);          }
         }
+        
+
         return <Flex flexDirection='column' rowGap='20px' maxWidth='600px' width='fit-content'>
             <Header/>
             <Posts/>
         </Flex>
     }
-
+ 
     function TaskManagement() {
-        const [userTasks, setUserTasks] = useState<any>([]);
+        const [tasksInfo, setTasksInfo] = useState<any>([]);
 
         useEffect(()=> {
             const taskChanges = useSupabase.channel('any').on('postgres_changes',{
                     schema: 'public', // Subscribes to the "public" schema in Postgres
                     event: '*',       // Listen to all changes
-                    table: 'tasks'
+                    table: 'task_user_relations'
                 },(payload: any) => {
-                    setLoading(true)
-                    fetchUserTasks().finally(()=>setLoading(false))
+                    fetchUserTasks()
             }).subscribe()
 
             async function fetchUserTasks() {
                 if(user) {
-                    setUserTasks(await _getUserTasks(user?.['id']))
-                    setLoading(false) 
+                    const fetchedTasks = await _getTaskInfo(user?.['id'])
+                    setTasksInfo(fetchedTasks)
+
+                    setTasksLoaded(true) 
                 }
             }
 
@@ -225,10 +283,9 @@ export default function Homepage() {
                 <StatGroup>
                     <Stat>
                         <StatLabel>Completed Tasks</StatLabel>
-                        <StatNumber>{userTasks.length}</StatNumber>
+                        <StatNumber>{tasksInfo.length}</StatNumber>
                         <StatHelpText>
-                            <StatArrow type='increase' />23.36%    
-                            (Week)
+                            <StatArrow type='increase' />
                             
                         </StatHelpText>
                     </Stat>
@@ -237,35 +294,126 @@ export default function Homepage() {
         </Card>
         }
         function ListView() {
-            function TaskModule({task}: any) {
+
+            function TaskModule({taskInfo}: any) {
+                const { isOpen, onOpen, onClose } = useDisclosure()
+                const [hasPosted, setHasPosted] = useState(true)
+
+                //highlight the task in the list that has already been posted
+                function PostModal() {  
+                    const handlePost = async() => {
+
+                        const createdPost = await _addPost(taskInfo.task_id, taskInfo.user_id).finally(()=>{
+                            toast({
+                                title: "Success",
+                                description: 'Successfully created your task!',
+                                status: "success",
+                                duration: 9000,
+                                isClosable: true,
+                            })
+                            onClose()
+                        })
+                    }                  
+                    return (
+                        <Modal scrollBehavior='inside' isCentered motionPreset='slideInBottom' closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+                            <ModalOverlay />
+                            <ModalContent backgroundColor={useColorModeValue('gray.50','gray.800')}>
+                            <ModalHeader>Confirm your Post</ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody pb={6}>
+                                <Post taskInfo={taskInfo} />
+                            </ModalBody>
+                    
+                            <ModalFooter>
+                                <Button type='submit' colorScheme='blue' mr={3} onClick={handlePost}>Post</Button>
+                                <Button variant='outline' onClick={onClose}>Cancel</Button>
+                            </ModalFooter>
+                            </ModalContent>
+                        </Modal>
+                    )
+                }
+
+                useEffect(()=>{
+                    const isPost = async() => {
+                        //check if the post has already been made
+                        if (!taskInfo) {
+                            return false
+                        }
+                        const exists = await _getPost(taskInfo.task_id, taskInfo.user_id)
+                        if (exists.length > 0) {
+                            //so there is no need to change a variable to the same value
+                            if (!hasPosted) {
+                                setHasPosted(true)
+                            }
+                        } else {
+                            if (hasPosted) {
+                                setHasPosted(false)
+                            }
+                        }
+                    }
+                    isPost()
+                },[])
                 return <HStack paddingLeft='20px'>
                     <Tooltip label='WIP. Will have option to delete, post, share task'>
-                        <Text>
-                            {task.name}
+                        <Text fontSize='12px' fontWeight='400'>
+                            {taskInfo.name}
                         </Text>
                     </Tooltip>
                     
                     <Spacer/>
-                    <IconButton isDisabled variant='ghost' isRound colorScheme='gray' icon={<SlOptionsVertical />} aria-label='Settings Icon'/>
+                    <Menu>
+                    {({ isOpen }) => (
+                        <>
+                        <MenuButton marginRight='-10px' leftIcon={<SlOptionsVertical />} isActive={isOpen} variant='unstyled' colorScheme='gray' as={Button}/>
+                        <MenuList>
+                            <MenuItem isDisabled icon={<EditIcon/>}>Edit</MenuItem>
+                            
+                            {!hasPosted && <MenuItem onClick={onOpen} icon={<SlShareAlt/>}>Post<PostModal/></MenuItem>}
+                            <MenuItem onClick={()=>{
+                                if (user) {
+                                   _deleteUserTask(user?.['id'], taskInfo.task_id)
+                                }
+                            }} icon={<FaTrash/>}>Delete</MenuItem>
+                        </MenuList>
+                        </>)}
+                    </Menu>
                 </HStack>
-            } 
-            return <Card marginY='20px'>
-                <SimpleGrid columns={1} spacing='20px' width='inherit' maxHeight='200px' overflowY='clip'>
-                    {userTasks.map((task: any, id:number)=>{
-                        return <TaskModule key={id} task={task}/>
+            }
+        
+            return (tasksInfo.length > 0 && loading() ? 
+            <Card marginY='20px'>
+                <SimpleGrid columns={1} width='inherit' maxHeight='200px' overflowY='clip'>
+                    {tasksInfo.map((taskInfo: any, id:number)=>{
+                        return <Box key={id}>
+                            <TaskModule taskInfo={taskInfo}/>
+                            <Divider/>
+                        </Box>
+                        
                     })}
                 </SimpleGrid>
                 <Button variant='ghost' onClick={()=>navigate('/dashboard')} size='sm'>Load more</Button>
-            </Card>
+            </Card> : 
+            <Skeleton height='30px'>
+
+            </Skeleton>)
             
         }
         return <Flex position='static'  pos='relative' rowGap='20px' maxWidth={[null,'200px']}>
             <Box>
-                <Premium/>
                 <Box paddingTop='20px' position='sticky' flexWrap='wrap' top={0} height='min'>
                     <Analytics/>
                     <ListView/>
-                    <TaskDrawer/>                    
+                    <TaskDrawer/>
+                    {/**
+                     * 
+                     * Create a task drawer component that:
+                     * 1. Envelopes a button that can be clicked on 
+                     *      such that we can make the button open the task drawer
+                     * <TaskDrawer/>
+                     *      <ExampleButtonElement/>
+                     * </TaskDrawer>
+                     * 2. If user clicks on any element within the tags here it will act to open the drawer
+                     */}
                 </Box>
             </Box>
         </Flex>

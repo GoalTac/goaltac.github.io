@@ -73,7 +73,6 @@ export default function TaskDrawer() {
             }
         }
         if(!checks()) return;
-        
         const newTask = {
             start_date: startDate,
             end_date: endDate,
@@ -101,13 +100,13 @@ export default function TaskDrawer() {
         const taskID = createdTask.uuid
 
         //Adds user as an owner of the task
-        const task_user_relation = await _addUserTask(user?.['id'], taskID)
+        await _addUserTask(user?.['id'], taskID)
 
         //If task is type 'Tasks', create a task_task_relation row
 
         //if there is an error in creating any of these, delete createdTask and all proceeding variables
 
-        console.log(createdTask, task_user_relation)
+        //console.log(createdTask, task_user_relation)
         
 
         
@@ -142,7 +141,7 @@ export default function TaskDrawer() {
 
         const options = [
             {value:'Progress', desc: 'Use numbers to make periodic updates'},
-            {value:'Simple', desc: 'Check your as done or leave it incomplete'},
+            {value:'Simple', desc: 'Check task as done or leave it incomplete'},
             {value:'Sub-Tasks', desc: 'Success dependent on status of tasks'}]
         const { getRootProps, getRadioProps } = useRadioGroup({
             name: 'Type',
@@ -299,6 +298,10 @@ export default function TaskDrawer() {
         <Button leftIcon={<AddIcon/>} colorScheme='teal' onClick={onOpen}>
             Task
         </Button>
+        {/**
+         * 'isOpen' says that the drawer is currently open, 
+         * onOpen is a function 
+         */}
         <Drawer isOpen={isOpen} size='md'
             placement='right'
             onClose={onClose}

@@ -43,7 +43,7 @@ export default function Root() {
       setShowSearchBar(!showSearchBar);
     };
 
-    // get avatar url
+    // get avatar  url 
     useEffect(() => {
       const getProfile = async () => {
         const { data: { user } } = await supabase.auth.getUser();
