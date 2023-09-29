@@ -15,7 +15,7 @@ import { ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon 
 import { RxAvatar } from "react-icons/rx";
 import { TbTableOptions, TbTrendingUp } from "react-icons/tb";
 import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
-import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getPost, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
+import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getPost, _getTaskInfo, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
@@ -220,19 +220,10 @@ export default function Homepage() {
 
             async function fetchUserTasks() {
                 if(user) {
-                    const userTasksRelations = await _getUserRelations(user?.['id'])
+                    const fetchedTasks = await _getTaskInfo(user?.['id'])
+                    setTasksInfo(fetchedTasks)
 
-                    let task_relations: any[] = []
-
-                    //get the task objects from the task IDs
-                    const userTasks = await Promise.all(userTasksRelations.map(async(relation) => {
-                        const task: Task = await _getTaskbyID(relation.task_id) as Task
-                        task_relations.push(getPackagedInfo(task, relation))
-                        return task
-                    })).finally(()=>{
-                        setTasksLoaded(true)
-                    })
-                    setTasksInfo(task_relations)
+                    setTasksLoaded(true) 
                 }
             }
 
