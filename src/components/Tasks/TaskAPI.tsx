@@ -447,6 +447,62 @@ export async function _getUserTasks(userID: string) {
 }
 
 /**
+ * This is to package the user relations and task info
+ * @param userID 
+ */
+export async function _getTaskInfo(user_uuid: string) {
+
+    const packagedData = [];
+
+    // get all relations in batch with one api call
+    const {data: relations, error: relationError} = await supabase
+        .from('task_user_relations')
+        .select('*')
+        .eq('user_id', user_uuid);
+    
+    if(relationError) {
+        throw new Error(relationError.message)
+    }
+
+    const task_uuids = relations.map(relation => relation.task_id);
+
+    // get all tasks in batch with one api call
+    const {data: tasks, error: taskError} = await supabase
+        .from('tasks')
+        .select('*')
+        .in('uuid', task_uuids);
+
+    if(taskError) {
+        throw new Error(taskError.message)
+    }
+
+    const getPackagedInfo = (task: any, relation: any) => {
+        return {
+            progress: relation.progress,
+            task_id: relation.task_id,
+            user_id: relation.user_id,
+            description: task.description,
+            end_date: task.end_date,
+            name: task.name,
+            reoccurence: task.reoccurence,
+            reward: task.reward,
+            requirement: task.requirement,
+            start_date: task.start_date,
+            type: task.type,
+        }
+    }
+
+    for (const relation of relations) {
+        const task = tasks.find(task => task.uuid === relation.task_id);
+        if (task) {
+            const packagedInfo = getPackagedInfo(task, relation);
+            packagedData.push(packagedInfo);
+        }
+    }
+    return packagedData
+}
+
+/**
  * Adds a task related to a user
  * @param userID 
  * @param taskID 
@@ -574,11 +630,8 @@ export async function _addProgress(userID: string, taskID: string, progress: num
 
     const { error } = await supabase
         .from('task_user_relations')
-        .upsert({ 
-            user_id: userID,
-            task_id: taskID,
-            progress: updatedProgress 
-        });
+        .update({ progress: updatedProgress })
+        .match({ user_id: userID, task_id: taskID })
 
     if (error) {
         throw new Error(error.message);

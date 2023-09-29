@@ -7,7 +7,7 @@ import { useState } from "react";
 import Chat from "../components/Chats/PrivateChat";
 import TaskDrawer from "../components/Tasks/TaskDrawer";
 import React from "react";
-import { _getTaskbyID, _getUserTasks } from "../components/Tasks/TaskAPI";
+import { _getTaskInfo, _getTaskbyID, _getUserTasks } from "../components/Tasks/TaskAPI";
 import { useSession } from "../hooks/SessionProvider";
 import { CalendarIcon } from "@chakra-ui/icons";
 import { AiOutlineOrderedList } from "react-icons/ai";
@@ -16,16 +16,19 @@ import { supabase } from "../supabase";
 
 export default function Dashboard() {
     const navigate = useNavigate();
-    const [displayedView, setDisplayedView] = useState<any>(<Calendar/>)
     const user = useSession().user
     const [loading, setLoading] = useState<Boolean>(true)
-    const [tasks, setTasks] = useState<any>()
-    const [relations, setRelations] = useState<any>()
+    const [tasksInfo, setTasksInfo] = useState<any>([])
+    const [displayedView, setDisplayedView] = useState<any>()
 
-    const [view, setView] = useState<string>()
+    const [view, setView] = useState<string>('List')
 
+    /**
+     * This NEEDS to be improved so we get both task and relations together and package them
+     */
     React.useEffect(()=>{
         async function fetchUserRelations() {
+            /*
             const { data: data, error } = await supabase
                 .from('task_user_relations')
                 .select('*')
@@ -34,23 +37,31 @@ export default function Dashboard() {
             if (error) {
                 throw new Error(error.message)
             }
-            console.log(data)
             setRelations(data)
             async function fetchTasks() {
                 if(data != null) {
                     //should update as new tasks are updated (use subscribe?)
                     const newTasks = await Promise.all(data.map(async(id) => {
                         return await _getTaskbyID(id.task_id)
-                    })).finally(()=>setLoading(false))
-                    console.log(newTasks)
+                    }))
                     setTasks(newTasks)
+                    setDisplayedView(<ListView tasks={newTasks} relations={data} />)
+                    setLoading(false)
                 }
             }
-            fetchTasks()
+            fetchTasks()*/
+            if (user) {
+                const fetchedTasks = await _getTaskInfo(user?.['id'])
+                setTasksInfo(fetchedTasks)
+                setDisplayedView(<ListView tasks={fetchedTasks} />)
+
+                setLoading(false) 
+            }
+            
         }
         fetchUserRelations()
+        
     },[])
-
 
     return(
     
@@ -61,7 +72,7 @@ export default function Dashboard() {
                 colorScheme={view === 'Calendar' ? 'teal' : 'gray'}
                 onClick={() => {
                     setView('Calendar')
-                    setDisplayedView(<Calendar tasks={tasks}/>)
+                    setDisplayedView(<Calendar tasks={tasksInfo}/>)
                 }}>
                     Calendar
                 </Button>
@@ -69,7 +80,7 @@ export default function Dashboard() {
                 colorScheme={view === 'List' ? 'teal' : 'gray'}
                 onClick={() => {
                     setView('List')
-                    setDisplayedView(<ListView tasks={tasks} relations={relations} />)
+                    setDisplayedView(<ListView tasks={tasksInfo} />)
                 }}>
                     List
                 </Button>
