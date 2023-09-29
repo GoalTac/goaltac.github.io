@@ -108,7 +108,6 @@ export default function LandingPage() {
             
             <Spacer/>
             
-            <SignInButton />
 
         </Stack>);
     }
@@ -245,11 +244,7 @@ export default function LandingPage() {
                        
                     </Flex>
                     <LearnMoreButton/>
-                    <Link href={'https://discord.gg/EzFPQDAKGf'} target='_blank' aria-label='discord'>
-                        <Button colorScheme='telegram' variant='solid' rightIcon={<FaDiscord/>} >
-                            Discord
-                        </Button>
-                    </Link>
+                    
                 </VStack>
             </Flex>
         );
@@ -518,7 +513,7 @@ export default function LandingPage() {
                     lineHeight='1.1'>
                     Join a community for free at GoalTac
                 </Heading>
-                <SignUpButton />
+                
             </Stack>
             
             <Stack>
