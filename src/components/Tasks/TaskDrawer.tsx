@@ -141,7 +141,7 @@ export default function TaskDrawer() {
 
         const options = [
             {value:'Progress', desc: 'Use numbers to make periodic updates'},
-            {value:'Simple', desc: 'Check your as done or leave it incomplete'},
+            {value:'Simple', desc: 'Check task as done or leave it incomplete'},
             {value:'Sub-Tasks', desc: 'Success dependent on status of tasks'}]
         const { getRootProps, getRadioProps } = useRadioGroup({
             name: 'Type',
