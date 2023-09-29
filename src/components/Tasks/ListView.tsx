@@ -82,8 +82,8 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
 
         const toast = useToast({colorScheme:'orange', isClosable: true, duration: 2000, variant:'solid', title:'Work in Progress', description: 'An edit module will pop up!'})
         
-        return <Card width='fit-content' margin='20px' overflow='hidden' minHeight='150px' maxHeight={['450px','300']} maxWidth='500px' size='md' flexDirection={['column','row']} alignItems={[null,'center']} >
-                <Flex height='100%' onClick={()=>toast()} cursor='pointer' _hover={{backgroundColor:useColorModeValue('blue.200','blue.700')}} backgroundColor='blue.500' width='20px'>
+        return <Card width='fit-content' margin='20px' overflow='hidden' minHeight='150px' maxHeight={['450px','300px']} maxWidth='500px' size='md' flexDirection={['column','row']} alignItems={[null,'center']} >
+                <Flex height={['20px','100%']} onClick={()=>toast()} cursor='pointer' _hover={{backgroundColor:useColorModeValue('blue.200','blue.700')}} backgroundColor='blue.500' width={['100%','20px']}>
                     
                 </Flex>
                 <Flex zIndex={1} padding='10px' gap='10px'  height='inherit' minHeight='inherit' maxHeight='inherit' flexDirection={['column','row']} alignItems={['center','start']}>
@@ -95,23 +95,22 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                         <Text marginStart='10px' maxHeight={['250px','200px']} overflow='scroll' alignSelf={['center','start']} maxW='inherit'>
                             {description}
                         </Text>
-                    </Flex>
-                    <Switch defaultChecked={progress > 0} onChange={(e)=>{
-                        const value = e.currentTarget.checked
-                        console.log(value)
-                        //pretty bad!!
-                        if (value) {
-                            _addProgress(task.user_id, task.task_id,1)
-                            setProgress(1)
-                        } else {
-                            _deleteProgress(task.user_id, task.task_id)
-                            setProgress(0)
-                        }
-                    }} />
-                    <Flex flexDirection={['row','column']} minH='inherit'>
-                        <TimeIndicator/>
-                        <Spacer/>
-                        <ProgressIndicator/>
+                        <Flex flexDir={['row']} alignItems='center' gap='20px' width='100%' position='absolute' bottom='1'>
+                            <ProgressIndicator/>
+                            <TimeIndicator/>
+                            <Switch defaultChecked={progress > 0} onChange={(e)=>{
+                                const value = e.currentTarget.checked
+                                console.log(value)
+                                //pretty bad!!
+                                if (value) {
+                                    _addProgress(task.user_id, task.task_id,1)
+                                    setProgress(1)
+                                } else {
+                                    _deleteProgress(task.user_id, task.task_id)
+                                    setProgress(0)
+                                }
+                            }} />
+                        </Flex>
                     </Flex>
                 </Flex>
             </Card>
