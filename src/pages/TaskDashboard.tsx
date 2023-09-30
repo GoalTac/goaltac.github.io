@@ -1,6 +1,5 @@
 import { Box, Button, Spacer, Flex, Spinner, ButtonGroup, ListIcon, Stack } from "@chakra-ui/react";
 import Calendar from "./Calendar";
-import List from "./List";
 
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -28,28 +27,6 @@ export default function Dashboard() {
      */
     React.useEffect(()=>{
         async function fetchUserRelations() {
-            /*
-            const { data: data, error } = await supabase
-                .from('task_user_relations')
-                .select('*')
-                .eq('user_id', user?.['id'])
-
-            if (error) {
-                throw new Error(error.message)
-            }
-            setRelations(data)
-            async function fetchTasks() {
-                if(data != null) {
-                    //should update as new tasks are updated (use subscribe?)
-                    const newTasks = await Promise.all(data.map(async(id) => {
-                        return await _getTaskbyID(id.task_id)
-                    }))
-                    setTasks(newTasks)
-                    setDisplayedView(<ListView tasks={newTasks} relations={data} />)
-                    setLoading(false)
-                }
-            }
-            fetchTasks()*/
             if (user) {
                 const fetchedTasks = await _getTaskInfo(user?.['id'])
                 setTasksInfo(fetchedTasks)

@@ -333,6 +333,7 @@ export default function Homepage() {
                     )
                 }
 
+                //we could remove this and put the isPosted status in taskInfo
                 useEffect(()=>{
                     const isPost = async() => {
                         //check if the post has already been made

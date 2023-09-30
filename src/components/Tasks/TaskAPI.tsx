@@ -665,11 +665,8 @@ export async function _deleteProgress(userID: string, taskID: string) {
 export async function _setProgress(userID: string, taskID: string, progress: number) {
     const { error } = await supabase
         .from('task_user_relations')
-        .upsert({ 
-            user_id: userID,
-            task_id: taskID,
-            progress: progress 
-        });
+        .update({ progress: progress })
+        .match({ 'user_id': userID, 'task_id': taskID })
 
     if (error) {
         throw new Error(error.message);
