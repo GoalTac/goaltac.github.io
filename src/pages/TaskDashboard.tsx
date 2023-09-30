@@ -7,7 +7,7 @@ import Chat from "../components/Chats/PrivateChat";
 import TaskDrawer from "../components/Tasks/TaskDrawer";
 import React from "react";
 import { _getTaskInfo, _getTaskbyID, _getUserTasks } from "../components/Tasks/TaskAPI";
-import { useSession } from "../hooks/SessionProvider";
+import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { CalendarIcon } from "@chakra-ui/icons";
 import { AiOutlineOrderedList } from "react-icons/ai";
 import ListView from "../components/Tasks/ListView";
@@ -19,6 +19,7 @@ export default function Dashboard() {
     const [loading, setLoading] = useState<Boolean>(true)
     const [tasksInfo, setTasksInfo] = useState<any>([])
     const [displayedView, setDisplayedView] = useState<any>()
+    const  useSupabase: any  = useSupabaseClient();
 
     const [view, setView] = useState<string>('List')
 
@@ -26,6 +27,13 @@ export default function Dashboard() {
      * This NEEDS to be improved so we get both task and relations together and package them
      */
     React.useEffect(()=>{
+        const taskChanges = useSupabase.channel('any').on('postgres_changes',{
+                schema: 'public', // Subscribes to the "public" schema in Postgres
+                event: '*',       // Listen to all changes
+                table: 'task_user_relations'
+            },(payload: any) => {
+                fetchUserRelations()
+        }).subscribe()
         async function fetchUserRelations() {
             if (user) {
                 const fetchedTasks = await _getTaskInfo(user?.['id'])
@@ -37,7 +45,9 @@ export default function Dashboard() {
             
         }
         fetchUserRelations()
-        
+        return () => {
+            taskChanges.unsubscribe();
+          };
     },[])
 
     return(
