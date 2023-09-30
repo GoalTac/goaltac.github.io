@@ -317,19 +317,24 @@ export default function TaskDrawer() {
                 <Stack spacing='24px'>
                 <FormControl isRequired>
                     <FormLabel htmlFor='title'>Title</FormLabel>
-                    <Input ref={firstField} id='title' value={title} aria-required={true}
+                    <Input ref={firstField} id='title' value={title} aria-required={true} maxLength={50}
                         onChange={e=>{setTitle(e.target.value)}}
                         errorBorderColor='crimson'
                         isInvalid={title ? false : true}
                         placeholder='A task name is required'/>
+                    <Text fontSize='10px' borderRadius='5px' color='gray.400' position='absolute' bottom='0' right='1'>{title.length}/50</Text>
+
                 </FormControl>
 
                 <FormControl isRequired>
                     <FormLabel htmlFor='description'>Description</FormLabel>
+                    <Textarea maxLength={200} resize='none' variant='outline' isRequired placeholder='Describe your task. What should you do?'
+                        value={description}
+                        onInput={(e) => {
+                        e.currentTarget.value = e.currentTarget.value.replace(/[^A-z0-9_ ]/g, ''); }}
+                        onChange={(e) => setDescription(e.target.value)}/>
+                    <Text fontSize='10px' borderRadius='5px' color='gray.400' position='absolute' bottom='0' right='1'>{description.length}/200</Text>
 
-                    <Textarea id='description' value={description}
-                        onChange={e=>{setDescription(e.target.value)}}
-                        placeholder='Describe your task. What should you do?'/>
                 </FormControl>
 
                 <FormControl>
