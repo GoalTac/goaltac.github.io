@@ -222,7 +222,7 @@ export default function LandingPage() {
                         </Heading>
                         <Flex padding='2rem' maxWidth='80%' borderRadius={measurements.cards.borderRadius} boxShadow='lg' backgroundColor={useColorModeValue('white', 'gray.900')} flexDirection='column' gap='30px'>
                             <Text lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']}>
-                                Add your email here to get the latest updates!
+                                Add your email here to get the latest updates and join the waitlist!
                                 {/* Replace: Find your community now! */}
                             </Text>
                             <FormControl>
