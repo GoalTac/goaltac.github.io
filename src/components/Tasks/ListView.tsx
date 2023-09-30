@@ -73,9 +73,9 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
 
             return <HStack justifyContent='right'>
                 <Tooltip fontSize='8px' hasArrow label={`${progress}/${requirement}`}>
-                    <Text borderRadius='10px' backgroundColor={isComplete ? useColorModeValue('green.200','green.600') : useColorModeValue('orange.200','yellow.600')} fontSize='10px' paddingX='10px' width='fit-content'>
+                    <Badge colorScheme={isComplete ? 'green' : 'orange'} fontSize='10px' paddingX='10px' width='fit-content'>
                         {((progress/requirement) * 100).toFixed(2)}%
-                    </Text>
+                    </Badge>
                 </Tooltip>
                 
             </HStack>
@@ -91,13 +91,68 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         
             function SimpleCompletion() {
                 const [newProgress, setNewProgress ] = useState<any>(progress)
-
-                console.log(task)
                 const handleSave = async() => {
+                    onClose()
                     setProgress(newProgress)
         
                     await _setProgress(task.user_id, task.task_id, newProgress)
+                    
+                }
+
+                const SwitchBox = () => {
+                    return <Grid gap={1} textAlign='center' textColor='black' width='100%' templateColumns='repeat(2, 1fr)' flexDirection='column'>
+                        <GridItem onClick={()=>{newProgress>0 && setNewProgress(0)}} cursor='pointer' borderRadius={8} width='100%' height='30px' backgroundColor={newProgress==0 ? 'red.400' : 'gray.200'}>
+                            Incomplete
+                        </GridItem>
+                        <GridItem onClick={()=>{newProgress==0 && setNewProgress(requirement)}} cursor='pointer' borderRadius={8} width='100%' height='30px' backgroundColor={newProgress>0 ? 'green.400' : 'gray.200'}>
+                            Complete
+                        </GridItem>
+                    </Grid>
+                }
+        
+                return <Modal scrollBehavior='inside' isCentered motionPreset='slideInBottom' closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+                    <ModalOverlay />
+                    <ModalContent backgroundColor={useColorModeValue('gray.50','gray.800')}>
+                    <ModalHeader>Set your Progress</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Box paddingX='5px'>
+                            <HStack fontSize={'12px'}>
+                                <Text>{((newProgress/requirement) * 100).toFixed(2)}%</Text>
+                                <Spacer/>
+                                <Text>{newProgress}/{requirement}</Text>
+                            </HStack>
+                            <Progress colorScheme="green" size={'lg'} value={(newProgress*100)/requirement} sx={{
+                                "& > div:first-of-type": {
+                                    transitionProperty: "width",
+                                },
+                            }}/>
+                            
+                            <FormControl textAlign={'center'}>
+                                <FormHelperText paddingY='10px'>
+                                    <Badge variant='solid' colorScheme={newProgress > 0 ? 'green' : 'red'}>{newProgress > 0 ? 'COMPLETE' : 'INCOMPLETE'}</Badge>
+                                </FormHelperText>
+                                <SwitchBox/>
+                            </FormControl>
+                        </Box>
+                    </ModalBody>
+                       
+                    <ModalFooter>
+                        <Button type='submit' colorScheme='blue' mr={3} onClick={handleSave}>Save</Button>
+                        <Button variant='outline' onClick={onClose}>Cancel</Button>
+                    </ModalFooter>
+                    </ModalContent>
+                </Modal>
+            }
+        
+            function ProgressCompletion() {
+                const [newProgress, setNewProgress ] = useState<any>(progress)
+                const handleSave = async() => {
                     onClose()
+                    setProgress(newProgress)
+        
+                    await _setProgress(task.user_id, task.task_id, newProgress)
+                    
                 }
 
                 const SwitchBox = () => {
@@ -128,54 +183,20 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                                     transitionProperty: "width",
                                 },
                             }}/>
-                            
-                            <FormControl textAlign={'center'} gap='20px'>
-                                <FormHelperText><Badge variant='solid'>{newProgress > 0 ? 'COMPLETE' : 'INCOMPLETE'}</Badge></FormHelperText>
-                                <SwitchBox/>
+                            <FormControl textAlign={'center'}>
+                                <FormHelperText paddingY='10px'><Badge variant='solid' colorScheme={newProgress >= requirement ? 'green' : 'red'}>{newProgress >= requirement ? 'COMPLETE' : 'INCOMPLETE'}</Badge></FormHelperText>
+
+                                <NumberInput size='md' allowMouseWheel min={0} defaultValue={newProgress} max={requirement} onChange={(value)=>setNewProgress(value)} clampValueOnBlur={false}>
+                                    <NumberInputField />
+                                    <NumberInputStepper>
+                                        <NumberIncrementStepper />
+                                        <NumberDecrementStepper />
+                                    </NumberInputStepper>
+                                </NumberInput>
                             </FormControl>
                         </Box>
                     </ModalBody>
                        
-                    <ModalFooter>
-                        <Button type='submit' colorScheme='blue' mr={3} onClick={handleSave}>Save</Button>
-                        <Button variant='outline' onClick={onClose}>Cancel</Button>
-                    </ModalFooter>
-                    </ModalContent>
-                </Modal>
-            }
-        
-            function ProgressCompletion() {
-                    
-                const handleSave = async() => {
-        
-                    await _setProgress(task.user_id, task.task_id, progress)
-                    onClose()
-                }
-        
-                return <Modal scrollBehavior='inside' isCentered motionPreset='slideInBottom' closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
-                    <ModalOverlay />
-                    <ModalContent backgroundColor={useColorModeValue('gray.50','gray.800')}>
-                    <ModalHeader>Set your Progress</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody pb={6}>
-                        
-                    </ModalBody>
-                        <Flex>
-                            <VStack width='fit-content'>
-                                <Progress colorScheme='blue' value={requirement/progress}/>
-                                <Flex width='100%'>
-                                    <Text>Start: 0</Text>
-                                    <NumberInput allowMouseWheel min={0} defaultValue={progress} max={requirement} onChange={(value)=>setProgress(value)} clampValueOnBlur={false}>
-                                        <NumberInputField />
-                                        <NumberInputStepper>
-                                            <NumberIncrementStepper />
-                                            <NumberDecrementStepper />
-                                        </NumberInputStepper>
-                                    </NumberInput>
-                                    <Text>End: {requirement}</Text>
-                                </Flex>
-                            </VStack>
-                        </Flex>
                     <ModalFooter>
                         <Button type='submit' colorScheme='blue' mr={3} onClick={handleSave}>Save</Button>
                         <Button variant='outline' onClick={onClose}>Cancel</Button>
