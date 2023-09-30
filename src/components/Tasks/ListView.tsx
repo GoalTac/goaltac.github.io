@@ -1,4 +1,4 @@
-import { Avatar, Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, HStack, Heading, Icon, IconButton, Spacer, Stack, Switch, Text, Tooltip, useColorModeValue, useToast } from "@chakra-ui/react";
+import { Avatar, Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, FormHelperText, Grid, GridItem, HStack, Heading, Icon, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Progress, Spacer, Stack, Switch, Text, Tooltip, VStack, useColorModeValue, useDisclosure, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { useSession } from "../../hooks/SessionProvider";
 import React from "react";
@@ -7,7 +7,7 @@ import { now } from "lodash";
 import { start } from "repl";
 import { CalendarIcon, CheckCircleIcon } from "@chakra-ui/icons";
 import { FaHourglass, FaHourglassHalf, FaHourglassStart } from "react-icons/fa";
-import { Task, _addProgress, _deleteProgress } from "./TaskAPI";
+import { Task, _addPost, _addProgress, _deleteProgress, _setProgress } from "./TaskAPI";
 
 export default function ListView({tasks}: Task[] | any, {relations}: any) {
     const {profile: profile, user: user} = useSession()
@@ -22,8 +22,9 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         const reward = task.reward ? task.reward : 1
         const type = task.type ? task.type : 'Boolean'
         const reoccurence = task.reoccurence ? task.reoccurence : 0
-        const [progress, setProgress ] = useState<number>(task.progress)
+        const [progress, setProgress ] = useState<any>(task.progress)
         const [avatar, setAvatar] = useState<any>()
+        const { isOpen, onOpen, onClose } = useDisclosure()
 
         function nextDueDate(frequency: number, startDate: Date, endDate: Date | null) {
             const today = new Date()
@@ -82,38 +83,146 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
 
         const toast = useToast({colorScheme:'orange', isClosable: true, duration: 2000, variant:'solid', title:'Work in Progress', description: 'An edit module will pop up!'})
         
-        return <Card width='fit-content' margin='20px' overflow='hidden' minHeight='150px' maxHeight={['450px','300px']} maxWidth='500px' size='md' flexDirection={['column','row']} alignItems={[null,'center']} >
-                <Flex height={['20px','100%']} onClick={()=>toast()} cursor='pointer' _hover={{backgroundColor:useColorModeValue('blue.200','blue.700')}} backgroundColor='blue.500' width={['100%','20px']}>
+        function SwitchCompletion() {
+    
+            function SubTaskCompletion() {
+                return <Box></Box>
+            }
+        
+            function SimpleCompletion() {
+                const [newProgress, setNewProgress ] = useState<any>(progress)
+
+                console.log(task)
+                const handleSave = async() => {
+                    setProgress(newProgress)
+        
+                    await _setProgress(task.user_id, task.task_id, newProgress)
+                    onClose()
+                }
+
+                const SwitchBox = () => {
+                    return <Grid paddingY='10px' gap={1} textAlign='center' textColor='black' width='100%' templateColumns='repeat(2, 1fr)' flexDirection='column'>
+                        <GridItem onClick={()=>{newProgress>0 && setNewProgress(0)}} cursor='pointer' borderRadius={8} width='100%' height='30px' backgroundColor={newProgress==0 ? 'red.400' : 'gray.200'}>
+                            Incomplete
+                        </GridItem>
+                        <GridItem onClick={()=>{newProgress==0 && setNewProgress(requirement)}} cursor='pointer' borderRadius={8} width='100%' height='30px' backgroundColor={newProgress>0 ? 'green.400' : 'gray.200'}>
+                            Complete
+                        </GridItem>
+                    </Grid>
+                }
+        
+                return <Modal scrollBehavior='inside' isCentered motionPreset='slideInBottom' closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+                    <ModalOverlay />
+                    <ModalContent backgroundColor={useColorModeValue('gray.50','gray.800')}>
+                    <ModalHeader>Set your Progress</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Box paddingX='5px'>
+                            <HStack fontSize={'12px'}>
+                                <Text>{((newProgress/requirement) * 100).toFixed(2)}%</Text>
+                                <Spacer/>
+                                <Text>{newProgress}/{requirement}</Text>
+                            </HStack>
+                            <Progress colorScheme="green" size={'lg'} value={(newProgress*100)/requirement} sx={{
+                                "& > div:first-of-type": {
+                                    transitionProperty: "width",
+                                },
+                            }}/>
+                            
+                            <FormControl textAlign={'center'} gap='20px'>
+                                <FormHelperText><Badge variant='solid'>{newProgress > 0 ? 'COMPLETE' : 'INCOMPLETE'}</Badge></FormHelperText>
+                                <SwitchBox/>
+                            </FormControl>
+                        </Box>
+                    </ModalBody>
+                       
+                    <ModalFooter>
+                        <Button type='submit' colorScheme='blue' mr={3} onClick={handleSave}>Save</Button>
+                        <Button variant='outline' onClick={onClose}>Cancel</Button>
+                    </ModalFooter>
+                    </ModalContent>
+                </Modal>
+            }
+        
+            function ProgressCompletion() {
                     
-                </Flex>
-                <Flex zIndex={1} padding='10px' gap='10px'  height='inherit' minHeight='inherit' maxHeight='inherit' flexDirection={['column','row']} alignItems={['center','start']}>
-                    <Flex flexDirection={'column'} maxW='300px'>
-                        <Heading textOverflow='ellipsis' whiteSpace='nowrap' overflow='hidden' maxW='inherit' fontWeight='500' fontSize='1.25rem' alignSelf={['center','start']} height='fit-content'>
+                const handleSave = async() => {
+        
+                    await _setProgress(task.user_id, task.task_id, progress)
+                    onClose()
+                }
+        
+                return <Modal scrollBehavior='inside' isCentered motionPreset='slideInBottom' closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+                    <ModalOverlay />
+                    <ModalContent backgroundColor={useColorModeValue('gray.50','gray.800')}>
+                    <ModalHeader>Set your Progress</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody pb={6}>
+                        
+                    </ModalBody>
+                        <Flex>
+                            <VStack width='fit-content'>
+                                <Progress colorScheme='blue' value={requirement/progress}/>
+                                <Flex width='100%'>
+                                    <Text>Start: 0</Text>
+                                    <NumberInput allowMouseWheel min={0} defaultValue={progress} max={requirement} onChange={(value)=>setProgress(value)} clampValueOnBlur={false}>
+                                        <NumberInputField />
+                                        <NumberInputStepper>
+                                            <NumberIncrementStepper />
+                                            <NumberDecrementStepper />
+                                        </NumberInputStepper>
+                                    </NumberInput>
+                                    <Text>End: {requirement}</Text>
+                                </Flex>
+                            </VStack>
+                        </Flex>
+                    <ModalFooter>
+                        <Button type='submit' colorScheme='blue' mr={3} onClick={handleSave}>Save</Button>
+                        <Button variant='outline' onClick={onClose}>Cancel</Button>
+                    </ModalFooter>
+                    </ModalContent>
+                </Modal>
+            }
+    
+            switch(task.type) {
+                case 'Progress':
+                    return <ProgressCompletion/>;
+                case 'Sub-Tasks':
+                    return <SubTaskCompletion/>;
+                default:
+                    return <SimpleCompletion/>
+            }
+        }
+
+        return <Card backgroundColor={useColorModeValue('gray.50','gray.700')} margin='20px' overflow='hidden' height='200px' width='300px' size='md' flexDirection={'column'} alignItems={[null,'center']} >
+            <Box minWidth='20px' width='100%' height={'30px'} onClick={()=>toast()} cursor='pointer' _hover={{backgroundColor:useColorModeValue('blue.200','blue.700')}} backgroundColor='blue.500'>
+                
+            </Box>
+            <Flex width='100%' flexDirection='column' padding='10px' height='inherit' alignItems={['center','start']}>
+                <Flex flexDirection={'column'} height='100%' width='100%'>
+                    <HStack>
+                        <Heading maxWidth='150px' noOfLines={1} overflowX='scroll' maxW='inherit' fontWeight='500' fontSize='1.25rem' alignSelf={['center','start']} height='fit-content'>
                             {name}
                         </Heading>
-                        
-                        <Text marginStart='10px' maxHeight={['250px','200px']} overflow='scroll' alignSelf={['center','start']} maxW='inherit'>
-                            {description}
-                        </Text>
-                        <Flex flexDir={['row']} alignItems='center' gap='20px' width='100%' position='absolute' bottom='1'>
-                            <ProgressIndicator/>
-                            <TimeIndicator/>
-                            <Switch defaultChecked={progress > 0} onChange={(e)=>{
-                                const value = e.currentTarget.checked
-                                console.log(value)
-                                //pretty bad!!
-                                if (value) {
-                                    _addProgress(task.user_id, task.task_id,1)
-                                    setProgress(1)
-                                } else {
-                                    _deleteProgress(task.user_id, task.task_id)
-                                    setProgress(0)
-                                }
-                            }} />
-                        </Flex>
-                    </Flex>
+                        <Spacer/>
+                        <TimeIndicator/>
+                    </HStack>
+                    
+                    <Text marginStart='10px' maxHeight={'100px'} overflowY='scroll' alignSelf={['center','start']} width='200px'>
+                        {description}
+                    </Text>
                 </Flex>
-            </Card>
+                <Flex  width='100%'>
+                    <ProgressIndicator/>
+                    <Spacer/>
+                    <Box onClick={onOpen}>
+                        <IconButton aria-label='Set Progress' backgroundColor={useColorModeValue('blue.100','blue.500')} icon={<FaHourglassHalf />} type='button' variant='solid' />
+                        <SwitchCompletion/>
+                    </Box>                    
+                    
+                </Flex>
+            </Flex>
+        </Card>
     }
 
     function RenderModules() {
