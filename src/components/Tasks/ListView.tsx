@@ -150,20 +150,8 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                 const handleSave = async() => {
                     onClose()
                     setProgress(newProgress)
-        
                     await _setProgress(task.user_id, task.task_id, newProgress)
                     
-                }
-
-                const SwitchBox = () => {
-                    return <Grid paddingY='10px' gap={1} textAlign='center' textColor='black' width='100%' templateColumns='repeat(2, 1fr)' flexDirection='column'>
-                        <GridItem onClick={()=>{newProgress>0 && setNewProgress(0)}} cursor='pointer' borderRadius={8} width='100%' height='30px' backgroundColor={newProgress==0 ? 'red.400' : 'gray.200'}>
-                            Incomplete
-                        </GridItem>
-                        <GridItem onClick={()=>{newProgress==0 && setNewProgress(requirement)}} cursor='pointer' borderRadius={8} width='100%' height='30px' backgroundColor={newProgress>0 ? 'green.400' : 'gray.200'}>
-                            Complete
-                        </GridItem>
-                    </Grid>
                 }
         
                 return <Modal scrollBehavior='inside' isCentered motionPreset='slideInBottom' closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
@@ -216,7 +204,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         }
 
         return <Card backgroundColor={useColorModeValue('gray.50','gray.700')} margin='20px' overflow='hidden' height='200px' width='300px' size='md' flexDirection={'column'} alignItems={[null,'center']} >
-            <Box minWidth='20px' width='100%' height={'30px'} onClick={()=>toast()} cursor='pointer' _hover={{backgroundColor:useColorModeValue('blue.200','blue.700')}} backgroundColor='blue.500'>
+            <Box minWidth='20px' width='100%' height={'30px'} onClick={()=>toast()} cursor='pointer' _hover={{backgroundColor:useColorModeValue('gray.300','gray.600')}} backgroundColor='blue.500'>
                 
             </Box>
             <Flex width='100%' flexDirection='column' padding='10px' height='inherit' alignItems={['center','start']}>
@@ -233,11 +221,11 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                         {description}
                     </Text>
                 </Flex>
-                <Flex  width='100%'>
+                <Flex alignItems='end' width='100%'>
                     <ProgressIndicator/>
                     <Spacer/>
                     <Box onClick={onOpen}>
-                        <IconButton aria-label='Set Progress' backgroundColor={useColorModeValue('blue.100','blue.500')} icon={<FaHourglassHalf />} type='button' variant='solid' />
+                        <IconButton aria-label='Set Progress' backgroundColor={useColorModeValue('blue.400','blue.500')} icon={<FaHourglassHalf />} type='button' variant='solid' />
                         <SwitchCompletion/>
                     </Box>                    
                     

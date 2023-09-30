@@ -280,14 +280,15 @@ export default function Homepage() {
             return <Card height='min-content'>
             <CardBody paddingTop='10px'>
                 <Text fontWeight='600'>Task Analytics</Text>
-                <StatGroup>
-                    <Stat>
-                        <StatLabel>Completed Tasks</StatLabel>
+                <Divider/>
+                <StatGroup flexDir='column'>
+                    <Stat >
+                        <StatLabel fontSize='10px'  fontWeight='400'>Total Tasks</StatLabel>
                         <StatNumber>{tasksInfo.length}</StatNumber>
-                        <StatHelpText>
-                            <StatArrow type='increase' />
-                            
-                        </StatHelpText>
+                    </Stat>
+                    <Stat>
+                        <StatLabel fontSize='10px'  fontWeight='400'>Completed Tasks</StatLabel>
+                        <StatNumber color={useColorModeValue('green.500','green.300')}>{(tasksInfo.filter((it_task: any)=>it_task.progress >= it_task.requirement)).length}</StatNumber>
                     </Stat>
                 </StatGroup>
             </CardBody>
@@ -355,11 +356,9 @@ export default function Homepage() {
                     isPost()
                 },[])
                 return <HStack paddingLeft='20px'>
-                    <Tooltip label='WIP. Will have option to delete, post, share task'>
-                        <Text fontSize='12px' fontWeight='400'>
-                            {taskInfo.name}
-                        </Text>
-                    </Tooltip>
+                    <Text fontSize='12px' fontWeight='400' noOfLines={1} maxWidth='100px'>
+                        {taskInfo.name}
+                    </Text>
                     
                     <Spacer/>
                     <Menu>
@@ -383,7 +382,7 @@ export default function Homepage() {
         
             return (tasksInfo.length > 0 && loading() ? 
             <Card marginY='20px'>
-                <SimpleGrid columns={1} width='inherit' maxHeight='200px' overflowY='clip'>
+                <SimpleGrid columns={1} width='inherit' maxHeight='200px' overflowY='scroll'>
                     {tasksInfo.map((taskInfo: any, id:number)=>{
                         return <Box key={id}>
                             <TaskModule taskInfo={taskInfo}/>
@@ -392,7 +391,7 @@ export default function Homepage() {
                         
                     })}
                 </SimpleGrid>
-                <Button variant='ghost' onClick={()=>navigate('/dashboard')} size='sm'>Load more</Button>
+                <Button variant='ghost' onClick={()=>navigate('/dashboard')} size='sm'>Dashboard</Button>
             </Card> : 
             <Skeleton height='30px'>
 
