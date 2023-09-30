@@ -615,9 +615,6 @@ export default function LandingPage() {
                     <Link href='/agreements'>
                         Terms of Service
                     </Link>
-                    <Link href='/versions'>
-                        Dev-Logs
-                    </Link>
                 </Stack>
             </VStack>
         )
