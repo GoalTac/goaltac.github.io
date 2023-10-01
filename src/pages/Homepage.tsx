@@ -322,7 +322,6 @@ export default function Homepage() {
             function TaskModule({taskInfo}: any) {
                 const { isOpen, onOpen, onClose } = useDisclosure()
                 const hasPosted = (taskInfo.hasPosted ? true : false)
-                console.log(taskInfo)
 
                 //highlight the task in the list that has already been posted
                 function PostModal() {  

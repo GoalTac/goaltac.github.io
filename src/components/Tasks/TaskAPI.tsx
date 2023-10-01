@@ -479,6 +479,12 @@ export async function _getUserTasksInfo(user_uuid: string) {
         .from('posts')
         .select('*')
         .eq('user_uuid', user_uuid);
+    
+        // get all relations in batch with one api call
+    const {data: profile, error: profileError} = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('userid', user_uuid).single();
 
     if(taskError) {
         throw new Error(taskError.message)
@@ -486,8 +492,11 @@ export async function _getUserTasksInfo(user_uuid: string) {
     if(postsError) {
         throw new Error(postsError.message)
     }
+    if(profileError) {
+        throw new Error(profileError.message)
+    }
 
-    const getPackagedInfo = (task: any, relation: any, post: any) => {
+    const getPackagedInfo = (task: any, relation: any, post: any, profile: any) => {
         return {
             progress: relation.progress,
             task_id: relation.task_id,
@@ -499,15 +508,18 @@ export async function _getUserTasksInfo(user_uuid: string) {
             reward: task.reward,
             requirement: task.requirement,
             start_date: task.start_date,
-            type: task.type, hasPosted: (post ? true : false)
+            type: task.type, hasPosted: (post ? true : false),
+            avatarURL: profile.avatarurl,
+            userName: profile.username, displayName: profile.name
         }
     }
 
     for (const relation of relations) {
         const task = tasks.find(task => task.uuid === relation.task_id);
         const post = posts.find(post => post.user_uuid == relation.user_id && post.task_uuid == relation.task_id)
+
         if (task) {
-            const packagedInfo = getPackagedInfo(task, relation, post);
+            const packagedInfo = getPackagedInfo(task, relation, post, profile);
             packagedData.push(packagedInfo);
         }
     }
