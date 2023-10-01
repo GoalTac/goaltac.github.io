@@ -208,6 +208,7 @@ export default function Homepage() {
  
     function TaskManagement() {
         const [tasksInfo, setTasksInfo] = useState<any>([]);
+        const [postLength, setPostLength] = useState<number>(0)
 
         useEffect(()=> {
             const taskChanges = useSupabase.channel('task').on('postgres_changes',{
@@ -229,6 +230,7 @@ export default function Homepage() {
                 if(user) {
                     const fetchedTasks = await _getTaskInfo(user?.['id'])
                     setTasksInfo(fetchedTasks)
+                    setPostLength((fetchedTasks.filter((it_task: any)=>it_task.hasPosted)).length)
                     setTasksLoaded(true) 
                 }
             }
@@ -286,7 +288,7 @@ export default function Homepage() {
         function Analytics() {
             return <Card height='min-content'>
             <CardBody paddingTop='10px'>
-                <Text fontWeight='600'>Task Analytics</Text>
+                <Text fontWeight='600' paddingBottom='10px'>Task Analytics</Text>
                 <Divider/>
                 <StatGroup flexDir='column'>
                     <Stat >
@@ -299,7 +301,7 @@ export default function Homepage() {
                     </Stat>
                     <Stat>
                         <StatLabel fontSize='10px'  fontWeight='400'>Posted Tasks</StatLabel>
-                        <StatNumber color={useColorModeValue('purple.500','purple.300')}>{(tasksInfo.filter((it_task: any)=>it_task.hasPosted)).length}</StatNumber>
+                        <StatNumber color={useColorModeValue('purple.500','purple.300')}>{postLength}/5</StatNumber>
                     </Stat>
                 </StatGroup>
             </CardBody>
@@ -315,6 +317,17 @@ export default function Homepage() {
                 //highlight the task in the list that has already been posted
                 function PostModal() {  
                     const handlePost = async() => {
+                        onClose()
+                        if (postLength >= 5) {
+                            toast({
+                                title: "Sorry!",
+                                description: 'You are limited to 5 posts',
+                                status: 'warning',
+                                duration: 9000,
+                                isClosable: true,
+                            })
+                            return
+                        }
 
                         const createdPost = await _addPost(taskInfo.task_id, taskInfo.user_id).finally(()=>{
                             toast({
@@ -324,7 +337,7 @@ export default function Homepage() {
                                 duration: 9000,
                                 isClosable: true,
                             })
-                            onClose()
+                            
                         })
                     }                  
                     return (
