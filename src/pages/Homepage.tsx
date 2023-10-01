@@ -372,13 +372,10 @@ export default function Homepage() {
             }
         
             return (tasksInfo.length > 0 && loading() ? 
-            <Card marginY='20px'>
-                <SimpleGrid columns={1} width='inherit' maxHeight='200px' overflowY='scroll'>
+            <Card marginY='20px' padding='3px'>
+                <SimpleGrid columns={1} gap='3px' width='inherit' maxHeight='200px' overflowY='scroll'>
                     {tasksInfo.map((taskInfo: any, id:number)=>{
-                        return <Box key={id}>
-                            <TaskModule taskInfo={taskInfo}/>
-                            <Divider/>
-                        </Box>
+                        return <TaskModule key={id} taskInfo={taskInfo}/>
                         
                     })}
                 </SimpleGrid>
@@ -415,7 +412,8 @@ export default function Homepage() {
     flexWrap='wrap-reverse'
     maxWidth='1200px'
     columnGap={measurements.general.colGap}
-    flexDirection={['column','row']}
+    flexDirection={['column-reverse','row']}
+    alignItems={['center','unset']}
     justifyContent='center'>
         <SocialFeed/>
         <TaskManagement/>
