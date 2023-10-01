@@ -197,7 +197,7 @@ export default function Homepage() {
                 posts.map((post: any, id: number)=>{
                     return <Post key={id} taskInfo={post}/>
                 }) :
-                <Box padding='6' boxShadow='lg' bg='white' width='340px'>
+                <Box padding='6' boxShadow='lg' bg={useColorModeValue('white','gray.700')} width='340px'>
                     <SkeletonCircle size='10' />
                     <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
               </Box>}
@@ -404,9 +404,7 @@ export default function Homepage() {
                 </SimpleGrid>
                 <Button variant='ghost' onClick={()=>navigate('/dashboard')} size='sm'>Dashboard</Button>
             </Card> : 
-            <Skeleton height='30px'>
-
-            </Skeleton>)
+            <Skeleton height='30px' background={useColorModeValue('gray.700','gray.700')}/>)
             
         }
         return <Flex position='static'  pos='relative' rowGap='20px' maxWidth={[null,'200px']}>
