@@ -499,7 +499,7 @@ export async function _getTaskInfo(user_uuid: string) {
             reward: task.reward,
             requirement: task.requirement,
             start_date: task.start_date,
-            type: task.type, hasPosted: post
+            type: task.type, hasPosted: (post ? true : false)
         }
     }
 

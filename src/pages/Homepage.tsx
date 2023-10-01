@@ -210,19 +210,25 @@ export default function Homepage() {
         const [tasksInfo, setTasksInfo] = useState<any>([]);
 
         useEffect(()=> {
-            const taskChanges = useSupabase.channel('any').on('postgres_changes',{
+            const taskChanges = useSupabase.channel('task').on('postgres_changes',{
                     schema: 'public', // Subscribes to the "public" schema in Postgres
                     event: '*',       // Listen to all changes
                     table: 'task_user_relations'
                 },(payload: any) => {
                     fetchUserTasks()
             }).subscribe()
+            const postChanges = useSupabase.channel('post').on('postgres_changes',{
+                schema: 'public', // Subscribes to the "public" schema in Postgres
+                event: '*',       // Listen to all changes
+                table: 'posts'
+            },(payload: any) => {
+                fetchUserTasks()
+            }).subscribe()
 
             async function fetchUserTasks() {
                 if(user) {
                     const fetchedTasks = await _getTaskInfo(user?.['id'])
                     setTasksInfo(fetchedTasks)
-
                     setTasksLoaded(true) 
                 }
             }
@@ -231,6 +237,7 @@ export default function Homepage() {
 
             return () => {
                 taskChanges.unsubscribe();
+                postChanges.unsubscribe()
               };
         },[])
 
@@ -290,6 +297,10 @@ export default function Homepage() {
                         <StatLabel fontSize='10px'  fontWeight='400'>Completed Tasks</StatLabel>
                         <StatNumber color={useColorModeValue('green.500','green.300')}>{(tasksInfo.filter((it_task: any)=>it_task.progress >= it_task.requirement)).length}</StatNumber>
                     </Stat>
+                    <Stat>
+                        <StatLabel fontSize='10px'  fontWeight='400'>Posted Tasks</StatLabel>
+                        <StatNumber color={useColorModeValue('purple.500','purple.300')}>{(tasksInfo.filter((it_task: any)=>it_task.hasPosted)).length}</StatNumber>
+                    </Stat>
                 </StatGroup>
             </CardBody>
         </Card>
@@ -299,6 +310,7 @@ export default function Homepage() {
             function TaskModule({taskInfo}: any) {
                 const { isOpen, onOpen, onClose } = useDisclosure()
                 const hasPosted = (taskInfo.hasPosted ? true : false)
+                console.log(taskInfo)
 
                 //highlight the task in the list that has already been posted
                 function PostModal() {  
@@ -334,7 +346,7 @@ export default function Homepage() {
                     )
                 }
 
-                return <HStack borderRadius='5' backgroundColor={hasPosted ? useColorModeValue('green.300','green.600') : useColorModeValue('gray.100','gray.700')} flexDirection='row' alignItems='center'>
+                return <HStack borderRadius='5' backgroundColor={hasPosted ? useColorModeValue('purple.300','purple.600') : useColorModeValue('orange.100','orange.400')} flexDirection='row' alignItems='center'>
                     <Text marginStart='20px' fontSize='12px' fontWeight='400' noOfLines={1} maxWidth='100px'>
                         {taskInfo.name}
                     </Text>
