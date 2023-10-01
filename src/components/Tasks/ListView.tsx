@@ -204,20 +204,20 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         }
 
         return <Card backgroundColor={useColorModeValue('gray.50','gray.700')} margin='20px' overflow='hidden' height='200px' width='300px' size='md' flexDirection={'column'} alignItems={[null,'center']} >
-            <Box minWidth='20px' width='100%' height={'30px'} onClick={()=>toast()} cursor='pointer' _hover={{backgroundColor:useColorModeValue('gray.300','gray.600')}} backgroundColor='blue.500'>
+            <Box minWidth='20px' width='100%' height={'30px'} onClick={()=>toast()} cursor='pointer' _hover={{backgroundColor:useColorModeValue('gray.300','gray.600')}} backgroundColor={progress >= requirement ? useColorModeValue('green.200','green.500') : useColorModeValue('orange.200','yellow.600')}>
                 
             </Box>
             <Flex width='100%' flexDirection='column' padding='10px' height='inherit' alignItems={['center','start']}>
                 <Flex flexDirection={'column'} height='100%' width='100%'>
                     <HStack>
-                        <Heading maxWidth='150px' maxW='inherit' fontWeight='500' fontSize='1.25rem' alignSelf={['center','start']} height='fit-content'>
+                        <Heading overflow='clip' noOfLines={1} maxW='inherit' fontWeight='500' fontSize='1.25rem' alignSelf={['center','start']} height='fit-content'>
                             {name}
                         </Heading>
                         <Spacer/>
                         <TimeIndicator/>
                     </HStack>
                     
-                    <Text marginStart='10px' maxHeight={'100px'} overflowY='scroll' alignSelf={['center','start']} width='200px'>
+                    <Text marginStart='10px' maxHeight={'100px'} overflowY='auto' alignSelf={['center','start']} width='200px'>
                         {description}
                     </Text>
                 </Flex>
@@ -225,7 +225,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                     <ProgressIndicator/>
                     <Spacer/>
                     <Box onClick={onOpen}>
-                        <IconButton aria-label='Set Progress' backgroundColor={useColorModeValue('blue.400','blue.500')} icon={<FaHourglassHalf />} type='button' variant='solid' />
+                        <IconButton aria-label='Set Progress' backgroundColor={progress >= requirement ? useColorModeValue('green.200','green.500') : useColorModeValue('orange.200','yellow.600')} icon={<FaHourglassHalf />} type='button' variant='solid' />
                         <SwitchCompletion/>
                     </Box>                    
                     
