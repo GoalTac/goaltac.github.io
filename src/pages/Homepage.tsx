@@ -210,7 +210,7 @@ export default function Homepage() {
         }
         
 
-        return <Flex flexDirection='column' rowGap='20px' width='600px'>
+        return <Flex flexDirection='column' rowGap='20px' maxWidth='600px' width='100%'>
             <Header/>
             <Posts/>
         </Flex>

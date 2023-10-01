@@ -96,13 +96,13 @@ export default function Root() {
             </Box>
           )}
 
-          <Box position={'relative'}>
+          <Box ml='auto' pr={'30px'}>
             <IconButton as={Link} to="/community" aria-label="Social" icon={<FaUsers />} fontSize="3xl" background="none" display={showSearchBar ? 'flex' : 'none'} float={"right"} />
           </Box>
 
 
           {/* Profile */}
-          <Box ml="auto" pr={2} display={showSearchBar ? 'block' : 'none'}>
+          <Box pr={2} display={showSearchBar ? 'block' : 'none'}>
             <Menu>
               <MenuButton as={Avatar} size="sm" cursor="pointer" src={avatarUrl}/>
               <MenuList>
