@@ -21,7 +21,7 @@ export default function TaskDrawer() {
     const [startDate, setStartDate] = useState<any>()
     const [endDate, setEndDate] = useState<any>()
     const [type, setType] = useState<any>('Simple')
-    const requirement = useRef<any>(1)
+    const [requirement, setRequirement] = useState<number>(1)
     const [reward, setReward] = useState<any>(1)
     const user = useSession().user //this rerenders the page tons of times
     const [tasks, setTasks] = useState<any>([])
@@ -78,7 +78,7 @@ export default function TaskDrawer() {
             end_date: endDate,
             name: title,
             description: description,
-            requirement: requirement.current,
+            requirement: requirement,
             reward: reward,
             type: type,
             reoccurence: reoccurence
@@ -178,8 +178,8 @@ export default function TaskDrawer() {
 
                     
                     <InputLeftAddon children='Target'/>
-                    <NumberInput defaultValue={1} min={1} onChange={(e)=>{
-                        requirement.current = e }}>
+                    <NumberInput defaultValue={1} value={requirement} min={1} onChange={(e)=>{
+                        setRequirement(+e) }}>
                     <NumberInputField />
                     <NumberInputStepper>
                         <NumberIncrementStepper />
@@ -192,7 +192,7 @@ export default function TaskDrawer() {
         }
 
         function BooleanTypeDisplay() {
-            requirement.current = 1;
+            setRequirement(1);
             const [value, setValue] = useState(true)
             return (
                 <Flex columnGap={'20px'} alignItems='center' justifyContent='center'>
