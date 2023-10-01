@@ -450,7 +450,7 @@ export async function _getUserTasks(userID: string) {
  * This is to package the user relations and task info
  * @param userID 
  */
-export async function _getTaskInfo(user_uuid: string) {
+export async function _getUserTasksInfo(user_uuid: string) {
 
     const packagedData = [];
 
@@ -805,16 +805,4 @@ export async function _getAllPostInfo(offset: number) {
     }
     const packagedInfo = await _getPostInfo(posts);
     return packagedInfo;
-}
-
-export async function _getPost(task_uuid: string, user_uuid: string) {
-    const { data: data, error } = await supabase
-        .from('posts')
-        .select('post_uuid')
-        .match({'task_uuid': task_uuid, 'user_uuid': user_uuid});
-    if (error) {
-        throw new Error(error.message)
-    }
-
-    return data;
 }

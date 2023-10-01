@@ -6,7 +6,7 @@ import { useState } from "react";
 import Chat from "../components/Chats/PrivateChat";
 import TaskDrawer from "../components/Tasks/TaskDrawer";
 import React from "react";
-import { _getTaskInfo, _getTaskbyID, _getUserTasks } from "../components/Tasks/TaskAPI";
+import { _getUserTasksInfo, _getTaskbyID, _getUserTasks } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { CalendarIcon } from "@chakra-ui/icons";
 import { AiOutlineOrderedList } from "react-icons/ai";
@@ -36,7 +36,7 @@ export default function Dashboard() {
         }).subscribe()
         async function fetchUserRelations() {
             if (user) {
-                const fetchedTasks = await _getTaskInfo(user?.['id'])
+                const fetchedTasks = await _getUserTasksInfo(user?.['id'])
                 setTasksInfo(fetchedTasks)
                 setDisplayedView(<ListView tasks={fetchedTasks} />)
 

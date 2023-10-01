@@ -15,7 +15,7 @@ import { ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon 
 import { RxAvatar } from "react-icons/rx";
 import { TbTableOptions, TbTrendingUp } from "react-icons/tb";
 import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
-import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getPost, _getTaskInfo, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
+import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getUserTasksInfo, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
@@ -173,12 +173,22 @@ export default function Homepage() {
             const [offset, setOffset] = useState<number>(0)
 
             useEffect(()=>{
+                const postChanges = useSupabase.channel('post').on('postgres_changes',{
+                    schema: 'public', // Subscribes to the "public" schema in Postgres
+                    event: '*',       // Listen to all changes
+                    table: 'posts'
+                },(payload: any) => {
+                    fetchPosts()
+                }).subscribe()
                 async function fetchPosts() {
                     const fetchedPosts = await _getAllPostInfo(offset)
                     setPosts(fetchedPosts)
                     setPostsLoaded(true)
                 }
                 fetchPosts()
+                return () => {
+                    postChanges.unsubscribe()
+                  };
             },[postsLoaded])
 
             //PUT PROFILE INFO IN THE POST VARIABLE
@@ -228,7 +238,7 @@ export default function Homepage() {
 
             async function fetchUserTasks() {
                 if(user) {
-                    const fetchedTasks = await _getTaskInfo(user?.['id'])
+                    const fetchedTasks = await _getUserTasksInfo(user?.['id'])
                     setTasksInfo(fetchedTasks)
                     setPostLength((fetchedTasks.filter((it_task: any)=>it_task.hasPosted)).length)
                     setTasksLoaded(true) 
