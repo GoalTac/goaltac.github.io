@@ -21,7 +21,7 @@ export default function TaskDrawer() {
     const [startDate, setStartDate] = useState<any>()
     const [endDate, setEndDate] = useState<any>()
     const [type, setType] = useState<any>('Simple')
-    const [requirement, setRequirement] = useState<number>(1)
+    const [requirement, setRequirement] = useState(1)
     const [reward, setReward] = useState<any>(1)
     const user = useSession().user //this rerenders the page tons of times
     const [tasks, setTasks] = useState<any>([])
@@ -170,23 +170,23 @@ export default function TaskDrawer() {
 
     function TypeDisplay() {
         function NumberTypeDisplay() {
+            const [newRequirement, setNewRequirement] = useState(requirement)
+            const handleChange = (value: any) => {
+                setNewRequirement(value)
+            }
+
             return (
                 <Stack flexDirection='column'>
-                <Badge fontSize='1.25rem' colorScheme="red">This is currently a Work in Progress</Badge>
                 
-                <InputGroup size='lg' justifyContent='center'>
 
-                    
-                    <InputLeftAddon children='Target'/>
-                    <NumberInput defaultValue={1} value={requirement} min={1} onChange={(e)=>{
-                        setRequirement(+e) }}>
+
+                    <NumberInput allowMouseWheel defaultValue={1} value={newRequirement} min={1} onChange={handleChange}>
                     <NumberInputField />
                     <NumberInputStepper>
                         <NumberIncrementStepper />
                         <NumberDecrementStepper />
                     </NumberInputStepper>
-                    </NumberInput>
-                </InputGroup></Stack>
+                    </NumberInput></Stack>
                 
             )
         }
@@ -330,8 +330,6 @@ export default function TaskDrawer() {
                     <FormLabel htmlFor='description'>Description</FormLabel>
                     <Textarea maxLength={200} resize='none' variant='outline' isRequired placeholder='Describe your task. What should you do?'
                         value={description}
-                        onInput={(e) => {
-                        e.currentTarget.value = e.currentTarget.value.replace(/[^A-z0-9_ ]/g, ''); }}
                         onChange={(e) => setDescription(e.target.value)}/>
                     <Text fontSize='10px' borderRadius='5px' color='gray.400' position='absolute' bottom='0' right='1'>{description.length}/200</Text>
 
