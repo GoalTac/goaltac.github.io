@@ -245,11 +245,6 @@ export default function LandingPage() {
                        
                     </Flex>
                     <LearnMoreButton/>
-                    <Link href={'https://discord.gg/EzFPQDAKGf'} target='_blank' aria-label='discord'>
-                        <Button colorScheme='telegram' variant='solid' rightIcon={<FaDiscord/>} >
-                            Discord
-                        </Button>
-                    </Link>
                 </VStack>
             </Flex>
         );
@@ -549,11 +544,6 @@ export default function LandingPage() {
                     icon: <FaLinkedin size={25} color={useColorModeValue('rgb(0,119,181)', '')} />,
                     href: 'https://www.linkedin.com/company/goaltac/',
                     label: 'LinkedIn'
-                },
-                {
-                    icon: <FaDiscord size={25} color={useColorModeValue('rgb(114,137,218)', '')} />,
-                    href: 'https://discord.gg/EzFPQDAKGf',
-                    label: 'Discord'
                 },
                 {
                     icon: <FaInstagram size={30} />,
