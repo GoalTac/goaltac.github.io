@@ -210,7 +210,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
             <Flex width='100%' flexDirection='column' padding='10px' height='inherit' alignItems={['center','start']}>
                 <Flex flexDirection={'column'} height='100%' width='100%'>
                     <HStack>
-                        <Heading maxWidth='150px' noOfLines={1} overflowX='scroll' maxW='inherit' fontWeight='500' fontSize='1.25rem' alignSelf={['center','start']} height='fit-content'>
+                        <Heading maxWidth='150px' maxW='inherit' fontWeight='500' fontSize='1.25rem' alignSelf={['center','start']} height='fit-content'>
                             {name}
                         </Heading>
                         <Spacer/>

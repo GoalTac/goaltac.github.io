@@ -210,7 +210,7 @@ export default function Homepage() {
         }
         
 
-        return <Flex flexDirection='column' rowGap='20px' maxWidth='600px' width='fit-content'>
+        return <Flex flexDirection='column' rowGap='20px' width='600px'>
             <Header/>
             <Posts/>
         </Flex>
@@ -377,7 +377,7 @@ export default function Homepage() {
                     <Menu>
                     {({ isOpen }) => (
                         <>
-                        <MenuButton marginRight='-10px' leftIcon={<SlOptionsVertical />} isActive={isOpen} variant='unstyled' colorScheme='gray' as={Button}/>
+                        <MenuButton rightIcon={<SlOptionsVertical />} isActive={isOpen} variant='unstyled' colorScheme='gray' as={Button}/>
                         <MenuList>
                             <MenuItem isDisabled icon={<EditIcon/>}>Edit</MenuItem>
                             
