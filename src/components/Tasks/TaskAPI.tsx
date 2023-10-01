@@ -459,6 +459,7 @@ export async function _getTaskInfo(user_uuid: string) {
         .from('task_user_relations')
         .select('*')
         .eq('user_id', user_uuid);
+
     
     if(relationError) {
         throw new Error(relationError.message)
@@ -472,11 +473,21 @@ export async function _getTaskInfo(user_uuid: string) {
         .select('*')
         .in('uuid', task_uuids);
 
+            
+    // get all relations in batch with one api call
+    const {data: posts, error: postsError} = await supabase
+        .from('posts')
+        .select('*')
+        .eq('user_uuid', user_uuid);
+
     if(taskError) {
         throw new Error(taskError.message)
     }
+    if(postsError) {
+        throw new Error(postsError.message)
+    }
 
-    const getPackagedInfo = (task: any, relation: any) => {
+    const getPackagedInfo = (task: any, relation: any, post: any) => {
         return {
             progress: relation.progress,
             task_id: relation.task_id,
@@ -488,14 +499,15 @@ export async function _getTaskInfo(user_uuid: string) {
             reward: task.reward,
             requirement: task.requirement,
             start_date: task.start_date,
-            type: task.type,
+            type: task.type, hasPosted: post
         }
     }
 
     for (const relation of relations) {
         const task = tasks.find(task => task.uuid === relation.task_id);
+        const post = posts.find(post => post.user_uuid == relation.user_id && post.task_uuid == relation.task_id)
         if (task) {
-            const packagedInfo = getPackagedInfo(task, relation);
+            const packagedInfo = getPackagedInfo(task, relation, post);
             packagedData.push(packagedInfo);
         }
     }

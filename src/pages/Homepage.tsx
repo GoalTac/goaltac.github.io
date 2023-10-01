@@ -298,7 +298,7 @@ export default function Homepage() {
 
             function TaskModule({taskInfo}: any) {
                 const { isOpen, onOpen, onClose } = useDisclosure()
-                const [hasPosted, setHasPosted] = useState(true)
+                const hasPosted = (taskInfo.hasPosted ? true : false)
 
                 //highlight the task in the list that has already been posted
                 function PostModal() {  
@@ -334,29 +334,8 @@ export default function Homepage() {
                     )
                 }
 
-                //we could remove this and put the isPosted status in taskInfo
-                useEffect(()=>{
-                    const isPost = async() => {
-                        //check if the post has already been made
-                        if (!taskInfo) {
-                            return false
-                        }
-                        const exists = await _getPost(taskInfo.task_id, taskInfo.user_id)
-                        if (exists.length > 0) {
-                            //so there is no need to change a variable to the same value
-                            if (!hasPosted) {
-                                setHasPosted(true)
-                            }
-                        } else {
-                            if (hasPosted) {
-                                setHasPosted(false)
-                            }
-                        }
-                    }
-                    isPost()
-                },[])
-                return <HStack paddingLeft='20px'>
-                    <Text fontSize='12px' fontWeight='400' noOfLines={1} maxWidth='100px'>
+                return <HStack borderRadius='5' backgroundColor={hasPosted ? useColorModeValue('green.300','green.600') : useColorModeValue('gray.100','gray.700')} flexDirection='row' alignItems='center'>
+                    <Text marginStart='20px' fontSize='12px' fontWeight='400' noOfLines={1} maxWidth='100px'>
                         {taskInfo.name}
                     </Text>
                     
@@ -400,8 +379,8 @@ export default function Homepage() {
         }
         return <Flex position='static'  pos='relative' rowGap='20px' maxWidth={[null,'200px']}>
             <Box>
+                <Analytics/>
                 <Box paddingTop='20px' position='sticky' flexWrap='wrap' top={0} height='min'>
-                    <Analytics/>
                     <ListView/>
                     <TaskDrawer/>
                     {/**
