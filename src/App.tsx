@@ -28,6 +28,7 @@ import { Tutorial } from './pages/Tutorial';
 import { Spinner } from '@chakra-ui/react';
 import LandingPage from './pages/Landing';
 import Homepage from './pages/Homepage';
+import UpdatePassword from './pages/UpdatePassword';
 
 export default function App() {
   
@@ -63,7 +64,7 @@ export default function App() {
         <Route path='login' element={<Login />} />
         <Route path='signup' element={<SignUp />} />
         <Route path='resetpassword' element={<ResetPassword />} />
-        <Route path='updatepass' element={<CheckPassword />} />
+        <Route path='updatepass' element={<UpdatePassword />} />
         <Route path='checkyouremail' element={<CheckVerification />} />
         <Route path='privatepolicy' element={<PrivatePolicy />} />   
         <Route path='welcome' element={<Landing />} />
