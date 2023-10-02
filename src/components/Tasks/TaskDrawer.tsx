@@ -16,7 +16,6 @@ import { ReactElement } from "react-markdown/lib/react-markdown"
  */
 export default function TaskDrawer({children, preset}: any) {    
     const isEdit = preset?.name ? true : false
-    console.log(isEdit, preset)
     
 
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -35,6 +34,7 @@ export default function TaskDrawer({children, preset}: any) {
     const uuid = isEdit ? preset.user_id : (user ? user?.['id'] : '')
     const toast = useToast()
 
+    /*
     //gets rid of 4 re-renders
     React.useEffect(()=>{
         async function fetchTasks() {
@@ -45,7 +45,7 @@ export default function TaskDrawer({children, preset}: any) {
         }
         
         fetchTasks()
-    },[])
+    },[])*/
 
     const firstField = React.useRef(null)
 
@@ -100,6 +100,8 @@ export default function TaskDrawer({children, preset}: any) {
             onClose()
             clearTasks()
         })
+
+        console.log(createdTask)
 
         //Relational data saving
         const taskID = createdTask.uuid
