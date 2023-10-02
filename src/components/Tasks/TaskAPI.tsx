@@ -287,14 +287,14 @@ export async function _setTask(taskID: string, task: any) {
             requirement: task.requirement, 
             reward: task.reward, reoccurence: task.reoccurence,
             type: task.type})
-    .eq('uuid', taskID).single();
+    .eq('uuid', taskID).select().single();
 
     if (error) {
         throw new Error(error.message)
     }
 
-    return data
-
+    return data as Task
+    
 }
 
 /**
