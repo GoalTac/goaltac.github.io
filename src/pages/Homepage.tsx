@@ -5,7 +5,7 @@
  * 3. Sidebar for task display
  */
 
-import { Avatar, Link, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue, useDisclosure, useToast, Skeleton, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
+import { Avatar, Link, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue, useDisclosure, useToast, Skeleton, SkeletonCircle, SkeletonText, Progress } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import TaskDrawer from "../components/Tasks/TaskDrawer";
 import { getUser, twoColumns } from "../hooks/Utilities";
@@ -25,6 +25,7 @@ import { supabase } from "../supabase";
 import { GiBowString, GiPocketBow, GiPostOffice, GiPostStamp } from "react-icons/gi";
 import PostModal from "../components/Tasks/PostModal";
 import Chat from "../components/Chats/CommunityChat";
+
 export default function Homepage() {
     
     const [taskIDs, setTaskIDs] = useState<any>();
@@ -61,6 +62,7 @@ export default function Homepage() {
         const displayName: string = taskInfo.displayName
         const likes: number = taskInfo.likes
         const isComplete = progress/requirement >= 1
+        const percentProgress: number = ((progress/requirement) * 100)
 
         const handleLike = async() => {
             //take the post ID
@@ -84,8 +86,8 @@ export default function Homepage() {
         
 
         return <Card width='inherit' padding='20px' maxWidth='inherit' height='fit-content'>
-            <Stack flexWrap='wrap' flexDirection='row' paddingBottom='10px'>
-                <HStack flexDir={'row'}>
+            <Stack flexWrap='wrap' flexDirection='row' paddingBottom='10px' width='100%' alignItems='center'>
+                <HStack flexDir={'row'} marginRight='auto'>
                     <Text fontWeight='500'>
                         {taskInfo.interests}
                     </Text>
@@ -93,15 +95,16 @@ export default function Homepage() {
                         - {userName}
                     </Text>
                 </HStack>
-                <Spacer/>
-                <HStack>
-                    <Tooltip fontSize='8px' hasArrow label={`${progress}/${requirement}`}>
-                        <Badge variant='subtle' borderRadius='3px' colorScheme={isComplete ? 'green' : 'orange'} fontSize='10px' paddingX='10px' paddingY='2px' width='fit-content'>
+                <Tooltip fontSize='8px' hasArrow label={`${progress}/${requirement}`} position='relative'>
+                    <Box position='relative'>
+                        <Progress size='lg' borderWidth='2px' marginLeft='auto' minWidth='200px' value={percentProgress} colorScheme={progress >= requirement ? 'green' : 'orange'}/>
+                        <Text position='absolute' top='1' right='1' fontSize='6px'>
                             {((progress/requirement) * 100).toFixed(2)}%
-                        </Badge>
-                    </Tooltip>
-            
-                </HStack>
+                        </Text>
+                    </Box>
+                    
+                </Tooltip>
+                
             </Stack>
             
             <Flex flexDirection='row'>
@@ -394,7 +397,10 @@ export default function Homepage() {
             }
         
             return (tasksInfo.length > 0 && loading() ? 
-            <Card marginY='20px' padding='3px'>
+            <Card padding='3px'>
+                <CardHeader textAlign='center' fontSize='14px' fontWeight='500' borderWidth='3px' borderRadius='6px'>
+                    Task List
+                </CardHeader>
                 <SimpleGrid columns={1} gap='3px' width='inherit' maxHeight='200px' overflowY='scroll'>
                     {tasksInfo.map((taskInfo: any, id:number)=>{
                         return <TaskModule key={id} taskInfo={taskInfo}/>
@@ -409,9 +415,8 @@ export default function Homepage() {
         return <Flex position='static'  pos='relative' rowGap='20px' maxWidth={[null,'200px']}>
             <Box>
                 <Analytics/>
-                <Box paddingTop='20px' position='sticky' flexWrap='wrap' top={0} height='min'>
+                <Box paddingTop='20px' position='sticky' flexWrap='wrap' top={12} height='min'>
                     <ListView/>
-                    <TaskDrawer/>
                     {/**
                      * 
                      * Create a task drawer component that:

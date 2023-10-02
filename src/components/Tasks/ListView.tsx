@@ -222,7 +222,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                         <TimeIndicator/>
                     </HStack>
                     
-                    <Text marginStart='10px' maxHeight={'100px'} overflowY='auto' alignSelf={['center','start']} width='200px'>
+                    <Text marginStart='10px' maxHeight={'80px'} overflowY='auto' alignSelf={['center','start']} width='200px'>
                         {description}
                     </Text>
                 </Flex>
