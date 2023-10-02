@@ -1,9 +1,8 @@
 import { Box, Button, Flex, FormControl, Input, InputGroup, InputLeftElement, InputRightElement, Stack, useColorModeValue, useToast } from "@chakra-ui/react";
 import bubble from './../images/bubble.svg'
 import { supabase } from "../supabase";
-import { AtSignIcon } from "@chakra-ui/icons";
-import { useRef, useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function UpdatePassword() {
     const toast = useToast();
