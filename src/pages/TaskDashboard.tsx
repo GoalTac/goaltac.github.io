@@ -27,17 +27,26 @@ export default function Dashboard() {
      * This NEEDS to be improved so we get both task and relations together and package them
      */
     React.useEffect(()=>{
-        const taskChanges = useSupabase.channel('any').on('postgres_changes',{
+        const taskRelationChanges = useSupabase.channel('relations').on('postgres_changes',{
                 schema: 'public', // Subscribes to the "public" schema in Postgres
                 event: '*',       // Listen to all changes
                 table: 'task_user_relations'
             },(payload: any) => {
                 fetchUserRelations()
         }).subscribe()
+        const taskChanges = useSupabase.channel('tasks').on('postgres_changes',{
+            schema: 'public', // Subscribes to the "public" schema in Postgres
+            event: '*',       // Listen to all changes
+            table: 'tasks'
+        },(payload: any) => {
+            fetchUserRelations()
+    }).subscribe()
         async function fetchUserRelations() {
             if (user) {
                 const fetchedTasks = await _getUserTasksInfo(user?.['id'])
                 setTasksInfo(fetchedTasks)
+
+                //might be an issue in the future
                 setDisplayedView(<ListView tasks={fetchedTasks} />)
 
                 setLoading(false) 
@@ -46,6 +55,7 @@ export default function Dashboard() {
         }
         fetchUserRelations()
         return () => {
+            taskRelationChanges.unsubscribe();
             taskChanges.unsubscribe();
           };
     },[])

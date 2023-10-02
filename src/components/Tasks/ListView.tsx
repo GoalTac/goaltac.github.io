@@ -1,6 +1,6 @@
 import { Avatar, Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, FormHelperText, Grid, GridItem, HStack, Heading, Icon, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Progress, Spacer, Stack, Switch, Text, Tooltip, VStack, useColorModeValue, useDisclosure, useToast } from "@chakra-ui/react";
 import { useState } from "react";
-import { useSession } from "../../hooks/SessionProvider";
+import { useSession, useSupabaseClient } from "../../hooks/SessionProvider";
 import React from "react";
 import { supabase } from "../../supabase";
 import { now } from "lodash";
@@ -12,6 +12,7 @@ import TaskDrawer from "./TaskDrawer";
 
 export default function ListView({tasks}: Task[] | any, {relations}: any) {
     const {profile: profile, user: user} = useSession()
+    const  useSupabase: any  = useSupabaseClient();
 
     function Card_Module({task}: Task | any) {
         const name = task.name ? task.name : 'Untitled'
@@ -205,7 +206,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         }
 
         return <Card backgroundColor={useColorModeValue('gray.50','gray.700')} margin='20px' overflow='hidden' height='200px' width='300px' size='md' flexDirection={'column'} alignItems={[null,'center']} >
-            <TaskDrawer>
+            <TaskDrawer preset={task}>
                 <Flex width='prose' height={'30px'} cursor='pointer' _hover={{backgroundColor:useColorModeValue('gray.300','gray.600')}} backgroundColor={progress >= requirement ? useColorModeValue('green.200','green.500') : useColorModeValue('orange.200','yellow.600')}>
                     
                 </Flex>

@@ -279,20 +279,22 @@ export async function _removeChildTask(parentID: string, childID: string) {
  * @param task 
  */
 export async function _setTask(taskID: string, task: any) {
-    const { error } = await supabase
+    const { data:data, error } = await supabase
     .from('tasks')
     .update({start_date: task.start_date,
             end_date: task.end_date, 
             name: task.name, 
             description: task.description, 
             requirement: task.requirement, 
-            reward: task.reward, 
+            reward: task.reward, reoccurence: task.reoccurence,
             type: task.type})
-    .eq('id', taskID);
+    .eq('uuid', taskID).single();
 
     if (error) {
         throw new Error(error.message)
     }
+
+    return data
 
 }
 
@@ -333,6 +335,8 @@ export async function _addTask(task: any) {
     const name = task.name ? task.name : ''
     const description = task.description ? task.description : ''
     const requirement = task.requirement ? task.requirement : 1
+    const reoccurence = task.reoccurence ? task.reoccurence : 1
+
     const reward = task.reward ? task.reward : 1
     const type = task.type ? task.type : 'Boolean'
 
@@ -343,7 +347,7 @@ export async function _addTask(task: any) {
         description: description,
         requirement: requirement,
         reward: reward,
-        type: type
+        type: type, reoccurence: reoccurence
     }
     //console.log(newTask)
 

@@ -1,7 +1,7 @@
 import { AddIcon, CheckIcon, ChevronDownIcon, InfoOutlineIcon, UpDownIcon } from "@chakra-ui/icons"
 import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer, Tooltip } from "@chakra-ui/react"
 import React, { useRef, useState } from "react"
-import { _addTask, _addUserTask, _getTaskLimit, _getUserTasks } from "./TaskAPI"
+import { Task, _addTask, _addUserTask, _getTaskLimit, _getUserTasks, _setTask } from "./TaskAPI"
 import { useSession } from "../../hooks/SessionProvider"
 import { RiInformationFill } from "react-icons/ri"
 import { start } from "repl"
@@ -14,22 +14,25 @@ import { ReactElement } from "react-markdown/lib/react-markdown"
  * 
  * @returns Task Drawer component
  */
-export default function TaskDrawer({children}: any) {    
+export default function TaskDrawer({children, preset}: any) {    
+    const isEdit = preset?.name ? true : false
+    console.log(isEdit, preset)
     
+
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [title, setTitle] = useState<string>('New Task')
-    const [description, setDescription] = useState<string>('')
-    const [startDate, setStartDate] = useState<any>()
-    const [endDate, setEndDate] = useState<any>()
-    const [type, setType] = useState<any>('Simple')
-    const [requirement, setRequirement] = useState(1)
-    const [reward, setReward] = useState<any>(1)
+    const [title, setTitle] = useState<string>(isEdit ? preset.name : 'New Task')
+    const [description, setDescription] = useState<string>(isEdit ? preset.description : '')
+    const [startDate, setStartDate] = useState<any>(isEdit ? preset.start_date : null)
+    const [endDate, setEndDate] = useState<any>(isEdit ? preset.end_date : null)
+    const [type, setType] = useState<any>(isEdit ? preset.type : 'Simple')
+    const [requirement, setRequirement] = useState(isEdit ? preset.requirement : 1)
+    const [reward, setReward] = useState<any>(isEdit ? preset.reward : 1)
     const user = useSession().user //this rerenders the page tons of times
     const [tasks, setTasks] = useState<any>([])
     const [selectedTasks, setSelectedTasks] = useState<any>([])
-    const [reoccurence, setReoccurence] = useState<number>(1)
+    const [reoccurence, setReoccurence] = useState<number>(isEdit ? preset.reoccurence : 1)
 
-    const uuid = user ? user?.['id'] : ''
+    const uuid = isEdit ? preset.user_id : (user ? user?.['id'] : '')
     const toast = useToast()
 
     //gets rid of 4 re-renders
@@ -74,6 +77,7 @@ export default function TaskDrawer({children}: any) {
             }
         }
         if(!checks()) return;
+
         const newTask = {
             start_date: startDate,
             end_date: endDate,
@@ -85,7 +89,7 @@ export default function TaskDrawer({children}: any) {
             reoccurence: reoccurence
         }
 
-        const createdTask = await _addTask(newTask).finally(()=>{
+        const createdTask = await (isEdit ? _setTask(preset.task_id, newTask) : _addTask(newTask)).finally(()=>{
             toast({
                 title: "Success",
                 description: 'Successfully created your task!',
@@ -146,7 +150,7 @@ export default function TaskDrawer({children}: any) {
             {value:'Sub-Tasks', desc: 'Success dependent on status of tasks'}]
         const { getRootProps, getRadioProps } = useRadioGroup({
             name: 'Type',
-            defaultValue: 'Simple',
+            defaultValue: type,
             onChange: setType,
           })
         const group = getRootProps()
@@ -315,7 +319,7 @@ export default function TaskDrawer({children}: any) {
             <DrawerContent>
             <DrawerCloseButton />
             <DrawerHeader borderBottomWidth='1px'>
-                Create a new task
+                {isEdit ? 'Edit your task' : 'Create a new task'}
             </DrawerHeader>
 
             <DrawerBody marginTop='20px'>
@@ -413,7 +417,7 @@ export default function TaskDrawer({children}: any) {
                 <FormControl>
                     <FormLabel htmlFor='reward'>Points rewarded: {reward}</FormLabel>
                     
-                    <Slider size='lg' id='reward' defaultValue={1} min={1} max={5} step={1} onChange={value=>{setReward(value)}}>
+                    <Slider size='lg' id='reward' defaultValue={reward} min={1} max={5} step={1} onChange={value=>{setReward(value)}}>
                         <SliderTrack bg='red.100'>
                             <SliderFilledTrack bg='tomato' />
                         </SliderTrack>
@@ -431,7 +435,7 @@ export default function TaskDrawer({children}: any) {
                 <Button variant='outline' mr={3} onClick={onClose}>
                 Cancel
                 </Button>
-                <Button colorScheme='blue' onClick={handleSubmit}>Submit</Button>
+                <Button colorScheme='blue' onClick={handleSubmit}>{isEdit ? 'Save' : 'Submit'}</Button>
             </DrawerFooter>
             </DrawerContent>
         </Drawer>
