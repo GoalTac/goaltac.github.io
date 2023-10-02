@@ -8,6 +8,7 @@ import { start } from "repl";
 import { CalendarIcon, CheckCircleIcon } from "@chakra-ui/icons";
 import { FaHourglass, FaHourglassHalf, FaHourglassStart } from "react-icons/fa";
 import { Task, _addPost, _addProgress, _deleteProgress, _setProgress } from "./TaskAPI";
+import TaskDrawer from "./TaskDrawer";
 
 export default function ListView({tasks}: Task[] | any, {relations}: any) {
     const {profile: profile, user: user} = useSession()
@@ -204,9 +205,12 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         }
 
         return <Card backgroundColor={useColorModeValue('gray.50','gray.700')} margin='20px' overflow='hidden' height='200px' width='300px' size='md' flexDirection={'column'} alignItems={[null,'center']} >
-            <Box minWidth='20px' width='100%' height={'30px'} onClick={()=>toast()} cursor='pointer' _hover={{backgroundColor:useColorModeValue('gray.300','gray.600')}} backgroundColor={progress >= requirement ? useColorModeValue('green.200','green.500') : useColorModeValue('orange.200','yellow.600')}>
-                
-            </Box>
+            <TaskDrawer>
+                <Flex width='prose' height={'30px'} cursor='pointer' _hover={{backgroundColor:useColorModeValue('gray.300','gray.600')}} backgroundColor={progress >= requirement ? useColorModeValue('green.200','green.500') : useColorModeValue('orange.200','yellow.600')}>
+                    
+                </Flex>
+            </TaskDrawer>
+            
             <Flex width='100%' flexDirection='column' padding='10px' height='inherit' alignItems={['center','start']}>
                 <Flex flexDirection={'column'} height='100%' width='100%'>
                     <HStack>
