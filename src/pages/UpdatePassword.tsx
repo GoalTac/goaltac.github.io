@@ -5,13 +5,30 @@ import { AtSignIcon } from "@chakra-ui/icons";
 import { useRef, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
-export default function UpdatePassword() {   
-    const toast = useToast()
-    const [newPassword, setNewPassword] = useState('');    const navigate = useNavigate();
+export default function UpdatePassword() {
+    const toast = useToast();
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState(''); // New state for confirmation password
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
+
     const handleShowClick = () => setShowPassword(!showPassword);
-    const SetNewPassword = async(event: React.SyntheticEvent) => {
+
+    const SetNewPassword = async (event: React.SyntheticEvent) => {
         event.preventDefault();
+
+        if (newPassword !== confirmPassword) {
+            toast({
+                title: "Passwords do not match",
+                description: "Please make sure both passwords match.",
+                position: 'bottom',
+                status: 'error',
+                duration: 3000,
+                isClosable: false,
+            });
+            return; // Return early if passwords don't match
+        }
+
         try {
             const { error } = await supabase.auth.updateUser({
                 password: newPassword,
@@ -39,6 +56,7 @@ export default function UpdatePassword() {
             })
         }
     }
+
     return (
         <Flex
             flexDirection='column'
@@ -55,26 +73,39 @@ export default function UpdatePassword() {
                     <Stack
                         spacing={4}
                         p='1rem'
-                        backgroundColor={useColorModeValue('gray.50','blackAlpha.200')}>
+                        backgroundColor={useColorModeValue('gray.50', 'blackAlpha.200')}>
                         <FormControl>
                             <InputGroup>
                                 <Input
                                     type={showPassword ? 'text' : 'password'}
                                     value={newPassword}
-                                    textColor={useColorModeValue('black','white')}
+                                    textColor={useColorModeValue('black', 'white')}
                                     onChange={(e) => setNewPassword(e.target.value)}
+                                    placeholder="New Password" // Add a placeholder for better UI
                                 />
-                                 <InputRightElement width='4.5rem'>
+                                <InputRightElement width='4.5rem'>
                                     <Button h='1.75rem' size='sm' onClick={handleShowClick} bg={newPassword ? 'whiteAlpha.400' : 'whiteAlpha.100'} _hover={{ backgroundColor: 'blackAlpha.100' }}>
                                         {showPassword ? 'hide' : 'show'}
                                     </Button>
                                 </InputRightElement>
                             </InputGroup>
                         </FormControl>
-                        <Button onClick={(e)=>SetNewPassword(e)}
+                        <FormControl>
+                            <InputGroup>
+                                <Input
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={confirmPassword}
+                                    textColor={useColorModeValue('black', 'white')}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    placeholder="Confirm Password" // Add a placeholder for better UI
+                                />
+                            </InputGroup>
+                        </FormControl>
+                        <Button
+                            onClick={(e) => SetNewPassword(e)}
                             borderRadius={5}
                             type='submit'
-                            variant={useColorModeValue('outline','solid')}
+                            variant={useColorModeValue('outline', 'solid')}
                             width='full'
                             bg={newPassword ? 'whiteAlpha.400' : 'whiteAlpha.100'} _hover={{ backgroundColor: 'blackAlpha.100' }}>
                             Reset Password
