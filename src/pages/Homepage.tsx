@@ -97,8 +97,8 @@ export default function Homepage() {
                 </HStack>
                 <Tooltip fontSize='8px' hasArrow label={`${progress}/${requirement}`} position='relative'>
                     <Box position='relative'>
-                        <Progress size='lg' borderWidth='2px' marginLeft='auto' minWidth='200px' value={percentProgress} colorScheme={progress >= requirement ? 'green' : 'orange'}/>
-                        <Text position='absolute' top='1' right='1' fontSize='6px'>
+                        <Progress size='lg' borderWidth='2px' marginLeft='auto' width='200px' value={percentProgress} colorScheme={progress >= requirement ? 'green' : 'orange'}/>
+                        <Text position='absolute' top='1' right='1' fontSize='6px' fontWeight='700'>
                             {((progress/requirement) * 100).toFixed(2)}%
                         </Text>
                     </Box>
@@ -398,7 +398,7 @@ export default function Homepage() {
         
             return (tasksInfo.length > 0 && loading() ? 
             <Card padding='3px'>
-                <CardHeader textAlign='center' fontSize='14px' fontWeight='500' borderWidth='3px' borderRadius='6px'>
+                <CardHeader textAlign='center' fontSize='14px' fontWeight='500'>
                     Task List
                 </CardHeader>
                 <SimpleGrid columns={1} gap='3px' width='inherit' maxHeight='200px' overflowY='scroll'>
