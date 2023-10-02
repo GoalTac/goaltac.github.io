@@ -100,7 +100,7 @@ export async function _removeSuggestedTask(taskID: string) {
  * TASK - TASK METHODS
  */
 
-//task-task-relations database structure
+//task_task_relations database structure
 //id, created_at, parent_id (uuid), child_id (uuid) 
 
 export async function _getRootTask(taskID: string) {
@@ -109,7 +109,7 @@ export async function _getRootTask(taskID: string) {
 
     while (isChild) {
         const relation = await supabase
-            .from('task-task-relations')
+            .from('task_task_relations')
             .select('parent_id')
             .eq('child_id', currentTaskID)
             .single();
@@ -145,7 +145,7 @@ export async function _getTaskTree(taskID: string) {
 
 export async function _getChildTasks(taskID: string) {
     const { data, error } = await supabase
-        .from('task-task-relations')
+        .from('task_task_relations')
         .select('child_id')
         .eq('parent_id', taskID);
 
@@ -186,7 +186,7 @@ export async function _addChildTask(parentTaskID: string, childTask: any) {
     
     // Check if parentTaskID exists as a root task
     const { data: parentData, error: parentError } = await supabase
-        .from('task-task-relations')
+        .from('task_task_relations')
         .select('id')
         .eq('parent_id', parentTaskID)
         .eq('child_id', null)
@@ -207,7 +207,7 @@ export async function _addChildTask(parentTaskID: string, childTask: any) {
     };
     
     const { error: relationError } = await supabase
-        .from('task-task-relations')
+        .from('task_task_relations')
         .insert([relation]);
     
     if (relationError) {
@@ -249,7 +249,7 @@ export async function _removeRootTask(taskID: string) {
 export async function _removeChildTask(parentID: string, childID: string) {
     // Removing the relation
     const { error: relError } = await supabase
-        .from('task-task-relations')
+        .from('task_task_relations')
         .delete()
         .eq('parent_id', parentID)
         .eq('child_id', childID);
@@ -304,7 +304,7 @@ export async function _setTask(taskID: string, task: any) {
 export async function _deleteTask(taskID: string) {
     // 
     const { data, error: relationError } = await supabase
-        .from('task-task-relations')
+        .from('task_task_relations')
         .delete()
         .or(`parent_id.eq.${taskID},child_id.eq.${taskID}`);
 
