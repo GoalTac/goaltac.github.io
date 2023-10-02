@@ -21,7 +21,7 @@ export default function TaskDrawer() {
     const [startDate, setStartDate] = useState<any>()
     const [endDate, setEndDate] = useState<any>()
     const [type, setType] = useState<any>('Simple')
-    const requirement = useRef<any>(1)
+    const [requirement, setRequirement] = useState<number>(1)
     const [reward, setReward] = useState<any>(1)
     const user = useSession().user //this rerenders the page tons of times
     const [tasks, setTasks] = useState<any>([])
@@ -78,7 +78,7 @@ export default function TaskDrawer() {
             end_date: endDate,
             name: title,
             description: description,
-            requirement: requirement.current,
+            requirement: requirement,
             reward: reward,
             type: type,
             reoccurence: reoccurence
@@ -141,7 +141,7 @@ export default function TaskDrawer() {
 
         const options = [
             {value:'Progress', desc: 'Use numbers to make periodic updates'},
-            {value:'Simple', desc: 'Check your as done or leave it incomplete'},
+            {value:'Simple', desc: 'Check task as done or leave it incomplete'},
             {value:'Sub-Tasks', desc: 'Success dependent on status of tasks'}]
         const { getRootProps, getRadioProps } = useRadioGroup({
             name: 'Type',
@@ -178,8 +178,8 @@ export default function TaskDrawer() {
 
                     
                     <InputLeftAddon children='Target'/>
-                    <NumberInput defaultValue={1} min={1} onChange={(e)=>{
-                        requirement.current = e }}>
+                    <NumberInput defaultValue={1} value={requirement} min={1} onChange={(e)=>{
+                        setRequirement(+e) }}>
                     <NumberInputField />
                     <NumberInputStepper>
                         <NumberIncrementStepper />
@@ -192,7 +192,7 @@ export default function TaskDrawer() {
         }
 
         function BooleanTypeDisplay() {
-            requirement.current = 1;
+            setRequirement(1);
             const [value, setValue] = useState(true)
             return (
                 <Flex columnGap={'20px'} alignItems='center' justifyContent='center'>
@@ -317,19 +317,24 @@ export default function TaskDrawer() {
                 <Stack spacing='24px'>
                 <FormControl isRequired>
                     <FormLabel htmlFor='title'>Title</FormLabel>
-                    <Input ref={firstField} id='title' value={title} aria-required={true}
+                    <Input ref={firstField} id='title' value={title} aria-required={true} maxLength={50}
                         onChange={e=>{setTitle(e.target.value)}}
                         errorBorderColor='crimson'
                         isInvalid={title ? false : true}
                         placeholder='A task name is required'/>
+                    <Text fontSize='10px' borderRadius='5px' color='gray.400' position='absolute' bottom='0' right='1'>{title.length}/50</Text>
+
                 </FormControl>
 
                 <FormControl isRequired>
                     <FormLabel htmlFor='description'>Description</FormLabel>
+                    <Textarea maxLength={200} resize='none' variant='outline' isRequired placeholder='Describe your task. What should you do?'
+                        value={description}
+                        onInput={(e) => {
+                        e.currentTarget.value = e.currentTarget.value.replace(/[^A-z0-9_ ]/g, ''); }}
+                        onChange={(e) => setDescription(e.target.value)}/>
+                    <Text fontSize='10px' borderRadius='5px' color='gray.400' position='absolute' bottom='0' right='1'>{description.length}/200</Text>
 
-                    <Textarea id='description' value={description}
-                        onChange={e=>{setDescription(e.target.value)}}
-                        placeholder='Describe your task. What should you do?'/>
                 </FormControl>
 
                 <FormControl>

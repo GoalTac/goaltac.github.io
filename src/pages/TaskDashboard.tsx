@@ -1,14 +1,13 @@
 import { Box, Button, Spacer, Flex, Spinner, ButtonGroup, ListIcon, Stack } from "@chakra-ui/react";
 import Calendar from "./Calendar";
-import List from "./List";
 
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Chat from "../components/Chats/PrivateChat";
 import TaskDrawer from "../components/Tasks/TaskDrawer";
 import React from "react";
-import { _getTaskbyID, _getUserTasks } from "../components/Tasks/TaskAPI";
-import { useSession } from "../hooks/SessionProvider";
+import { _getTaskInfo, _getTaskbyID, _getUserTasks } from "../components/Tasks/TaskAPI";
+import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { CalendarIcon } from "@chakra-ui/icons";
 import { AiOutlineOrderedList } from "react-icons/ai";
 import ListView from "../components/Tasks/ListView";
@@ -16,41 +15,40 @@ import { supabase } from "../supabase";
 
 export default function Dashboard() {
     const navigate = useNavigate();
-    const [displayedView, setDisplayedView] = useState<any>(<Calendar/>)
     const user = useSession().user
     const [loading, setLoading] = useState<Boolean>(true)
-    const [tasks, setTasks] = useState<any>()
-    const [relations, setRelations] = useState<any>()
+    const [tasksInfo, setTasksInfo] = useState<any>([])
+    const [displayedView, setDisplayedView] = useState<any>()
+    const  useSupabase: any  = useSupabaseClient();
 
-    const [view, setView] = useState<string>()
+    const [view, setView] = useState<string>('List')
 
+    /**
+     * This NEEDS to be improved so we get both task and relations together and package them
+     */
     React.useEffect(()=>{
+        const taskChanges = useSupabase.channel('any').on('postgres_changes',{
+                schema: 'public', // Subscribes to the "public" schema in Postgres
+                event: '*',       // Listen to all changes
+                table: 'task_user_relations'
+            },(payload: any) => {
+                fetchUserRelations()
+        }).subscribe()
         async function fetchUserRelations() {
-            const { data: data, error } = await supabase
-                .from('task_user_relations')
-                .select('*')
-                .eq('user_id', user?.['id'])
+            if (user) {
+                const fetchedTasks = await _getTaskInfo(user?.['id'])
+                setTasksInfo(fetchedTasks)
+                setDisplayedView(<ListView tasks={fetchedTasks} />)
 
-            if (error) {
-                throw new Error(error.message)
+                setLoading(false) 
             }
-            console.log(data)
-            setRelations(data)
-            async function fetchTasks() {
-                if(data != null) {
-                    //should update as new tasks are updated (use subscribe?)
-                    const newTasks = await Promise.all(data.map(async(id) => {
-                        return await _getTaskbyID(id.task_id)
-                    })).finally(()=>setLoading(false))
-                    console.log(newTasks)
-                    setTasks(newTasks)
-                }
-            }
-            fetchTasks()
+            
         }
         fetchUserRelations()
+        return () => {
+            taskChanges.unsubscribe();
+          };
     },[])
-
 
     return(
     
@@ -61,7 +59,7 @@ export default function Dashboard() {
                 colorScheme={view === 'Calendar' ? 'teal' : 'gray'}
                 onClick={() => {
                     setView('Calendar')
-                    setDisplayedView(<Calendar tasks={tasks}/>)
+                    setDisplayedView(<Calendar tasks={tasksInfo}/>)
                 }}>
                     Calendar
                 </Button>
@@ -69,7 +67,7 @@ export default function Dashboard() {
                 colorScheme={view === 'List' ? 'teal' : 'gray'}
                 onClick={() => {
                     setView('List')
-                    setDisplayedView(<ListView tasks={tasks} relations={relations} />)
+                    setDisplayedView(<ListView tasks={tasksInfo} />)
                 }}>
                     List
                 </Button>

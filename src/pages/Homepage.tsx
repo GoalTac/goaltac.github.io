@@ -15,7 +15,7 @@ import { ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon 
 import { RxAvatar } from "react-icons/rx";
 import { TbTableOptions, TbTrendingUp } from "react-icons/tb";
 import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
-import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getPost, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
+import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getPost, _getTaskInfo, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
@@ -26,12 +26,15 @@ import { GiBowString, GiPocketBow, GiPostOffice, GiPostStamp } from "react-icons
 import PostModal from "../components/Tasks/PostModal";
 import Chat from "../components/Chats/CommunityChat";
 export default function Homepage() {
+    
     const [taskIDs, setTaskIDs] = useState<any>();
-    const [loading, setLoading] = useState<Boolean>(true)
     const { user: user } = useSession();
     const  useSupabase: any  = useSupabaseClient();
     const navigate = useNavigate()
     const toast = useToast()
+    const [tasksLoaded, setTasksLoaded] = useState<Boolean>(false)
+    const [postsLoaded, setPostsLoaded] = useState<Boolean>(false)
+    const loading = () => {return tasksLoaded && postsLoaded}
 
     const getPackagedInfo = (task: Task, relations: any) => {
         return {
@@ -53,26 +56,11 @@ export default function Homepage() {
     function Post({taskInfo}: any) {
         const progress: number = taskInfo.progress
         const requirement: number = taskInfo.requirement
-        const [userName, setUserName] = useState<string>('N/A')
-        const [avatarURL, setAvatarURL] = useState<string>('')
-        const [displayName, setDisplayName] = useState<string>('N/A')
-
-        useEffect(()=>{
-            async function fetchUserName() {
-                const fetchedName = await getUser(taskInfo.user_id)
-                if (fetchedName) {
-                    const name = fetchedName.username
-                    const url = fetchedName.avatarurl
-                    const display = fetchedName.name
-
-                    setUserName(name)
-                    setAvatarURL(url)
-                    setDisplayName(display)
-
-                }
-            }
-            fetchUserName()
-        },[])
+        const userName: string = taskInfo.userName
+        const avatarURL: string = taskInfo.avatarURL
+        const displayName: string = taskInfo.displayName
+        const likes: number = taskInfo.likes
+        const isComplete = progress/requirement >= 1
 
         const handleLike = async() => {
             //take the post ID
@@ -93,7 +81,7 @@ export default function Homepage() {
                 //Insert a row
         }
 
-        const isComplete = progress/requirement >= 1
+        
 
         return <Card width='inherit' padding='20px' maxWidth='inherit' height='fit-content'>
             <Stack flexWrap='wrap' flexDirection='row' paddingBottom='10px'>
@@ -132,7 +120,7 @@ export default function Homepage() {
             <Divider color='gray.300' paddingY='10px'/>
             <HStack flexDirection='row' >
                 <ButtonGroup paddingY='10px' columnGap='20px' variant='ghost' size='md' >
-                    <Button colorScheme='green' leftIcon={<FaThumbsUp />} onClick={handleLike}>{taskInfo.likes}</Button>
+                    <Button colorScheme='green' leftIcon={<FaThumbsUp />} onClick={handleLike}>{likes}</Button>
                     <Button colorScheme='blue' leftIcon={<ChatIcon />}>{taskInfo.comments} comments</Button>
 
                 </ButtonGroup>
@@ -145,6 +133,7 @@ export default function Homepage() {
     }
 
     function SocialFeed() {
+        
         function Header() {
             return <Card maxWidth='inherit' padding='20px'>
                 <Stack flexDirection='row' >
@@ -178,31 +167,23 @@ export default function Homepage() {
          * @returns Render of max posts allowable
          */
         function Posts() {
+            
 
             const [posts, setPosts] = useState<any>([])
-            const [postsLoaded, setPostsLoaded] = useState<Boolean>(false)
+            const [offset, setOffset] = useState<number>(0)
 
-            const renderPosts = () => {}
             useEffect(()=>{
                 async function fetchPosts() {
-
-                    //to prevent any further attempts to load the posts
-                    if (postsLoaded) {
-                        return
-                    } else {
-                       setPostsLoaded(true) 
-                    }
-                    
-
-                    const fetchedPosts = await Promise.all(await _getAllPostInfo())
+                    const fetchedPosts = await _getAllPostInfo(offset)
                     setPosts(fetchedPosts)
+                    setPostsLoaded(true)
                 }
                 fetchPosts()
             },[postsLoaded])
 
-
+            //PUT PROFILE INFO IN THE POST VARIABLE
             return <SimpleGrid columns={1} spacing='20px'>
-                {posts.length>0 ? 
+                {posts.length>0 && loading() ? 
                 posts.map((post: any, id: number)=>{
                     return <Post key={id} taskInfo={post}/>
                 }) :
@@ -210,8 +191,15 @@ export default function Homepage() {
                     <SkeletonCircle size='10' />
                     <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
               </Box>}
+            <Button type="submit" aria-label="More" onClick={(loadMore)} fontSize="xl" ml={1} background="none"> More </Button>
             </SimpleGrid>
+            async function loadMore(): Promise<void> {
+                const morePosts = await _getAllPostInfo(offset + 10)
+                setOffset(offset + 10)
+                setPosts((posts: any) => [...posts, ...morePosts]);          }
         }
+        
+
         return <Flex flexDirection='column' rowGap='20px' maxWidth='600px' width='fit-content'>
             <Header/>
             <Posts/>
@@ -222,32 +210,26 @@ export default function Homepage() {
         const [tasksInfo, setTasksInfo] = useState<any>([]);
 
         useEffect(()=> {
-            const taskChanges = useSupabase.channel('any').on('postgres_changes',{
+            const taskChanges = useSupabase.channel('task').on('postgres_changes',{
                     schema: 'public', // Subscribes to the "public" schema in Postgres
                     event: '*',       // Listen to all changes
                     table: 'task_user_relations'
                 },(payload: any) => {
-                    setLoading(true)
-                    fetchUserTasks().finally(()=>setLoading(false))
+                    fetchUserTasks()
+            }).subscribe()
+            const postChanges = useSupabase.channel('post').on('postgres_changes',{
+                schema: 'public', // Subscribes to the "public" schema in Postgres
+                event: '*',       // Listen to all changes
+                table: 'posts'
+            },(payload: any) => {
+                fetchUserTasks()
             }).subscribe()
 
             async function fetchUserTasks() {
                 if(user) {
-                    //all task IDs the user has relationship with
-                    const userTasksRelations = await _getUserRelations(user?.['id'])
-
-                    let task_relations: any[] = []
-
-                    //get the task objects from the task IDs
-                    const userTasks = await Promise.all(userTasksRelations.map(async(relation) => {
-                        const task: Task = await _getTaskbyID(relation.task_id) as Task
-                        task_relations.push(getPackagedInfo(task, relation))
-                        return task
-                    }))
-
-                    setTasksInfo(task_relations)
-
-                    setLoading(false) 
+                    const fetchedTasks = await _getTaskInfo(user?.['id'])
+                    setTasksInfo(fetchedTasks)
+                    setTasksLoaded(true) 
                 }
             }
 
@@ -255,6 +237,7 @@ export default function Homepage() {
 
             return () => {
                 taskChanges.unsubscribe();
+                postChanges.unsubscribe()
               };
         },[])
 
@@ -304,23 +287,30 @@ export default function Homepage() {
             return <Card height='min-content'>
             <CardBody paddingTop='10px'>
                 <Text fontWeight='600'>Task Analytics</Text>
-                <StatGroup>
-                    <Stat>
-                        <StatLabel>Completed Tasks</StatLabel>
+                <Divider/>
+                <StatGroup flexDir='column'>
+                    <Stat >
+                        <StatLabel fontSize='10px'  fontWeight='400'>Total Tasks</StatLabel>
                         <StatNumber>{tasksInfo.length}</StatNumber>
-                        <StatHelpText>
-                            <StatArrow type='increase' />
-                            
-                        </StatHelpText>
+                    </Stat>
+                    <Stat>
+                        <StatLabel fontSize='10px'  fontWeight='400'>Completed Tasks</StatLabel>
+                        <StatNumber color={useColorModeValue('green.500','green.300')}>{(tasksInfo.filter((it_task: any)=>it_task.progress >= it_task.requirement)).length}</StatNumber>
+                    </Stat>
+                    <Stat>
+                        <StatLabel fontSize='10px'  fontWeight='400'>Posted Tasks</StatLabel>
+                        <StatNumber color={useColorModeValue('purple.500','purple.300')}>{(tasksInfo.filter((it_task: any)=>it_task.hasPosted)).length}</StatNumber>
                     </Stat>
                 </StatGroup>
             </CardBody>
         </Card>
         }
         function ListView() {
+
             function TaskModule({taskInfo}: any) {
                 const { isOpen, onOpen, onClose } = useDisclosure()
-                const [hasPosted, setHasPosted] = useState(true)
+                const hasPosted = (taskInfo.hasPosted ? true : false)
+                console.log(taskInfo)
 
                 //highlight the task in the list that has already been posted
                 function PostModal() {  
@@ -356,32 +346,10 @@ export default function Homepage() {
                     )
                 }
 
-                useEffect(()=>{
-                    const isPost = async() => {
-                        //check if the post has already been made
-                        if (!taskInfo) {
-                            return false
-                        }
-                        const exists = await _getPost(taskInfo.task_id, taskInfo.user_id)
-                        if (exists.length > 0) {
-                            //so there is no need to change a variable to the same value
-                            if (!hasPosted) {
-                                setHasPosted(true)
-                            }
-                        } else {
-                            if (hasPosted) {
-                                setHasPosted(false)
-                            }
-                        }
-                    }
-                    isPost()
-                },[])
-                return <HStack paddingLeft='20px'>
-                    <Tooltip label='WIP. Will have option to delete, post, share task'>
-                        <Text fontSize='12px' fontWeight='400'>
-                            {taskInfo.name}
-                        </Text>
-                    </Tooltip>
+                return <HStack borderRadius='5' backgroundColor={hasPosted ? useColorModeValue('purple.300','purple.600') : useColorModeValue('orange.100','orange.400')} flexDirection='row' alignItems='center'>
+                    <Text marginStart='20px' fontSize='12px' fontWeight='400' noOfLines={1} maxWidth='100px'>
+                        {taskInfo.name}
+                    </Text>
                     
                     <Spacer/>
                     <Menu>
@@ -403,24 +371,25 @@ export default function Homepage() {
                 </HStack>
             }
         
-            return <Card marginY='20px'>
-                <SimpleGrid columns={1} width='inherit' maxHeight='200px' overflowY='clip'>
+            return (tasksInfo.length > 0 && loading() ? 
+            <Card marginY='20px' padding='3px'>
+                <SimpleGrid columns={1} gap='3px' width='inherit' maxHeight='200px' overflowY='scroll'>
                     {tasksInfo.map((taskInfo: any, id:number)=>{
-                        return <Box key={id}>
-                            <TaskModule taskInfo={taskInfo}/>
-                            <Divider/>
-                        </Box>
+                        return <TaskModule key={id} taskInfo={taskInfo}/>
                         
                     })}
                 </SimpleGrid>
-                <Button variant='ghost' onClick={()=>navigate('/dashboard')} size='sm'>Load more</Button>
-            </Card>
+                <Button variant='ghost' onClick={()=>navigate('/dashboard')} size='sm'>Dashboard</Button>
+            </Card> : 
+            <Skeleton height='30px'>
+
+            </Skeleton>)
             
         }
         return <Flex position='static'  pos='relative' rowGap='20px' maxWidth={[null,'200px']}>
             <Box>
+                <Analytics/>
                 <Box paddingTop='20px' position='sticky' flexWrap='wrap' top={0} height='min'>
-                    <Analytics/>
                     <ListView/>
                     <TaskDrawer/>
                     {/**
@@ -443,7 +412,8 @@ export default function Homepage() {
     flexWrap='wrap-reverse'
     maxWidth='1200px'
     columnGap={measurements.general.colGap}
-    flexDirection={['column','row']}
+    flexDirection={['column-reverse','row']}
+    alignItems={['center','unset']}
     justifyContent='center'>
         <SocialFeed/>
         <TaskManagement/>
