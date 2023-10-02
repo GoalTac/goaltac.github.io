@@ -101,8 +101,6 @@ export default function TaskDrawer({children, preset}: any) {
             clearTasks()
         })
 
-        console.log(createdTask)
-
         //Relational data saving
         const taskID = createdTask.uuid
 
