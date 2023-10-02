@@ -14,6 +14,36 @@ export type Task = {
     reoccurence: number;
 };
 
+export type Post = {
+    id: number;
+    created_at: Date;
+    task_uuid: string;
+    user_uuid: string;
+    views: number;
+    likes: number;
+    post_uuid: string;
+};
+
+export type Relation = {
+    id: number;
+    created_at: Date;
+    task_id: string;
+    user_id: string;
+    progress: number;
+};
+
+export type Profile = {
+    id: number;
+    created_at: Date;
+    name: string;
+    biography: string;
+    userid: string;
+    username: string;
+    avatarurl: string;
+    points: number;
+    streak: number;
+};
+
 export async function _getAllTasks() {
     const { data: data, error } = await supabase
         .from('tasks')
@@ -326,7 +356,7 @@ export async function _addTask(task: any) {
         throw new Error(error.message)
     }
 
-    return data;
+    return data; 
 }
 
 /**
@@ -727,7 +757,7 @@ export async function _addPost(taskID: string, userID: string) {
         throw new Error(error.message)
     }
 
-    return data;
+    return data as Post;
 }
 
 /**
