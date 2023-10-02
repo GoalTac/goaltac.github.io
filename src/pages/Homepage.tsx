@@ -197,7 +197,7 @@ export default function Homepage() {
                 posts.map((post: any, id: number)=>{
                     return <Post key={id} taskInfo={post}/>
                 }) :
-                <Box padding='6' boxShadow='lg' bg={useColorModeValue('white','gray.700')} width='340px'>
+                <Box padding='6' boxShadow='lg' bg={useColorModeValue('white','gray.700')}>
                     <SkeletonCircle size='10' />
                     <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
               </Box>}
