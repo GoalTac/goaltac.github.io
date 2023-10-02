@@ -101,11 +101,13 @@ export default function TaskDrawer({children, preset}: any) {
             clearTasks()
         })
 
-        //Relational data saving
-        const taskID = createdTask.uuid
+        if (!isEdit) {
+            //Relational data saving
+            const taskID = createdTask.uuid
 
-        //Adds user as an owner of the task
-        await _addUserTask(user?.['id'], taskID)
+            //Adds user as an owner of the task
+            await _addUserTask(user?.['id'], taskID)
+        }
 
         //If task is type 'Tasks', create a task_task_relation row
 
