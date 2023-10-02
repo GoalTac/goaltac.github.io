@@ -134,7 +134,7 @@ export async function _getTaskTree(taskID: string) {
     async function fetchChildren(parentID: string) {
         const children = await _getChildTasks(parentID);
         for (const child of children) {
-            child.children = await fetchChildren(child.id);
+            child.children = await fetchChildren(child.uuid);
         }
         return children;
     }
@@ -172,14 +172,13 @@ export async function _createRootTask(taskID: string) {
     };
     
     const { error } = await supabase
-        .from('task-task-relations')
+        .from('task_task_relations')
         .insert([relation]);
     
     if (error) {
         throw new Error(error.message);
     }
 
-    return relation;
 }
 
 export async function _addChildTask(parentTaskID: string, childTask: any) {
