@@ -72,14 +72,10 @@ export default function Root() {
 
           {/* logo to link to home (dashboard) */}
           <Box display={showSearchBar ? 'block' : 'none'} position={"relative"}>
-            <Badge position={"absolute"} right={-1} bottom={-1} bg={"rgb(15,15,15,.2)"} fontSize={'10px'}>10000</Badge>
             <Link to="/home">
               <Image src={logo} alt="Logo" boxSize="40px" minWidth="40px" />
             </Link>
           </Box>
-
-          {/* Link to Social */}
-          <IconButton as={Link} to="/social" aria-label="Social" icon={<FaRegNewspaper />} fontSize="3xl" mr={9} ml={9} background="none" display={showSearchBar ? 'flex' : 'none'} />
 
           {/* Searchbar (changes depending on screen size)*/}
           {isLargerThan768 ? (
@@ -95,23 +91,20 @@ export default function Root() {
               <InputGroup>
                 <Input bg={colorMode === "light" ? 'gray.200' : 'gray.800'} type="text" value={inputValue}
                   onChange={handleInputChange} placeholder="Search" display={showSearchBar ? 'none' : 'block'} width="80vw" />
-                <IconButton type="submit" aria-label="Search" onClick={handleButtonClick} bg="none" fontSize="xl" ml={1} background="none"><FaSearch /></IconButton>
+                <IconButton type="submit" color="gray.500" aria-label="Search" onClick={handleButtonClick} bg="none" fontSize="xl" ml={1} background="none"><FaSearch /></IconButton>
               </InputGroup>
             </Box>
           )}
 
-          <Box position={'relative'}>
-            <IconButton as={Link} to="/community" aria-label="Social" icon={<FaUsers />} fontSize="3xl" background="none" display={showSearchBar ? 'flex' : 'none'} float={"right"} ml={9} mr={9} />
-            <Box as={FaCircle} color="red.500" position={'absolute'} right={8} bottom={0} size={'.8em'}/>
+          <Box ml='auto' pr={'30px'}>
+            <IconButton as={Link} to="/community" aria-label="Social" icon={<FaUsers />} fontSize="3xl" background="none" display={showSearchBar ? 'flex' : 'none'} float={"right"} />
           </Box>
 
 
           {/* Profile */}
-          <Box ml="auto" pr={2} display={showSearchBar ? 'block' : 'none'}>
+          <Box pr={2} display={showSearchBar ? 'block' : 'none'}>
             <Menu>
-              <MenuButton as={Avatar} size="sm" cursor="pointer" src={avatarUrl}>
-                <AvatarBadge boxSize='1.25em' bg='red.500' />
-              </MenuButton>
+              <MenuButton as={Avatar} size="sm" cursor="pointer" src={avatarUrl}/>
               <MenuList>
                   <MenuItem icon={<Avatar src={profile?.['avatarurl']} />} onClick={()=>navigate(`/profile/${userName}`)} fontSize="md" fontWeight='500'>
                     Your Profile

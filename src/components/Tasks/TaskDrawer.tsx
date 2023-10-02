@@ -1,10 +1,11 @@
 import { AddIcon, CheckIcon, ChevronDownIcon, InfoOutlineIcon, UpDownIcon } from "@chakra-ui/icons"
 import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer, Tooltip } from "@chakra-ui/react"
 import React, { useRef, useState } from "react"
-import { _addTask, _addUserTask, _getTaskLimit, _getUserTasks } from "./TaskAPI"
+import { Task, _addTask, _addUserTask, _getTaskLimit, _getUserTasks, _setTask } from "./TaskAPI"
 import { useSession } from "../../hooks/SessionProvider"
 import { RiInformationFill } from "react-icons/ri"
 import { start } from "repl"
+import { ReactElement } from "react-markdown/lib/react-markdown"
 
 /**
  * TODO:
@@ -13,24 +14,27 @@ import { start } from "repl"
  * 
  * @returns Task Drawer component
  */
-export default function TaskDrawer() {
+export default function TaskDrawer({children, preset}: any) {    
+    const isEdit = preset?.name ? true : false
     
+
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [title, setTitle] = useState<string>('New Task')
-    const [description, setDescription] = useState<string>('')
-    const [startDate, setStartDate] = useState<any>()
-    const [endDate, setEndDate] = useState<any>()
-    const [type, setType] = useState<any>('Simple')
-    const requirement = useRef<any>(1)
-    const [reward, setReward] = useState<any>(1)
+    const [title, setTitle] = useState<string>(isEdit ? preset.name : 'New Task')
+    const [description, setDescription] = useState<string>(isEdit ? preset.description : '')
+    const [startDate, setStartDate] = useState<any>(isEdit ? preset.start_date : null)
+    const [endDate, setEndDate] = useState<any>(isEdit ? preset.end_date : null)
+    const [type, setType] = useState<any>(isEdit ? preset.type : 'Simple')
+    const [requirement, setRequirement] = useState(isEdit ? preset.requirement : 1)
+    const [reward, setReward] = useState<any>(isEdit ? preset.reward : 1)
     const user = useSession().user //this rerenders the page tons of times
     const [tasks, setTasks] = useState<any>([])
     const [selectedTasks, setSelectedTasks] = useState<any>([])
-    const [reoccurence, setReoccurence] = useState<number>(1)
+    const [reoccurence, setReoccurence] = useState<number>(isEdit ? preset.reoccurence : 1)
 
-    const uuid = user ? user?.['id'] : ''
+    const uuid = isEdit ? preset.user_id : (user ? user?.['id'] : '')
     const toast = useToast()
 
+    /*
     //gets rid of 4 re-renders
     React.useEffect(()=>{
         async function fetchTasks() {
@@ -41,7 +45,7 @@ export default function TaskDrawer() {
         }
         
         fetchTasks()
-    },[])
+    },[])*/
 
     const firstField = React.useRef(null)
 
@@ -73,18 +77,19 @@ export default function TaskDrawer() {
             }
         }
         if(!checks()) return;
+
         const newTask = {
             start_date: startDate,
             end_date: endDate,
             name: title,
             description: description,
-            requirement: requirement.current,
+            requirement: requirement,
             reward: reward,
             type: type,
             reoccurence: reoccurence
         }
 
-        const createdTask = await _addTask(newTask).finally(()=>{
+        const createdTask = await (isEdit ? _setTask(preset.task_id, newTask) : _addTask(newTask)).finally(()=>{
             toast({
                 title: "Success",
                 description: 'Successfully created your task!',
@@ -145,7 +150,7 @@ export default function TaskDrawer() {
             {value:'Sub-Tasks', desc: 'Success dependent on status of tasks'}]
         const { getRootProps, getRadioProps } = useRadioGroup({
             name: 'Type',
-            defaultValue: 'Simple',
+            defaultValue: type,
             onChange: setType,
           })
         const group = getRootProps()
@@ -170,29 +175,29 @@ export default function TaskDrawer() {
 
     function TypeDisplay() {
         function NumberTypeDisplay() {
+            const [newRequirement, setNewRequirement] = useState(requirement)
+            const handleChange = (value: any) => {
+                setNewRequirement(value)
+            }
+
             return (
                 <Stack flexDirection='column'>
-                <Badge fontSize='1.25rem' colorScheme="red">This is currently a Work in Progress</Badge>
                 
-                <InputGroup size='lg' justifyContent='center'>
 
-                    
-                    <InputLeftAddon children='Target'/>
-                    <NumberInput defaultValue={1} min={1} onChange={(e)=>{
-                        requirement.current = e }}>
+
+                    <NumberInput allowMouseWheel defaultValue={1} value={newRequirement} min={1} onChange={handleChange}>
                     <NumberInputField />
                     <NumberInputStepper>
                         <NumberIncrementStepper />
                         <NumberDecrementStepper />
                     </NumberInputStepper>
-                    </NumberInput>
-                </InputGroup></Stack>
+                    </NumberInput></Stack>
                 
             )
         }
 
         function BooleanTypeDisplay() {
-            requirement.current = 1;
+            setRequirement(1);
             const [value, setValue] = useState(true)
             return (
                 <Flex columnGap={'20px'} alignItems='center' justifyContent='center'>
@@ -295,9 +300,13 @@ export default function TaskDrawer() {
     
     return (
         <>
-        <Button leftIcon={<AddIcon/>} colorScheme='teal' onClick={onOpen}>
-            Task
-        </Button>
+        <Box onClick={onOpen}>
+            {children ? children : 
+            <Button leftIcon={<AddIcon/>} colorScheme='teal' onClick={onOpen}>
+                Task
+            </Button>}
+        </Box>
+        
         {/**
          * 'isOpen' says that the drawer is currently open, 
          * onOpen is a function 
@@ -310,26 +319,29 @@ export default function TaskDrawer() {
             <DrawerContent>
             <DrawerCloseButton />
             <DrawerHeader borderBottomWidth='1px'>
-                Create a new task
+                {isEdit ? 'Edit your task' : 'Create a new task'}
             </DrawerHeader>
 
             <DrawerBody marginTop='20px'>
                 <Stack spacing='24px'>
                 <FormControl isRequired>
                     <FormLabel htmlFor='title'>Title</FormLabel>
-                    <Input ref={firstField} id='title' value={title} aria-required={true}
+                    <Input ref={firstField} id='title' value={title} aria-required={true} maxLength={50}
                         onChange={e=>{setTitle(e.target.value)}}
                         errorBorderColor='crimson'
                         isInvalid={title ? false : true}
                         placeholder='A task name is required'/>
+                    <Text fontSize='10px' borderRadius='5px' color='gray.400' position='absolute' bottom='0' right='1'>{title.length}/50</Text>
+
                 </FormControl>
 
                 <FormControl isRequired>
                     <FormLabel htmlFor='description'>Description</FormLabel>
+                    <Textarea maxLength={200} resize='none' variant='outline' isRequired placeholder='Describe your task. What should you do?'
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}/>
+                    <Text fontSize='10px' borderRadius='5px' color='gray.400' position='absolute' bottom='0' right='1'>{description.length}/200</Text>
 
-                    <Textarea id='description' value={description}
-                        onChange={e=>{setDescription(e.target.value)}}
-                        placeholder='Describe your task. What should you do?'/>
                 </FormControl>
 
                 <FormControl>
@@ -405,7 +417,7 @@ export default function TaskDrawer() {
                 <FormControl>
                     <FormLabel htmlFor='reward'>Points rewarded: {reward}</FormLabel>
                     
-                    <Slider size='lg' id='reward' defaultValue={1} min={1} max={5} step={1} onChange={value=>{setReward(value)}}>
+                    <Slider size='lg' id='reward' defaultValue={reward} min={1} max={5} step={1} onChange={value=>{setReward(value)}}>
                         <SliderTrack bg='red.100'>
                             <SliderFilledTrack bg='tomato' />
                         </SliderTrack>
@@ -423,7 +435,7 @@ export default function TaskDrawer() {
                 <Button variant='outline' mr={3} onClick={onClose}>
                 Cancel
                 </Button>
-                <Button colorScheme='blue' onClick={handleSubmit}>Submit</Button>
+                <Button colorScheme='blue' onClick={handleSubmit}>{isEdit ? 'Save' : 'Submit'}</Button>
             </DrawerFooter>
             </DrawerContent>
         </Drawer>

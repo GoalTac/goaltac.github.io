@@ -546,11 +546,6 @@ export default function LandingPage() {
                     label: 'LinkedIn'
                 },
                 {
-                    icon: <FaDiscord size={25} color={useColorModeValue('rgb(114,137,218)', '')} />,
-                    href: 'https://discord.gg/EzFPQDAKGf',
-                    label: 'Discord'
-                },
-                {
                     icon: <FaInstagram size={30} />,
                     href: 'https://www.instagram.com/goaltac/',
                     label: 'Instagram'

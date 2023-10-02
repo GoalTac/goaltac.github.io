@@ -14,6 +14,36 @@ export type Task = {
     reoccurence: number;
 };
 
+export type Post = {
+    id: number;
+    created_at: Date;
+    task_uuid: string;
+    user_uuid: string;
+    views: number;
+    likes: number;
+    post_uuid: string;
+};
+
+export type Relation = {
+    id: number;
+    created_at: Date;
+    task_id: string;
+    user_id: string;
+    progress: number;
+};
+
+export type Profile = {
+    id: number;
+    created_at: Date;
+    name: string;
+    biography: string;
+    userid: string;
+    username: string;
+    avatarurl: string;
+    points: number;
+    streak: number;
+};
+
 export async function _getAllTasks() {
     const { data: data, error } = await supabase
         .from('tasks')
@@ -70,7 +100,7 @@ export async function _removeSuggestedTask(taskID: string) {
  * TASK - TASK METHODS
  */
 
-//task-task-relations database structure
+//task_task_relations database structure
 //id, created_at, parent_id (uuid), child_id (uuid) 
 
 export async function _getRootTask(taskID: string) {
@@ -79,7 +109,7 @@ export async function _getRootTask(taskID: string) {
 
     while (isChild) {
         const relation = await supabase
-            .from('task-task-relations')
+            .from('task_task_relations')
             .select('parent_id')
             .eq('child_id', currentTaskID)
             .single();
@@ -104,7 +134,7 @@ export async function _getTaskTree(taskID: string) {
     async function fetchChildren(parentID: string) {
         const children = await _getChildTasks(parentID);
         for (const child of children) {
-            child.children = await fetchChildren(child.id);
+            child.children = await fetchChildren(child.uuid);
         }
         return children;
     }
@@ -115,7 +145,7 @@ export async function _getTaskTree(taskID: string) {
 
 export async function _getChildTasks(taskID: string) {
     const { data, error } = await supabase
-        .from('task-task-relations')
+        .from('task_task_relations')
         .select('child_id')
         .eq('parent_id', taskID);
 
@@ -142,14 +172,13 @@ export async function _createRootTask(taskID: string) {
     };
     
     const { error } = await supabase
-        .from('task-task-relations')
+        .from('task_task_relations')
         .insert([relation]);
     
     if (error) {
         throw new Error(error.message);
     }
 
-    return relation;
 }
 
 export async function _addChildTask(parentTaskID: string, childTask: any) {
@@ -157,7 +186,7 @@ export async function _addChildTask(parentTaskID: string, childTask: any) {
     
     // Check if parentTaskID exists as a root task
     const { data: parentData, error: parentError } = await supabase
-        .from('task-task-relations')
+        .from('task_task_relations')
         .select('id')
         .eq('parent_id', parentTaskID)
         .eq('child_id', null)
@@ -178,7 +207,7 @@ export async function _addChildTask(parentTaskID: string, childTask: any) {
     };
     
     const { error: relationError } = await supabase
-        .from('task-task-relations')
+        .from('task_task_relations')
         .insert([relation]);
     
     if (relationError) {
@@ -220,7 +249,7 @@ export async function _removeRootTask(taskID: string) {
 export async function _removeChildTask(parentID: string, childID: string) {
     // Removing the relation
     const { error: relError } = await supabase
-        .from('task-task-relations')
+        .from('task_task_relations')
         .delete()
         .eq('parent_id', parentID)
         .eq('child_id', childID);
@@ -249,21 +278,23 @@ export async function _removeChildTask(parentID: string, childID: string) {
  * @param task 
  */
 export async function _setTask(taskID: string, task: any) {
-    const { error } = await supabase
+    const { data:data, error } = await supabase
     .from('tasks')
     .update({start_date: task.start_date,
             end_date: task.end_date, 
             name: task.name, 
             description: task.description, 
             requirement: task.requirement, 
-            reward: task.reward, 
+            reward: task.reward, reoccurence: task.reoccurence,
             type: task.type})
-    .eq('id', taskID);
+    .eq('uuid', taskID).select().single();
 
     if (error) {
         throw new Error(error.message)
     }
 
+    return data as Task
+    
 }
 
 /**
@@ -273,7 +304,7 @@ export async function _setTask(taskID: string, task: any) {
 export async function _deleteTask(taskID: string) {
     // 
     const { data, error: relationError } = await supabase
-        .from('task-task-relations')
+        .from('task_task_relations')
         .delete()
         .or(`parent_id.eq.${taskID},child_id.eq.${taskID}`);
 
@@ -303,6 +334,8 @@ export async function _addTask(task: any) {
     const name = task.name ? task.name : ''
     const description = task.description ? task.description : ''
     const requirement = task.requirement ? task.requirement : 1
+    const reoccurence = task.reoccurence ? task.reoccurence : 1
+
     const reward = task.reward ? task.reward : 1
     const type = task.type ? task.type : 'Boolean'
 
@@ -313,7 +346,7 @@ export async function _addTask(task: any) {
         description: description,
         requirement: requirement,
         reward: reward,
-        type: type
+        type: type, reoccurence: reoccurence
     }
     //console.log(newTask)
 
@@ -326,7 +359,7 @@ export async function _addTask(task: any) {
         throw new Error(error.message)
     }
 
-    return data;
+    return data; 
 }
 
 /**
@@ -450,7 +483,7 @@ export async function _getUserTasks(userID: string) {
  * This is to package the user relations and task info
  * @param userID 
  */
-export async function _getTaskInfo(user_uuid: string) {
+export async function _getUserTasksInfo(user_uuid: string) {
 
     const packagedData = [];
 
@@ -459,6 +492,7 @@ export async function _getTaskInfo(user_uuid: string) {
         .from('task_user_relations')
         .select('*')
         .eq('user_id', user_uuid);
+
     
     if(relationError) {
         throw new Error(relationError.message)
@@ -472,11 +506,30 @@ export async function _getTaskInfo(user_uuid: string) {
         .select('*')
         .in('uuid', task_uuids);
 
+            
+    // get all relations in batch with one api call
+    const {data: posts, error: postsError} = await supabase
+        .from('posts')
+        .select('*')
+        .eq('user_uuid', user_uuid);
+    
+        // get all relations in batch with one api call
+    const {data: profile, error: profileError} = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('userid', user_uuid).single();
+
     if(taskError) {
         throw new Error(taskError.message)
     }
+    if(postsError) {
+        throw new Error(postsError.message)
+    }
+    if(profileError) {
+        throw new Error(profileError.message)
+    }
 
-    const getPackagedInfo = (task: any, relation: any) => {
+    const getPackagedInfo = (task: any, relation: any, post: any, profile: any) => {
         return {
             progress: relation.progress,
             task_id: relation.task_id,
@@ -488,14 +541,18 @@ export async function _getTaskInfo(user_uuid: string) {
             reward: task.reward,
             requirement: task.requirement,
             start_date: task.start_date,
-            type: task.type,
+            type: task.type, hasPosted: (post ? true : false),
+            avatarURL: profile.avatarurl,
+            userName: profile.username, displayName: profile.name
         }
     }
 
     for (const relation of relations) {
         const task = tasks.find(task => task.uuid === relation.task_id);
+        const post = posts.find(post => post.user_uuid == relation.user_id && post.task_uuid == relation.task_id)
+
         if (task) {
-            const packagedInfo = getPackagedInfo(task, relation);
+            const packagedInfo = getPackagedInfo(task, relation, post, profile);
             packagedData.push(packagedInfo);
         }
     }
@@ -665,11 +722,8 @@ export async function _deleteProgress(userID: string, taskID: string) {
 export async function _setProgress(userID: string, taskID: string, progress: number) {
     const { error } = await supabase
         .from('task_user_relations')
-        .upsert({ 
-            user_id: userID,
-            task_id: taskID,
-            progress: progress 
-        });
+        .update({ progress: progress })
+        .match({ 'user_id': userID, 'task_id': taskID })
 
     if (error) {
         throw new Error(error.message);
@@ -706,7 +760,7 @@ export async function _addPost(taskID: string, userID: string) {
         throw new Error(error.message)
     }
 
-    return data;
+    return data as Post;
 }
 
 /**
@@ -796,16 +850,4 @@ export async function _getAllPostInfo(offset: number) {
     }
     const packagedInfo = await _getPostInfo(posts);
     return packagedInfo;
-}
-
-export async function _getPost(task_uuid: string, user_uuid: string) {
-    const { data: data, error } = await supabase
-        .from('posts')
-        .select('post_uuid')
-        .match({'task_uuid': task_uuid, 'user_uuid': user_uuid});
-    if (error) {
-        throw new Error(error.message)
-    }
-
-    return data;
 }
