@@ -5,6 +5,7 @@ import { _addTask, _addUserTask, _getTaskLimit, _getUserTasks } from "./TaskAPI"
 import { useSession } from "../../hooks/SessionProvider"
 import { RiInformationFill } from "react-icons/ri"
 import { start } from "repl"
+import { ReactElement } from "react-markdown/lib/react-markdown"
 
 /**
  * TODO:
@@ -13,7 +14,7 @@ import { start } from "repl"
  * 
  * @returns Task Drawer component
  */
-export default function TaskDrawer() {
+export default function TaskDrawer({children}: any) {    
     
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [title, setTitle] = useState<string>('New Task')
@@ -295,9 +296,13 @@ export default function TaskDrawer() {
     
     return (
         <>
-        <Button leftIcon={<AddIcon/>} colorScheme='teal' onClick={onOpen}>
-            Task
-        </Button>
+        <Box onClick={onOpen}>
+            {children ? children : 
+            <Button leftIcon={<AddIcon/>} colorScheme='teal' onClick={onOpen}>
+                Task
+            </Button>}
+        </Box>
+        
         {/**
          * 'isOpen' says that the drawer is currently open, 
          * onOpen is a function 
