@@ -1,8 +1,8 @@
 import { Container, SimpleGrid, } from '@chakra-ui/react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import Column from '../components/Calendar/Column';
-import { ColumnType } from '../components/Calendar/utils/enums';
+import Column from '../components/Tasks/Calendar/Column';
+import { ColumnType } from '../components/Tasks/Calendar/utils/enums';
 
 // helper function to get the columns for the calendar
 const getColumns = () => {

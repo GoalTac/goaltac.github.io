@@ -11,6 +11,7 @@ import PrivatePolicy from './pages/PrivatePolicy';
 import Finder from './pages/Finder';
 import ProfileView from './pages/ProfileView';
 import Versions from './pages/Versions';
+import Agreements from './pages/Agreements';
 
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Root from './components/Root';
@@ -26,6 +27,8 @@ import InsideView from './components/Communities/Community/InsideView';
 import { Tutorial } from './pages/Tutorial';
 import { Spinner } from '@chakra-ui/react';
 import LandingPage from './pages/Landing';
+import Homepage from './pages/Homepage';
+import UpdatePassword from './pages/UpdatePassword';
 
 export default function App() {
   
@@ -40,7 +43,7 @@ export default function App() {
     const { user: user, profile: profile } = useSession();
     const userName = profile?.['username']
 
-    return userName ? <Navigate to={'/dashboard'} replace={true} /> : <Tutorial/>;
+    return userName ? <Navigate to={'/home'} replace={true} /> : <Tutorial/>;
   }
 
   //to show before actually loading the new route (how do we do that?)
@@ -61,21 +64,23 @@ export default function App() {
         <Route path='login' element={<Login />} />
         <Route path='signup' element={<SignUp />} />
         <Route path='resetpassword' element={<ResetPassword />} />
-        <Route path='updatepass' element={<CheckPassword />} />
+        <Route path='updatepass' element={<UpdatePassword />} />
         <Route path='checkyouremail' element={<CheckVerification />} />
         <Route path='privatepolicy' element={<PrivatePolicy />} />   
         <Route path='welcome' element={<Landing />} />
         <Route path='versions' element={<Versions />} />
+        <Route path='agreements' element={<Agreements />} />
 
         {/* TODO: conditional on authentication routing  */}
         <Route element={<Root />}>
           <Route element={<ProtectedRoute redirectPath={'/welcome'} />}>
-            <Route index element={<Dashboard />} />
+            <Route index element={<Homepage />} />
             
             {/* Tutorial is here temporarily */}
             <Route path='tutorial' element={<TutorialRoute />} />
-
             <Route path='dashboard' element={<Dashboard />} />
+
+            <Route path='home' element={<Homepage />} />
             <Route path='social' element={<Feed />} />
             <Route path='settings' element={<Settings />} />
             <Route path='market' element={<Market />} />

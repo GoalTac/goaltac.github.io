@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../supabase';
-import { Box, Button, Center, Flex, FormControl, FormHelperText, Heading, Input, InputGroup, InputLeftElement, InputRightElement, Stack, Text, chakra, useToast, Image, useColorModeValue, } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, FormControl, FormHelperText, Heading, Input, InputGroup, InputLeftElement, InputRightElement, Stack, Text, chakra, useToast, Image, useColorModeValue, Spinner, } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaUserAlt, FaLock } from 'react-icons/fa';
 import Canvas from '../components/Canvas';
@@ -21,6 +21,7 @@ export default function Login() {
     //For Supabase
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [googleLoading, setGoogleLoading] = useState<Boolean>(false)
 
     // Showing Password
     const [showPassword, setShowPassword] = useState(false);
@@ -54,7 +55,7 @@ export default function Login() {
                 isClosable: false,
             })
         } else {
-            navigate('/dashboard')
+            navigate('/home')
         }
     }
 
@@ -78,7 +79,7 @@ export default function Login() {
             
             if (data.session) {
                 // it worked
-                navigate('/dashboard')
+                navigate('/home')
 
             } else {
                 toast({
@@ -207,11 +208,22 @@ export default function Login() {
                                     borderRadius={5}
                                     type='submit'
                                     variant={useColorModeValue('outline','solid')}
-                                    width='full'
-                                    bg={email && password ? 'whiteAlpha.400' : 'whiteAlpha.100'} _hover={{ backgroundColor: 'blackAlpha.100' }}>
+                                    width='full' _hover={{ backgroundColor: 'blackAlpha.100' }}>
                                     Login
                                 </Button>
-                                
+                                <Button w={'full'}
+                                    borderRadius={5}
+                                    variant={useColorModeValue('outline','solid')}
+                                    type='submit' _hover={{ backgroundColor: 'blackAlpha.100' }}
+                                    leftIcon={googleLoading ? <></> : <FcGoogle/>}
+                                    onClick={()=>{
+                                        setGoogleLoading(true)
+                                        supabase.auth.signInWithOAuth({
+                                            provider: 'google', options: { redirectTo: 'https://goaltac.net/home' }
+                                        })
+                                    }}>
+                                        {googleLoading ? <Spinner/> : 'Sign in with Google'}
+                                </Button>
                             </Stack>
                         </form>
                     </Box>
