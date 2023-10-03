@@ -27,6 +27,21 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         const [progress, setProgress ] = useState<any>(task.progress)
         const [avatar, setAvatar] = useState<any>()
         const { isOpen, onOpen, onClose } = useDisclosure()
+        const colorTheme = {
+            inComplete: {
+                dark: 'red.400',
+                light: 'red.200'
+            },
+            inProgress: {
+                dark: 'yellow.600',
+                light: 'orange.200'
+            },
+            complete: {
+                dark: 'green.500',
+                light: 'green.200'
+            }
+        }
+        const pickedColor = (progress >= requirement ? useColorModeValue('green.200','green.500') : progress > 0 ? useColorModeValue('orange.200','yellow.600') : useColorModeValue(colorTheme.inComplete.light,colorTheme.inComplete.dark))
 
         function nextDueDate(frequency: number, startDate: Date, endDate: Date | null) {
             const today = new Date()
@@ -75,7 +90,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
 
             return <HStack justifyContent='right'>
                 <Tooltip fontSize='8px' hasArrow label={`${progress}/${requirement}`}>
-                    <Badge colorScheme={isComplete ? 'green' : 'orange'} fontSize='10px' paddingX='10px' width='fit-content'>
+                    <Badge backgroundColor={pickedColor} fontSize='10px' paddingX='10px' width='fit-content'>
                         {((progress/requirement) * 100).toFixed(2)}%
                     </Badge>
                 </Tooltip>
@@ -222,7 +237,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
 
         return <Card backgroundColor={useColorModeValue('gray.50','gray.700')} margin='20px' overflow='hidden' height='200px' width='280px' size='md' flexDirection={'column'} alignItems={[null,'center']} >
             <TaskDrawer preset={task}>
-                <Flex width='prose' height={'30px'} cursor='pointer' _hover={{backgroundColor:useColorModeValue('gray.300','gray.600')}} backgroundColor={progress >= requirement ? useColorModeValue('green.200','green.500') : useColorModeValue('orange.200','yellow.600')}>
+                <Flex width='prose' height={'30px'} cursor='pointer' _hover={{backgroundColor:useColorModeValue('gray.300','gray.600')}} backgroundColor={pickedColor}>
                     
                 </Flex>
             </TaskDrawer>
@@ -245,7 +260,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                     <ProgressIndicator/>
                     <Spacer/>
                     <Box onClick={onOpen}>
-                        <IconButton aria-label='Set Progress' backgroundColor={progress >= requirement ? useColorModeValue('green.200','green.500') : useColorModeValue('orange.200','yellow.600')} icon={<FaHourglassHalf />} type='button' variant='solid' />
+                        <IconButton aria-label='Set Progress' backgroundColor={pickedColor} icon={<FaHourglassHalf />} type='button' variant='solid' />
                         <SwitchCompletion/>
                     </Box>                    
                     
