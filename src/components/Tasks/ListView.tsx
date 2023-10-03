@@ -29,7 +29,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         const { isOpen, onOpen, onClose } = useDisclosure()
         const colorTheme = {
             inComplete: {
-                dark: 'red.400',
+                dark: 'red.600',
                 light: 'red.200'
             },
             inProgress: {

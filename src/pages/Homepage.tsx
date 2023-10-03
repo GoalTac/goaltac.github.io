@@ -97,8 +97,8 @@ export default function Homepage() {
                 </HStack>
                 <Tooltip fontSize='8px' hasArrow label={`${progress}/${requirement}`} position='relative'>
                     <Box position='relative'>
-                        <Progress size='lg' borderWidth='2px' marginLeft='auto' width='200px' value={percentProgress} colorScheme={progress >= requirement ? 'green' : 'orange'}/>
-                        <Text position='absolute' top='1' right='1' fontSize='6px' fontWeight='700'>
+                        <Progress size='lg' borderWidth='2px' marginLeft='auto' width='200px' value={percentProgress} backgroundColor={useColorModeValue('gray.200','gray.600')} colorScheme={progress >= requirement ? 'green' : 'orange'}/>
+                        <Text textAlign='end' fontSize='14px' fontWeight='400'>
                             {((progress/requirement) * 100).toFixed(2)}%
                         </Text>
                     </Box>
@@ -125,7 +125,7 @@ export default function Homepage() {
                 <ButtonGroup paddingY='10px' columnGap='20px' variant='ghost' size='md' >
                     <Button colorScheme='green' leftIcon={<FaThumbsUp />} onClick={handleLike}>{likes}</Button>
                     <Tooltip label='Comment feature coming soon'>
-                                            <Button colorScheme='blue' leftIcon={<ChatIcon />}>{taskInfo.comments} comments</Button>
+                        <Button colorScheme='blue' leftIcon={<ChatIcon />}>{taskInfo.comments} comments</Button>
 
                     </Tooltip>
 
@@ -185,7 +185,7 @@ export default function Homepage() {
             const [offset, setOffset] = useState<number>(0)
 
             useEffect(()=>{
-                const postChanges = useSupabase.channel('post').on('postgres_changes',{
+                const postChanges = useSupabase.channel('post2').on('postgres_changes',{
                     schema: 'public', // Subscribes to the "public" schema in Postgres
                     event: '*',       // Listen to all changes
                     table: 'posts'
@@ -201,7 +201,7 @@ export default function Homepage() {
                 return () => {
                     postChanges.unsubscribe()
                   };
-            },[postsLoaded])
+            },[])
 
             //PUT PROFILE INFO IN THE POST VARIABLE
             return <SimpleGrid columns={1} spacing='20px'>
@@ -410,7 +410,7 @@ export default function Homepage() {
                     Task List
                 </CardHeader>
                 {tasksInfo.length > 0 && loading() ? 
-                <SimpleGrid paddingBottom='10px' columns={1} gap='3px' width='inherit' maxHeight='200px' overflowY='scroll'>
+                <SimpleGrid paddingX='3px' paddingBottom='10px' columns={1} gap='3px' width='inherit' maxHeight='200px' overflowY='scroll'>
                     {tasksInfo.map((taskInfo: any, id:number)=>{
                         return <TaskModule key={id} taskInfo={taskInfo}/>
                         
