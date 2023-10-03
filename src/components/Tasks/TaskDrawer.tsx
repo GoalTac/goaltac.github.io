@@ -84,7 +84,7 @@ export default function TaskDrawer({children, preset}: any) {
             end_date: endDate,
             name: title,
             description: description,
-            requirement: requirement.current,
+            requirement: type=='Simple' ? 1 : requirement.current,
             reward: reward,
             type: type,
             reoccurence: reoccurence
@@ -191,6 +191,7 @@ export default function TaskDrawer({children, preset}: any) {
     }
 
    function NumberTypeDisplay() {
+
         const [newRequirement, setNewRequirement] = useState(requirement.current)
 
         const handleChange = (value: any) => {
@@ -200,7 +201,7 @@ export default function TaskDrawer({children, preset}: any) {
 
         return (
             <Stack flexDirection='column'>
-                <NumberInput allowMouseWheel defaultValue={1} value={newRequirement} min={1} onChange={handleChange}>
+                <NumberInput allowMouseWheel defaultValue={newRequirement} value={newRequirement} min={1} onChange={handleChange}>
                 <NumberInputField />
                 <NumberInputStepper>
                     <NumberIncrementStepper />
@@ -212,7 +213,6 @@ export default function TaskDrawer({children, preset}: any) {
     }
 
     function BooleanTypeDisplay() {
-        requirement.current = 1
         const [value, setValue] = useState(false)
         return (
             <Flex columnGap={'20px'} alignItems='center' justifyContent='center'>
