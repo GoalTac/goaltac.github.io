@@ -24,7 +24,7 @@ export default function TaskDrawer({children, preset}: any) {
     const [startDate, setStartDate] = useState<any>(isEdit ? preset.start_date : null)
     const [endDate, setEndDate] = useState<any>(isEdit ? preset.end_date : null)
     const [type, setType] = useState<any>(isEdit ? preset.type : 'Simple')
-    const [requirement, setRequirement] = useState(isEdit ? preset.requirement : 1)
+    const requirement = useRef(isEdit ? preset.requirement : 1)
     const [reward, setReward] = useState<any>(isEdit ? preset.reward : 1)
     const user = useSession().user //this rerenders the page tons of times
     const [tasks, setTasks] = useState<any>([])
@@ -59,6 +59,7 @@ export default function TaskDrawer({children, preset}: any) {
             setType('Simple')
             setReward(1)
             setSelectedTasks([])
+            requirement.current = 1
             setReoccurence(0)
         }
 
@@ -83,7 +84,7 @@ export default function TaskDrawer({children, preset}: any) {
             end_date: endDate,
             name: title,
             description: description,
-            requirement: requirement,
+            requirement: requirement.current,
             reward: reward,
             type: type,
             reoccurence: reoccurence
@@ -130,7 +131,9 @@ export default function TaskDrawer({children, preset}: any) {
                 <input {...input} />
                 
                 <Flex {...checkbox} flexDirection='column' width='100%'
-                    onClick={()=>setType(input.value)}
+                    onClick={()=>{
+                        setType(input.value)
+                    }}
                     borderColor={input.value == type ? 'blue.400' : 'border'}
                     borderWidth='1px'
                     cursor='pointer'
@@ -157,7 +160,7 @@ export default function TaskDrawer({children, preset}: any) {
           })
         const group = getRootProps()
         
-        return <HStack marginY='20px' {...group}>
+        return <Stack alignItems='center' flexDirection={['column','row']} marginY='20px' {...group}>
             {options.map((option) => {
                 const value = option.value
                 const radio = getRadioProps({ value })
@@ -172,132 +175,116 @@ export default function TaskDrawer({children, preset}: any) {
                     
                 </RadioCard>)
             })}
-        </HStack>
+        </Stack>
     }
 
-    function TypeDisplay() {
-        function NumberTypeDisplay() {
-            const [newRequirement, setNewRequirement] = useState(requirement)
-            const handleChange = (value: any) => {
-                setNewRequirement(value)
-            }
+   function NumberTypeDisplay() {
+        const [newRequirement, setNewRequirement] = useState(requirement.current)
 
-            return (
-                <Stack flexDirection='column'>
-                
-
-
-                    <NumberInput allowMouseWheel defaultValue={1} value={newRequirement} min={1} onChange={handleChange}>
-                    <NumberInputField />
-                    <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                    </NumberInputStepper>
-                    </NumberInput></Stack>
-                
-            )
+        const handleChange = (value: any) => {
+            setNewRequirement(value)
+            requirement.current = value
         }
 
-        function BooleanTypeDisplay() {
-            setRequirement(1);
-            const [value, setValue] = useState(true)
-            return (
-                <Flex columnGap={'20px'} alignItems='center' justifyContent='center'>
-                    <Badge variant={value==false ? 'subtle' : 'outline'} colorScheme={value==false ? 'unset' : 'red'}>Incomplete</Badge>
-                    <Switch size='lg' isReadOnly onChange={()=>{
-                        setValue(!value)
-                    }}/>
-                    <Badge variant={value==true ? 'subtle' : 'outline'} colorScheme={value==true ? 'unset' : 'green'}>Complete</Badge>
-                </Flex>
-            )
-        }
+        return (
+            <Stack flexDirection='column'>
+                <NumberInput allowMouseWheel defaultValue={1} value={newRequirement} min={1} onChange={handleChange}>
+                <NumberInputField />
+                <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                </NumberInputStepper>
+                </NumberInput></Stack>
+            
+        )
+    }
+
+    function BooleanTypeDisplay() {
+        requirement.current = 1
+        const [value, setValue] = useState(false)
+        return (
+            <Flex columnGap={'20px'} alignItems='center' justifyContent='center'>
+                <Badge variant={value==true ? 'subtle' : 'outline'} colorScheme={value==true ? 'unset' : 'red'}>Incomplete</Badge>
+                <Switch colorScheme={value == false ? 'red':'green'} size='lg' onChange={()=>{
+                    setValue(!value)
+                }}/>
+                <Badge variant={value==false ? 'subtle' : 'outline'} colorScheme={value==false ? 'unset' : 'green'}>Complete</Badge>
+            </Flex>
+        )
+    }
 
         /**
          * Displays add task button with all available tasks
          * @returns 
          */
-        function TasksTypeDisplay() {
+    function TasksTypeDisplay() {
 
-            function TaskButton({task, id}: any) {
+        function TaskButton({task, id}: any) {
 
-                return <Flex width='inherit'>
-                    <Flex flexDirection='column' width='100%'
-                        onClick={()=>{
-                            if (selectedTasks.includes(task)) { //remove the task
-                                const index = selectedTasks.indexOf(task)
-                                let newArray =[...selectedTasks]
-                                newArray.splice(index, 1)
-                                setSelectedTasks(newArray)
-                            } else {
-                                let newArray = [...selectedTasks, task]
-                                setSelectedTasks(newArray)
-                            }
-                        }}
-                        borderColor={selectedTasks.includes(task) ? 'blue.400' : 'border'}
-                        borderWidth='1px'
-                        cursor='pointer'
-                        borderRadius='md'
-                        px={5}
-                        py={3}>
-                        <Flex alignItems={'center'} gap='10px' flexDirection='row'>
-                            <Box boxSize='15px' borderWidth='2px' backgroundColor={selectedTasks.includes(task) ? 'blue.400' : 'border'}/>
-                            <Text maxWidth={'200px'} height='20px' flexWrap={'unset'} overflowX={'hidden'}>
-                                {task.name}
-                            </Text>
-                            <Spacer/>
-                            <Text maxWidth={'200px'} textColor='gray' height='20px' flexWrap={'unset'} overflowX={'clip'}>
-                                {task.description}
-                            </Text>
-                            
-                        </Flex>
+            return <Flex width='inherit'>
+                <Flex flexDirection='column' width='100%'
+                    onClick={()=>{
+                        if (selectedTasks.includes(task)) { //remove the task
+                            const index = selectedTasks.indexOf(task)
+                            let newArray =[...selectedTasks]
+                            newArray.splice(index, 1)
+                            setSelectedTasks(newArray)
+                        } else {
+                            let newArray = [...selectedTasks, task]
+                            setSelectedTasks(newArray)
+                        }
+                    }}
+                    borderColor={selectedTasks.includes(task) ? 'blue.400' : 'border'}
+                    borderWidth='1px'
+                    cursor='pointer'
+                    borderRadius='md'
+                    px={5}
+                    py={3}>
+                    <Flex alignItems={'center'} gap='10px' flexDirection='row'>
+                        <Box boxSize='15px' borderWidth='2px' backgroundColor={selectedTasks.includes(task) ? 'blue.400' : 'border'}/>
+                        <Text maxWidth={'200px'} height='20px' flexWrap={'unset'} overflowX={'hidden'}>
+                            {task.name}
+                        </Text>
+                        <Spacer/>
+                        <Text maxWidth={'200px'} textColor='gray' height='20px' flexWrap={'unset'} overflowX={'clip'}>
+                            {task.description}
+                        </Text>
+                        
                     </Flex>
-                </Flex> //need to click to add
-            }
-
-            function TaskListing() {
-                return tasks ? 
-                    <Box><Badge fontSize='1.25rem' colorScheme="red">This is currently a Work in Progress</Badge>
-                    <Box height='200px' overflowY='scroll'>
-                        <Flex justifyContent='center' flexDirection='column' rowGap='2' width='inherit'>
-                        {tasks.map((task: any, id: any)=>{
-                            return <TaskButton key={id} task={task} id={id} /> //need to click to add
-                        })}
-                        </Flex>
-                    </Box></Box>
-                 : <Box>
-                    <Icon as={InfoOutlineIcon}/>
-                    <Text>
-                        You don't have any tasks
-                    </Text>
-                    
-                </Box>
-            }
-
-
-            return (
-                <Box width='inherit' height='inherit'>
-                    {/* Display selected tasks */}
-                    {/* Display all tasks */}
-                    {/* Click tasks to add to selected task */}
-                    {/* Click selected task to add to tasks */}
-
-                    {(tasks === null ? <Spinner/> : <TaskListing/>)}
-                </Box>
-            )
+                </Flex>
+            </Flex> //need to click to add
         }
 
-        function RenderSwitch() {
-            switch(type) {
-                case 'Progress':
-                    return <NumberTypeDisplay/>;
-                case 'Sub-Tasks':
-                    return <TasksTypeDisplay/>;
-                default:
-                    return <BooleanTypeDisplay/>
-            }
+        function TaskListing() {
+            return tasks ? 
+                <Box><Badge fontSize='1.25rem' colorScheme="red">This is currently a Work in Progress</Badge>
+                <Box height='200px' overflowY='scroll'>
+                    <Flex justifyContent='center' flexDirection='column' rowGap='2' width='inherit'>
+                    {tasks.map((task: any, id: any)=>{
+                        return <TaskButton key={id} task={task} id={id} /> //need to click to add
+                    })}
+                    </Flex>
+                </Box></Box>
+                : <Box>
+                <Icon as={InfoOutlineIcon}/>
+                <Text>
+                    You don't have any tasks
+                </Text>
+                
+            </Box>
         }
 
-        return <RenderSwitch/>
+
+        return (
+            <Box width='inherit' height='inherit'>
+                {/* Display selected tasks */}
+                {/* Display all tasks */}
+                {/* Click tasks to add to selected task */}
+                {/* Click selected task to add to tasks */}
+
+                {(tasks === null ? <Spinner/> : <TaskListing/>)}
+            </Box>
+        )
     }
     
     return (
@@ -353,7 +340,7 @@ export default function TaskDrawer({children, preset}: any) {
                     <TypeSelect/>
                     <Flex flexDir={'column'}  width='100%' minHeight='100px'>
                         <Box width='inherit' height='inherit'>
-                            <TypeDisplay/>
+                            {type=='Progress' ? <NumberTypeDisplay/> : <BooleanTypeDisplay/>}
                         </Box>
                     </Flex>
                 </FormControl>
