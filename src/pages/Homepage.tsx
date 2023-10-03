@@ -396,20 +396,22 @@ export default function Homepage() {
                 </HStack>
             }
         
-            return (tasksInfo.length > 0 && loading() ? 
-            <Card padding='3px'>
+            return <Card padding='3px'>
                 <CardHeader textAlign='center' fontSize='14px' fontWeight='500'>
                     Task List
                 </CardHeader>
-                <SimpleGrid columns={1} gap='3px' width='inherit' maxHeight='200px' overflowY='scroll'>
+                {tasksInfo.length > 0 && loading() ? 
+                <SimpleGrid paddingBottom='10px' columns={1} gap='3px' width='inherit' maxHeight='200px' overflowY='scroll'>
                     {tasksInfo.map((taskInfo: any, id:number)=>{
                         return <TaskModule key={id} taskInfo={taskInfo}/>
                         
                     })}
-                </SimpleGrid>
+                </SimpleGrid>: 
+                <Text paddingBottom='10px' textAlign='center' fontSize='10px'>Your task list is empty!</Text>
+                }
+                
                 <Button variant='ghost' onClick={()=>navigate('/dashboard')} size='sm'>Dashboard</Button>
-            </Card> : 
-            <Skeleton height='30px' background={useColorModeValue('gray.700','gray.700')}/>)
+            </Card>
             
         }
         return <Flex position='static'  pos='relative' rowGap='20px' maxWidth={[null,'200px']}>
