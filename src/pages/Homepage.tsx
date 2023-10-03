@@ -5,7 +5,7 @@
  * 3. Sidebar for task display
  */
 
-import { Avatar, Link, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue, useDisclosure, useToast, Skeleton, SkeletonCircle, SkeletonText, Progress } from "@chakra-ui/react";
+import { Avatar, Link, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue, useDisclosure, useToast, Skeleton, SkeletonCircle, SkeletonText, Progress, Input } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import TaskDrawer from "../components/Tasks/TaskDrawer";
 import { getUser, twoColumns } from "../hooks/Utilities";
@@ -124,11 +124,17 @@ export default function Homepage() {
             <HStack flexDirection='row' >
                 <ButtonGroup paddingY='10px' columnGap='20px' variant='ghost' size='md' >
                     <Button colorScheme='green' leftIcon={<FaThumbsUp />} onClick={handleLike}>{likes}</Button>
-                    <Button colorScheme='blue' leftIcon={<ChatIcon />}>{taskInfo.comments} comments</Button>
+                    <Tooltip label='Comment feature coming soon'>
+                                            <Button colorScheme='blue' leftIcon={<ChatIcon />}>{taskInfo.comments} comments</Button>
+
+                    </Tooltip>
 
                 </ButtonGroup>
                 <Spacer/>
-                <IconButton isDisabled variant='ghost' isRound colorScheme='gray' icon={<SlOptions />} aria-label='Settings Icon'/>
+                <Tooltip label='Import & collaborate on tasks'>
+                                    <IconButton isDisabled variant='ghost' isRound colorScheme='gray' icon={<SlOptions />} aria-label='Settings Icon'/>
+
+                </Tooltip>
             </HStack>
                 
                 
@@ -140,8 +146,11 @@ export default function Homepage() {
         function Header() {
             return <Card maxWidth='inherit' padding='20px'>
                 <Stack flexDirection='row' >
-                    <Flex maxWidth='100px'>
-                       <TaskDrawer/> 
+                    <Flex minWidth='120px'>
+                        <TaskDrawer>
+                            <Input focusBorderColor='blue.300' _hover={{borderColor:'blue.300'}} placeholder='Create task' />
+                        </TaskDrawer>
+                        
                     </Flex>
                     
                     <Spacer/>
@@ -419,16 +428,6 @@ export default function Homepage() {
                 <Analytics/>
                 <Box paddingTop='20px' position='sticky' flexWrap='wrap' top={12} height='min'>
                     <ListView/>
-                    {/**
-                     * 
-                     * Create a task drawer component that:
-                     * 1. Envelopes a button that can be clicked on 
-                     *      such that we can make the button open the task drawer
-                     * <TaskDrawer/>
-                     *      <ExampleButtonElement/>
-                     * </TaskDrawer>
-                     * 2. If user clicks on any element within the tags here it will act to open the drawer
-                     */}
                 </Box>
             </Box>
         </Flex>

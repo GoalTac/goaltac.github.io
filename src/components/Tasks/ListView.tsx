@@ -220,7 +220,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
             }
         }
 
-        return <Card backgroundColor={useColorModeValue('gray.50','gray.700')} margin='20px' overflow='hidden' height='200px' width='300px' size='md' flexDirection={'column'} alignItems={[null,'center']} >
+        return <Card backgroundColor={useColorModeValue('gray.50','gray.700')} margin='20px' overflow='hidden' height='200px' width='280px' size='md' flexDirection={'column'} alignItems={[null,'center']} >
             <TaskDrawer preset={task}>
                 <Flex width='prose' height={'30px'} cursor='pointer' _hover={{backgroundColor:useColorModeValue('gray.300','gray.600')}} backgroundColor={progress >= requirement ? useColorModeValue('green.200','green.500') : useColorModeValue('orange.200','yellow.600')}>
                     
@@ -258,7 +258,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
 
         //merge progress from relations into tasks
 
-        return <Stack flexWrap='wrap' marginX='auto' justifyContent='center' flexDirection='row'>
+        return <Stack flexWrap='wrap' width='fit-content' justifyContent='center' flexDirection='row'>
             {tasks.length> 0 ? tasks.map((task: Task, id: number)=> {
                 return <Card_Module key={id} task={task}/>
             }) : <Text>You don't appear to have any tasks!</Text>}

@@ -1,4 +1,4 @@
-import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge, useColorModeValue, Stack, LightMode } from "@chakra-ui/react";
+import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge, useColorModeValue, Stack, LightMode, Tooltip } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FaUser, FaSignOutAlt, FaRegNewspaper, FaSearch, FaUsers, FaShoppingBag, FaCircle } from "react-icons/fa";
 import { Link, Outlet, useNavigate } from "react-router-dom";
@@ -78,40 +78,50 @@ export default function Root() {
           </Box>
 
           {/* Searchbar (changes depending on screen size)*/}
-          {isLargerThan768 ? (
+          <Tooltip label='Search tasks, people, and others soon'>
+            {isLargerThan768 ? (
             <Flex justifyContent="center" width="80%">
               <InputGroup w="50%">
-                <Input bg={colorMode === "light" ? 'gray.200' : 'gray.800'} type="text" value={inputValue}
+                <Input isDisabled bg={colorMode === "light" ? 'gray.200' : 'gray.800'} type="text" value={inputValue}
                   onChange={handleInputChange} placeholder="Search" m={.5} />
-                <Icon as={FaSearch} color="gray.500" cursor="pointer" fontSize="2xl" mt={2.5} ml={2} onClick={handleButtonClick} />
+                <IconButton isDisabled icon={<FaSearch />} color="gray.500" cursor="pointer" fontSize="2xl" mt={2.5} ml={2} onClick={() => {/* handleButtonClick */ } } aria-label={""} />
               </InputGroup>
             </Flex>
           ) : (
             <Box>
               <InputGroup>
-                <Input bg={colorMode === "light" ? 'gray.200' : 'gray.800'} type="text" value={inputValue}
+                <Input isDisabled bg={colorMode === "light" ? 'gray.200' : 'gray.800'} type="text" value={inputValue}
                   onChange={handleInputChange} placeholder="Search" display={showSearchBar ? 'none' : 'block'} width="80vw" />
-                <IconButton type="submit" color="gray.500" aria-label="Search" onClick={handleButtonClick} bg="none" fontSize="xl" ml={1} background="none"><FaSearch /></IconButton>
+                <IconButton isDisabled type="submit" color="gray.500" aria-label="Search" onClick={handleButtonClick} bg="none" fontSize="xl" ml={1} background="none" icon={<FaSearch />}/>
               </InputGroup>
             </Box>
           )}
-
-          <Box ml='auto' pr={'30px'}>
+          </Tooltip>
+          
+          {/**
+           * 
+           * <Box ml='auto' pr={'30px'}>
             <IconButton as={Link} to="/community" aria-label="Social" icon={<FaUsers />} fontSize="3xl" background="none" display={showSearchBar ? 'flex' : 'none'} float={"right"} />
           </Box>
+           * 
+           */}
+          
 
 
           {/* Profile */}
-          <Box pr={2} display={showSearchBar ? 'block' : 'none'}>
+          <Box pr={2} display={showSearchBar ? 'block' : 'none'} ml='auto'>
             <Menu>
               <MenuButton as={Avatar} size="sm" cursor="pointer" src={avatarUrl}/>
               <MenuList>
                   <MenuItem icon={<Avatar src={profile?.['avatarurl']} />} onClick={()=>navigate(`/profile/${userName}`)} fontSize="md" fontWeight='500'>
                     Your Profile
                   </MenuItem>
-                  <MenuItem icon={<FaShoppingBag />} onClick={()=>navigate('/market')} fontSize="sm">
+                  {/**
+                   * <MenuItem icon={<FaShoppingBag />} onClick={()=>navigate('/market')} fontSize="sm">
                     Market
                   </MenuItem>
+                   */}
+                  
 
                   <MenuItem icon={<FaUser />} onClick={()=>navigate('/settings')} fontSize="sm">
                     Settings
