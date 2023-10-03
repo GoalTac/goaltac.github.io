@@ -69,7 +69,7 @@ export default function TaskDrawer({children, preset}: any) {
                     title: "Error",
                     description: 'You need a title for your task!',
                     status: "error",
-                    duration: 9000,
+                    duration: 2000,
                     isClosable: true,
                 })
                 return false
@@ -91,13 +91,25 @@ export default function TaskDrawer({children, preset}: any) {
         }
 
         const createdTask = await (isEdit ? _setTask(preset.task_id, newTask) : _addTask(newTask)).finally(()=>{
-            toast({
+            if (isEdit) {
+                toast({
+                    title: "Success",
+                    description: 'Successfully edited your task!',
+                    colorScheme:'green',
+                    status: "success",
+                    duration: 2000,
+                    isClosable: true,
+                })
+            } else {
+                toast({
                 title: "Success",
                 description: 'Successfully created your task!',
                 status: "success",
-                duration: 9000,
+                duration: 2000,
                 isClosable: true,
             })
+            }
+            
             onClose()
             clearTasks()
         })

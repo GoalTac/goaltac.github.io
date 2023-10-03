@@ -98,6 +98,14 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                     setProgress(newProgress)
         
                     await _setProgress(task.user_id, task.task_id, newProgress)
+                    toast({
+                        title: "Success",
+                        description: 'Successfully edited your task!',
+                        colorScheme:'green',
+                        status: "success",
+                        duration: 2000,
+                        isClosable: true,
+                    })
                     
                 }
 
@@ -153,7 +161,14 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                     onClose()
                     setProgress(newProgress)
                     await _setProgress(task.user_id, task.task_id, newProgress)
-                    
+                    toast({
+                        title: "Success",
+                        description: 'Successfully edited your task!',
+                        colorScheme:'green',
+                        status: "success",
+                        duration: 2000,
+                        isClosable: true,
+                    })
                 }
         
                 return <Modal scrollBehavior='inside' isCentered motionPreset='slideInBottom' closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
