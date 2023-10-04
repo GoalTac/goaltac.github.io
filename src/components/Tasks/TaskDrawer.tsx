@@ -200,7 +200,7 @@ export default function TaskDrawer({children, preset}: any) {
         }
 
         return (
-            <Stack flexDirection='column'>
+            <Stack flexDirection='column' width='200px' marginX='auto'>
                 <NumberInput allowMouseWheel defaultValue={newRequirement} value={newRequirement} min={1} onChange={handleChange}>
                 <NumberInputField />
                 <NumberInputStepper>

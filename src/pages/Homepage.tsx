@@ -37,24 +37,6 @@ export default function Homepage() {
     const [postsLoaded, setPostsLoaded] = useState<Boolean>(false)
     const loading = () => {return tasksLoaded && postsLoaded}
 
-
-    const getPackagedInfo = (task: Task, relations: any) => {
-        return {
-            progress: relations.progress,
-            task_id: relations.task_id,
-            user_id: relations.user_id,
-            description: task.description,
-            end_date: task.end_date,
-            name: task.name,
-            reoccurence: task.reoccurence,
-            reward: task.reward,
-            requirement: task.requirement,
-            start_date: task.start_date,
-            type: task.type,
-            likes: 0, comments: 0
-        }
-    }
-
     function Post({taskInfo}: any) {
         const progress: number = taskInfo.progress
         const requirement: number = taskInfo.requirement
@@ -234,13 +216,6 @@ export default function Homepage() {
             const [offset, setOffset] = useState<number>(0)
 
             useEffect(()=>{
-                const postChanges = useSupabase.channel('post2').on('postgres_changes',{
-                    schema: 'public', // Subscribes to the "public" schema in Postgres
-                    event: '*',       // Listen to all changes
-                    table: 'posts'
-                },(payload: any) => {
-                    fetchPosts()
-                }).subscribe()
                 async function fetchPosts() {
                     if (!user) {
                         return
@@ -250,9 +225,6 @@ export default function Homepage() {
                     setPostsLoaded(true)
                 }
                 fetchPosts()
-                return () => {
-                    postChanges.unsubscribe()
-                  };
             },[])
 
             //PUT PROFILE INFO IN THE POST VARIABLE
