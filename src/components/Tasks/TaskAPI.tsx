@@ -491,7 +491,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
     const {data: relations, error: relationError} = await supabase
         .from('task_user_relations')
         .select('*')
-        .eq('user_id', user_uuid);
+        .eq('user_id', user_uuid).order('created_at', { ascending: false });
 
     
     if(relationError) {
