@@ -113,12 +113,8 @@ export default function Homepage() {
                 if (error) {
                     throw Error(error.message)
                 }
-                const { data: decrement, error: decrementError } = await supabase
-                    .rpc('decrement', { query_post_uuid: post_uuid })
-                console.log(decrement)
-                console.log(decrementError)
+                const { data: decrement, error: decrementError } = await supabase.rpc('decrement', { query_post_uuid: post_uuid })
 
-            
                 setIsLiked(false)
                 setLikes(likes - 1)
             } else {
@@ -129,8 +125,7 @@ export default function Homepage() {
                 if (error) {
                     throw Error(error.message)
                 }
-                increment(post_uuid)
-
+                const { data: increment, error: incrementError } = await supabase.rpc('increment', { query_post_uuid: post_uuid })
             
                 setIsLiked(true)
                 setLikes(likes + 1)
