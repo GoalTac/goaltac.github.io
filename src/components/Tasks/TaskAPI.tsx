@@ -794,11 +794,11 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
         .select('*')
         .in('userid', userUUIDs);
     
+    //find all posts that the user has liked
     const {data: postsLiked, error: postsLikedError} = await supabase
         .from('posts_liked')
         .select('*')
-        .in('user_uuid', userUUIDs);
-
+        .eq('user_uuid', user_uuid);
     if(relationError) {
         throw new Error(relationError.message)
     }
@@ -815,6 +815,7 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
 
     const getPackagedInfo = (task: any, relation: any, profile: any, post: any, post_liked: any) => {
         const liked = post_liked ? true : false
+        console.log(post_liked)
         const packaged = {
             progress: relation.progress,
             task_id: relation.task_id,
@@ -840,6 +841,7 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
         const profile = profiles.find(profile => profile.userid == relation.user_id)
         const post = posts.find(post => post.user_uuid == relation.user_id && post.task_uuid == relation.task_id)
         const post_liked = postsLiked.find(liked => liked.post_uuid == post.post_uuid)
+        
         if (task && profile && post) {
             const packagedInfo = getPackagedInfo(task, relation, profile, post, post_liked);
             packagedData.push(packagedInfo);
