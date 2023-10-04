@@ -483,7 +483,7 @@ export default function Homepage() {
         return <Flex position='static'  pos='relative' rowGap='20px' maxWidth={[null,'200px']}>
             <Box>
                 <Analytics/>
-                <Box paddingTop='20px' position='sticky' flexWrap='wrap' top={12} height='min'>
+                <Box paddingTop='20px' position='sticky' flexWrap='wrap' top={16} height='min'>
                     <ListView/>
                 </Box>
             </Box>
