@@ -739,6 +739,14 @@ export async function _isComplete(userID: string, taskID: string) {
 
 }
 
+export const increment = async(id: any) => {
+    console.log(id)
+    const { data, error } = await supabase.rpc('increment', { query_post_uuid: id })
+    console.log(data)
+    console.log(error)
+
+}
+
 /**
  * Searches and packages for post information before posting
  * @param taskID 
@@ -815,7 +823,6 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
 
     const getPackagedInfo = (task: any, relation: any, profile: any, post: any, post_liked: any) => {
         const liked = post_liked ? true : false
-        console.log(post_liked)
         const packaged = {
             progress: relation.progress,
             task_id: relation.task_id,

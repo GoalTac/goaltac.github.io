@@ -15,7 +15,7 @@ import { ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon 
 import { RxAvatar } from "react-icons/rx";
 import { TbTableOptions, TbTrendingUp } from "react-icons/tb";
 import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
-import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getUserTasksInfo, _getTaskbyID, _getUserRelations, _getUserTasks } from "../components/Tasks/TaskAPI";
+import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getUserTasksInfo, _getTaskbyID, _getUserRelations, _getUserTasks, increment } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
@@ -112,10 +112,13 @@ export default function Homepage() {
                     .select()
                 if (error) {
                     throw Error(error.message)
-                } else {
-                    const { data, error } = await supabase
-                        .rpc('decrement', { query_post_uuid: post_uuid, x: 1 })
                 }
+                const { data: decrement, error: decrementError } = await supabase
+                    .rpc('decrement', { query_post_uuid: post_uuid })
+                console.log(decrement)
+                console.log(decrementError)
+
+            
                 setIsLiked(false)
                 setLikes(likes - 1)
             } else {
@@ -125,10 +128,10 @@ export default function Homepage() {
                     .select();
                 if (error) {
                     throw Error(error.message)
-                } else {
-                    const { data, error } = await supabase
-                        .rpc('increment', { query_post_uuid: post_uuid, x: 1 })
                 }
+                increment(post_uuid)
+
+            
                 setIsLiked(true)
                 setLikes(likes + 1)
             }
