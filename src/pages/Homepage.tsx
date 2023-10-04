@@ -37,6 +37,7 @@ export default function Homepage() {
     const [postsLoaded, setPostsLoaded] = useState<Boolean>(false)
     const loading = () => {return tasksLoaded && postsLoaded}
 
+
     const getPackagedInfo = (task: Task, relations: any) => {
         return {
             progress: relations.progress,
@@ -60,9 +61,10 @@ export default function Homepage() {
         const userName: string = taskInfo.userName
         const avatarURL: string = taskInfo.avatarURL
         const displayName: string = taskInfo.displayName
-        const likes: number = taskInfo.likes
-        const isComplete = progress/requirement >= 1
+        const [likes, setLikes] = useState<number>(taskInfo.likes)
         const percentProgress: number = ((progress/requirement) * 100)
+        const post_uuid: string = taskInfo.post_id
+        const [isLiked, setIsLiked] = useState<boolean>(taskInfo.liked) //this shouldn't be true if the post hasn't been liked by the person!!
         const colorTheme = {
             inComplete: {
                 dark: 'red.800',
@@ -78,7 +80,6 @@ export default function Homepage() {
             }
         }
         const pickedColor = (progress >= requirement ? useColorModeValue(colorTheme.complete.light,colorTheme.complete.dark) : progress > 0 ? useColorModeValue(colorTheme.inProgress.light,colorTheme.inProgress.dark) : useColorModeValue(colorTheme.inComplete.light,colorTheme.inComplete.dark))
-
 
         const handleLike = async() => {
             //take the post ID
@@ -97,6 +98,40 @@ export default function Homepage() {
                 //Remove row
             //If there isn't one, that means the post hasn't been liked
                 //Insert a row
+            
+            if (!user) {
+                return
+            }
+            const user_uuid = user?.['id']
+
+            if (isLiked) {
+                const { data: data, error: error } = await supabase
+                    .from('posts_liked')
+                    .delete()
+                    .match({'user_uuid': user_uuid, 'post_uuid': post_uuid})
+                    .select()
+                if (error) {
+                    throw Error(error.message)
+                } else {
+                    const { data, error } = await supabase
+                        .rpc('decrement', { query_post_uuid: post_uuid, x: 1 })
+                }
+                setIsLiked(false)
+                setLikes(likes - 1)
+            } else {
+                const { data: data, error: error } = await supabase
+                    .from('posts_liked')
+                    .insert({user_uuid: user_uuid, post_uuid: post_uuid})
+                    .select();
+                if (error) {
+                    throw Error(error.message)
+                } else {
+                    const { data, error } = await supabase
+                        .rpc('increment', { query_post_uuid: post_uuid, x: 1 })
+                }
+                setIsLiked(true)
+                setLikes(likes + 1)
+            }
         }
 
         
@@ -139,7 +174,7 @@ export default function Homepage() {
             <Divider color='gray.300' paddingY='10px'/>
             <HStack flexDirection='row' >
                 <ButtonGroup paddingY='10px' columnGap='20px' variant='ghost' size='md' >
-                    <Button colorScheme='green' leftIcon={<FaThumbsUp />} onClick={handleLike}>{likes}</Button>
+                    <Button colorScheme={isLiked ? 'green' : 'gray'} leftIcon={<FaThumbsUp />} onClick={handleLike}>{likes}</Button>
                     <Tooltip label='Comment feature coming soon'>
                         <Button colorScheme='blue' leftIcon={<ChatIcon />}>{taskInfo.comments} comments</Button>
 
@@ -148,7 +183,7 @@ export default function Homepage() {
                 </ButtonGroup>
                 <Spacer/>
                 <Tooltip label='Import & collaborate on tasks'>
-                                    <IconButton isDisabled variant='ghost' isRound colorScheme='gray' icon={<SlOptions />} aria-label='Settings Icon'/>
+                    <IconButton isDisabled variant='ghost' isRound colorScheme='gray' icon={<SlOptions />} aria-label='Settings Icon'/>
 
                 </Tooltip>
             </HStack>
@@ -209,7 +244,10 @@ export default function Homepage() {
                     fetchPosts()
                 }).subscribe()
                 async function fetchPosts() {
-                    const fetchedPosts = await _getAllPostInfo(offset)
+                    if (!user) {
+                        return
+                    }
+                    const fetchedPosts = await _getAllPostInfo(offset, user?.['id'])
                     setPosts(fetchedPosts)
                     setPostsLoaded(true)
                 }
@@ -232,7 +270,10 @@ export default function Homepage() {
             <Button type="submit" aria-label="More" onClick={(loadMore)} fontSize="xl" ml={1} background="none"> More </Button>
             </SimpleGrid>
             async function loadMore(): Promise<void> {
-                const morePosts = await _getAllPostInfo(offset + 10)
+                if (!user) {
+                    return
+                }
+                const morePosts = await _getAllPostInfo(offset + 10, user?.['id'])
                 setOffset(offset + 10)
                 setPosts((posts: any) => [...posts, ...morePosts]);          }
         }

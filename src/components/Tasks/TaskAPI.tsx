@@ -768,7 +768,7 @@ export async function _addPost(taskID: string, userID: string) {
  * @param task_uuid 
  * @param user_uuid 
  */
-export async function _getPostInfo(posts: any[]){
+export async function _getPostInfo(posts: any[], user_uuid: string){
 
     const batch = posts
     const packagedData = [];
@@ -793,6 +793,11 @@ export async function _getPostInfo(posts: any[]){
         .from('profiles')
         .select('*')
         .in('userid', userUUIDs);
+    
+    const {data: postsLiked, error: postsLikedError} = await supabase
+        .from('posts_liked')
+        .select('*')
+        .in('user_uuid', userUUIDs);
 
     if(relationError) {
         throw new Error(relationError.message)
@@ -804,9 +809,12 @@ export async function _getPostInfo(posts: any[]){
     if(profileError) {
         throw new Error(profileError.message)
     }
+    if(postsLikedError) {
+        throw new Error(postsLikedError.message)
+    }
 
-    const getPackagedInfo = (task: any, relation: any, profile: any, post: any) => {
-        
+    const getPackagedInfo = (task: any, relation: any, profile: any, post: any, post_liked: any) => {
+        const liked = post_liked ? true : false
         const packaged = {
             progress: relation.progress,
             task_id: relation.task_id,
@@ -818,9 +826,10 @@ export async function _getPostInfo(posts: any[]){
             reward: task.reward,
             requirement: task.requirement,
             start_date: task.start_date,
-            type: task.simple,
-            likes: post.likes, comments: 0,
-            post_id: post.post_id, 
+            type: task.type,
+            likes: post.likes, liked: liked, 
+            comments: 0,
+            post_id: post.post_uuid, 
             avatarURL: profile.avatarurl,
             userName: profile.username, displayName: profile.name
         }
@@ -829,16 +838,17 @@ export async function _getPostInfo(posts: any[]){
     for (const relation of relations) {
         const task = tasks.find(task => task.uuid === relation.task_id);
         const profile = profiles.find(profile => profile.userid == relation.user_id)
-        const post = posts.find(post => post.user_uuid == relation.user_id)
+        const post = posts.find(post => post.user_uuid == relation.user_id && post.task_uuid == relation.task_id)
+        const post_liked = postsLiked.find(liked => liked.post_uuid == post.post_uuid)
         if (task && profile && post) {
-            const packagedInfo = getPackagedInfo(task, relation, profile, post);
+            const packagedInfo = getPackagedInfo(task, relation, profile, post, post_liked);
             packagedData.push(packagedInfo);
         }
     }
     return packagedData
 }
 
-export async function _getAllPostInfo(offset: number) {
+export async function _getAllPostInfo(offset: number, user_uuid: string) {
 
     const {data: posts, error: postError} = await supabase
         .from('posts')
@@ -848,6 +858,6 @@ export async function _getAllPostInfo(offset: number) {
     if (postError) {
         throw new Error(postError.message)
     }
-    const packagedInfo = await _getPostInfo(posts);
+    const packagedInfo = await _getPostInfo(posts, user_uuid);
     return packagedInfo;
 }
