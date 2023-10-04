@@ -63,6 +63,22 @@ export default function Homepage() {
         const likes: number = taskInfo.likes
         const isComplete = progress/requirement >= 1
         const percentProgress: number = ((progress/requirement) * 100)
+        const colorTheme = {
+            inComplete: {
+                dark: 'red.800',
+                light: 'red.50'
+            },
+            inProgress: {
+                dark: 'yellow.600',
+                light: 'orange.50'
+            },
+            complete: {
+                dark: 'green.600',
+                light: 'green.50'
+            }
+        }
+        const pickedColor = (progress >= requirement ? useColorModeValue(colorTheme.complete.light,colorTheme.complete.dark) : progress > 0 ? useColorModeValue(colorTheme.inProgress.light,colorTheme.inProgress.dark) : useColorModeValue(colorTheme.inComplete.light,colorTheme.inComplete.dark))
+
 
         const handleLike = async() => {
             //take the post ID
@@ -85,7 +101,7 @@ export default function Homepage() {
 
         
 
-        return <Card width='inherit' padding='20px' maxWidth='inherit' height='fit-content'>
+        return <Card width='inherit' padding='20px' maxWidth='inherit' height='fit-content' backgroundColor={useColorModeValue('gray.50','gray.700')}>
             <Stack flexWrap='wrap' flexDirection='row' paddingBottom='10px' width='100%' alignItems='center'>
                 <HStack flexDir={'row'} marginRight='auto'>
                     <Text fontWeight='500'>
@@ -97,7 +113,7 @@ export default function Homepage() {
                 </HStack>
                 <Tooltip fontSize='8px' hasArrow label={`${progress}/${requirement}`} position='relative'>
                     <Box position='relative'>
-                        <Progress size='lg' borderWidth='2px' marginLeft='auto' width='200px' value={percentProgress} backgroundColor={useColorModeValue('gray.200','gray.600')} colorScheme={progress >= requirement ? 'green' : 'orange'}/>
+                        <Progress size='lg' borderRadius='full' marginLeft='auto' width='200px' value={percentProgress > 0 ? percentProgress : 1} backgroundColor={useColorModeValue('gray.200','gray.600')} colorScheme={progress >= requirement ? 'green' : 'orange'}/>
                         <Text textAlign='end' fontSize='14px' fontWeight='400'>
                             {((progress/requirement) * 100).toFixed(2)}%
                         </Text>
@@ -380,7 +396,7 @@ export default function Homepage() {
                     )
                 }
 
-                return <HStack borderRadius='5' backgroundColor={hasPosted ? useColorModeValue('purple.300','purple.600') : useColorModeValue('orange.100','orange.400')} flexDirection='row' alignItems='center'>
+                return <HStack borderRadius='5' backgroundColor={hasPosted ? useColorModeValue('purple.100','purple.300') : useColorModeValue('orange.100','orange.300')} flexDirection='row' alignItems='center'>
                     <Text marginStart='20px' fontSize='12px' fontWeight='400' noOfLines={1} maxWidth='100px'>
                         {taskInfo.name}
                     </Text>
@@ -419,7 +435,7 @@ export default function Homepage() {
                 <Text paddingBottom='10px' textAlign='center' fontSize='10px'>Your task list is empty!</Text>
                 }
                 
-                <Button variant='ghost' onClick={()=>navigate('/dashboard')} size='sm'>Dashboard</Button>
+                <Button variant='solid' onClick={()=>navigate('/dashboard')} size='sm'>Dashboard</Button>
             </Card>
             
         }
