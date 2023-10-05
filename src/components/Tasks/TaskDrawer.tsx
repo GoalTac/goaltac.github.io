@@ -114,7 +114,7 @@ export default function TaskDrawer({children, preset}: any) {
             clearTasks()
         })
 
-        if (!isEdit) {
+        if (!isEdit && user) {
             //Relational data saving
             const taskID = createdTask.uuid
 

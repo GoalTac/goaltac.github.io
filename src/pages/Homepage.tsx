@@ -13,9 +13,9 @@ import { FcLike, FcSettings } from "react-icons/fc";
 import { FaFilter, FaThumbsUp, FaTrash } from "react-icons/fa";
 import { ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon } from "@chakra-ui/icons";
 import { RxAvatar } from "react-icons/rx";
-import { TbTableOptions, TbTrendingUp } from "react-icons/tb";
+import { TbTableImport, TbTableOptions, TbTrendingUp } from "react-icons/tb";
 import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
-import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getUserTasksInfo, _getTaskbyID, _getUserRelations, _getUserTasks, increment } from "../components/Tasks/TaskAPI";
+import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getUserTasksInfo, _getTaskbyID, _getUserRelations, _getUserTasks, increment, _importTaskFromUser } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
@@ -161,10 +161,28 @@ export default function Homepage() {
                     </Tooltip>
                 </ButtonGroup>
                 <Spacer/>
-                <Tooltip label='Import & collaborate on tasks'>
-                    <IconButton isDisabled variant='ghost' isRound colorScheme='gray' icon={<SlOptions />} aria-label='Settings Icon'/>
+                <Menu>
+                {({ isOpen }) => (
+                    <>
+                    <MenuButton rightIcon={<SlOptions />} isActive={isOpen} variant='ghost' colorScheme='gray' aria-label='Settings Icon' as={Button}/>
+                    <MenuList>
+                        <MenuItem onClick={()=>{
+                            if (user && taskInfo.user_id != user?.['id']) {
+                                _importTaskFromUser(taskInfo.task_id, user?.['id'])
+                            } else {
+                                toast({
+                                    title: "Error",
+                                    description: 'You can not import your own task',
+                                    status: 'warning',
+                                    duration: 2000,
+                                    isClosable: true,
+                                })
+                            }
+                        }} icon={<TbTableImport/>}>Import</MenuItem>
+                    </MenuList>
+                    </>)}
+                </Menu>
 
-                </Tooltip>
             </HStack>
             <Text textColor='gray.300' fontSize='12px'>{created_at.toLocaleString(undefined, {
                 month: "short", day: "numeric", year: '2-digit'

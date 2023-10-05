@@ -2,8 +2,8 @@ import { error } from "console";
 import { supabase } from "../../supabase";
 
 export type Task = {
-    uuid: string;
-    created_at: Date;
+    uuid?: string;
+    created_at?: Date;
     name: string;
     start_date: Date;
     end_date: Date;
@@ -402,10 +402,13 @@ export async function _getTaskbyID(taskID: string) {
  * Creates new row with the same details as the taskID
  * @param taskID 
  */
-export async function _duplicateTask(taskID: string) {
+export async function _duplicateTask(task_uuid: string) {
 
     //get original task data
-    const duplicated_task = await _getTaskbyID(taskID);
+    let duplicated_task: Task = await _getTaskbyID(task_uuid) as Task;
+    delete duplicated_task.uuid
+    delete duplicated_task.created_at
+
 
     //check if task does not exist
     if (!duplicated_task) {
@@ -415,24 +418,34 @@ export async function _duplicateTask(taskID: string) {
     //duplicate task in supabase
     const { data, error } = await supabase
         .from('tasks')
-        .insert([duplicated_task])
+        .insert([duplicated_task]).select()
         .single()
 
     if (error) {
         throw new Error(error.message)
     }
 
+    return data
+
 }
 
-export async function _shareTasktoUser(taskID: string, userID: string) {
-    const { data, error } = await supabase 
-        .from('task_user_relations')
-        .insert({ task_id: taskID, user_id: userID})
-        .single()
+export async function _importTaskFromUser(task_uuid: string, user_uuid: string) {
 
-    if (error) {
-        throw new Error(error.message);
+    const duplicatedTask: Task = await _duplicateTask(task_uuid) as Task
+    if (!duplicatedTask) {
+        return false
     }
+    const new_task_uuid = duplicatedTask.uuid
+    if (new_task_uuid == undefined) {
+        return false
+    }
+
+    const addedRelation = await _addUserTask(user_uuid, new_task_uuid)
+    if (!addedRelation) {
+        return false
+    }
+
+    return 
 
 }
 
@@ -564,7 +577,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
  * @param userID 
  * @param taskID 
  */
-export async function _addUserTask(userID: string | undefined, taskID: string) {
+export async function _addUserTask(userID: string, taskID: string) {
 
     if (!userID) {
         throw new Error('No user ID found')
