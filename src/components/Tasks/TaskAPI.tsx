@@ -752,17 +752,17 @@ export async function _isComplete(userID: string, taskID: string) {
 
 }
 
-export const increment = async(id: any) => {
-    const { data, error } = await supabase.rpc('increment', { query_post_uuid: id })
-
+export const increment = async(id: any, user_id: any) => {
+    const { data: increment, error: incrementError } = await supabase.rpc('increment', { query_post_uuid: id })
+    const { data: addPoints, error: addPointsError } = await supabase.rpc('addprofilepoints', { query_user_uuid: user_id, amount: 1 })
+    
 }
 
-export const decrement = async(id: any) => {
-    const { data, error } = await supabase.rpc('increment', { query_post_uuid: id })
-    console.log(data)
-    console.log(error)
-
+export const decrement = async(id: any, user_id: any) => {
+    const { data: decrement, error: decrementError } = await supabase.rpc('decrement', { query_post_uuid: id })
+    const { data: removePoints, error: removePointsError } = await supabase.rpc('removeprofilepoints', { query_user_uuid: user_id, amount: 1 })
 }
+
 /**
  * Searches and packages for post information before posting
  * @param taskID 

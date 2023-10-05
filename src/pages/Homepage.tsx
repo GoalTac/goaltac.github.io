@@ -15,7 +15,7 @@ import { ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon 
 import { RxAvatar } from "react-icons/rx";
 import { TbTableImport, TbTableOptions, TbTrendingUp } from "react-icons/tb";
 import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
-import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getUserTasksInfo, _getTaskbyID, _getUserRelations, _getUserTasks, increment, _importTaskFromUser } from "../components/Tasks/TaskAPI";
+import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getUserTasksInfo, _getTaskbyID, _getUserRelations, _getUserTasks, increment, _importTaskFromUser, decrement } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
@@ -96,8 +96,7 @@ export default function Homepage() {
                 if (error) {
                     throw Error(error.message)
                 }
-                const { data: decrement, error: decrementError } = await supabase.rpc('decrement', { query_post_uuid: post_uuid })
-
+                decrement(post_uuid, user_uuid)
                 setIsLiked(false)
                 setLikes(likes - 1)
             } else {
@@ -108,7 +107,7 @@ export default function Homepage() {
                 if (error) {
                     throw Error(error.message)
                 }
-                const { data: increment, error: incrementError } = await supabase.rpc('increment', { query_post_uuid: post_uuid })
+                increment(post_uuid, user_uuid)
             
                 setIsLiked(true)
                 setLikes(likes + 1)
@@ -169,6 +168,13 @@ export default function Homepage() {
                         <MenuItem onClick={()=>{
                             if (user && taskInfo.user_id != user?.['id']) {
                                 _importTaskFromUser(taskInfo.task_id, user?.['id'])
+                                toast({
+                                    title: "Success",
+                                    description: 'View your dashboard to see your new task!',
+                                    status: 'success',
+                                    duration: 2000,
+                                    isClosable: true,
+                                })
                             } else {
                                 toast({
                                     title: "Error",
