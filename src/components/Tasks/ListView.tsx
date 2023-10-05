@@ -21,7 +21,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         const end_date = task.end_date ? new Date(task.end_date) : null
         const description = task.description ? task.description : 'A start to a great adventure'
         const requirement = task.requirement ? task.requirement : 1
-        const reward = task.reward ? task.reward : 1
+        const difficulty = task.difficulty ? task.difficulty : 1
         const type = task.type ? task.type : 'Boolean'
         const reoccurence = task.reoccurence ? task.reoccurence : 0
         const [progress, setProgress ] = useState<any>(task.progress)

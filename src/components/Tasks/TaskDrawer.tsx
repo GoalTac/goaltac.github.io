@@ -25,7 +25,7 @@ export default function TaskDrawer({children, preset}: any) {
     const [endDate, setEndDate] = useState<any>(isEdit ? preset.end_date : null)
     const [type, setType] = useState<any>(isEdit ? preset.type : 'Simple')
     const requirement = useRef(isEdit ? preset.requirement : 1)
-    const [reward, setReward] = useState<any>(isEdit ? preset.reward : 1)
+    const [difficulty, setDifficulty] = useState<any>(isEdit ? preset.difficulty : 1)
     const user = useSession().user //this rerenders the page tons of times
     const [tasks, setTasks] = useState<any>([])
     const [selectedTasks, setSelectedTasks] = useState<any>([])
@@ -57,7 +57,7 @@ export default function TaskDrawer({children, preset}: any) {
             setStartDate('')
             setEndDate('')
             setType('Simple')
-            setReward(1)
+            setDifficulty(1)
             setSelectedTasks([])
             requirement.current = 1
             setReoccurence(0)
@@ -85,7 +85,7 @@ export default function TaskDrawer({children, preset}: any) {
             name: title,
             description: description,
             requirement: type=='Simple' ? 1 : requirement.current,
-            reward: reward,
+            difficulty: difficulty,
             type: type,
             reoccurence: reoccurence
         }
@@ -416,16 +416,21 @@ export default function TaskDrawer({children, preset}: any) {
                  */}
 
                 <FormControl>
-                    <FormLabel htmlFor='reward'>Points rewarded: {reward}</FormLabel>
+                    <FormLabel htmlFor='difficulty'>Difficulty: {difficulty}</FormLabel>
                     
-                    <Slider size='lg' id='reward' defaultValue={reward} min={1} max={5} step={1} onChange={value=>{setReward(value)}}>
+                    <Slider size='lg' id='difficulty' defaultValue={difficulty} min={1} max={10} step={1} onChange={value=>{setDifficulty(value)}}>
                         <SliderTrack bg='red.100'>
                             <SliderFilledTrack bg='tomato' />
                         </SliderTrack>
                         <SliderThumb boxSize={6}>
-                            <Text fontSize='15' fontWeight='300' color='red'>{reward}</Text>
+                            <Text fontSize='15' fontWeight='300' color='red'>{difficulty}</Text>
                         </SliderThumb>
-                    </Slider>    
+                    </Slider>
+                    <HStack>
+                        <Text fontSize='12px' textColor='gray.400'>Easy</Text>
+                        <Spacer/>
+                        <Text fontSize='12px' textColor='gray.400'>Hard</Text>
+                    </HStack>
                 </FormControl>
 
                 

@@ -9,7 +9,7 @@ export type Task = {
     end_date: Date;
     description: string;
     requirement: number;
-    reward: number;
+    difficulty: number;
     type: string;
     reoccurence: number;
 };
@@ -285,7 +285,7 @@ export async function _setTask(taskID: string, task: any) {
             name: task.name, 
             description: task.description, 
             requirement: task.requirement, 
-            reward: task.reward, reoccurence: task.reoccurence,
+            difficulty: task.difficulty, reoccurence: task.reoccurence,
             type: task.type})
     .eq('uuid', taskID).select().single();
 
@@ -336,7 +336,7 @@ export async function _addTask(task: any) {
     const requirement = task.requirement ? task.requirement : 1
     const reoccurence = task.reoccurence ? task.reoccurence : 1
 
-    const reward = task.reward ? task.reward : 1
+    const difficulty = task.difficulty ? task.difficulty : 1
     const type = task.type ? task.type : 'Boolean'
 
     const newTask = {
@@ -345,7 +345,7 @@ export async function _addTask(task: any) {
         name: name,
         description: description,
         requirement: requirement,
-        reward: reward,
+        difficulty: difficulty,
         type: type, reoccurence: reoccurence
     }
     //console.log(newTask)
@@ -538,7 +538,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
             end_date: task.end_date,
             name: task.name,
             reoccurence: task.reoccurence,
-            reward: task.reward,
+            difficulty: task.difficulty,
             requirement: task.requirement,
             start_date: task.start_date,
             type: task.type, hasPosted: (post ? true : false),
@@ -835,7 +835,7 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
             end_date: task.end_date,
             name: task.name,
             reoccurence: task.reoccurence,
-            reward: task.reward,
+            difficulty: task.difficulty,
             requirement: task.requirement,
             start_date: task.start_date,
             type: task.type,
