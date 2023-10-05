@@ -827,6 +827,7 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
     const getPackagedInfo = (task: any, relation: any, profile: any, post: any, post_liked: any) => {
         const liked = post_liked ? true : false
         const packaged = {
+            created_at: post.created_at,
             progress: relation.progress,
             task_id: relation.task_id,
             user_id: relation.user_id,

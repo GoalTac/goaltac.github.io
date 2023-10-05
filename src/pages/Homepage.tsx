@@ -173,6 +173,8 @@ export default function Homepage() {
     }
 
     function SocialFeed() {
+
+        const [filter, setFilter] = useState<string>('For you')
         
         function Header() {
             return <Card maxWidth='inherit' padding='20px'>
@@ -189,11 +191,11 @@ export default function Homepage() {
                     {({ isOpen }) => (
                         <>
                         <MenuButton isActive={isOpen} variant='unstyled' colorScheme='gray' as={Button} rightIcon={(isOpen ? <ArrowUpIcon/> : <ArrowDownIcon/>)}>
-                            Options
+                            <Badge padding='5px'>{filter}</Badge>
                         </MenuButton>
                         <MenuList>
-                            <MenuItem icon={<RxAvatar/>}>For you</MenuItem>
-                            <MenuItem isDisabled icon={<StarIcon/>}>New</MenuItem>
+                            <MenuItem icon={<RxAvatar/>} onClick={()=>setFilter('For you')}>For you</MenuItem>
+                            <MenuItem icon={<StarIcon/>} onClick={()=>setFilter('New')}>New</MenuItem>
                             <MenuItem isDisabled icon={<TbTrendingUp/>}>Trending</MenuItem>
                             <MenuItem isDisabled icon={<FaFilter/>}>Filter</MenuItem>
 
@@ -220,7 +222,10 @@ export default function Homepage() {
                     if (!user) {
                         return
                     }
-                    const fetchedPosts = await _getAllPostInfo(offset, user?.['id'])
+                    let fetchedPosts = await _getAllPostInfo(offset, user?.['id'])
+                    if (filter == 'New') {
+                        fetchedPosts.sort((a, b) => a.created_at > b.created_at ? -1 : 1)
+                    }
                     setPosts(fetchedPosts)
                     setPostsLoaded(true)
                 }
