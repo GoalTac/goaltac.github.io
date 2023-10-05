@@ -38,6 +38,7 @@ export default function Homepage() {
     const loading = () => {return tasksLoaded && postsLoaded}
 
     function Post({taskInfo}: any) {
+        const created_at : Date = new Date(taskInfo.created_at)
         const progress: number = taskInfo.progress
         const requirement: number = taskInfo.requirement
         const userName: string = taskInfo.userName
@@ -157,9 +158,7 @@ export default function Homepage() {
                     <Button colorScheme={isLiked ? 'green' : 'gray'} leftIcon={<FaThumbsUp />} onClick={handleLike}>{likes}</Button>
                     <Tooltip label='Comment feature coming soon'>
                         <Button colorScheme='blue' leftIcon={<ChatIcon />}>{taskInfo.comments} comments</Button>
-
                     </Tooltip>
-
                 </ButtonGroup>
                 <Spacer/>
                 <Tooltip label='Import & collaborate on tasks'>
@@ -167,6 +166,9 @@ export default function Homepage() {
 
                 </Tooltip>
             </HStack>
+            <Text textColor='gray.300' fontSize='12px'>{created_at.toLocaleString(undefined, {
+                month: "short", day: "numeric", year: '2-digit'
+            })}</Text>
                 
                 
         </Card>
@@ -455,13 +457,14 @@ export default function Homepage() {
             </Card>
             
         }
+        //the tasks dashboard should be accessed through a hamburger when the screen is minimized
         return <Flex position='static'  pos='relative' rowGap='20px' maxWidth={[null,'200px']}>
-            <Box>
+            <Flex flexDirection={['row','column']}>
                 <Analytics/>
-                <Box paddingTop='20px' position='sticky' flexWrap='wrap' top={16} height='min'>
+                <Box paddingTop={['0px','20px']} position='sticky' flexWrap='wrap' top={16} height='min'>
                     <ListView/>
                 </Box>
-            </Box>
+            </Flex>
         </Flex>
     }
 
