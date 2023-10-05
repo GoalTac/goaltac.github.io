@@ -316,7 +316,7 @@ export async function _deleteTask(taskID: string) {
     const { error } = await supabase
         .from('tasks')
         .delete()
-        .eq('id', taskID);
+        .eq('uuid', taskID);
 
     if (error) {
         throw new Error(error.message);
@@ -429,6 +429,7 @@ export async function _duplicateTask(task_uuid: string) {
 
 }
 
+//This is used on the home page to add a task another user has into the person's own dashboard
 export async function _importTaskFromUser(task_uuid: string, user_uuid: string) {
 
     const duplicatedTask: Task = await _duplicateTask(task_uuid) as Task
@@ -445,10 +446,7 @@ export async function _importTaskFromUser(task_uuid: string, user_uuid: string) 
     if (addedRelation.message) {
         return addedRelation
     }
-    
-
     return null
-
 }
 
 
@@ -579,7 +577,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
  * @param userID 
  * @param taskID 
  */
-export async function _addUserTask(userID: string, taskID: string) {
+export async function _addUserTask(userID: string, taskID: string, isOwner: boolean = true) {
 
     if (!userID) {
         return new Error('No user detected')
@@ -591,7 +589,8 @@ export async function _addUserTask(userID: string, taskID: string) {
 
     const newRelation = {
         task_id: taskID,
-        user_id: userID
+        user_id: userID,
+        isOwner: isOwner
     }
     const { data: data, error } = await supabase
         .from('task_user_relations')
@@ -611,31 +610,39 @@ export async function _addUserTask(userID: string, taskID: string) {
  * @param taskID 
  */
 export async function _deleteUserTask(userID: string, taskID: string) {
+    
+    
+    //to delete the task if there is only one person who has a relation to it
+    const userRelations = await _userTaskRowCount(taskID)
+    let count = userRelations ? userRelations : 0
+    if (count <= 1) {
+        const deletedTask = await _deleteTask(taskID)
+    }
     const { error: error } = await supabase
         .from('task_user_relations')
         .delete()
         .eq('task_id', taskID)
         .eq('user_id', userID);
-    
-    const { error: error2 } = await supabase
-        .from('posts')
-        .delete()
-        .eq('task_uuid', taskID)
-        .eq('user_uuid', userID);
-    
     if (error) {
         throw new Error(error.message);
     }
-    if (error2) {
-        throw new Error(error2.message);
-    }
+}
 
+/**
+ * Returns how many relationships the task has
+ * @param task_uuid 
+ */
+export async function _userTaskRowCount(task_uuid: string) {
+    const { data, count } = await supabase //returns number of tasks that the user has completed
+        .from('task_user_relations')
+        .select('*', { count: 'exact', head: true }).eq('task_id', task_uuid)
+    return count
 }
 
 /**
  * Sets a task relationship
  * @param userID 
- * @param taskID 
+ * @param taskID n
  */
 
 export async function _setUserTask(userID: string, taskID: string) {

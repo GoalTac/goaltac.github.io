@@ -362,7 +362,7 @@ export default function TaskDrawer({children, preset}: any) {
 
                 </FormControl>
 
-                <FormControl isRequired>
+                <FormControl>
                     <FormLabel htmlFor='description'>Description</FormLabel>
                     <Textarea maxLength={200} resize='none' variant='outline' isRequired placeholder='Describe your task. What should you do?'
                         value={description}

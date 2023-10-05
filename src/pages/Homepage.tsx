@@ -196,6 +196,37 @@ export default function Homepage() {
                                 })
                             }
                         }} icon={<TbTableImport/>}>Import</MenuItem>
+                        <MenuItem onClick={async()=>{
+                            if (user && taskInfo.user_id != user?.['id']) {
+                                const isError = await _importTaskFromUser(taskInfo.task_id, user?.['id'])
+                                if (isError) {
+                                    toast({
+                                        title: "Error",
+                                        description: isError.message,
+                                        status: 'error',
+                                        duration: 2000,
+                                        isClosable: true,
+                                    })
+                                } else {
+                                    toast({
+                                        title: "Success",
+                                        description: 'View your dashboard to see your new task!',
+                                        status: 'success',
+                                        duration: 2000,
+                                        isClosable: true,
+                                    })
+                                }
+                                
+                            } else {
+                                toast({
+                                    title: "Error",
+                                    description: 'You can not import your own task',
+                                    status: 'warning',
+                                    duration: 2000,
+                                    isClosable: true,
+                                })
+                            }
+                        }} icon={<TbTableImport/>}>Import</MenuItem>
                     </MenuList>
                     </>)}
                 </Menu>
