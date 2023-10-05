@@ -441,11 +441,12 @@ export async function _importTaskFromUser(task_uuid: string, user_uuid: string) 
     }
 
     const addedRelation = await _addUserTask(user_uuid, new_task_uuid)
+    addPoints(user_uuid, 1)
     if (!addedRelation) {
         return false
     }
 
-    return 
+    return true
 
 }
 
@@ -754,13 +755,18 @@ export async function _isComplete(userID: string, taskID: string) {
 
 export const increment = async(id: any, user_id: any) => {
     const { data: increment, error: incrementError } = await supabase.rpc('increment', { query_post_uuid: id })
-    const { data: addPoints, error: addPointsError } = await supabase.rpc('addprofilepoints', { query_user_uuid: user_id, amount: 1 })
-    
+    addPoints(user_id)
+}
+export const addPoints = async(user_id: any, amount?: number) => {
+    const { data: addPoints, error: addPointsError } = await supabase.rpc('addprofilepoints', { query_user_uuid: user_id, amount: amount ? amount : 1 })
 }
 
 export const decrement = async(id: any, user_id: any) => {
     const { data: decrement, error: decrementError } = await supabase.rpc('decrement', { query_post_uuid: id })
-    const { data: removePoints, error: removePointsError } = await supabase.rpc('removeprofilepoints', { query_user_uuid: user_id, amount: 1 })
+    removePoints(user_id)
+}
+export const removePoints = async(user_id: any, amount?: number) => {
+    const { data: removePoints, error: removePointsError } = await supabase.rpc('removeprofilepoints', { query_user_uuid: user_id, amount: amount ? amount : 1 })
 }
 
 /**
