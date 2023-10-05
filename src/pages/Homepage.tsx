@@ -165,16 +165,27 @@ export default function Homepage() {
                     <>
                     <MenuButton rightIcon={<SlOptions />} isActive={isOpen} variant='ghost' colorScheme='gray' aria-label='Settings Icon' as={Button}/>
                     <MenuList>
-                        <MenuItem onClick={()=>{
+                        <MenuItem onClick={async()=>{
                             if (user && taskInfo.user_id != user?.['id']) {
-                                _importTaskFromUser(taskInfo.task_id, user?.['id'])
-                                toast({
-                                    title: "Success",
-                                    description: 'View your dashboard to see your new task!',
-                                    status: 'success',
-                                    duration: 2000,
-                                    isClosable: true,
-                                })
+                                const isError = await _importTaskFromUser(taskInfo.task_id, user?.['id'])
+                                if (isError) {
+                                    toast({
+                                        title: "Error",
+                                        description: isError.message,
+                                        status: 'error',
+                                        duration: 2000,
+                                        isClosable: true,
+                                    })
+                                } else {
+                                    toast({
+                                        title: "Success",
+                                        description: 'View your dashboard to see your new task!',
+                                        status: 'success',
+                                        duration: 2000,
+                                        isClosable: true,
+                                    })
+                                }
+                                
                             } else {
                                 toast({
                                     title: "Error",

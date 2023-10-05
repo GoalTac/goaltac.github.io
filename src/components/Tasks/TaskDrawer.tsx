@@ -63,7 +63,30 @@ export default function TaskDrawer({children, preset}: any) {
             setReoccurence(0)
         }
 
-        function checks(): Boolean {
+        async function checkTitle(): Promise<Boolean> {
+            if (user) {
+                const taskLimitsData = await _getTaskLimit(user?.['id'])
+                const hasEnoughRoom = taskLimitsData.available>0
+                if (!hasEnoughRoom) {
+                    toast({
+                        title: "Error",
+                        description: 'Sorry! You do not have enough space',
+                        status: "error",
+                        duration: 2000,
+                        isClosable: true,
+                    })
+                    return false
+                }
+            } else {
+                toast({
+                    title: "Error",
+                    description: 'No user detected. Please retry again',
+                    status: "error",
+                    duration: 2000,
+                    isClosable: true,
+                })
+                return false
+            }
             if (!title) {
                 toast({
                     title: "Error",
@@ -73,11 +96,13 @@ export default function TaskDrawer({children, preset}: any) {
                     isClosable: true,
                 })
                 return false
-            } else {
-                return true
             }
+            return true
         }
-        if(!checks()) return;
+        
+        
+
+        if(!(await checkTitle())) return; 
 
         const newTask = {
             start_date: startDate,
@@ -100,27 +125,28 @@ export default function TaskDrawer({children, preset}: any) {
                     duration: 2000,
                     isClosable: true,
                 })
-            } else {
-                toast({
+            }
+            
+            onClose()
+            clearTasks()
+        })
+        
+        if (!isEdit && user) {
+            toast({
                 title: "Success",
                 description: 'Successfully created your task!',
                 status: "success",
                 duration: 2000,
                 isClosable: true,
             })
-            }
-            
-            onClose()
-            clearTasks()
-        })
-
-        if (!isEdit && user) {
             //Relational data saving
             const taskID = createdTask.uuid
 
             //Adds user as an owner of the task
             await _addUserTask(user?.['id'], taskID)
         }
+
+       
 
         //If task is type 'Tasks', create a task_task_relation row
 

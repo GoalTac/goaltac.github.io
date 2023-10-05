@@ -375,7 +375,7 @@ export async function _getTaskLimit(userID: string) {
      * retrieves the user's role from the database, and determines their task limit
      */
 
-    const defaultTaskLimit = 20
+    const defaultTaskLimit = 15
     const tasksLeft = defaultTaskLimit - (count ? count : 0)
     return { 
         limit: defaultTaskLimit,
@@ -433,20 +433,21 @@ export async function _importTaskFromUser(task_uuid: string, user_uuid: string) 
 
     const duplicatedTask: Task = await _duplicateTask(task_uuid) as Task
     if (!duplicatedTask) {
-        return false
+        return new Error('Task creation error')
     }
     const new_task_uuid = duplicatedTask.uuid
     if (new_task_uuid == undefined) {
-        return false
+        return new Error('Task ID not found')
     }
-
     const addedRelation = await _addUserTask(user_uuid, new_task_uuid)
     addPoints(user_uuid, 1)
-    if (!addedRelation) {
-        return false
-    }
 
-    return true
+    if (addedRelation.message) {
+        return addedRelation
+    }
+    
+
+    return null
 
 }
 
@@ -581,8 +582,13 @@ export async function _getUserTasksInfo(user_uuid: string) {
 export async function _addUserTask(userID: string, taskID: string) {
 
     if (!userID) {
-        throw new Error('No user ID found')
+        return new Error('No user detected')
     }
+    const taskCount = await _getTaskLimit(userID)
+    if (taskCount.available <= 0) {
+        return new Error('You can not add any more tasks')
+    }
+
     const newRelation = {
         task_id: taskID,
         user_id: userID
