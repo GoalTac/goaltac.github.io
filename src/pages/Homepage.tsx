@@ -437,7 +437,7 @@ export default function Homepage() {
                 <StatGroup flexDir='column'>
                     <Stat >
                         <StatLabel fontSize='10px'  fontWeight='400'>Total Tasks</StatLabel>
-                        <StatNumber>{tasksInfo.length}</StatNumber>
+                        <StatNumber>{tasksInfo.length}/20</StatNumber>
                     </Stat>
                     <Stat>
                         <StatLabel fontSize='10px'  fontWeight='400'>Completed Tasks</StatLabel>
