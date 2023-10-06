@@ -15,7 +15,7 @@ import { ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon 
 import { RxAvatar } from "react-icons/rx";
 import { TbTableImport, TbTableOptions, TbTrendingUp } from "react-icons/tb";
 import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
-import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getUserTasksInfo, _getTaskbyID, _getUserRelations, _getUserTasks, increment, _importTaskFromUser, decrement } from "../components/Tasks/TaskAPI";
+import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getUserTasksInfo, _getTaskbyID, _getUserRelations, _getUserTasks, increment, _importTaskFromUser, decrement, _addUserTask } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
@@ -25,6 +25,7 @@ import { supabase } from "../supabase";
 import { GiBowString, GiPocketBow, GiPostOffice, GiPostStamp } from "react-icons/gi";
 import PostModal from "../components/Tasks/PostModal";
 import Chat from "../components/Chats/CommunityChat";
+import { AiOutlineImport } from "react-icons/ai";
 
 export default function Homepage() {
     
@@ -198,8 +199,8 @@ export default function Homepage() {
                         }} icon={<TbTableImport/>}>Import</MenuItem>
                         <MenuItem onClick={async()=>{
                             if (user && taskInfo.user_id != user?.['id']) {
-                                const isError = await _importTaskFromUser(taskInfo.task_id, user?.['id'])
-                                if (isError) {
+                                const isError = await _addUserTask(user?.['id'], taskInfo.task_id, false)
+                                if (isError.message) {
                                     toast({
                                         title: "Error",
                                         description: isError.message,
@@ -210,7 +211,7 @@ export default function Homepage() {
                                 } else {
                                     toast({
                                         title: "Success",
-                                        description: 'View your dashboard to see your new task!',
+                                        description: 'Now collaborating! View tasks in your dashboard',
                                         status: 'success',
                                         duration: 2000,
                                         isClosable: true,
@@ -219,14 +220,14 @@ export default function Homepage() {
                                 
                             } else {
                                 toast({
-                                    title: "Error",
-                                    description: 'You can not import your own task',
+                                    title: "Warning",
+                                    description: 'You can not collaborate on your own task',
                                     status: 'warning',
                                     duration: 2000,
                                     isClosable: true,
                                 })
                             }
-                        }} icon={<TbTableImport/>}>Import</MenuItem>
+                        }} icon={<AiOutlineImport/>}>Collaborate</MenuItem>
                     </MenuList>
                     </>)}
                 </Menu>

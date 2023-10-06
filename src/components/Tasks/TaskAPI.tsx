@@ -285,7 +285,7 @@ export async function _setTask(taskID: string, task: any) {
             name: task.name, 
             description: task.description, 
             requirement: task.requirement, 
-            difficulty: task.difficulty, reoccurence: task.reoccurence,
+            difficulty: task.difficulty, reoccurence: task.reoccurence, isCollaborative: task.isCollaborative,
             type: task.type})
     .eq('uuid', taskID).select().single();
 
@@ -335,7 +335,7 @@ export async function _addTask(task: any) {
     const description = task.description ? task.description : ''
     const requirement = task.requirement ? task.requirement : 1
     const reoccurence = task.reoccurence ? task.reoccurence : 1
-
+    const isCollaborative = task.isCollaborative ? task.isCollaborative : false
     const difficulty = task.difficulty ? task.difficulty : 1
     const type = task.type ? task.type : 'Boolean'
 
@@ -346,7 +346,7 @@ export async function _addTask(task: any) {
         description: description,
         requirement: requirement,
         difficulty: difficulty,
-        type: type, reoccurence: reoccurence
+        type: type, reoccurence: reoccurence, isCollaborative: isCollaborative
     }
     //console.log(newTask)
 
@@ -492,6 +492,7 @@ export async function _getUserTasks(userID: string) {
     return tasks;
 }
 
+
 /**
  * This is to package the user relations and task info
  * @param userID 
@@ -525,7 +526,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
         .from('posts')
         .select('*')
         .eq('user_uuid', user_uuid);
-    
+
         // get all relations in batch with one api call
     const {data: profile, error: profileError} = await supabase
         .from('profiles')
@@ -541,12 +542,54 @@ export async function _getUserTasksInfo(user_uuid: string) {
     if(profileError) {
         throw new Error(profileError.message)
     }
+    //how can we package multiple userIDs to show all collaborators?
+    //may need to have another database call here to grab collaborators
+    const getPackagedInfo = async(task: any, relation: any, post: any, profile: any) => {
 
-    const getPackagedInfo = (task: any, relation: any, post: any, profile: any) => {
+        //each has the potential to be an array if there are multiple people working on this task
+        let progress = relation.progress
+        let collaborators: any = []
+
+        if (task.isCollaborative) {
+            const { data: collaborator_relations, error: error } = await supabase
+                .from('task_user_relations')
+                .select('*')
+                .eq('task_id', task.uuid)
+            
+            if(error) {
+                throw new Error(error.message)
+            }
+            
+            //fetching the profiles of all collaborators
+            const collaborator_uuids = collaborator_relations.map(relation => relation.user_id);
+            const {data: collaborator_profiles, error: collaborator_profilesError} = await supabase
+                .from('profiles')
+                .select('*')
+                .in('userid', collaborator_uuids);
+            
+            if(collaborator_profilesError) {
+                throw new Error(collaborator_profilesError.message)
+            }
+            const getCollaboratorObject = (profile: any, relation: any) => {
+                progress += relation.progress
+                return {
+                    displayName: profile.name, avatarURL: profile.avatarurl,
+                    userName: profile.username, progress: relation.progress, user_id: relation.user_id
+                }
+            }
+
+            for (const relation of collaborator_relations) {
+                //collaborator is the relation
+                const profile = collaborator_profiles.find(it => it.userid === relation.user_id);
+                const packagedCollaboratorInfo = await getCollaboratorObject(profile, relation)
+                collaborators.push(packagedCollaboratorInfo)
+            }
+        }
+
         return {
-            progress: relation.progress,
-            task_id: relation.task_id,
-            user_id: relation.user_id,
+            progress: progress, isOwner: relation.isOwner,
+            task_id: relation.task_id, isCollaborative: task.isCollaborative,
+            user_id: relation.user_id, collaborators: collaborators,
             description: task.description,
             end_date: task.end_date,
             name: task.name,
@@ -565,7 +608,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
         const post = posts.find(post => post.user_uuid == relation.user_id && post.task_uuid == relation.task_id)
 
         if (task) {
-            const packagedInfo = getPackagedInfo(task, relation, post, profile);
+            const packagedInfo = await getPackagedInfo(task, relation, post, profile);
             packagedData.push(packagedInfo);
         }
     }
@@ -585,6 +628,17 @@ export async function _addUserTask(userID: string, taskID: string, isOwner: bool
     const taskCount = await _getTaskLimit(userID)
     if (taskCount.available <= 0) {
         return new Error('You can not add any more tasks')
+    }
+
+    const { data: checkExisting, error: errorExisting, count } = await supabase
+        .from('task_user_relations')
+        .select('*', { count: 'exact', head: true }).match({task_id: taskID, user_id: userID });
+    if (errorExisting) {
+        return new Error(errorExisting.message)
+    }
+    let existingCount = count ? count : 0
+    if (existingCount > 0) {
+        return new Error('You can not collaborate more than once on this task.')
     }
 
     const newRelation = {
@@ -757,6 +811,34 @@ export async function _setProgress(userID: string, taskID: string, progress: num
     }
 }
 
+
+/**
+ * For collaborators. Only READS. Does not update other people's progress
+ * @param task_uuid 
+ */
+export async function _getTotalProgress(task_uuid: string) {
+    //iterate through all user relations that have the same task id
+    //put progress, profile info, etc into an object and store that in an array
+    //return that 
+    const { data: data, error } = await supabase
+        .from('task_user_relations')
+        .select('progress')
+        .eq('task_id', task_uuid)
+    if (error) {
+        throw new Error(error.message);
+    }
+    let sum : number = 0
+    data.forEach((it_data) => {
+        try {
+            sum += it_data.progress
+        } catch(issue) {
+            throw new Error('Unable to add progress to sum')
+        }
+        
+    })
+    return sum
+}
+
 /**
  * Returns whether or not the task is complete by measuring the progress
  * @param userID
@@ -858,6 +940,7 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
 
     const getPackagedInfo = (task: any, relation: any, profile: any, post: any, post_liked: any) => {
         const liked = post_liked ? true : false
+        //const progress = (task.isCollaborative ? relation.progress : )
         const packaged = {
             created_at: post.created_at,
             progress: relation.progress,
@@ -880,6 +963,10 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
         return packaged
     }
     for (const relation of relations) {
+        if (!relation.isOwner) {
+            continue
+        }
+
         const task = tasks.find(task => task.uuid === relation.task_id);
         const profile = profiles.find(profile => profile.userid == relation.user_id)
         const post = posts.find(post => post.user_uuid == relation.user_id && post.task_uuid == relation.task_id)
@@ -905,4 +992,15 @@ export async function _getAllPostInfo(offset: number, user_uuid: string) {
     }
     const packagedInfo = await _getPostInfo(posts, user_uuid);
     return packagedInfo;
+}
+
+/**
+ * Gets packaged info of all information about collaborators
+ * @param task_uuid 
+ */
+export async function _getCollaboratorInfo(task_uuid: string) {
+    //iterate through all user relations that have the same task id
+    //put progress, profile info, etc into an object and store that in an array
+    //return that 
+
 }

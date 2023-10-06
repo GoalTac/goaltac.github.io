@@ -1,5 +1,5 @@
 import { AddIcon, CheckIcon, ChevronDownIcon, InfoOutlineIcon, UpDownIcon } from "@chakra-ui/icons"
-import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer, Tooltip } from "@chakra-ui/react"
+import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer, Tooltip, Divider } from "@chakra-ui/react"
 import React, { useRef, useState } from "react"
 import { Task, _addTask, _addUserTask, _getTaskLimit, _getUserTasks, _setTask } from "./TaskAPI"
 import { useSession } from "../../hooks/SessionProvider"
@@ -30,6 +30,7 @@ export default function TaskDrawer({children, preset}: any) {
     const [tasks, setTasks] = useState<any>([])
     const [selectedTasks, setSelectedTasks] = useState<any>([])
     const [reoccurence, setReoccurence] = useState<number>(isEdit ? preset.reoccurence : 1)
+    const [isCollaborative, setIsCollaborative] = useState<boolean>(isEdit ? preset.isCollaborative : false)
 
     const uuid = isEdit ? preset.user_id : (user ? user?.['id'] : '')
     const toast = useToast()
@@ -54,6 +55,8 @@ export default function TaskDrawer({children, preset}: any) {
         function clearTasks() {
             setTitle('')
             setDescription('')
+            setIsCollaborative(false)
+
             setStartDate('')
             setEndDate('')
             setType('Simple')
@@ -112,7 +115,8 @@ export default function TaskDrawer({children, preset}: any) {
             requirement: type=='Simple' ? 1 : requirement.current,
             difficulty: difficulty,
             type: type,
-            reoccurence: reoccurence
+            reoccurence: reoccurence,
+            isCollaborative: isCollaborative
         }
 
         const createdTask = await (isEdit ? _setTask(preset.task_id, newTask) : _addTask(newTask)).finally(()=>{
@@ -440,7 +444,7 @@ export default function TaskDrawer({children, preset}: any) {
                     </Flex>
                 </FormControl>
                  */}
-
+                <Divider/>
                 <FormControl>
                     <FormLabel htmlFor='difficulty'>Difficulty: {difficulty}</FormLabel>
                     
@@ -458,6 +462,26 @@ export default function TaskDrawer({children, preset}: any) {
                         <Text fontSize='12px' textColor='gray.400'>Hard</Text>
                     </HStack>
                 </FormControl>
+                <FormControl paddingTop='20px'>
+                    <Flex flexDir='row'>
+                        <Flex flexDir='column' maxWidth='200px'>
+                            <FormLabel htmlFor='type'>Collaborative?</FormLabel>
+                            <FormHelperText>Would you like other people to help? (must be posted)</FormHelperText>
+                        </Flex>
+                        <Spacer/>
+                        <Flex paddingTop='20px' columnGap={'20px'} alignItems='center' justifyContent='center'>
+                            <Badge variant={isCollaborative==true ? 'subtle' : 'outline'} colorScheme={isCollaborative==true ? 'unset' : 'green'}>Solo</Badge>
+                            <Switch colorScheme={isCollaborative == false ? 'green':'green'} size='lg' onChange={()=>{
+                                setIsCollaborative(!isCollaborative)
+                            }}/>
+                            <Badge variant={isCollaborative==false ? 'subtle' : 'outline'} colorScheme={isCollaborative==false ? 'unset' : 'green'}>Social</Badge>
+                        </Flex>
+                    </Flex>
+                    
+                    
+                </FormControl>
+
+                
 
                 
                 </Stack>

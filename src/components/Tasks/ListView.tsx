@@ -1,4 +1,4 @@
-import { Avatar, Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, FormHelperText, Grid, GridItem, HStack, Heading, Icon, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Progress, Spacer, Stack, Switch, Text, Tooltip, VStack, useColorModeValue, useDisclosure, useToast } from "@chakra-ui/react";
+import { Avatar, AvatarGroup, Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, FormHelperText, Grid, GridItem, HStack, Heading, Icon, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Progress, Spacer, Stack, Switch, Text, Tooltip, VStack, useColorModeValue, useDisclosure, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { useSession, useSupabaseClient } from "../../hooks/SessionProvider";
 import React from "react";
@@ -9,12 +9,18 @@ import { CalendarIcon, CheckCircleIcon } from "@chakra-ui/icons";
 import { FaHourglass, FaHourglassHalf, FaHourglassStart } from "react-icons/fa";
 import { Task, _addPost, _addProgress, _deleteProgress, _setProgress } from "./TaskAPI";
 import TaskDrawer from "./TaskDrawer";
+import { useNavigate } from "react-router-dom";
 
 export default function ListView({tasks}: Task[] | any, {relations}: any) {
     const {profile: profile, user: user} = useSession()
     const  useSupabase: any  = useSupabaseClient();
+    const navigate  = useNavigate();
+
 
     function Card_Module({task}: Task | any) {
+        const isOwner = task.isOwner == true ? true : false
+        const isCollaborative = task.isCollaborative ? task.isCollaborative : false
+        const collaborators = task.collaborators ? task.collaborators : null
         const name = task.name ? task.name : 'Untitled'
         const created_at = task.created_at ? task.created_at : null
         const start_date = task.start_date ? new Date(task.start_date) : created_at
@@ -236,11 +242,19 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         }
 
         return <Card backgroundColor={useColorModeValue('gray.50','gray.700')} margin='20px' overflow='hidden' height='200px' width='280px' size='md' flexDirection={'column'} alignItems={[null,'center']} >
-            <TaskDrawer preset={task}>
+            
+            {!isCollaborative ? <TaskDrawer preset={task}>
                 <Flex width='prose' height={'30px'} cursor='pointer' _hover={{backgroundColor:useColorModeValue('gray.300','gray.600')}} backgroundColor={pickedColor}>
                     
                 </Flex>
-            </TaskDrawer>
+            </TaskDrawer> : 
+            <Flex height={'30px'} cursor='pointer'>
+                <AvatarGroup size='sm' max={5}>
+                    {collaborators.map((collaborator: any)=>{
+                        return <Avatar size='full' onClick={()=>navigate(`/profile/${collaborator.userName}`)} name={collaborator.displayName} src={collaborator.avatarURL} />
+                    })}
+                </AvatarGroup>
+            </Flex>}
             
             <Flex width='100%' flexDirection='column' padding='10px' height='inherit' alignItems={['center','start']}>
                 <Flex flexDirection={'column'} height='100%' width='100%'>
