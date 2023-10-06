@@ -938,12 +938,52 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
         throw new Error(postsLikedError.message)
     }
 
-    const getPackagedInfo = (task: any, relation: any, profile: any, post: any, post_liked: any) => {
+    const getPackagedInfo = async(task: any, relation: any, profile: any, post: any, post_liked: any) => {
         const liked = post_liked ? true : false
-        //const progress = (task.isCollaborative ? relation.progress : )
+        let totalProgress = 0
+        let collaborators: any = []
+
+        if (task.isCollaborative) {
+            const { data: collaborator_relations, error: error } = await supabase
+                .from('task_user_relations')
+                .select('*')
+                .eq('task_id', task.uuid)
+            
+            if(error) {
+                throw new Error(error.message)
+            }
+            
+            //fetching the profiles of all collaborators
+            const collaborator_uuids = collaborator_relations.map(relation => relation.user_id);
+            const {data: collaborator_profiles, error: collaborator_profilesError} = await supabase
+                .from('profiles')
+                .select('*')
+                .in('userid', collaborator_uuids);
+            
+            if(collaborator_profilesError) {
+                throw new Error(collaborator_profilesError.message)
+            }
+            const getCollaboratorObject = (profile: any, relation: any) => {
+                totalProgress += relation.progress
+                return {
+                    displayName: profile.name, avatarURL: profile.avatarurl,
+                    userName: profile.username, progress: relation.progress, user_id: relation.user_id
+                }
+            }
+
+            for (const relation of collaborator_relations) {
+                //collaborator is the relation
+                const profile = collaborator_profiles.find(it => it.userid === relation.user_id);
+                const packagedCollaboratorInfo = await getCollaboratorObject(profile, relation)
+                collaborators.push(packagedCollaboratorInfo)
+            }
+        }
+       
+            
+            
         const packaged = {
-            created_at: post.created_at,
-            progress: relation.progress,
+            created_at: post.created_at, all_progress: totalProgress, 
+            progress: relation.progress, collaborators: collaborators, 
             task_id: relation.task_id,
             user_id: relation.user_id,
             description: task.description,
@@ -955,7 +995,7 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
             start_date: task.start_date,
             type: task.type,
             likes: post.likes, liked: liked, 
-            comments: 0,
+            comments: 0, isCollaborative: task.isCollaborative,
             post_id: post.post_uuid, 
             avatarURL: profile.avatarurl,
             userName: profile.username, displayName: profile.name
@@ -973,7 +1013,7 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
         const post_liked = postsLiked.find(liked => liked.post_uuid == post.post_uuid)
         
         if (task && profile && post) {
-            const packagedInfo = getPackagedInfo(task, relation, profile, post, post_liked);
+            const packagedInfo = await getPackagedInfo(task, relation, profile, post, post_liked);
             packagedData.push(packagedInfo);
         }
     }

@@ -247,13 +247,23 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
             {!isCollaborative ? <TaskDrawer preset={task}>
                 <Flex width='prose' height={'30px'} cursor='pointer' backgroundColor={pickedColor}/>
             </TaskDrawer> : 
+            
+            (isOwner ? <TaskDrawer preset={task}>
+                <Box height='30px' cursor='pointer' width='full' backgroundColor={pickedColor} paddingY='auto'>
+                    <AvatarGroup marginStart='2px' height='inherit' size='xs' max={5} spacing='2px'>
+                        {collaborators.map((collaborator: any)=>{
+                            return <Avatar key={collaborator.userName} onClick={()=>navigate(`/profile/${collaborator.userName}`)} name={collaborator.displayName} src={collaborator.avatarURL} />
+                        })}
+                    </AvatarGroup>
+                </Box>
+            </TaskDrawer> :
             <Box height='30px' cursor='pointer' width='full' backgroundColor={pickedColor} paddingY='auto'>
                 <AvatarGroup marginStart='2px' height='inherit' size='xs' max={5} spacing='2px'>
                     {collaborators.map((collaborator: any)=>{
                         return <Avatar key={collaborator.userName} onClick={()=>navigate(`/profile/${collaborator.userName}`)} name={collaborator.displayName} src={collaborator.avatarURL} />
                     })}
                 </AvatarGroup>
-            </Box>}
+            </Box>)}
             
             <Flex width='100%' flexDirection='column' padding='10px' height='inherit' alignItems={['center','start']}>
                 <Flex flexDirection={'column'} height='100%' width='100%'>

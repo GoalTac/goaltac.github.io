@@ -39,14 +39,18 @@ export default function Homepage() {
     const loading = () => {return tasksLoaded && postsLoaded}
 
     function Post({taskInfo}: any) {
+        const isCollaborative : boolean = taskInfo.isCollaborative ? true : false
+
         const created_at : Date = new Date(taskInfo.created_at)
         const progress: number = taskInfo.progress
+        const totalProgress: number = taskInfo.all_progress ? taskInfo.all_progress : progress
+
         const requirement: number = taskInfo.requirement
         const userName: string = taskInfo.userName
         const avatarURL: string = taskInfo.avatarURL
         const displayName: string = taskInfo.displayName
         const [likes, setLikes] = useState<number>(taskInfo.likes)
-        const percentProgress: number = ((progress/requirement) * 100)
+        const percentProgress: number = ((totalProgress/requirement) * 100)
         const post_uuid: string = taskInfo.post_id
         const [isLiked, setIsLiked] = useState<boolean>(taskInfo.liked) //this shouldn't be true if the post hasn't been liked by the person!!
         const colorTheme = {
@@ -116,6 +120,16 @@ export default function Homepage() {
         }
 
         const handleCollaborate = async() => {
+            if (!user || taskInfo.user_id == user?.['id']) {
+                toast({
+                    title: "Warning",
+                    description: 'You can not collaborate on your own task',
+                    status: 'warning',
+                    duration: 2000,
+                    isClosable: true,
+                })  
+                return
+            }
             if (user && taskInfo.user_id != user?.['id']) {
                 const isError = await _addUserTask(user?.['id'], taskInfo.task_id, false)
                 if (isError.message) {
@@ -136,14 +150,6 @@ export default function Homepage() {
                     })
                 }
                 
-            } else {
-                toast({
-                    title: "Warning",
-                    description: 'You can not collaborate on your own task',
-                    status: 'warning',
-                    duration: 2000,
-                    isClosable: true,
-                })
             }
         }
 
@@ -195,7 +201,7 @@ export default function Homepage() {
                     <Box position='relative'>
                         <Progress size='lg' borderRadius='full' marginLeft='auto' width='200px' value={percentProgress > 0 ? percentProgress : 1} backgroundColor={useColorModeValue('gray.200','gray.600')} colorScheme={progress >= requirement ? 'green' : 'orange'}/>
                         <Text textAlign='end' fontSize='14px' fontWeight='400'>
-                            {((progress/requirement) * 100).toFixed(2)}%
+                            {((totalProgress/requirement) * 100).toFixed(2)}%
                         </Text>
                     </Box>
                     
@@ -231,7 +237,7 @@ export default function Homepage() {
                     <MenuButton rightIcon={<SlOptions />} isActive={isOpen} variant='ghost' colorScheme='gray' aria-label='Settings Icon' as={Button}/>
                     <MenuList>
                         <MenuItem onClick={handleImport} icon={<TbTableImport/>}>Import</MenuItem>
-                        <MenuItem onClick={handleCollaborate} icon={<AiOutlineImport/>}>Collaborate</MenuItem>
+                        {isCollaborative && <MenuItem onClick={handleCollaborate} icon={<AiOutlineImport/>}>Collaborate</MenuItem>}
                     </MenuList>
                     </>)}
                 </Menu>
@@ -456,17 +462,6 @@ export default function Homepage() {
                             return
                         }
 
-                        if (!isOwner) {
-                            toast({
-                                title: "Sorry!",
-                                description: 'You can not post a task you do not',
-                                status: 'warning',
-                                duration: 9000,
-                                isClosable: true,
-                            })
-                            return
-                        }
-
                         const createdPost = await _addPost(taskInfo.task_id, taskInfo.user_id).finally(()=>{
                             toast({
                                 title: "Success",
@@ -507,10 +502,8 @@ export default function Homepage() {
                     {({ isOpen }) => (
                         <>
                         <MenuButton rightIcon={<SlOptionsVertical />} isActive={isOpen} variant='unstyled' colorScheme='gray' as={Button}/>
-                        <MenuList>
-                            <MenuItem isDisabled icon={<EditIcon/>}>Edit</MenuItem>
-                            
-                            {!hasPosted && <MenuItem onClick={onOpen} icon={<SlShareAlt/>}>Post<PostModal/></MenuItem>}
+                        <MenuList>                            
+                            {(!hasPosted && isOwner) && <MenuItem onClick={onOpen} icon={<SlShareAlt/>}>Post<PostModal/></MenuItem>}
                             <MenuItem onClick={()=>{
                                 if (user) {
                                    _deleteUserTask(user?.['id'], taskInfo.task_id)
