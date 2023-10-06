@@ -5,13 +5,13 @@
  * 3. Sidebar for task display
  */
 
-import { Avatar, Link, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue, useDisclosure, useToast, Skeleton, SkeletonCircle, SkeletonText, Progress, Input } from "@chakra-ui/react";
+import { Avatar, Link, Badge, Box, Button, ButtonGroup, Card, CardBody, CardHeader, Divider, Flex, Grid, GridItem, HStack, Heading, Icon, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, SimpleGrid, Spacer, Spinner, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, Tooltip, VStack, useColorMode, useColorModeValue, useDisclosure, useToast, Skeleton, SkeletonCircle, SkeletonText, Progress, Input, AvatarGroup } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import TaskDrawer from "../components/Tasks/TaskDrawer";
 import { getUser, twoColumns } from "../hooks/Utilities";
 import { FcLike, FcSettings } from "react-icons/fc";
 import { FaFilter, FaThumbsUp, FaTrash } from "react-icons/fa";
-import { ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon } from "@chakra-ui/icons";
+import { AddIcon, ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon } from "@chakra-ui/icons";
 import { RxAvatar } from "react-icons/rx";
 import { TbTableImport, TbTableOptions, TbTrendingUp } from "react-icons/tb";
 import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
@@ -26,6 +26,7 @@ import { GiBowString, GiPocketBow, GiPostOffice, GiPostStamp } from "react-icons
 import PostModal from "../components/Tasks/PostModal";
 import Chat from "../components/Chats/CommunityChat";
 import { AiOutlineImport } from "react-icons/ai";
+import { IoMdPersonAdd } from "react-icons/io";
 
 export default function Homepage() {
     
@@ -40,6 +41,7 @@ export default function Homepage() {
 
     function Post({taskInfo}: any) {
         const isCollaborative : boolean = taskInfo.isCollaborative ? true : false
+        const collaborators = taskInfo.collaborators ? taskInfo.collaborators : null
 
         const created_at : Date = new Date(taskInfo.created_at)
         const progress: number = taskInfo.progress
@@ -197,7 +199,7 @@ export default function Homepage() {
                         - {userName}
                     </Text>
                 </HStack>
-                <Tooltip fontSize='8px' hasArrow label={`${progress}/${requirement}`} position='relative'>
+                <Tooltip fontSize='12px' hasArrow label={`${progress}/${requirement}`} position='relative'>
                     <Box position='relative'>
                         <Progress size='lg' borderRadius='full' marginLeft='auto' width='200px' value={percentProgress > 0 ? percentProgress : 1} backgroundColor={useColorModeValue('gray.200','gray.600')} colorScheme={progress >= requirement ? 'green' : 'orange'}/>
                         <Text textAlign='end' fontSize='14px' fontWeight='400'>
@@ -211,9 +213,9 @@ export default function Homepage() {
             
             <Flex flexDirection='row'>
                 <Link marginRight='20px' href={`/profile/${userName}`}>
-                    <Avatar name={displayName} src={avatarURL} />
+                    <Avatar _hover={{borderColor:'ActiveBorder'}} borderWidth='1px' size='lg' name={displayName} src={avatarURL} />
                 </Link>
-                <Box overflowY='hidden' maxHeight='300px'>
+                <Box overflowY='hidden' maxHeight='300px' minHeight='100px'>
                     <Heading fontSize='1rem'>
                         {taskInfo.name}
                     </Heading>  
@@ -222,6 +224,16 @@ export default function Homepage() {
                     </Text>
                 </Box>
             </Flex>
+            {isCollaborative && <Flex width='100%'>
+                <AvatarGroup size='sm' max={3} spacing='-5px'>
+                    {collaborators.map((collaborator: any)=>{
+                        return <Avatar _hover={{borderColor:'ActiveBorder'}} borderWidth='1px' borderColor='-moz-initial' cursor='pointer' key={collaborator.userName} onClick={()=>navigate(`/profile/${collaborator.userName}`)} name={collaborator.displayName} src={collaborator.avatarURL} />
+                    })}
+                    <Tooltip fontSize='12px' hasArrow label='Click to contribute to this task!'>
+                        <Avatar size='sm' src='' backgroundColor="green.400" icon={<AddIcon />} onClick={handleCollaborate} _hover={{borderColor:'ActiveBorder'}} borderWidth='1px' borderColor='-moz-initial' cursor='pointer'/>
+                    </Tooltip>
+                </AvatarGroup>                
+            </Flex>}
             <Divider color='gray.300' paddingY='10px'/>
             <HStack flexDirection='row' >
                 <ButtonGroup paddingY='10px' columnGap='20px' variant='ghost' size='md' >
@@ -237,13 +249,12 @@ export default function Homepage() {
                     <MenuButton rightIcon={<SlOptions />} isActive={isOpen} variant='ghost' colorScheme='gray' aria-label='Settings Icon' as={Button}/>
                     <MenuList>
                         <MenuItem onClick={handleImport} icon={<TbTableImport/>}>Import</MenuItem>
-                        {isCollaborative && <MenuItem onClick={handleCollaborate} icon={<AiOutlineImport/>}>Collaborate</MenuItem>}
                     </MenuList>
                     </>)}
                 </Menu>
 
             </HStack>
-            <Text textColor='gray.300' fontSize='12px'>{created_at.toLocaleString(undefined, {
+            <Text textColor={useColorModeValue('gray.600','gray.300')} fontSize='12px'>{created_at.toLocaleString(undefined, {
                 month: "short", day: "numeric", year: '2-digit'
             })}</Text>
                 
