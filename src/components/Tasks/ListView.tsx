@@ -30,8 +30,11 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         const difficulty = task.difficulty ? task.difficulty : 1
         const type = task.type ? task.type : 'Boolean'
         const reoccurence = task.reoccurence ? task.reoccurence : 0
-        const [progress, setProgress ] = useState<any>(task.progress)
-        const [avatar, setAvatar] = useState<any>()
+        const [avatar, setAvatar] = useState<any>(task.avatarURL)
+
+        const [progress, setProgress ] = useState<number>(task.progress) //how much progress the user has made
+        const totalProgress = task.all_progress ? task.all_progress-task.progress : 0 //how much progress has been made on the task total
+
         const { isOpen, onOpen, onClose } = useDisclosure()
         const colorTheme = {
             inComplete: {
@@ -47,7 +50,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                 light: 'green.200'
             }
         }
-        const pickedColor = (progress >= requirement ? useColorModeValue('green.200','green.500') : progress > 0 ? useColorModeValue('orange.200','yellow.600') : useColorModeValue(colorTheme.inComplete.light,colorTheme.inComplete.dark))
+        const pickedColor = ((totalProgress + progress) >= requirement ? useColorModeValue('green.200','green.500') : (totalProgress + progress) > 0 ? useColorModeValue('orange.200','yellow.600') : useColorModeValue(colorTheme.inComplete.light,colorTheme.inComplete.dark))
 
         function nextDueDate(frequency: number, startDate: Date, endDate: Date | null) {
             const today = new Date()
@@ -87,17 +90,10 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
             }) : 'Soon?'}</Flex>
         }
         const ProgressIndicator = () => {
-            //Should be taken from Task API eventually
-
-            //Should be from Task API eventually
-            const isComplete = progress/requirement >= 1
-
-            //there is a bug when progress is greater than 4 decimal points. Rounds to next whole number
-
             return <HStack justifyContent='right'>
-                <Tooltip fontSize='8px' hasArrow label={`${progress}/${requirement}`}>
+                <Tooltip fontSize='8px' hasArrow label={`${totalProgress+progress}/${requirement}`}>
                     <Badge backgroundColor={pickedColor} fontSize='10px' paddingX='10px' width='fit-content'>
-                        {((progress/requirement) * 100).toFixed(2)}%
+                        {(((totalProgress+progress)/requirement) * 100).toFixed(2)}%
                     </Badge>
                 </Tooltip>
                 
@@ -107,7 +103,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         const toast = useToast({colorScheme:'orange', isClosable: true, duration: 2000, variant:'solid', title:'Work in Progress', description: 'An edit module will pop up!'})
         
         function SwitchCompletion() {
-    
+
             function SubTaskCompletion() {
                 return <Box></Box>
             }
@@ -177,10 +173,14 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
             }
         
             function ProgressCompletion() {
-                const [newProgress, setNewProgress ] = useState<any>(progress)
+                const [newProgress, setNewProgress ] = useState<number>(progress) //variably changes
+                
+                console.log(newProgress, totalProgress, progress)
                 const handleSave = async() => {
                     onClose()
                     setProgress(newProgress)
+                    setNewProgress(0)
+
                     await _setProgress(task.user_id, task.task_id, newProgress)
                     toast({
                         title: "Success",
@@ -191,7 +191,6 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                         isClosable: true,
                     })
                 }
-        
                 return <Modal scrollBehavior='inside' isCentered motionPreset='slideInBottom' closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
                     <ModalOverlay />
                     <ModalContent backgroundColor={useColorModeValue('gray.50','gray.800')}>
@@ -200,19 +199,21 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                     <ModalBody>
                         <Box paddingX='5px'>
                             <HStack fontSize={'12px'}>
-                                <Text>{((newProgress/requirement) * 100).toFixed(2)}%</Text>
+                                <Text>{(((newProgress + totalProgress)/requirement) * 100).toFixed(2)}%</Text>
                                 <Spacer/>
-                                <Text>{newProgress}/{requirement}</Text>
+                                <Text>{newProgress + totalProgress}/{requirement}</Text>
                             </HStack>
-                            <Progress colorScheme="green" size={'lg'} value={(newProgress*100)/requirement} sx={{
+                            <Progress colorScheme="green" size={'lg'} value={((newProgress+totalProgress)*100)/requirement} sx={{
                                 "& > div:first-of-type": {
                                     transitionProperty: "width",
                                 },
                             }}/>
                             <FormControl textAlign={'center'}>
-                                <FormHelperText paddingY='10px'><Badge variant='solid' colorScheme={newProgress >= requirement ? 'green' : 'red'}>{newProgress >= requirement ? 'COMPLETE' : 'INCOMPLETE'}</Badge></FormHelperText>
+                                <FormHelperText paddingY='10px'><Badge variant='solid' colorScheme={(newProgress+totalProgress) >= requirement ? 'green' : 'red'}>{(newProgress+totalProgress) >= requirement ? 'COMPLETE' : 'INCOMPLETE'}</Badge></FormHelperText>
 
-                                <NumberInput size='md' allowMouseWheel min={0} defaultValue={newProgress} max={requirement} onChange={(value)=>setNewProgress(value)} clampValueOnBlur={false}>
+                                <NumberInput size='md' allowMouseWheel min={0} defaultValue={newProgress} max={requirement-totalProgress} onChange={(value)=>{
+                                        setNewProgress(Number(value)) 
+                                    }} clampValueOnBlur={false}>
                                     <NumberInputField />
                                     <NumberInputStepper>
                                         <NumberIncrementStepper />
@@ -244,17 +245,15 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         return <Card backgroundColor={useColorModeValue('gray.50','gray.700')} margin='20px' overflow='hidden' height='200px' width='280px' size='md' flexDirection={'column'} alignItems={[null,'center']} >
             
             {!isCollaborative ? <TaskDrawer preset={task}>
-                <Flex width='prose' height={'30px'} cursor='pointer' _hover={{backgroundColor:useColorModeValue('gray.300','gray.600')}} backgroundColor={pickedColor}>
-                    
-                </Flex>
+                <Flex width='prose' height={'30px'} cursor='pointer' backgroundColor={pickedColor}/>
             </TaskDrawer> : 
-            <Flex height={'30px'} cursor='pointer'>
-                <AvatarGroup size='sm' max={5}>
+            <Box height='30px' cursor='pointer' width='full' backgroundColor={pickedColor} paddingY='auto'>
+                <AvatarGroup marginStart='2px' height='inherit' size='xs' max={5} spacing='2px'>
                     {collaborators.map((collaborator: any)=>{
-                        return <Avatar size='full' onClick={()=>navigate(`/profile/${collaborator.userName}`)} name={collaborator.displayName} src={collaborator.avatarURL} />
+                        return <Avatar key={collaborator.userName} onClick={()=>navigate(`/profile/${collaborator.userName}`)} name={collaborator.displayName} src={collaborator.avatarURL} />
                     })}
                 </AvatarGroup>
-            </Flex>}
+            </Box>}
             
             <Flex width='100%' flexDirection='column' padding='10px' height='inherit' alignItems={['center','start']}>
                 <Flex flexDirection={'column'} height='100%' width='100%'>

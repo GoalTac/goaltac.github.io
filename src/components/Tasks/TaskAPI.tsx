@@ -547,7 +547,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
     const getPackagedInfo = async(task: any, relation: any, post: any, profile: any) => {
 
         //each has the potential to be an array if there are multiple people working on this task
-        let progress = relation.progress
+        let totalProgress = 0
         let collaborators: any = []
 
         if (task.isCollaborative) {
@@ -571,7 +571,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
                 throw new Error(collaborator_profilesError.message)
             }
             const getCollaboratorObject = (profile: any, relation: any) => {
-                progress += relation.progress
+                totalProgress += relation.progress
                 return {
                     displayName: profile.name, avatarURL: profile.avatarurl,
                     userName: profile.username, progress: relation.progress, user_id: relation.user_id
@@ -587,7 +587,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
         }
 
         return {
-            progress: progress, isOwner: relation.isOwner,
+            progress: relation.progress, isOwner: relation.isOwner, all_progress: totalProgress, 
             task_id: relation.task_id, isCollaborative: task.isCollaborative,
             user_id: relation.user_id, collaborators: collaborators,
             description: task.description,
