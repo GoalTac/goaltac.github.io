@@ -115,6 +115,70 @@ export default function Homepage() {
             }
         }
 
+        const handleCollaborate = async() => {
+            if (user && taskInfo.user_id != user?.['id']) {
+                const isError = await _addUserTask(user?.['id'], taskInfo.task_id, false)
+                if (isError.message) {
+                    toast({
+                        title: "Error",
+                        description: isError.message,
+                        status: 'error',
+                        duration: 2000,
+                        isClosable: true,
+                    })
+                } else {
+                    toast({
+                        title: "Success",
+                        description: 'Now collaborating! View tasks in your dashboard',
+                        status: 'success',
+                        duration: 2000,
+                        isClosable: true,
+                    })
+                }
+                
+            } else {
+                toast({
+                    title: "Warning",
+                    description: 'You can not collaborate on your own task',
+                    status: 'warning',
+                    duration: 2000,
+                    isClosable: true,
+                })
+            }
+        }
+
+        const handleImport = async() => {
+            if (user && taskInfo.user_id != user?.['id']) {
+                const isError = await _importTaskFromUser(taskInfo.task_id, user?.['id'])
+                if (isError) {
+                    toast({
+                        title: "Error",
+                        description: isError.message,
+                        status: 'error',
+                        duration: 2000,
+                        isClosable: true,
+                    })
+                } else {
+                    toast({
+                        title: "Success",
+                        description: 'View your dashboard to see your new task!',
+                        status: 'success',
+                        duration: 2000,
+                        isClosable: true,
+                    })
+                }
+                
+            } else {
+                toast({
+                    title: "Error",
+                    description: 'You can not import your own task',
+                    status: 'warning',
+                    duration: 2000,
+                    isClosable: true,
+                })
+            }
+        }
+
         
 
         return <Card width='inherit' padding='20px' maxWidth='inherit' height='fit-content' backgroundColor={useColorModeValue('gray.50','gray.700')}>
@@ -166,68 +230,8 @@ export default function Homepage() {
                     <>
                     <MenuButton rightIcon={<SlOptions />} isActive={isOpen} variant='ghost' colorScheme='gray' aria-label='Settings Icon' as={Button}/>
                     <MenuList>
-                        <MenuItem onClick={async()=>{
-                            if (user && taskInfo.user_id != user?.['id']) {
-                                const isError = await _importTaskFromUser(taskInfo.task_id, user?.['id'])
-                                if (isError) {
-                                    toast({
-                                        title: "Error",
-                                        description: isError.message,
-                                        status: 'error',
-                                        duration: 2000,
-                                        isClosable: true,
-                                    })
-                                } else {
-                                    toast({
-                                        title: "Success",
-                                        description: 'View your dashboard to see your new task!',
-                                        status: 'success',
-                                        duration: 2000,
-                                        isClosable: true,
-                                    })
-                                }
-                                
-                            } else {
-                                toast({
-                                    title: "Error",
-                                    description: 'You can not import your own task',
-                                    status: 'warning',
-                                    duration: 2000,
-                                    isClosable: true,
-                                })
-                            }
-                        }} icon={<TbTableImport/>}>Import</MenuItem>
-                        <MenuItem onClick={async()=>{
-                            if (user && taskInfo.user_id != user?.['id']) {
-                                const isError = await _addUserTask(user?.['id'], taskInfo.task_id, false)
-                                if (isError.message) {
-                                    toast({
-                                        title: "Error",
-                                        description: isError.message,
-                                        status: 'error',
-                                        duration: 2000,
-                                        isClosable: true,
-                                    })
-                                } else {
-                                    toast({
-                                        title: "Success",
-                                        description: 'Now collaborating! View tasks in your dashboard',
-                                        status: 'success',
-                                        duration: 2000,
-                                        isClosable: true,
-                                    })
-                                }
-                                
-                            } else {
-                                toast({
-                                    title: "Warning",
-                                    description: 'You can not collaborate on your own task',
-                                    status: 'warning',
-                                    duration: 2000,
-                                    isClosable: true,
-                                })
-                            }
-                        }} icon={<AiOutlineImport/>}>Collaborate</MenuItem>
+                        <MenuItem onClick={handleImport} icon={<TbTableImport/>}>Import</MenuItem>
+                        <MenuItem onClick={handleCollaborate} icon={<AiOutlineImport/>}>Collaborate</MenuItem>
                     </MenuList>
                     </>)}
                 </Menu>
@@ -435,6 +439,7 @@ export default function Homepage() {
             function TaskModule({taskInfo}: any) {
                 const { isOpen, onOpen, onClose } = useDisclosure()
                 const hasPosted = (taskInfo.hasPosted ? true : false)
+                const isOwner = (taskInfo.isOwner ? true : false)
 
                 //highlight the task in the list that has already been posted
                 function PostModal() {  
@@ -444,6 +449,17 @@ export default function Homepage() {
                             toast({
                                 title: "Sorry!",
                                 description: 'You are limited to 5 posts',
+                                status: 'warning',
+                                duration: 9000,
+                                isClosable: true,
+                            })
+                            return
+                        }
+
+                        if (!isOwner) {
+                            toast({
+                                title: "Sorry!",
+                                description: 'You can not post a task you do not',
                                 status: 'warning',
                                 duration: 9000,
                                 isClosable: true,
