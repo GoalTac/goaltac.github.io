@@ -6,6 +6,9 @@ import { supabase } from '../supabase';
 import { SessionProvider, useSession } from "../hooks/SessionProvider";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import logo from './../images/logo.png'
+import { RiDashboard2Fill, RiDashboardLine } from "react-icons/ri";
+import { AiFillDashboard, AiTwotoneDashboard } from "react-icons/ai";
+import { TbLayoutDashboard } from "react-icons/tb";
 
 //change the color theme for light mode from white to gray.50
 export default function Root() {
@@ -71,11 +74,21 @@ export default function Root() {
           zIndex={10}>
 
           {/* logo to link to home (dashboard) */}
+          <Tooltip label='Home' hasArrow fontSize='12px'>
           <Box display={showSearchBar ? 'block' : 'none'} position={"relative"}>
+            
             <Link to="/home">
               <Image src={logo} alt="Logo" boxSize="40px" minWidth="40px" />
             </Link>
-          </Box>
+          </Box></Tooltip>
+
+          {/* logo to link to home (dashboard) */}
+          <Tooltip label='Dashboard' hasArrow fontSize='12px'>
+          <Box  mr='auto' pl={'30px'} display={showSearchBar ? 'block' : 'none'} position={"relative"}>
+            <Link to="/dashboard">
+              <IconButton aria-label="dashboard" variant='unstyled' fontSize='3xl' icon={<TbLayoutDashboard/>}/>
+            </Link>
+          </Box></Tooltip>
 
           {/* Searchbar (changes depending on screen size)*/}
           <Tooltip label='Search tasks, people, and others soon'>
@@ -109,6 +122,8 @@ export default function Root() {
 
 
           {/* Profile */}
+          <Tooltip label='Profiles' hasArrow fontSize='12px'>
+
           <Box pr={2} display={showSearchBar ? 'block' : 'none'} ml='auto'>
             <Menu>
               <MenuButton as={Avatar} size="sm" cursor="pointer" src={avatarUrl}/>
@@ -135,7 +150,7 @@ export default function Root() {
                 <MenuItem icon={<FaSignOutAlt />} fontSize="sm" onClick={handleLogout}>Logout</MenuItem>
               </MenuList>
             </Menu>
-          </Box>
+          </Box></Tooltip>
         </Flex>);
   }
   return (
