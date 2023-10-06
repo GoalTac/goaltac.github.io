@@ -199,9 +199,9 @@ export default function Homepage() {
                         - {userName}
                     </Text>
                 </HStack>
-                <Tooltip fontSize='12px' hasArrow label={`${progress}/${requirement}`} position='relative'>
+                <Tooltip fontSize='12px' hasArrow label={`${totalProgress}/${requirement}`} position='relative'>
                     <Box position='relative'>
-                        <Progress size='lg' borderRadius='full' marginLeft='auto' width='200px' value={percentProgress > 0 ? percentProgress : 1} backgroundColor={useColorModeValue('gray.200','gray.600')} colorScheme={progress >= requirement ? 'green' : 'orange'}/>
+                        <Progress size='lg' borderRadius='full' marginLeft='auto' width='200px' value={percentProgress > 0 ? percentProgress : 1} backgroundColor={useColorModeValue('gray.200','gray.600')} colorScheme={totalProgress >= requirement ? 'green' : 'orange'}/>
                         <Text textAlign='end' fontSize='14px' fontWeight='400'>
                             {((totalProgress/requirement) * 100).toFixed(2)}%
                         </Text>
