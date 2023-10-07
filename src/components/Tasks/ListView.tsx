@@ -1,5 +1,5 @@
 import { Avatar, AvatarGroup, Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, FormHelperText, Grid, GridItem, HStack, Heading, Icon, IconButton, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Progress, Spacer, Stack, Switch, Text, Tooltip, VStack, useColorModeValue, useDisclosure, useToast } from "@chakra-ui/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSession, useSupabaseClient } from "../../hooks/SessionProvider";
 import React from "react";
 import { supabase } from "../../supabase";
@@ -21,7 +21,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         const isOwner = task.isOwner == true ? true : false
         const isCollaborative = task.isCollaborative ? task.isCollaborative : false
         const collaborators = task.collaborators ? task.collaborators : null
-        const name = task.name ? task.name : 'Untitled'
+        const [name, setName] = useState<string>(task.name ? task.name : 'Untitled')
         const created_at = task.created_at ? task.created_at : null
         const start_date = task.start_date ? new Date(task.start_date) : created_at
         const end_date = task.end_date ? new Date(task.end_date) : null
@@ -36,7 +36,28 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         const totalProgress = task.all_progress ? task.all_progress-task.progress : 0 //how much progress has been made on the task total
         const { isOpen: infoIsOpen, onOpen: infoOnOpen, onClose: infoOnClose } = useDisclosure()
         const totalPercentProgress: number = (((totalProgress+progress)/requirement) * 100)
+        const fieldChangedTime = useRef(Date.now()) //keep track of last time fields have changed
 
+        const fieldSaveTimeout = () => {
+            setTimeout(()=>{
+                const timeElapsed = Date.now() - fieldChangedTime.current
+                if(timeElapsed >= 2000) {
+                    //need to actually save it now
+                    toast({
+                        title: "Success",
+                        description: 'Successfully saved!',
+                        colorScheme:'green',
+                        status: "success",
+                        duration: 2000,
+                        isClosable: true,
+                    }) 
+                }
+            }, 2000)
+        }
+        const handleFieldSave = async() => {
+            fieldChangedTime.current = Date.now()
+            fieldSaveTimeout()
+        }
         const colorTheme = {
             inComplete: {
                 dark: 'red.600',
@@ -115,58 +136,80 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
             }
         
             function SimpleCompletion() {
-                const [newProgress, setNewProgress ] = useState<any>(progress)
-                const [changedProgress, setChangedProgress ] = useState<boolean>(false)
+                const [newProgress, setNewProgress ] = useState<number>(progress)
+                let newValue = progress
+                const fieldProgressTime = useRef(Date.now()) //keep track of last time fields have changed
 
-                const handleSave = async() => {
-                    setChangedProgress(false)
-                    setProgress(newProgress)
-                    await _setProgress(task.user_id, task.task_id, newProgress)
-                    toast({
-                        title: "Success",
-                        description: 'Successfully saved your progress!',
-                        colorScheme:'green',
-                        status: "success",
-                        duration: 2000,
-                        isClosable: true,
-                    })
-                    
+                const fieldSaveTimeout = () => {
+                    setTimeout(()=>{
+                        const timeElapsed = Date.now() - fieldProgressTime.current
+                        if(timeElapsed >= 2000) {
+                            setProgress(newValue)
+                            _setProgress(task.user_id, task.task_id, newValue)
+                            toast({
+                                title: "Success",
+                                description: 'Successfully saved your progress!',
+                                colorScheme:'green',
+                                status: "success",
+                                duration: 2000,
+                                isClosable: true,
+                            })
+                        }
+                    }, 2000)
+                }
+                const handleProgressSave = async() => {
+                    fieldProgressTime.current = Date.now()
+                    fieldSaveTimeout()
                 }
         
-                return <Flex position='relative'><Flex onClick={()=>{
-                        setChangedProgress(true)
+                return <Flex onClick={()=>{
                         if (newProgress==0) {
                             setNewProgress(1)
+                            newValue = 1
+                            handleProgressSave()
                         } else {
                             setNewProgress(0)
+                            newValue = 0
+                            handleProgressSave()
                         }
                     }} cursor='pointer' borderRadius={8} width='60px' fontSize='8px' height='20px'  backgroundColor={newProgress>0 ? 'green.400' : 'red.400'}>
                         <Text marginX='auto' userSelect='none' alignSelf='center'>{newProgress>0 ? 'Complete': 'Incomplete'}</Text>
-                </Flex>{changedProgress && <CheckCircleIcon right='-1' bottom='-1' cursor='pointer' color='green.200' borderRadius='full' _hover={{borderWidth: '1px', borderColor: 'ActiveBorder'}} position='absolute' width='15px' height='15px' aria-label='confirm' onClick={handleSave} />}</Flex>
+                </Flex>
             }
         
             function ProgressCompletion() {
                 const [newProgress, setNewProgress ] = useState<number>(progress) //variably changes
-                const [changedProgress, setChangedProgress ] = useState<boolean>(false)
+                let newValue = progress
+                const fieldProgressTime = useRef(Date.now()) //keep track of last time fields have changed
 
-                const handleSave = async() => {
-                    setChangedProgress(false)
-                    setProgress(newProgress)
-                    await _setProgress(task.user_id, task.task_id, newProgress)
-                    toast({
-                        title: "Success",
-                        description: 'Successfully saved your task!',
-                        colorScheme:'green',
-                        status: "success",
-                        duration: 2000,
-                        isClosable: true,
-                    })
+                const fieldSaveTimeout = () => {
+                    setTimeout(()=>{
+                        const timeElapsed = Date.now() - fieldProgressTime.current
+                        if(timeElapsed >= 2000) {
+                            setProgress(newValue)
+                            _setProgress(task.user_id, task.task_id, newValue)
+                            toast({
+                                title: "Success",
+                                description: 'Successfully saved your progress!',
+                                colorScheme:'green',
+                                status: "success",
+                                duration: 2000,
+                                isClosable: true,
+                            })
+                        }
+                    }, 2000)
                 }
-                return <Flex position='relative'><FormControl textAlign={'center'}>
+                const handleProgressSave = async() => {
+                    fieldProgressTime.current = Date.now()
+                    fieldSaveTimeout()
+                }
+
+                return <Flex><FormControl textAlign={'center'}>
                     
                     <NumberInput width='100px' size='xs' allowMouseWheel min={0} defaultValue={newProgress} max={requirement-totalProgress} onChange={(value)=>{
                             setNewProgress(Number(value)) 
-                            setChangedProgress(true)
+                            newValue = Number(value)
+                            handleProgressSave()
                         }} clampValueOnBlur={false}>
                         <NumberInputField />
                         <NumberInputStepper>
@@ -174,7 +217,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                             <NumberDecrementStepper />
                         </NumberInputStepper>
                     </NumberInput>
-                </FormControl>{changedProgress && <CheckCircleIcon right='8' bottom='1' cursor='pointer' color='green.200' borderRadius='full' _hover={{borderWidth: '1px', borderColor: 'ActiveBorder'}} position='absolute' width='15px' height='15px' aria-label='confirm' onClick={handleSave} />}</Flex>
+                </FormControl></Flex>
             }
     
             switch(task.type) {
@@ -272,9 +315,10 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
             <Flex width='100%' flexDirection='column' padding='10px' height='inherit' alignItems={['center','start']}>
                 <Flex flexDirection={'column'} height='100%' width='100%'>
                     <HStack>
-                        <Heading overflow='clip' noOfLines={1} maxW='inherit' fontWeight='500' fontSize='1.25rem' alignSelf={['center','start']} height='fit-content'>
-                            {name}
-                        </Heading>
+                        <Input onChange={(e)=>{
+                            setName(e.currentTarget.value)
+                            handleFieldSave()
+                        }} variant='unstyled' value={name} overflow='clip' noOfLines={1} maxW='inherit' fontWeight='500' fontSize='1.25rem' alignSelf={['center','start']} height='fit-content'/>
                         <Spacer/>
                         <TimeIndicator/>
                     </HStack>
