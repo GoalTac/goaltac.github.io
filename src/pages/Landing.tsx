@@ -759,8 +759,8 @@ export const staffProfiles = [
         name: 'Nikhil Ghosh',
         image: 'https://media.licdn.com/dms/image/D4E03AQFArKfSYh5cMw/profile-displayphoto-shrink_400_400/0/1679967207449?e=1701907200&v=beta&t=dOX_EkVOKxXCRcv5lI9oFg0EKI73_LdNBT7g0MF-PYk',
         title: 'Business Development',
-        desc: '',
-        badges: [''],
+        desc: 'CS student, mentor at UConn, and life enthusiast',
+        badges: ['fitness', 'academics', 'travel', 'growth'],
         contact: 'https://www.linkedin.com/in/n-ghosh/',
     },
     {
