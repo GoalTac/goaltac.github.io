@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { FaUser, FaSignOutAlt, FaRegNewspaper, FaSearch, FaUsers, FaShoppingBag, FaCircle, FaThumbtack } from "react-icons/fa";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { supabase } from '../supabase';
-import { SessionProvider, useSession } from "../hooks/SessionProvider";
+import { SessionProvider, useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import logo from './../images/logo.png'
 import { RiDashboard2Fill, RiDashboardLine } from "react-icons/ri";
@@ -14,12 +14,15 @@ import { TbLayoutDashboard } from "react-icons/tb";
 export default function Root() {
   const { user: user, profile: profile } = useSession();
   const userName = profile?.['username']
+  const  useSupabase: any  = useSupabaseClient();
+
   function HeaderNav() {
 
     const { colorMode, toggleColorMode } = useColorMode();
     const [inputValue, setInputValue] = useState('');
     const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
-    const [avatarUrl, setAvatarUrl] = useState('');
+    const [avatarUrl, setAvatarUrl] = useState(profile?.['avatarurl']);
+    const [points, setPoints] = useState(profile?.['points']);
 
     // to search and open new link
     const navigate = useNavigate();
@@ -46,24 +49,20 @@ export default function Root() {
       setShowSearchBar(!showSearchBar);
     };
 
-    // get avatar  url 
-    useEffect(() => {
-      const getProfile = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('avatarurl')
-          .eq('userid', user?.id)
+    useEffect(()=>{
+      const profileChange = useSupabase.channel('profileChanges').on('postgres_changes',{
+        schema: 'public', // Subscribes to the "public" schema in Postgres
+        event: '*',       // Listen to all changes
+        table: 'profiles'
+      },(payload: any) => {
+          setPoints(payload.new.points)
+      }).subscribe()
 
-        if (error) {
-          console.log(error);
-        } else {
-          //console.log(data);
-          setAvatarUrl(data[0].avatarurl)
+      return () => {
+        profileChange.unsubscribe()
         };
-      }
-      getProfile()
-    }, []);
+      },[])
+
 
     return (<Flex bg={colorMode === "light" ? 'gray.50' : 'gray.700'}
           p={1}
@@ -120,7 +119,7 @@ export default function Root() {
            */}
           
           <HStack flexDir='row' ml='auto' marginRight='10px'>
-            <Heading fontSize='1rem'>{profile ? profile?.['points'] : 0}</Heading>
+            <Heading fontSize='1rem'>{points ? points : 0}</Heading>
             <FaThumbtack/>
           </HStack>
 

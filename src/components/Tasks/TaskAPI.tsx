@@ -424,7 +424,7 @@ export async function _duplicateTask(task_uuid: string) {
 }
 
 //This is used on the home page to add a task another user has into the person's own dashboard
-export async function _importTaskFromUser(task_uuid: string, user_uuid: string) {
+export async function _importTaskFromUser(task_uuid: string, user_uuid: string, post_uuid: string) {
 
     const duplicatedTask: Task = await _duplicateTask(task_uuid) as Task
     if (!duplicatedTask) {
@@ -436,7 +436,7 @@ export async function _importTaskFromUser(task_uuid: string, user_uuid: string) 
     }
     const addedRelation = await _addUserTask(user_uuid, new_task_uuid)
     //addPoints(user_uuid, 1) //removed possibly reconsidering
-
+    addImport(post_uuid)
     if (addedRelation.message) {
         return addedRelation
     }
@@ -849,13 +849,33 @@ export const increment = async(id: any, user_id: any) => {
 export const addPoints = async(user_id: any, amount?: number) => {
     const { data: addPoints, error: addPointsError } = await supabase.rpc('addprofilepoints', { query_user_uuid: user_id, amount: amount ? amount : 1 })
 }
+export const addImport = async(post_uuid: any) => {
+    const {data: data, error: error } = await supabase
+        .from('posts')
+        .select('imports')
+        .eq('post_uuid', post_uuid)
+        .single()
+    if (error) {
+        throw new Error(error.message)
+    }
+    console.log(data)
+    const {data: dataImport, error: errorImport } = await supabase
+        .from('posts')
+        .update({imports: (data.imports + 1)})
+        .eq('post_uuid', post_uuid)
+        if (errorImport) {
+            throw new Error(errorImport.message)
+        }
+    return dataImport
+
+}
 
 export const decrement = async(id: any, user_id: any) => {
     const { data: decrement, error: decrementError } = await supabase.rpc('decrement', { query_post_uuid: id })
-    removePoints(user_id)
 }
 export const removePoints = async(user_id: any, amount?: number) => {
     const { data: removePoints, error: removePointsError } = await supabase.rpc('removeprofilepoints', { query_user_uuid: user_id, amount: amount ? amount : 1 })
+
 }
 
 /**
@@ -978,7 +998,7 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
         const packaged = {
             created_at: post.created_at, all_progress: totalProgress, 
             progress: relation.progress, collaborators: collaborators, 
-            task_id: relation.task_id,
+            task_id: relation.task_id, imports: post.imports,
             user_id: relation.user_id,
             description: task.description,
             end_date: task.end_date,

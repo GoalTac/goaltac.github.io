@@ -10,12 +10,12 @@ import React, { useEffect, useState } from "react";
 import TaskDrawer from "../components/Tasks/TaskDrawer";
 import { getUser, twoColumns } from "../hooks/Utilities";
 import { FcLike, FcSettings } from "react-icons/fc";
-import { FaFilter, FaThumbsUp, FaTrash } from "react-icons/fa";
+import { FaFilter, FaThumbsUp, FaThumbtack, FaTrash } from "react-icons/fa";
 import { AddIcon, ArrowDownIcon, ArrowUpIcon, ChatIcon, EditIcon, SettingsIcon, StarIcon } from "@chakra-ui/icons";
 import { RxAvatar } from "react-icons/rx";
 import { TbTableImport, TbTableOptions, TbTrendingUp } from "react-icons/tb";
 import { SlOptions, SlOptionsVertical, SlShareAlt } from "react-icons/sl";
-import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getUserTasksInfo, _getTaskbyID, _getUserRelations, _getUserTasks, increment, _importTaskFromUser, decrement, _addUserTask } from "../components/Tasks/TaskAPI";
+import { Task, _addPost, _deleteTask, _deleteUserTask, _getAllPostInfo, _getAllTasks, _getUserTasksInfo, _getTaskbyID, _getUserRelations, _getUserTasks, increment, _importTaskFromUser, decrement, _addUserTask, addImport, addPoints, removePoints } from "../components/Tasks/TaskAPI";
 import { useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { measurements } from "../components/Communities/CommunityAPI";
 import premiumLogo from './../images/premium_logo.png';
@@ -31,7 +31,8 @@ import { IoMdPersonAdd } from "react-icons/io";
 export default function Homepage() {
     
     const [taskIDs, setTaskIDs] = useState<any>();
-    const { user: user } = useSession();
+
+    const { user: user, profile: profile } = useSession();
     const  useSupabase: any  = useSupabaseClient();
     const navigate = useNavigate()
     const toast = useToast()
@@ -52,6 +53,9 @@ export default function Homepage() {
         const avatarURL: string = taskInfo.avatarURL
         const displayName: string = taskInfo.displayName
         const [likes, setLikes] = useState<number>(taskInfo.likes)
+        const [imports, setImports] = useState<number>(taskInfo.imports)
+        const poster_uuid: string = taskInfo.user_id
+
         const percentProgress: number = ((totalProgress/requirement) * 100)
         const post_uuid: string = taskInfo.post_id
         const [isLiked, setIsLiked] = useState<boolean>(taskInfo.liked) //this shouldn't be true if the post hasn't been liked by the person!!
@@ -72,23 +76,6 @@ export default function Homepage() {
         const pickedColor = (progress >= requirement ? useColorModeValue(colorTheme.complete.light,colorTheme.complete.dark) : progress > 0 ? useColorModeValue(colorTheme.inProgress.light,colorTheme.inProgress.dark) : useColorModeValue(colorTheme.inComplete.light,colorTheme.inComplete.dark))
 
         const handleLike = async() => {
-            //take the post ID
-            //take who liked the post
-            //To update the user's like status of that post
-            /**
-             * const { data: data, error: error } = await supabase
-                .from('post_liked')
-                .select('id')
-                .eq('user_uuid', taskInfo.user_id)
-                .eq('post_uuid', taskInfo.this_should_be_the_post_id);
-             */
-            
-            //Access the post_liked database and find whether or not a row exists given a user's ID and the post's ID
-            //If there is one, that means the post has been liked by this user
-                //Remove row
-            //If there isn't one, that means the post hasn't been liked
-                //Insert a row
-            
             if (!user) {
                 return
             }
@@ -157,7 +144,7 @@ export default function Homepage() {
 
         const handleImport = async() => {
             if (user && taskInfo.user_id != user?.['id']) {
-                const isError = await _importTaskFromUser(taskInfo.task_id, user?.['id'])
+                const isError = await _importTaskFromUser(taskInfo.task_id, user?.['id'], post_uuid)
                 if (isError) {
                     toast({
                         title: "Error",
@@ -167,6 +154,7 @@ export default function Homepage() {
                         isClosable: true,
                     })
                 } else {
+                    setImports(imports + 1)
                     toast({
                         title: "Success",
                         description: 'View your dashboard to see your new task!',
@@ -187,43 +175,84 @@ export default function Homepage() {
             }
         }
 
+        const handleTac = async() => {
+
+            if (profile) {
+                if (profile?.['points'] >= 1) {
+                    addPoints(poster_uuid, 1)
+                    removePoints(user?.['id'], 1)
+                    toast({
+                        title: "Success",
+                        description: `Donated 1 tac to ${displayName}`,
+                        status: 'success',
+                        duration: 2000,
+                        isClosable: true,
+                    })
+                } else {
+                    toast({
+                        title: "Warning",
+                        description: 'You do not have enough tacs for this action',
+                        status: 'warning',
+                        duration: 2000,
+                        isClosable: true,
+                    })
+                }
+            } else {
+                toast({
+                    title: "Warning",
+                    description: 'Unable to find your profile',
+                    status: 'warning',
+                    duration: 2000,
+                    isClosable: true,
+                })
+            }
+
+        }
+
         
 
         return <Card width='inherit' padding='20px' maxWidth='inherit' height='fit-content' backgroundColor={useColorModeValue('gray.50','gray.700')}>
-            <Stack flexWrap='wrap' flexDirection='row' paddingBottom='10px' width='100%' alignItems='center'>
-                <HStack flexDir={'row'} marginRight='auto'>
-                    <Text fontWeight='500'>
-                        {taskInfo.interests}
-                    </Text>
-                    <Text fontWeight='200'>
-                        - {userName}
-                    </Text>
-                </HStack>
+
+            <Stack flexDirection='row'>
+            <Stack flexDirection='row' width='100%'>
+                <Flex flexDirection='column' gap='1rem'>
+                    <HStack flexDir={'row'} marginRight='auto'>
+                        <Text fontWeight='500'>
+                            {taskInfo.interests}
+                        </Text>
+                        <Text fontWeight='200'>
+                            - {userName}
+                        </Text>
+                    </HStack>
+                    
+                    <Flex flexDirection='row'>
+                        <Link marginRight='20px' href={`/profile/${userName}`}>
+                            <Avatar _hover={{borderColor:'ActiveBorder'}} borderWidth='1px' size='lg' name={displayName} src={avatarURL} />
+                        </Link>
+                        <Box overflowY='hidden' maxHeight='300px' minHeight='100px'>
+                            <Heading fontSize='1rem'>
+                                {taskInfo.name}
+                            </Heading>  
+                            <Text>
+                                {taskInfo.description}
+                            </Text>
+                        </Box>
+                    </Flex>
+                </Flex>
+            </Stack>
+            <Stack position='absolute' right='4' width='150px' flexWrap='wrap' flexDirection='row' justifyItems='end'>
+                
                 <Tooltip fontSize='12px' hasArrow label={`${totalProgress}/${requirement}`} position='relative'>
-                    <Box position='relative'>
-                        <Progress size='lg' borderRadius='full' marginLeft='auto' width='200px' value={percentProgress > 0 ? percentProgress : 1} backgroundColor={useColorModeValue('gray.200','gray.600')} colorScheme={totalProgress >= requirement ? 'green' : 'orange'}/>
+                    <Box position='relative' width='inherit'>
+                        <Progress size='lg' borderRadius='full' width='inherit' value={percentProgress > 0 ? percentProgress : 1} backgroundColor={useColorModeValue('gray.200','gray.600')} colorScheme={totalProgress >= requirement ? 'green' : 'orange'}/>
                         <Text textAlign='end' fontSize='14px' fontWeight='400'>
                             {((totalProgress/requirement) * 100).toFixed(2)}%
                         </Text>
                     </Box>
                     
                 </Tooltip>
-                
             </Stack>
-            
-            <Flex flexDirection='row'>
-                <Link marginRight='20px' href={`/profile/${userName}`}>
-                    <Avatar _hover={{borderColor:'ActiveBorder'}} borderWidth='1px' size='lg' name={displayName} src={avatarURL} />
-                </Link>
-                <Box overflowY='hidden' maxHeight='300px' minHeight='100px'>
-                    <Heading fontSize='1rem'>
-                        {taskInfo.name}
-                    </Heading>  
-                    <Text>
-                        {taskInfo.description}
-                    </Text>
-                </Box>
-            </Flex>
+            </Stack>
             {isCollaborative && <Flex width='100%'>
                 <AvatarGroup size='sm' max={3} spacing='-5px'>
                     {collaborators.map((collaborator: any)=>{
@@ -239,12 +268,18 @@ export default function Homepage() {
                 <ButtonGroup paddingY='10px' columnGap='20px' variant='ghost' size='md' >
                     <Button colorScheme={isLiked ? 'green' : 'gray'} leftIcon={<FaThumbsUp />} onClick={handleLike}>{likes}</Button>
                     <Tooltip label='Comment feature coming soon'>
-                        <Button colorScheme='blue' leftIcon={<ChatIcon />}>{taskInfo.comments} comments</Button>
+                        <Button colorScheme='blue' leftIcon={<ChatIcon />}>{taskInfo.comments}</Button>
                     </Tooltip>
                 </ButtonGroup>
                 <Spacer/>
                 <Tooltip label='Import'>
-                <IconButton _hover={{color: useColorModeValue('green.400','green.200')}} onClick={handleImport} aria-label='import_task' variant={'ghost'} icon={<GiSaveArrow size='20px'/>}/></Tooltip>
+                <Button _hover={{color: useColorModeValue('green.400','green.200')}} onClick={handleImport} aria-label='import_task' variant={'ghost'} leftIcon={<GiSaveArrow size='20px'/>}>
+                    
+                </Button></Tooltip>
+                <Tooltip label='Donate a tac'>
+                <Button _hover={{color: useColorModeValue('green.400','green.200')}} onClick={handleTac} aria-label='tac donation' variant={'ghost'} leftIcon={<FaThumbtack size='20px'/>}>
+                    
+                </Button></Tooltip>
                 {/**
                  <Menu>
                 {({ isOpen }) => (
@@ -442,7 +477,7 @@ export default function Homepage() {
                 <Stack flexDirection={['row','column']} flexWrap='wrap' columnGap='10px'>
                     <Stat >
                         <StatLabel fontSize='10px'  fontWeight='400'>Total Tasks</StatLabel>
-                        <StatNumber>{tasksInfo.length}/20</StatNumber>
+                        <StatNumber>{tasksInfo.length}/15</StatNumber>
                     </Stat>
                     <Stat>
                         <StatLabel fontSize='10px'  fontWeight='400'>Completed Tasks</StatLabel>
@@ -477,6 +512,28 @@ export default function Homepage() {
                             })
                             return
                         }
+                        if (!profile) {
+                            toast({
+                                title: "Sorry!",
+                                description: 'Unable to find your profile',
+                                status: 'warning',
+                                duration: 9000,
+                                isClosable: true,
+                            })
+                            return
+                        }
+                        if (profile?.['points'] < 1) {
+                            toast({
+                                title: "Sorry!",
+                                description: 'You do not have the funds to perform this action',
+                                status: 'warning',
+                                duration: 9000,
+                                isClosable: true,
+                            })
+                            return
+                        }
+
+                        removePoints(user?.['id'], 1)
 
                         const createdPost = await _addPost(taskInfo.task_id, taskInfo.user_id).finally(()=>{
                             toast({
@@ -495,11 +552,28 @@ export default function Homepage() {
                             <ModalContent backgroundColor={useColorModeValue('gray.50','gray.800')}>
                             <ModalHeader>Confirm your Post</ModalHeader>
                             <ModalCloseButton />
-                            <ModalBody pb={6}>
-                                <Post taskInfo={taskInfo} />
+                            <ModalBody>
+                                <HStack marginX='auto' justifyContent='center' flexDirection='row'>
+
+                                
+                                    <Text fontSize='20px'>
+                                        Costs
+                                    </Text>
+                                    <Badge variant='solid' colorScheme="red" padding='10px'>
+                                        <HStack >
+                                            <Text>
+                                                -1
+                                            </Text>
+                                            <FaThumbtack/>
+                                        </HStack>
+                                        
+                                    </Badge>
+                                    
+                                </HStack>
                             </ModalBody>
                     
                             <ModalFooter>
+                                
                                 <Button type='submit' colorScheme='blue' mr={3} onClick={handlePost}>Post</Button>
                                 <Button variant='outline' onClick={onClose}>Cancel</Button>
                             </ModalFooter>
