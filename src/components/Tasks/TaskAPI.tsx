@@ -435,7 +435,7 @@ export async function _importTaskFromUser(task_uuid: string, user_uuid: string) 
         return new Error('Task ID not found')
     }
     const addedRelation = await _addUserTask(user_uuid, new_task_uuid)
-    addPoints(user_uuid, 1)
+    //addPoints(user_uuid, 1) //removed possibly reconsidering
 
     if (addedRelation.message) {
         return addedRelation

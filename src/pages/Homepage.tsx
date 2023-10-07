@@ -22,7 +22,7 @@ import premiumLogo from './../images/premium_logo.png';
 import premiumName from './../images/premium_logo_name.png';
 import { useNavigate, useNavigation } from "react-router-dom";
 import { supabase } from "../supabase";
-import { GiBowString, GiPocketBow, GiPostOffice, GiPostStamp } from "react-icons/gi";
+import { GiBowString, GiPocketBow, GiPostOffice, GiPostStamp, GiSaveArrow } from "react-icons/gi";
 import PostModal from "../components/Tasks/PostModal";
 import Chat from "../components/Chats/CommunityChat";
 import { AiOutlineImport } from "react-icons/ai";
@@ -243,16 +243,21 @@ export default function Homepage() {
                     </Tooltip>
                 </ButtonGroup>
                 <Spacer/>
-                <Menu>
+                <Tooltip label='Import'>
+                <IconButton _hover={{color: useColorModeValue('green.400','green.200')}} onClick={handleImport} aria-label='import_task' variant={'ghost'} icon={<GiSaveArrow size='20px'/>}/></Tooltip>
+                {/**
+                 <Menu>
                 {({ isOpen }) => (
                     <>
                     <MenuButton rightIcon={<SlOptions />} isActive={isOpen} variant='ghost' colorScheme='gray' aria-label='Settings Icon' as={Button}/>
                     <MenuList>
-                        <MenuItem onClick={handleImport} icon={<TbTableImport/>}>Import</MenuItem>
+                        <MenuItem icon={<TbTableImport/>}>Import</MenuItem>
                     </MenuList>
                     </>)}
                 </Menu>
 
+                 */}
+                
             </HStack>
             <Text textColor={useColorModeValue('gray.600','gray.300')} fontSize='12px'>{created_at.toLocaleString(undefined, {
                 month: "short", day: "numeric", year: '2-digit'
@@ -430,11 +435,11 @@ export default function Homepage() {
                 </Card>)
         }
         function Analytics() {
-            return <Card height='min-content'>
+            return <Card height='min-content' width='100%' alignItems='center'>
             <CardBody paddingTop='10px'>
                 <Text fontWeight='600' paddingBottom='10px'>Task Analytics</Text>
                 <Divider/>
-                <StatGroup flexDir='column'>
+                <Stack flexDirection={['row','column']} flexWrap='wrap' columnGap='10px'>
                     <Stat >
                         <StatLabel fontSize='10px'  fontWeight='400'>Total Tasks</StatLabel>
                         <StatNumber>{tasksInfo.length}/20</StatNumber>
@@ -447,7 +452,7 @@ export default function Homepage() {
                         <StatLabel fontSize='10px'  fontWeight='400'>Posted Tasks</StatLabel>
                         <StatNumber color={useColorModeValue('purple.500','purple.300')}>{postLength}/5</StatNumber>
                     </Stat>
-                </StatGroup>
+                </Stack>
             </CardBody>
         </Card>
         }
@@ -526,7 +531,7 @@ export default function Homepage() {
                 </HStack>
             }
         
-            return <Card padding='3px'>
+            return <Card padding='3px' width='100%'>
                 <CardHeader textAlign='center' fontSize='14px' fontWeight='500'>
                     Task List
                 </CardHeader>
@@ -545,12 +550,12 @@ export default function Homepage() {
             
         }
         //the tasks dashboard should be accessed through a hamburger when the screen is minimized
-        return <Flex position='static'  pos='relative' rowGap='20px' maxWidth={[null,'200px']}>
-            <Flex flexDirection={['row','column']}>
+        return <Flex position='static'  pos='relative' rowGap='20px' maxWidth={['full','180px']} width='100%'>
+            <Flex flexDirection={'column'} width='100%'>
                 <Analytics/>
-                <Box paddingTop={['0px','20px']} position='sticky' flexWrap='wrap' top={16} height='min'>
+                <Stack paddingTop={['0px','20px']} position='sticky' flexWrap='wrap' top={16} height='min'>
                     <ListView/>
-                </Box>
+                </Stack>
             </Flex>
         </Flex>
     }
