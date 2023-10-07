@@ -1,4 +1,4 @@
-import { Avatar, AvatarGroup, Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, FormHelperText, Grid, GridItem, HStack, Heading, Icon, IconButton, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Progress, Spacer, Stack, Switch, Text, Tooltip, VStack, useColorModeValue, useDisclosure, useToast } from "@chakra-ui/react";
+import { Avatar, AvatarGroup, Badge, Box, Button, Card, CardBody, CardFooter, CardHeader, Divider, Flex, FormControl, FormHelperText, Grid, GridItem, HStack, Heading, Icon, IconButton, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Progress, Spacer, Stack, Switch, Text, Textarea, Tooltip, VStack, useColorModeValue, useDisclosure, useToast } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { useSession, useSupabaseClient } from "../../hooks/SessionProvider";
 import React from "react";
@@ -7,7 +7,7 @@ import { now } from "lodash";
 import { start } from "repl";
 import { CalendarIcon, CheckCircleIcon, InfoIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { FaHourglass, FaHourglassHalf, FaHourglassStart } from "react-icons/fa";
-import { Task, _addPost, _addProgress, _deleteProgress, _setProgress } from "./TaskAPI";
+import { Task, _addPost, _addProgress, _deleteProgress, _setProgress, _setTask } from "./TaskAPI";
 import TaskDrawer from "./TaskDrawer";
 import { useNavigate } from "react-router-dom";
 
@@ -21,11 +21,11 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         const isOwner = task.isOwner == true ? true : false
         const isCollaborative = task.isCollaborative ? task.isCollaborative : false
         const collaborators = task.collaborators ? task.collaborators : null
-        const [name, setName] = useState<string>(task.name ? task.name : 'Untitled')
+        let name = task.name ? task.name : 'Untitled'
         const created_at = task.created_at ? task.created_at : null
         const start_date = task.start_date ? new Date(task.start_date) : created_at
         const end_date = task.end_date ? new Date(task.end_date) : null
-        const description = task.description ? task.description : 'A start to a great adventure'
+        let description = task.description ? task.description : 'A start to a great adventure'
         const requirement = task.requirement ? task.requirement : 1
         const difficulty = task.difficulty ? task.difficulty : 1
         const type = task.type ? task.type : 'Boolean'
@@ -36,13 +36,20 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         const totalProgress = task.all_progress ? task.all_progress-task.progress : 0 //how much progress has been made on the task total
         const { isOpen: infoIsOpen, onOpen: infoOnOpen, onClose: infoOnClose } = useDisclosure()
         const totalPercentProgress: number = (((totalProgress+progress)/requirement) * 100)
-        const fieldChangedTime = useRef(Date.now()) //keep track of last time fields have changed
-
-        const fieldSaveTimeout = () => {
-            setTimeout(()=>{
-                const timeElapsed = Date.now() - fieldChangedTime.current
-                if(timeElapsed >= 2000) {
-                    //need to actually save it now
+        
+        const cachedTimeout: any = useRef(null)
+        const handleFieldSave = () => {
+            if (cachedTimeout) {
+                clearTimeout(cachedTimeout.current)
+            }
+            
+            cachedTimeout.current = setTimeout(function() {
+                const newTask = {
+                    name: name,
+                    description: description
+                }
+                
+                const createdTask = _setTask(task.task_id, newTask).finally(()=>{
                     toast({
                         title: "Success",
                         description: 'Successfully saved!',
@@ -51,12 +58,9 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                         duration: 2000,
                         isClosable: true,
                     }) 
-                }
+                })
             }, 2000)
-        }
-        const handleFieldSave = async() => {
-            fieldChangedTime.current = Date.now()
-            fieldSaveTimeout()
+            
         }
         const colorTheme = {
             inComplete: {
@@ -316,16 +320,21 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                 <Flex flexDirection={'column'} height='100%' width='100%'>
                     <HStack>
                         <Input onChange={(e)=>{
-                            setName(e.currentTarget.value)
+                            name = e.currentTarget.value
                             handleFieldSave()
-                        }} variant='unstyled' value={name} overflow='clip' noOfLines={1} maxW='inherit' fontWeight='500' fontSize='1.25rem' alignSelf={['center','start']} height='fit-content'/>
+                        }} variant='unstyled' defaultValue={name} overflow='clip' noOfLines={1} maxW='inherit' fontWeight='500' fontSize='1.25rem' alignSelf={['center','start']} height='fit-content'/>
                         <Spacer/>
                         <TimeIndicator/>
                     </HStack>
                     
-                    <Text marginStart='10px' maxHeight={'80px'} overflowY='auto' alignSelf={['center','start']} width='200px'>
-                        {description}
-                    </Text>
+                    <Stack marginStart='10px' overflowY='auto' alignSelf={['center','start']}>
+                    
+                        <Textarea onChange={(e)=>{
+                            description = e.currentTarget.value
+                            handleFieldSave()
+                        }} variant='unstyled' size='xs' defaultValue={description} width='200px' fontWeight='500' fontSize='0.75rem' alignSelf={['center','start']} maxH='80px'/>
+                        <Spacer/>
+                    </Stack>
                 </Flex>
                 <Flex alignItems='end' width='100%'>
                     <ProgressIndicator/>

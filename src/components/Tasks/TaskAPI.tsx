@@ -280,13 +280,7 @@ export async function _removeChildTask(parentID: string, childID: string) {
 export async function _setTask(taskID: string, task: any) {
     const { data:data, error } = await supabase
     .from('tasks')
-    .update({start_date: task.start_date,
-            end_date: task.end_date, 
-            name: task.name, 
-            description: task.description, 
-            requirement: task.requirement, 
-            difficulty: task.difficulty, reoccurence: task.reoccurence, isCollaborative: task.isCollaborative,
-            type: task.type})
+    .update([task])
     .eq('uuid', taskID).select().single();
 
     if (error) {
