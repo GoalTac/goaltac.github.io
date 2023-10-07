@@ -1,6 +1,6 @@
-import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge, useColorModeValue, Stack, LightMode, Tooltip } from "@chakra-ui/react";
+import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge, useColorModeValue, Stack, LightMode, Tooltip, HStack, Heading } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { FaUser, FaSignOutAlt, FaRegNewspaper, FaSearch, FaUsers, FaShoppingBag, FaCircle } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaRegNewspaper, FaSearch, FaUsers, FaShoppingBag, FaCircle, FaThumbtack } from "react-icons/fa";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { supabase } from '../supabase';
 import { SessionProvider, useSession } from "../hooks/SessionProvider";
@@ -119,12 +119,16 @@ export default function Root() {
            * 
            */}
           
+          <HStack flexDir='row' ml='auto' marginRight='10px' paddingX='10px' paddingY='5px' borderRadius='10px' backgroundColor={useColorModeValue('gray.200','gray.700')}>
+            <Heading fontSize='1rem'>{profile ? profile?.['points'] : 0}</Heading>
+            <FaThumbtack/>
+          </HStack>
 
 
           {/* Profile */}
           <Tooltip label='Profiles' hasArrow fontSize='12px'>
 
-          <Box pr={2} display={showSearchBar ? 'block' : 'none'} ml='auto'>
+          <Box pr={2} ml='auto'>
             <Menu>
               <MenuButton as={Avatar} size="sm" cursor="pointer" src={avatarUrl}/>
               <MenuList>
