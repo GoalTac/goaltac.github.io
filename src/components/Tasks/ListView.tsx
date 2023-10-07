@@ -141,7 +141,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                             setNewProgress(0)
                         }
                     }} cursor='pointer' borderRadius={8} width='60px' fontSize='8px' height='20px'  backgroundColor={newProgress>0 ? 'green.400' : 'red.400'}>
-                        <Text marginX='auto' userSelect='none' alignSelf='center'>{progress>0 ? 'Complete': 'Incomplete'}</Text>
+                        <Text marginX='auto' userSelect='none' alignSelf='center'>{newProgress>0 ? 'Complete': 'Incomplete'}</Text>
                 </Flex>{changedProgress && <CheckCircleIcon right='-1' bottom='-1' cursor='pointer' color='green.200' borderRadius='full' _hover={{borderWidth: '1px', borderColor: 'ActiveBorder'}} position='absolute' width='15px' height='15px' aria-label='confirm' onClick={handleSave} />}</Flex>
             }
         
@@ -155,7 +155,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                     await _setProgress(task.user_id, task.task_id, newProgress)
                     toast({
                         title: "Success",
-                        description: 'Successfully edited your task!',
+                        description: 'Successfully saved your task!',
                         colorScheme:'green',
                         status: "success",
                         duration: 2000,
