@@ -119,7 +119,7 @@ export default function Root() {
            * 
            */}
           
-          <HStack flexDir='row' ml='auto' marginRight='10px' paddingX='10px' paddingY='5px' borderRadius='10px' backgroundColor={useColorModeValue('gray.200','gray.700')}>
+          <HStack flexDir='row' ml='auto' marginRight='10px'>
             <Heading fontSize='1rem'>{profile ? profile?.['points'] : 0}</Heading>
             <FaThumbtack/>
           </HStack>
