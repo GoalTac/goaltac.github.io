@@ -407,5 +407,5 @@ export default function CommunityCentral() {
 
     return(
         twoColumns(<CommunityList/>, <CommunitySuggested/>)
-    );
+    );   
 }

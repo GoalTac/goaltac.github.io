@@ -1,8 +1,12 @@
-import { Avatar, Box, Heading, Stack, Text, Badge, Textarea, Flex, useToast, Button, useColorModeValue} from "@chakra-ui/react";
+import { Avatar, Box, Heading, Stack, Text, Badge, Textarea, Flex, useToast, Button, useColorModeValue, HStack, Image, VStack, Card, Spacer, Menu, MenuButton, IconButton, MenuList, MenuItem, CardBody} from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from '../supabase';
 import Chat from "../components/Chats/PrivateChat";
+import { _getJoinedCommunities, getCommunityByID, measurements } from "../components/Communities/CommunityAPI";
+import { HamburgerIcon } from "@chakra-ui/icons";
+import ProfileBackground from '../images/ProfileBackground.svg'
+import Header from "../components/Communities/Community/Information";
 
 export default function ProfileView() {
 
@@ -12,6 +16,7 @@ export default function ProfileView() {
     //friends state variables
     const [friendStatus, setFriendStatus] = useState(0);
     const [isFriendRequestSentByUser, setIsFriendRequestSentByUser] = useState(false);
+    const [friendCount, setFriendCount] = useState(0);
 
     const toast = useToast();
 
@@ -29,7 +34,7 @@ export default function ProfileView() {
             if (error) {
                 console.log(error);
             } else {
-                // console.log(data);
+                console.log(data);
                 setPerson({
                     name: data.name,
                     username: data.username,
@@ -43,6 +48,125 @@ export default function ProfileView() {
         };
         getProfile();
     }, []);
+
+    async function getCommunityNameByID(communityID: any)  {
+        const { data: data, error } = await supabase
+            .from('communities')
+            .select('name')
+            .eq('community_id', communityID)
+            .single();
+        if (error) {
+            throw new Error(error.message)
+        }
+    
+        return data;
+    }
+
+    // Get the communities that the user is a part of
+    useEffect(() => {
+        async function _getJoinedCommunities(userID: any) {
+            const { data: data, error } = await supabase
+                .from('community_relations')
+                .select('*')
+                .eq('user_id', userID)
+                .eq('status', 1);
+            if (error) {
+                throw new Error(error.message)
+                // console.log(error.message);
+            } 
+        
+            const communities = await Promise.all(data.map(async(id) => {
+                return await getCommunityNameByID(id.community_id)
+            }))
+            
+            // Get the whole array of communities
+            console.log(communities);
+            // return all the communities that the user is a part of
+
+            return communities;
+        }
+        _getJoinedCommunities(person.id);
+    });
+
+
+    // useEffect(() => {
+    //     const getCommunities = async () => {
+    //         const { data, error } = await supabase
+    //             .from('community_relations')
+    //             .select('community_id, communities(community_id, name)')
+    //             .eq('user_id', person.id);
+
+    //         if (error) {
+    //             console.log(error.message);
+    //         }
+    //         else {
+    //             console.log(data);
+    //         }
+    //     };
+    //     getCommunities();
+    // }, [person.id]);
+
+    // Get the names of the communities that the user is a part of
+    // useEffect(() => {
+    //     const getCommunities = async () => {
+    //         const { data, error } = await supabase
+    //             .from('community_relations')
+    //             .select('community_id, communities(community_id, name)')
+    //             .eq('user_id', person.id);
+    //         if (error) {
+    //             console.log(error.message);
+    //         }
+    //         else {
+    //             console.log(data);
+    //         }
+    //     }
+    //     getCommunities();
+    // });
+
+    // Get posts from Social.tsx
+    useEffect(() => {
+        const getPosts = async () => {
+            const { data, error } = await supabase
+                .from('posts')
+                .select('*')
+                .eq('user_uuid', person.id);
+            if (error) {
+                console.log(error.message);
+            }
+            else {
+                console.log(data);
+            }
+        };
+        getPosts();
+    });
+
+
+    // Find the number of friends the user has and update the friendCount state, both as the user and as the profile being viewed
+    useEffect(() => {
+        const getFriendCount = async () => {
+            //get user profile
+            // const { data: {user} } = await supabase.auth.getUser();
+
+            // get the number of friends the user has
+            const { data: data1, error:error1 } = await supabase
+                .from('friends')
+                .select('*')
+                .eq('relating_user', person?.id)
+                .eq('status', 2);
+            const { data: data2, error:error2 } = await supabase
+                .from('friends')
+                .select('*')
+                .eq('related_user', person?.id)
+                .eq('status', 2);
+            if (error1 || error2) {
+                console.log("Error determining friend count: \n", error1, error2);
+            }
+            else {
+                setFriendCount(data1.length + data2.length);
+            }
+        };
+        getFriendCount();
+    });
 
     // Find whether user is already friends with this profile
     useEffect(() => {
@@ -232,63 +356,156 @@ export default function ProfileView() {
         }
     }
 
-
     return (
-        <>
-        <Stack
-            direction={['column', null, 'row']}
-            mt={12}
-        >
-            <Box ml={["auto", 12]} mt={6} mr={["auto", 12]}>
-                <Avatar boxSize={300} name={person.name} src={person.avatarurl} />
-                <Heading as="h1" size="xl" mt={4}>
-                    {person.name}
-                </Heading>
-                <Text fontSize="lg" color="gray.500">
-                    {person.username}
-                </Text>
-            </Box>
-
-            <Box pt={12} pl={4} pr={4}>
-                <Heading as="h1" size="xl" mb={4} >
-                    Profile
-                </Heading>
-                <Badge colorScheme="blue" fontSize="md" mb={1}>biography</Badge>
-
-                <Textarea
-                    fontSize="sm"
-                    color="gray.500"
-                    mb={4}
-                    value={person.biography}
-                    readOnly
-                />
-
-                <Flex>
-                    <Heading as="h1" size="md"  >Streak: <Badge colorScheme="blue" fontSize="lg" mb={1} mr={6}>{person.streak}</Badge></Heading>
-                    <Heading as="h1" size="md"  >Points: <Badge colorScheme="blue" fontSize="lg" mb={1} mr={6}>{person.points}</Badge></Heading>
+        <HStack 
+        overflow='hidden' 
+        padding='20px' 
+        // borderRadius='20px'
+        // borderWidth={'10px'} 
+        backgroundColor={useColorModeValue('white','blackAlpha.200')}
+        // borderWidth={useColorModeValue('1px','0px')} 
+        marginY={measurements.general.rowGap}>
+            <Box 
+            // width={['375px','700px']} 
+            // width={['700px', '375px']}
+            w='75vw'
+            // borderWidth={'10px'}
+            >
+            <Stack>
+                <Flex 
+                backgroundImage={ProfileBackground}
+                backgroundClip={'content-box'}
+                >
+                    <Image 
+                    height={'20%'} 
+                    objectFit={'cover'}
+                    width={'20%'} 
+                    src={ProfileBackground} 
+                    />
                 </Flex>
-                
-                <Box bg={useColorModeValue('gray.100', 'gray.900')} rounded={'lg'} p={2} mb={4} mt={4}>
-                    <Button 
-                        colorScheme="blue" 
-                        fontSize="md" 
-                        mb={1}
-                        onClick={
+                    <HStack 
+                    // borderWidth={'10px'}
+                    // alignSelf={'flex-start'}
+                    spacing={20}
+                    >
+                        <VStack 
+                        // borderWidth={'10px'}
+                        // justify={'left'}
+                        // align={'flex-start'}
+                        >
+                            <Avatar size='2xl' name={person.name} src={person.avatarurl} />
+                            <Heading size='lg'>{person.name}</Heading>
+                            <Text fontSize="lg">{person.username}</Text>
+                            {/* <HStack>
+                                <Button 
+                                // w='50%'
+                                // p={4}
+                                colorScheme="blue" 
+                                fontSize="md" 
+                                // mb={1}
+                                onClick={
+                                friendStatus==2 ? handleRemoveFriend : 
+                                friendStatus==1 && isFriendRequestSentByUser ? handleCancelFriendRequest : 
+                                friendStatus==1 ? handleAcceptFriendRequest : 
+                                friendStatus==0 ? handleAddFriend : () => {}}>
+                                    {friendStatus==2 ? "Remove Friend" : 
+                                    friendStatus==1  && isFriendRequestSentByUser ? "Cancel Friend Request" : 
+                                    friendStatus==1 ? "Accept Friend Request from " + person.name :
+                                    friendStatus==0 ? "Add Friend" : "You can't friend yourself"}
+                                </Button>
+                                <Box>
+                                    <Badge fontSize='xl' fontWeight='bold'>
+                                        {friendCount} Friends
+                                    </Badge>
+                                </Box>
+                            </HStack> */}
+                        </VStack>
+                        <VStack 
+                        spacing={4}>  
+                           
+                             <Box>
+                                <Badge fontSize='xl' fontWeight='bold'>
+                                    {friendCount} {friendCount == 1 ? 'Friend' : 'Friends'}
+                                </Badge>
+                            </Box> 
+                             <Button 
+                            colorScheme="blue" 
+                            fontSize="md" 
+                            onClick={
                             friendStatus==2 ? handleRemoveFriend : 
                             friendStatus==1 && isFriendRequestSentByUser ? handleCancelFriendRequest : 
                             friendStatus==1 ? handleAcceptFriendRequest : 
                             friendStatus==0 ? handleAddFriend : () => {}}
-                    >
-                            {friendStatus==2 ? "Remove Friend" : 
-                            friendStatus==1  && isFriendRequestSentByUser ? "Cancel Friend Request" : 
-                            friendStatus==1 ? "Accept Friend Request from " + person.name :
-                            friendStatus==0 ? "Add Friend" : "You can't friend yourself"}
-                    </Button>
+                            >
+                                {friendStatus==2 ? "Remove Friend" : 
+                                friendStatus==1  && isFriendRequestSentByUser ? "Cancel Friend Request" : 
+                                friendStatus==1 ? "Accept Friend Request from " + person.name :
+                                friendStatus==0 ? "Add Friend" : "You can't friend yourself"}
+                            </Button>
+                         </VStack>
+
+                </HStack>
+                {/* Bring this back later: */}
+                <Textarea
+                    fontSize="sm"
+                    color="gray.500"
+                    p={4}
+                    mb={4}
+                    value={person.biography}
+                    maxW={'75%'}
+                    readOnly
+                    />
+                <Box textAlign={'center'}>
+                    <Text fontSize={'3xl'} as='b'>
+                    Wish to add posts here!
+                    </Text>
                 </Box>
+        </Stack>            
+        </Box>
+        <Box 
+            // width={['375px','700px']} 
+            // width={['700px', '375px']}
+            w='25vw'
+            // borderWidth={'10px'}
+            alignSelf={'flex-start'}
+            // justifyItems={'top'}
+            // justifyContent={'top'}
+            // justifySelf={'top'}
+            // alignSelf={'top'}
+            // alignContent={'top'}
+        >
+            <HStack
+            justifyContent={'right'}
+            >
+                {friendStatus==2 ? <Chat/> : <Box/>}
+                <Menu isLazy>
+                    <MenuButton
+                        as={IconButton}
+                        aria-label='Options'
+                        icon={<HamburgerIcon />}
+                        variant='outline'
+                    />
+                    <MenuList>
+                        <MenuItem>
+                            New Tab
+                        </MenuItem>
+                        <MenuItem>
+                            New Window
+                        </MenuItem>
+                        <MenuItem>
+                            Open Closed Tab
+                        </MenuItem>
+                        <MenuItem>
+                            Open File...
+                        </MenuItem>
+                    </MenuList>
+                </Menu>
+                
+            </HStack>
+            <Box textAlign={'center'}>
+                <Text fontSize='3xl' as='b' >Wish to add communities here!</Text>  
             </Box>
-            {/* Display the DM icon only if they're already friends */}
-            {friendStatus==2 ? <Chat/> : <Box/>}
-        </Stack>
-        </>
+        </Box>
+    </HStack>
     );
 }

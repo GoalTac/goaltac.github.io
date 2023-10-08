@@ -1,22 +1,28 @@
-import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge, useColorModeValue, Stack, LightMode } from "@chakra-ui/react";
+import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge, useColorModeValue, Stack, LightMode, Tooltip, HStack, Heading } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { FaUser, FaSignOutAlt, FaRegNewspaper, FaSearch, FaUsers, FaShoppingBag, FaCircle } from "react-icons/fa";
+import { FaUser, FaSignOutAlt, FaRegNewspaper, FaSearch, FaUsers, FaShoppingBag, FaCircle, FaThumbtack } from "react-icons/fa";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { supabase } from '../supabase';
-import { SessionProvider, useSession } from "../hooks/SessionProvider";
+import { SessionProvider, useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import logo from './../images/logo.png'
+import { RiDashboard2Fill, RiDashboardLine } from "react-icons/ri";
+import { AiFillDashboard, AiTwotoneDashboard } from "react-icons/ai";
+import { TbLayoutDashboard } from "react-icons/tb";
 
 //change the color theme for light mode from white to gray.50
 export default function Root() {
   const { user: user, profile: profile } = useSession();
   const userName = profile?.['username']
+  const  useSupabase: any  = useSupabaseClient();
+
   function HeaderNav() {
 
     const { colorMode, toggleColorMode } = useColorMode();
     const [inputValue, setInputValue] = useState('');
     const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
-    const [avatarUrl, setAvatarUrl] = useState('');
+    const [avatarUrl, setAvatarUrl] = useState(profile?.['avatarurl']);
+    const [points, setPoints] = useState(profile?.['points']);
 
     // to search and open new link
     const navigate = useNavigate();
@@ -43,24 +49,24 @@ export default function Root() {
       setShowSearchBar(!showSearchBar);
     };
 
-    // get avatar  url 
-    useEffect(() => {
-      const getProfile = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('avatarurl')
-          .eq('userid', user?.id)
+    useEffect(()=>{
+      const profileChange = useSupabase.channel('profileChanges').on('postgres_changes',{
+        schema: 'public', // Subscribes to the "public" schema in Postgres
+        event: '*',       // Listen to all changes
+        table: 'profiles'
+      },(payload: any) => {
+          const isDonor = (payload.new.userid == user?.['id'])
+          if (isDonor) {
+            setPoints(payload.new.points)
+          }
+          
+      }).subscribe()
 
-        if (error) {
-          console.log(error);
-        } else {
-          //console.log(data);
-          setAvatarUrl(data[0].avatarurl)
+      return () => {
+        profileChange.unsubscribe()
         };
-      }
-      getProfile()
-    }, []);
+      },[])
+
 
     return (<Flex bg={colorMode === "light" ? 'gray.50' : 'gray.700'}
           p={1}
@@ -71,47 +77,73 @@ export default function Root() {
           zIndex={10}>
 
           {/* logo to link to home (dashboard) */}
+          <Tooltip label='Home' hasArrow fontSize='12px'>
           <Box display={showSearchBar ? 'block' : 'none'} position={"relative"}>
+            
             <Link to="/home">
               <Image src={logo} alt="Logo" boxSize="40px" minWidth="40px" />
             </Link>
-          </Box>
+          </Box></Tooltip>
+
+          {/* logo to link to home (dashboard) */}
+          <Tooltip label='Dashboard' hasArrow fontSize='12px'>
+          <Box  mr='auto' pl={'30px'} display={showSearchBar ? 'block' : 'none'} position={"relative"}>
+            <Link to="/dashboard">
+              <IconButton aria-label="dashboard" variant='unstyled' fontSize='3xl' icon={<TbLayoutDashboard/>}/>
+            </Link>
+          </Box></Tooltip>
 
           {/* Searchbar (changes depending on screen size)*/}
-          {isLargerThan768 ? (
+          <Tooltip label='Search tasks, people, and others soon'>
+            {isLargerThan768 ? (
             <Flex justifyContent="center" width="80%">
               <InputGroup w="50%">
-                <Input bg={colorMode === "light" ? 'gray.200' : 'gray.800'} type="text" value={inputValue}
+                <Input isDisabled bg={colorMode === "light" ? 'gray.200' : 'gray.800'} type="text" value={inputValue}
                   onChange={handleInputChange} placeholder="Search" m={.5} />
-                <Icon as={FaSearch} color="gray.500" cursor="pointer" fontSize="2xl" mt={2.5} ml={2} onClick={handleButtonClick} />
+                <IconButton isDisabled icon={<FaSearch />} color="gray.500" cursor="pointer" fontSize="2xl" mt={2.5} ml={2} onClick={() => {/* handleButtonClick */ } } aria-label={""} />
               </InputGroup>
             </Flex>
           ) : (
             <Box>
               <InputGroup>
-                <Input bg={colorMode === "light" ? 'gray.200' : 'gray.800'} type="text" value={inputValue}
+                <Input isDisabled bg={colorMode === "light" ? 'gray.200' : 'gray.800'} type="text" value={inputValue}
                   onChange={handleInputChange} placeholder="Search" display={showSearchBar ? 'none' : 'block'} width="80vw" />
-                <IconButton type="submit" color="gray.500" aria-label="Search" onClick={handleButtonClick} bg="none" fontSize="xl" ml={1} background="none"><FaSearch /></IconButton>
+                <IconButton isDisabled type="submit" color="gray.500" aria-label="Search" onClick={handleButtonClick} bg="none" fontSize="xl" ml={1} background="none" icon={<FaSearch />}/>
               </InputGroup>
             </Box>
           )}
-
-          <Box ml='auto' pr={'30px'}>
+          </Tooltip>
+          
+          {/**
+           * 
+           * <Box ml='auto' pr={'30px'}>
             <IconButton as={Link} to="/community" aria-label="Social" icon={<FaUsers />} fontSize="3xl" background="none" display={showSearchBar ? 'flex' : 'none'} float={"right"} />
           </Box>
+           * 
+           */}
+          
+          <HStack flexDir='row' ml='auto' marginRight='10px'>
+            <Heading fontSize='1rem'>{points ? points : 0}</Heading>
+            <FaThumbtack/>
+          </HStack>
 
 
           {/* Profile */}
-          <Box pr={2} display={showSearchBar ? 'block' : 'none'}>
+          <Tooltip label='Profiles' hasArrow fontSize='12px'>
+
+          <Box pr={2} ml='auto'>
             <Menu>
               <MenuButton as={Avatar} size="sm" cursor="pointer" src={avatarUrl}/>
               <MenuList>
                   <MenuItem icon={<Avatar src={profile?.['avatarurl']} />} onClick={()=>navigate(`/profile/${userName}`)} fontSize="md" fontWeight='500'>
                     Your Profile
                   </MenuItem>
-                  <MenuItem icon={<FaShoppingBag />} onClick={()=>navigate('/market')} fontSize="sm">
+                  {/**
+                   * <MenuItem icon={<FaShoppingBag />} onClick={()=>navigate('/market')} fontSize="sm">
                     Market
                   </MenuItem>
+                   */}
+                  
 
                   <MenuItem icon={<FaUser />} onClick={()=>navigate('/settings')} fontSize="sm">
                     Settings
@@ -125,7 +157,7 @@ export default function Root() {
                 <MenuItem icon={<FaSignOutAlt />} fontSize="sm" onClick={handleLogout}>Logout</MenuItem>
               </MenuList>
             </Menu>
-          </Box>
+          </Box></Tooltip>
         </Flex>);
   }
   return (

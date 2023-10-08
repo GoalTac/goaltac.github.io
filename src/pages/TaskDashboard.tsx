@@ -62,8 +62,8 @@ export default function Dashboard() {
 
     return(
     
-    <Box marginX='auto' maxWidth={['unset', 'container.lg']}>
-        <Stack padding={2} columnGap='4px' marginBottom='12px' height='fit-content' alignItems={['center','left']} flexDirection={['column','row']} flexWrap='wrap'>
+    <Box marginX='auto' maxWidth={['unset', 'container.lg']} width='fit-content'>
+        <Stack marginX='40px' paddingTop={'2rem'} columnGap='4px' marginBottom='12px' height='fit-content' alignItems={['center','']} flexDirection={['column','row']} flexWrap='wrap'>
             <ButtonGroup height='inherit' left='0'>
                 <Button leftIcon={<CalendarIcon/>}
                 colorScheme={view === 'Calendar' ? 'teal' : 'gray'}
@@ -86,9 +86,8 @@ export default function Dashboard() {
             <Flex width='fit-content'>
                <TaskDrawer/> 
             </Flex>
-            
-            
         </Stack>
         {loading ? <Spinner/> : displayedView}
+        
     </Box>)
 }

@@ -2,14 +2,14 @@ import { error } from "console";
 import { supabase } from "../../supabase";
 
 export type Task = {
-    uuid: string;
-    created_at: Date;
+    uuid?: string;
+    created_at?: Date;
     name: string;
     start_date: Date;
     end_date: Date;
     description: string;
     requirement: number;
-    reward: number;
+    difficulty: number;
     type: string;
     reoccurence: number;
 };
@@ -280,13 +280,7 @@ export async function _removeChildTask(parentID: string, childID: string) {
 export async function _setTask(taskID: string, task: any) {
     const { data:data, error } = await supabase
     .from('tasks')
-    .update({start_date: task.start_date,
-            end_date: task.end_date, 
-            name: task.name, 
-            description: task.description, 
-            requirement: task.requirement, 
-            reward: task.reward, reoccurence: task.reoccurence,
-            type: task.type})
+    .update([task])
     .eq('uuid', taskID).select().single();
 
     if (error) {
@@ -316,7 +310,7 @@ export async function _deleteTask(taskID: string) {
     const { error } = await supabase
         .from('tasks')
         .delete()
-        .eq('id', taskID);
+        .eq('uuid', taskID);
 
     if (error) {
         throw new Error(error.message);
@@ -335,8 +329,8 @@ export async function _addTask(task: any) {
     const description = task.description ? task.description : ''
     const requirement = task.requirement ? task.requirement : 1
     const reoccurence = task.reoccurence ? task.reoccurence : 1
-
-    const reward = task.reward ? task.reward : 1
+    const isCollaborative = task.isCollaborative ? task.isCollaborative : false
+    const difficulty = task.difficulty ? task.difficulty : 1
     const type = task.type ? task.type : 'Boolean'
 
     const newTask = {
@@ -345,8 +339,8 @@ export async function _addTask(task: any) {
         name: name,
         description: description,
         requirement: requirement,
-        reward: reward,
-        type: type, reoccurence: reoccurence
+        difficulty: difficulty,
+        type: type, reoccurence: reoccurence, isCollaborative: isCollaborative
     }
     //console.log(newTask)
 
@@ -375,7 +369,7 @@ export async function _getTaskLimit(userID: string) {
      * retrieves the user's role from the database, and determines their task limit
      */
 
-    const defaultTaskLimit = 20
+    const defaultTaskLimit = 15
     const tasksLeft = defaultTaskLimit - (count ? count : 0)
     return { 
         limit: defaultTaskLimit,
@@ -402,10 +396,13 @@ export async function _getTaskbyID(taskID: string) {
  * Creates new row with the same details as the taskID
  * @param taskID 
  */
-export async function _duplicateTask(taskID: string) {
+export async function _duplicateTask(task_uuid: string) {
 
     //get original task data
-    const duplicated_task = await _getTaskbyID(taskID);
+    let duplicated_task: Task = await _getTaskbyID(task_uuid) as Task;
+    delete duplicated_task.uuid
+    delete duplicated_task.created_at
+
 
     //check if task does not exist
     if (!duplicated_task) {
@@ -415,25 +412,35 @@ export async function _duplicateTask(taskID: string) {
     //duplicate task in supabase
     const { data, error } = await supabase
         .from('tasks')
-        .insert([duplicated_task])
+        .insert([duplicated_task]).select()
         .single()
 
     if (error) {
         throw new Error(error.message)
     }
 
+    return data
+
 }
 
-export async function _shareTasktoUser(taskID: string, userID: string) {
-    const { data, error } = await supabase 
-        .from('task_user_relations')
-        .insert({ task_id: taskID, user_id: userID})
-        .single()
+//This is used on the home page to add a task another user has into the person's own dashboard
+export async function _importTaskFromUser(task_uuid: string, user_uuid: string, post_uuid: string) {
 
-    if (error) {
-        throw new Error(error.message);
+    const duplicatedTask: Task = await _duplicateTask(task_uuid) as Task
+    if (!duplicatedTask) {
+        return new Error('Task creation error')
     }
-
+    const new_task_uuid = duplicatedTask.uuid
+    if (new_task_uuid == undefined) {
+        return new Error('Task ID not found')
+    }
+    const addedRelation = await _addUserTask(user_uuid, new_task_uuid)
+    //addPoints(user_uuid, 1) //removed possibly reconsidering
+    addImport(post_uuid)
+    if (addedRelation.message) {
+        return addedRelation
+    }
+    return null
 }
 
 
@@ -479,6 +486,7 @@ export async function _getUserTasks(userID: string) {
     return tasks;
 }
 
+
 /**
  * This is to package the user relations and task info
  * @param userID 
@@ -491,7 +499,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
     const {data: relations, error: relationError} = await supabase
         .from('task_user_relations')
         .select('*')
-        .eq('user_id', user_uuid);
+        .eq('user_id', user_uuid).order('created_at', { ascending: false });
 
     
     if(relationError) {
@@ -512,7 +520,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
         .from('posts')
         .select('*')
         .eq('user_uuid', user_uuid);
-    
+
         // get all relations in batch with one api call
     const {data: profile, error: profileError} = await supabase
         .from('profiles')
@@ -528,17 +536,59 @@ export async function _getUserTasksInfo(user_uuid: string) {
     if(profileError) {
         throw new Error(profileError.message)
     }
+    //how can we package multiple userIDs to show all collaborators?
+    //may need to have another database call here to grab collaborators
+    const getPackagedInfo = async(task: any, relation: any, post: any, profile: any) => {
 
-    const getPackagedInfo = (task: any, relation: any, post: any, profile: any) => {
+        //each has the potential to be an array if there are multiple people working on this task
+        let totalProgress = 0
+        let collaborators: any = []
+
+        if (task.isCollaborative) {
+            const { data: collaborator_relations, error: error } = await supabase
+                .from('task_user_relations')
+                .select('*')
+                .eq('task_id', task.uuid)
+            
+            if(error) {
+                throw new Error(error.message)
+            }
+            
+            //fetching the profiles of all collaborators
+            const collaborator_uuids = collaborator_relations.map(relation => relation.user_id);
+            const {data: collaborator_profiles, error: collaborator_profilesError} = await supabase
+                .from('profiles')
+                .select('*')
+                .in('userid', collaborator_uuids);
+            
+            if(collaborator_profilesError) {
+                throw new Error(collaborator_profilesError.message)
+            }
+            const getCollaboratorObject = (profile: any, relation: any) => {
+                totalProgress += relation.progress
+                return {
+                    displayName: profile.name, avatarURL: profile.avatarurl,
+                    userName: profile.username, progress: relation.progress, user_id: relation.user_id
+                }
+            }
+
+            for (const relation of collaborator_relations) {
+                //collaborator is the relation
+                const profile = collaborator_profiles.find(it => it.userid === relation.user_id);
+                const packagedCollaboratorInfo = await getCollaboratorObject(profile, relation)
+                collaborators.push(packagedCollaboratorInfo)
+            }
+        }
+
         return {
-            progress: relation.progress,
-            task_id: relation.task_id,
-            user_id: relation.user_id,
+            progress: relation.progress, isOwner: relation.isOwner, all_progress: totalProgress, 
+            task_id: relation.task_id, isCollaborative: task.isCollaborative,
+            user_id: relation.user_id, collaborators: collaborators,
             description: task.description,
             end_date: task.end_date,
             name: task.name,
             reoccurence: task.reoccurence,
-            reward: task.reward,
+            difficulty: task.difficulty,
             requirement: task.requirement,
             start_date: task.start_date,
             type: task.type, hasPosted: (post ? true : false),
@@ -552,7 +602,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
         const post = posts.find(post => post.user_uuid == relation.user_id && post.task_uuid == relation.task_id)
 
         if (task) {
-            const packagedInfo = getPackagedInfo(task, relation, post, profile);
+            const packagedInfo = await getPackagedInfo(task, relation, post, profile);
             packagedData.push(packagedInfo);
         }
     }
@@ -564,14 +614,31 @@ export async function _getUserTasksInfo(user_uuid: string) {
  * @param userID 
  * @param taskID 
  */
-export async function _addUserTask(userID: string | undefined, taskID: string) {
+export async function _addUserTask(userID: string, taskID: string, isOwner: boolean = true) {
 
     if (!userID) {
-        throw new Error('No user ID found')
+        return new Error('No user detected')
     }
+    const taskCount = await _getTaskLimit(userID)
+    if (taskCount.available <= 0) {
+        return new Error('You can not add any more tasks')
+    }
+
+    const { data: checkExisting, error: errorExisting, count } = await supabase
+        .from('task_user_relations')
+        .select('*', { count: 'exact', head: true }).match({task_id: taskID, user_id: userID });
+    if (errorExisting) {
+        return new Error(errorExisting.message)
+    }
+    let existingCount = count ? count : 0
+    if (existingCount > 0) {
+        return new Error('You can not collaborate more than once on this task.')
+    }
+
     const newRelation = {
         task_id: taskID,
-        user_id: userID
+        user_id: userID,
+        isOwner: isOwner
     }
     const { data: data, error } = await supabase
         .from('task_user_relations')
@@ -591,31 +658,39 @@ export async function _addUserTask(userID: string | undefined, taskID: string) {
  * @param taskID 
  */
 export async function _deleteUserTask(userID: string, taskID: string) {
+    
+    
+    //to delete the task if there is only one person who has a relation to it
+    const userRelations = await _userTaskRowCount(taskID)
+    let count = userRelations ? userRelations : 0
+    if (count <= 1) {
+        const deletedTask = await _deleteTask(taskID)
+    }
     const { error: error } = await supabase
         .from('task_user_relations')
         .delete()
         .eq('task_id', taskID)
         .eq('user_id', userID);
-    
-    const { error: error2 } = await supabase
-        .from('posts')
-        .delete()
-        .eq('task_uuid', taskID)
-        .eq('user_uuid', userID);
-    
     if (error) {
         throw new Error(error.message);
     }
-    if (error2) {
-        throw new Error(error2.message);
-    }
+}
 
+/**
+ * Returns how many relationships the task has
+ * @param task_uuid 
+ */
+export async function _userTaskRowCount(task_uuid: string) {
+    const { data, count } = await supabase //returns number of tasks that the user has completed
+        .from('task_user_relations')
+        .select('*', { count: 'exact', head: true }).eq('task_id', task_uuid)
+    return count
 }
 
 /**
  * Sets a task relationship
  * @param userID 
- * @param taskID 
+ * @param taskID n
  */
 
 export async function _setUserTask(userID: string, taskID: string) {
@@ -730,12 +805,76 @@ export async function _setProgress(userID: string, taskID: string, progress: num
     }
 }
 
+
+/**
+ * For collaborators. Only READS. Does not update other people's progress
+ * @param task_uuid 
+ */
+export async function _getTotalProgress(task_uuid: string) {
+    //iterate through all user relations that have the same task id
+    //put progress, profile info, etc into an object and store that in an array
+    //return that 
+    const { data: data, error } = await supabase
+        .from('task_user_relations')
+        .select('progress')
+        .eq('task_id', task_uuid)
+    if (error) {
+        throw new Error(error.message);
+    }
+    let sum : number = 0
+    data.forEach((it_data) => {
+        try {
+            sum += it_data.progress
+        } catch(issue) {
+            throw new Error('Unable to add progress to sum')
+        }
+        
+    })
+    return sum
+}
+
 /**
  * Returns whether or not the task is complete by measuring the progress
  * @param userID
  * @param taskID 
  */
 export async function _isComplete(userID: string, taskID: string) {
+
+}
+
+export const increment = async(id: any, user_id: any) => {
+    const { data: increment, error: incrementError } = await supabase.rpc('increment', { query_post_uuid: id })
+    addPoints(user_id)
+}
+export const addPoints = async(user_id: any, amount?: number) => {
+    const { data: addPoints, error: addPointsError } = await supabase.rpc('addprofilepoints', { query_user_uuid: user_id, amount: amount ? amount : 1 })
+}
+export const addImport = async(post_uuid: any) => {
+    const {data: data, error: error } = await supabase
+        .from('posts')
+        .select('imports')
+        .eq('post_uuid', post_uuid)
+        .single()
+    if (error) {
+        throw new Error(error.message)
+    }
+    console.log(data)
+    const {data: dataImport, error: errorImport } = await supabase
+        .from('posts')
+        .update({imports: (data.imports + 1)})
+        .eq('post_uuid', post_uuid)
+        if (errorImport) {
+            throw new Error(errorImport.message)
+        }
+    return dataImport
+
+}
+
+export const decrement = async(id: any, user_id: any) => {
+    const { data: decrement, error: decrementError } = await supabase.rpc('decrement', { query_post_uuid: id })
+}
+export const removePoints = async(user_id: any, amount?: number) => {
+    const { data: removePoints, error: removePointsError } = await supabase.rpc('removeprofilepoints', { query_user_uuid: user_id, amount: amount ? amount : 1 })
 
 }
 
@@ -768,7 +907,7 @@ export async function _addPost(taskID: string, userID: string) {
  * @param task_uuid 
  * @param user_uuid 
  */
-export async function _getPostInfo(posts: any[]){
+export async function _getPostInfo(posts: any[], user_uuid: string){
 
     const batch = posts
     const packagedData = [];
@@ -793,7 +932,12 @@ export async function _getPostInfo(posts: any[]){
         .from('profiles')
         .select('*')
         .in('userid', userUUIDs);
-
+    
+    //find all posts that the user has liked
+    const {data: postsLiked, error: postsLikedError} = await supabase
+        .from('posts_liked')
+        .select('*')
+        .eq('user_uuid', user_uuid);
     if(relationError) {
         throw new Error(relationError.message)
     }
@@ -804,41 +948,93 @@ export async function _getPostInfo(posts: any[]){
     if(profileError) {
         throw new Error(profileError.message)
     }
+    if(postsLikedError) {
+        throw new Error(postsLikedError.message)
+    }
 
-    const getPackagedInfo = (task: any, relation: any, profile: any, post: any) => {
-        
+    const getPackagedInfo = async(task: any, relation: any, profile: any, post: any, post_liked: any) => {
+        const liked = post_liked ? true : false
+        let totalProgress = 0
+        let collaborators: any = []
+
+        if (task.isCollaborative) {
+            const { data: collaborator_relations, error: error } = await supabase
+                .from('task_user_relations')
+                .select('*')
+                .eq('task_id', task.uuid)
+            
+            if(error) {
+                throw new Error(error.message)
+            }
+            
+            //fetching the profiles of all collaborators
+            const collaborator_uuids = collaborator_relations.map(relation => relation.user_id);
+            const {data: collaborator_profiles, error: collaborator_profilesError} = await supabase
+                .from('profiles')
+                .select('*')
+                .in('userid', collaborator_uuids);
+            
+            if(collaborator_profilesError) {
+                throw new Error(collaborator_profilesError.message)
+            }
+            const getCollaboratorObject = (profile: any, relation: any) => {
+                totalProgress += relation.progress
+                return {
+                    displayName: profile.name, avatarURL: profile.avatarurl,
+                    userName: profile.username, progress: relation.progress, user_id: relation.user_id
+                }
+            }
+
+            for (const relation of collaborator_relations) {
+                //collaborator is the relation
+                const profile = collaborator_profiles.find(it => it.userid === relation.user_id);
+                const packagedCollaboratorInfo = await getCollaboratorObject(profile, relation)
+                collaborators.push(packagedCollaboratorInfo)
+            }
+        }
+       
+            
+            
         const packaged = {
-            progress: relation.progress,
-            task_id: relation.task_id,
+            created_at: post.created_at, all_progress: totalProgress, 
+            progress: relation.progress, collaborators: collaborators, 
+            task_id: relation.task_id, imports: post.imports,
             user_id: relation.user_id,
             description: task.description,
             end_date: task.end_date,
             name: task.name,
             reoccurence: task.reoccurence,
-            reward: task.reward,
+            difficulty: task.difficulty,
             requirement: task.requirement,
             start_date: task.start_date,
-            type: task.simple,
-            likes: post.likes, comments: 0,
-            post_id: post.post_id, 
+            type: task.type,
+            likes: post.likes, liked: liked, 
+            comments: 0, isCollaborative: task.isCollaborative,
+            post_id: post.post_uuid, 
             avatarURL: profile.avatarurl,
             userName: profile.username, displayName: profile.name
         }
         return packaged
     }
     for (const relation of relations) {
+        if (!relation.isOwner) {
+            continue
+        }
+
         const task = tasks.find(task => task.uuid === relation.task_id);
         const profile = profiles.find(profile => profile.userid == relation.user_id)
-        const post = posts.find(post => post.user_uuid == relation.user_id)
+        const post = posts.find(post => post.user_uuid == relation.user_id && post.task_uuid == relation.task_id)
+        const post_liked = postsLiked.find(liked => liked.post_uuid == post.post_uuid)
+        
         if (task && profile && post) {
-            const packagedInfo = getPackagedInfo(task, relation, profile, post);
+            const packagedInfo = await getPackagedInfo(task, relation, profile, post, post_liked);
             packagedData.push(packagedInfo);
         }
     }
     return packagedData
 }
 
-export async function _getAllPostInfo(offset: number) {
+export async function _getAllPostInfo(offset: number, user_uuid: string) {
 
     const {data: posts, error: postError} = await supabase
         .from('posts')
@@ -848,6 +1044,17 @@ export async function _getAllPostInfo(offset: number) {
     if (postError) {
         throw new Error(postError.message)
     }
-    const packagedInfo = await _getPostInfo(posts);
+    const packagedInfo = await _getPostInfo(posts, user_uuid);
     return packagedInfo;
+}
+
+/**
+ * Gets packaged info of all information about collaborators
+ * @param task_uuid 
+ */
+export async function _getCollaboratorInfo(task_uuid: string) {
+    //iterate through all user relations that have the same task id
+    //put progress, profile info, etc into an object and store that in an array
+    //return that 
+
 }

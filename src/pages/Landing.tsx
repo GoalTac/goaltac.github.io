@@ -477,17 +477,19 @@ export default function LandingPage() {
                                 _hover={{
                                     boxShadow: '0px 0px 2px gray',
                                 }}
+                                height='400px'
                                 pt='2rem'>
                                 <Avatar size={'xl'} mb={4} pos={'relative'} src={staff.image ? staff.image : ''} bgGradient='radial(blue.500, teal.300)' />
                                 <Heading fontSize={'2xl'} fontFamily={'body'} >{staff.name} </Heading>
-                                <Text fontWeight={600} color={'gray.500'} mb={4}>{staff.title}</Text>
-                                <Text textAlign={'center'} color={useColorModeValue('gray.800', 'gray.200')} px={3}>{staff.desc}</Text>
-                                <Box>
+                                <Text fontWeight={600} color={'gray.500'}>{staff.title}</Text>
+                                <Text textAlign={'center'} maxWidth='300px' height='100px' color={useColorModeValue('gray.800', 'gray.200')} px={3}>{staff.desc}</Text>
+                                <Stack flexDirection='row' flexWrap='wrap'>
                                     {staff.badges.map((badge, i) => {
-                                        return (<Badge bgColor='transparent' key={i} colorScheme='blue'>{badge}</Badge>);
+                                        return (<Badge key={i} colorScheme='blue'>{badge}</Badge>);
                                     })}
-                                </Box>
-                                <Box pb={"20px"}>{staff.contact}</Box>
+                                </Stack>
+                                
+                                {staff.contact && <Link target='_blank' href={staff.contact} pb={"20px"}><FaLinkedin color='#0e76a8' aria-label='linked_in'/></Link>}
                             </VStack>
                         </Box>
                     );
@@ -726,71 +728,45 @@ export const staffProfiles = [
         name: 'My Phung',
         image: 'https://media.licdn.com/dms/image/D4E03AQGzcOT2TD9yeg/profile-displayphoto-shrink_400_400/0/1680054603274?e=1700697600&v=beta&t=Ezzap2gNI0qwtsjfN8vnvbNpfor2HSYWBHSuyaNpo3Q',
         title: 'Founder',
-        desc: 'Entrepreneur, student, chess and guitar enthusiast. Chat with me on Discord @ Wrys#8935',
+        desc: 'Ambitious and hyper-active student entrepreneur studying Economics at UConn with a CS minor',
         badges: [
-            'weightlifting',
-            'chess',
+            'fitness',
+            'chess', 'coding',
             'entrepreneurship',
-            'guitar',
-            'academics',
         ],
-        contact: 'myphungquoc@gmail.com',
+        contact: 'https://www.linkedin.com/in/my-phung/',
     },
     {
         name: 'Aditya Chandraker',
-        image: null,
-        title: 'Lead Developer',
+        image: 'https://images.squarespace-cdn.com/content/v1/5ba2831e3c3a53f00bb1dc9f/52b5d5b7-2a7b-46a9-ac59-8733e893105d/ProfilePicture.jpg?format=1500w',
+        title: 'Developer',
         desc: 'Premed student, CS minor, Pianist, and a fan of spicy food',
         badges: ['tabletennis', 'chess', 'art', 'taekwondo', 'academics'],
-        contact: 'aditya.chandraker@uconn.edu',
-    },
-    {
-        name: 'Ibrahima Capo-ChiChi',
-        image: null,
-        title: 'Developer',
-        desc: '',
-        badges: [''],
-        contact: '',
+        contact: 'https://www.linkedin.com/in/aditya-chandraker-68081822a/',
     },
     {
         name: 'Mayur Somalinga',
-        image: null,
+        image: 'https://media.licdn.com/dms/image/C4D03AQE-v15b1os4Tw/profile-displayphoto-shrink_400_400/0/1641148465961?e=1701907200&v=beta&t=AK1Qa8hwQitRaLJa7k9ua8zipo5Jkz1I5H3z6ZVBiJU',
         title: 'Developer',
         desc: 'Senior UConn Psychology Student — I used to be allergic to potatoes',
         badges: ['music', 'academics', 'photography'],
-        contact: 'mayurapriyan.somalinga@uconn.edu',
+        contact: 'https://www.linkedin.com/in/mayursomalinga/',
     },
     {
         name: 'Nikhil Ghosh',
-        image: null,
-        title: 'Developer',
-        desc: '',
-        badges: [''],
-        contact: '',
-    },
-    {
-        name: 'Colin Acerbi',
-        image: null,
-        title: 'Developer',
-        desc: '',
-        badges: [''],
-        contact: '',
+        image: 'https://media.licdn.com/dms/image/D4E03AQFArKfSYh5cMw/profile-displayphoto-shrink_400_400/0/1679967207449?e=1701907200&v=beta&t=dOX_EkVOKxXCRcv5lI9oFg0EKI73_LdNBT7g0MF-PYk',
+        title: 'Business Development',
+        desc: 'CS student, mentor at UConn, and life enthusiast',
+        badges: ['fitness', 'academics', 'travel', 'growth'],
+        contact: 'https://www.linkedin.com/in/n-ghosh/',
     },
     {
         name: 'Jordan Hawkes',
-        image: null,
+        image: 'https://media.licdn.com/dms/image/C4E03AQExiSnNNp46ow/profile-displayphoto-shrink_400_400/0/1659480222501?e=1701907200&v=beta&t=wnravQ4xaS2WdeKoeFRov9PTR2Qa-_XcH9_crN38O10',
         title: 'Marketing',
-        desc: '',
-        badges: [''],
-        contact: '',
-    },
-    {
-        name: 'Paolo Rangonese',
-        image: null,
-        title: 'Finance',
-        desc: 'Hard working enthusiasts, and beloved father. "The snow goose need not bathe to make itself white. Neither need you do anything but be yourself." -Lao Tzu',
-        badges: [''],
-        contact: '',
+        desc: 'I have multiple years of experience working with photo and video editing software',
+        badges: ['Video editing', 'Social Media', 'Camera Operation'],
+        contact: 'https://www.linkedin.com/in/jordan-hawkes-252a45225/',
     },
 ];
 

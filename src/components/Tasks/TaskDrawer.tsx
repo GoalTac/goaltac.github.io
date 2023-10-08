@@ -1,5 +1,5 @@
 import { AddIcon, CheckIcon, ChevronDownIcon, InfoOutlineIcon, UpDownIcon } from "@chakra-ui/icons"
-import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer, Tooltip } from "@chakra-ui/react"
+import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer, Tooltip, Divider } from "@chakra-ui/react"
 import React, { useRef, useState } from "react"
 import { Task, _addTask, _addUserTask, _getTaskLimit, _getUserTasks, _setTask } from "./TaskAPI"
 import { useSession } from "../../hooks/SessionProvider"
@@ -24,12 +24,13 @@ export default function TaskDrawer({children, preset}: any) {
     const [startDate, setStartDate] = useState<any>(isEdit ? preset.start_date : null)
     const [endDate, setEndDate] = useState<any>(isEdit ? preset.end_date : null)
     const [type, setType] = useState<any>(isEdit ? preset.type : 'Simple')
-    const [requirement, setRequirement] = useState(isEdit ? preset.requirement : 1)
-    const [reward, setReward] = useState<any>(isEdit ? preset.reward : 1)
+    const requirement = useRef(isEdit ? preset.requirement : 1)
+    const [difficulty, setDifficulty] = useState<any>(isEdit ? preset.difficulty : 1)
     const user = useSession().user //this rerenders the page tons of times
     const [tasks, setTasks] = useState<any>([])
     const [selectedTasks, setSelectedTasks] = useState<any>([])
     const [reoccurence, setReoccurence] = useState<number>(isEdit ? preset.reoccurence : 1)
+    const [isCollaborative, setIsCollaborative] = useState<boolean>(isEdit ? preset.isCollaborative : false)
 
     const uuid = isEdit ? preset.user_id : (user ? user?.['id'] : '')
     const toast = useToast()
@@ -54,58 +55,102 @@ export default function TaskDrawer({children, preset}: any) {
         function clearTasks() {
             setTitle('')
             setDescription('')
+            setIsCollaborative(false)
+
             setStartDate('')
             setEndDate('')
             setType('Simple')
-            setReward(1)
+            setDifficulty(1)
             setSelectedTasks([])
+            requirement.current = 1
             setReoccurence(0)
         }
 
-        function checks(): Boolean {
+        async function checkTitle(): Promise<Boolean> {
+            if (user) {
+                const taskLimitsData = await _getTaskLimit(user?.['id'])
+                const hasEnoughRoom = taskLimitsData.available>0
+                if (!hasEnoughRoom) {
+                    toast({
+                        title: "Error",
+                        description: 'Sorry! You do not have enough space',
+                        status: "error",
+                        duration: 2000,
+                        isClosable: true,
+                    })
+                    return false
+                }
+            } else {
+                toast({
+                    title: "Error",
+                    description: 'No user detected. Please retry again',
+                    status: "error",
+                    duration: 2000,
+                    isClosable: true,
+                })
+                return false
+            }
             if (!title) {
                 toast({
                     title: "Error",
                     description: 'You need a title for your task!',
                     status: "error",
-                    duration: 9000,
+                    duration: 2000,
                     isClosable: true,
                 })
                 return false
-            } else {
-                return true
             }
+            return true
         }
-        if(!checks()) return;
+        
+        
+
+        if(!(await checkTitle())) return; 
 
         const newTask = {
             start_date: startDate,
             end_date: endDate,
             name: title,
             description: description,
-            requirement: requirement,
-            reward: reward,
+            requirement: type=='Simple' ? 1 : requirement.current,
+            difficulty: difficulty,
             type: type,
-            reoccurence: reoccurence
+            reoccurence: reoccurence,
+            isCollaborative: isCollaborative
         }
 
         const createdTask = await (isEdit ? _setTask(preset.task_id, newTask) : _addTask(newTask)).finally(()=>{
+            if (isEdit) {
+                toast({
+                    title: "Success",
+                    description: 'Successfully edited your task!',
+                    colorScheme:'green',
+                    status: "success",
+                    duration: 2000,
+                    isClosable: true,
+                })
+            }
+            
+            onClose()
+            clearTasks()
+        })
+        
+        if (!isEdit && user) {
             toast({
                 title: "Success",
                 description: 'Successfully created your task!',
                 status: "success",
-                duration: 9000,
+                duration: 2000,
                 isClosable: true,
             })
-            onClose()
-            clearTasks()
-        })
+            //Relational data saving
+            const taskID = createdTask.uuid
 
-        //Relational data saving
-        const taskID = createdTask.uuid
+            //Adds user as an owner of the task
+            await _addUserTask(user?.['id'], taskID)
+        }
 
-        //Adds user as an owner of the task
-        await _addUserTask(user?.['id'], taskID)
+       
 
         //If task is type 'Tasks', create a task_task_relation row
 
@@ -128,7 +173,9 @@ export default function TaskDrawer({children, preset}: any) {
                 <input {...input} />
                 
                 <Flex {...checkbox} flexDirection='column' width='100%'
-                    onClick={()=>setType(input.value)}
+                    onClick={()=>{
+                        setType(input.value)
+                    }}
                     borderColor={input.value == type ? 'blue.400' : 'border'}
                     borderWidth='1px'
                     cursor='pointer'
@@ -155,7 +202,7 @@ export default function TaskDrawer({children, preset}: any) {
           })
         const group = getRootProps()
         
-        return <HStack marginY='20px' {...group}>
+        return <Stack alignItems='center' flexDirection={['column','row']} marginY='20px' {...group}>
             {options.map((option) => {
                 const value = option.value
                 const radio = getRadioProps({ value })
@@ -170,132 +217,116 @@ export default function TaskDrawer({children, preset}: any) {
                     
                 </RadioCard>)
             })}
-        </HStack>
+        </Stack>
     }
 
-    function TypeDisplay() {
-        function NumberTypeDisplay() {
-            const [newRequirement, setNewRequirement] = useState(requirement)
-            const handleChange = (value: any) => {
-                setNewRequirement(value)
-            }
+   function NumberTypeDisplay() {
 
-            return (
-                <Stack flexDirection='column'>
-                
+        const [newRequirement, setNewRequirement] = useState(requirement.current)
 
-
-                    <NumberInput allowMouseWheel defaultValue={1} value={newRequirement} min={1} onChange={handleChange}>
-                    <NumberInputField />
-                    <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                    </NumberInputStepper>
-                    </NumberInput></Stack>
-                
-            )
+        const handleChange = (value: any) => {
+            setNewRequirement(value)
+            requirement.current = value
         }
 
-        function BooleanTypeDisplay() {
-            setRequirement(1);
-            const [value, setValue] = useState(true)
-            return (
-                <Flex columnGap={'20px'} alignItems='center' justifyContent='center'>
-                    <Badge variant={value==false ? 'subtle' : 'outline'} colorScheme={value==false ? 'unset' : 'red'}>Incomplete</Badge>
-                    <Switch size='lg' isReadOnly onChange={()=>{
-                        setValue(!value)
-                    }}/>
-                    <Badge variant={value==true ? 'subtle' : 'outline'} colorScheme={value==true ? 'unset' : 'green'}>Complete</Badge>
-                </Flex>
-            )
-        }
+        return (
+            <Stack flexDirection='column' width='200px' marginX='auto'>
+                <NumberInput allowMouseWheel defaultValue={newRequirement} value={newRequirement} min={1} onChange={handleChange}>
+                <NumberInputField />
+                <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                </NumberInputStepper>
+                </NumberInput></Stack>
+            
+        )
+    }
+
+    function BooleanTypeDisplay() {
+        const [value, setValue] = useState(false)
+        return (
+            <Flex columnGap={'20px'} alignItems='center' justifyContent='center'>
+                <Badge variant={value==true ? 'subtle' : 'outline'} colorScheme={value==true ? 'unset' : 'red'}>Incomplete</Badge>
+                <Switch colorScheme={value == false ? 'red':'green'} size='lg' onChange={()=>{
+                    setValue(!value)
+                }}/>
+                <Badge variant={value==false ? 'subtle' : 'outline'} colorScheme={value==false ? 'unset' : 'green'}>Complete</Badge>
+            </Flex>
+        )
+    }
 
         /**
          * Displays add task button with all available tasks
          * @returns 
          */
-        function TasksTypeDisplay() {
+    function TasksTypeDisplay() {
 
-            function TaskButton({task, id}: any) {
+        function TaskButton({task, id}: any) {
 
-                return <Flex width='inherit'>
-                    <Flex flexDirection='column' width='100%'
-                        onClick={()=>{
-                            if (selectedTasks.includes(task)) { //remove the task
-                                const index = selectedTasks.indexOf(task)
-                                let newArray =[...selectedTasks]
-                                newArray.splice(index, 1)
-                                setSelectedTasks(newArray)
-                            } else {
-                                let newArray = [...selectedTasks, task]
-                                setSelectedTasks(newArray)
-                            }
-                        }}
-                        borderColor={selectedTasks.includes(task) ? 'blue.400' : 'border'}
-                        borderWidth='1px'
-                        cursor='pointer'
-                        borderRadius='md'
-                        px={5}
-                        py={3}>
-                        <Flex alignItems={'center'} gap='10px' flexDirection='row'>
-                            <Box boxSize='15px' borderWidth='2px' backgroundColor={selectedTasks.includes(task) ? 'blue.400' : 'border'}/>
-                            <Text maxWidth={'200px'} height='20px' flexWrap={'unset'} overflowX={'hidden'}>
-                                {task.name}
-                            </Text>
-                            <Spacer/>
-                            <Text maxWidth={'200px'} textColor='gray' height='20px' flexWrap={'unset'} overflowX={'clip'}>
-                                {task.description}
-                            </Text>
-                            
-                        </Flex>
+            return <Flex width='inherit'>
+                <Flex flexDirection='column' width='100%'
+                    onClick={()=>{
+                        if (selectedTasks.includes(task)) { //remove the task
+                            const index = selectedTasks.indexOf(task)
+                            let newArray =[...selectedTasks]
+                            newArray.splice(index, 1)
+                            setSelectedTasks(newArray)
+                        } else {
+                            let newArray = [...selectedTasks, task]
+                            setSelectedTasks(newArray)
+                        }
+                    }}
+                    borderColor={selectedTasks.includes(task) ? 'blue.400' : 'border'}
+                    borderWidth='1px'
+                    cursor='pointer'
+                    borderRadius='md'
+                    px={5}
+                    py={3}>
+                    <Flex alignItems={'center'} gap='10px' flexDirection='row'>
+                        <Box boxSize='15px' borderWidth='2px' backgroundColor={selectedTasks.includes(task) ? 'blue.400' : 'border'}/>
+                        <Text maxWidth={'200px'} height='20px' flexWrap={'unset'} overflowX={'hidden'}>
+                            {task.name}
+                        </Text>
+                        <Spacer/>
+                        <Text maxWidth={'200px'} textColor='gray' height='20px' flexWrap={'unset'} overflowX={'clip'}>
+                            {task.description}
+                        </Text>
+                        
                     </Flex>
-                </Flex> //need to click to add
-            }
-
-            function TaskListing() {
-                return tasks ? 
-                    <Box><Badge fontSize='1.25rem' colorScheme="red">This is currently a Work in Progress</Badge>
-                    <Box height='200px' overflowY='scroll'>
-                        <Flex justifyContent='center' flexDirection='column' rowGap='2' width='inherit'>
-                        {tasks.map((task: any, id: any)=>{
-                            return <TaskButton key={id} task={task} id={id} /> //need to click to add
-                        })}
-                        </Flex>
-                    </Box></Box>
-                 : <Box>
-                    <Icon as={InfoOutlineIcon}/>
-                    <Text>
-                        You don't have any tasks
-                    </Text>
-                    
-                </Box>
-            }
-
-
-            return (
-                <Box width='inherit' height='inherit'>
-                    {/* Display selected tasks */}
-                    {/* Display all tasks */}
-                    {/* Click tasks to add to selected task */}
-                    {/* Click selected task to add to tasks */}
-
-                    {(tasks === null ? <Spinner/> : <TaskListing/>)}
-                </Box>
-            )
+                </Flex>
+            </Flex> //need to click to add
         }
 
-        function RenderSwitch() {
-            switch(type) {
-                case 'Progress':
-                    return <NumberTypeDisplay/>;
-                case 'Sub-Tasks':
-                    return <TasksTypeDisplay/>;
-                default:
-                    return <BooleanTypeDisplay/>
-            }
+        function TaskListing() {
+            return tasks ? 
+                <Box><Badge fontSize='1.25rem' colorScheme="red">This is currently a Work in Progress</Badge>
+                <Box height='200px' overflowY='scroll'>
+                    <Flex justifyContent='center' flexDirection='column' rowGap='2' width='inherit'>
+                    {tasks.map((task: any, id: any)=>{
+                        return <TaskButton key={id} task={task} id={id} /> //need to click to add
+                    })}
+                    </Flex>
+                </Box></Box>
+                : <Box>
+                <Icon as={InfoOutlineIcon}/>
+                <Text>
+                    You don't have any tasks
+                </Text>
+                
+            </Box>
         }
 
-        return <RenderSwitch/>
+
+        return (
+            <Box width='inherit' height='inherit'>
+                {/* Display selected tasks */}
+                {/* Display all tasks */}
+                {/* Click tasks to add to selected task */}
+                {/* Click selected task to add to tasks */}
+
+                {(tasks === null ? <Spinner/> : <TaskListing/>)}
+            </Box>
+        )
     }
     
     return (
@@ -335,7 +366,7 @@ export default function TaskDrawer({children, preset}: any) {
 
                 </FormControl>
 
-                <FormControl isRequired>
+                <FormControl>
                     <FormLabel htmlFor='description'>Description</FormLabel>
                     <Textarea maxLength={200} resize='none' variant='outline' isRequired placeholder='Describe your task. What should you do?'
                         value={description}
@@ -351,7 +382,7 @@ export default function TaskDrawer({children, preset}: any) {
                     <TypeSelect/>
                     <Flex flexDir={'column'}  width='100%' minHeight='100px'>
                         <Box width='inherit' height='inherit'>
-                            <TypeDisplay/>
+                            {type=='Progress' ? <NumberTypeDisplay/> : <BooleanTypeDisplay/>}
                         </Box>
                     </Flex>
                 </FormControl>
@@ -413,19 +444,44 @@ export default function TaskDrawer({children, preset}: any) {
                     </Flex>
                 </FormControl>
                  */}
-
+                <Divider/>
                 <FormControl>
-                    <FormLabel htmlFor='reward'>Points rewarded: {reward}</FormLabel>
+                    <FormLabel htmlFor='difficulty'>Difficulty: {difficulty}</FormLabel>
                     
-                    <Slider size='lg' id='reward' defaultValue={reward} min={1} max={5} step={1} onChange={value=>{setReward(value)}}>
+                    <Slider size='lg' id='difficulty' defaultValue={difficulty} min={1} max={10} step={1} onChange={value=>{setDifficulty(value)}}>
                         <SliderTrack bg='red.100'>
                             <SliderFilledTrack bg='tomato' />
                         </SliderTrack>
                         <SliderThumb boxSize={6}>
-                            <Text fontSize='15' fontWeight='300' color='red'>{reward}</Text>
+                            <Text fontSize='15' fontWeight='300' color='red'>{difficulty}</Text>
                         </SliderThumb>
-                    </Slider>    
+                    </Slider>
+                    <HStack>
+                        <Text fontSize='12px' textColor='gray.400'>Easy</Text>
+                        <Spacer/>
+                        <Text fontSize='12px' textColor='gray.400'>Hard</Text>
+                    </HStack>
                 </FormControl>
+                <FormControl paddingTop='20px'>
+                    <Flex flexDir='row'>
+                        <Flex flexDir='column' maxWidth='200px'>
+                            <FormLabel htmlFor='type'>Collaborative?</FormLabel>
+                            <FormHelperText>Would you like other people to help? (must be posted)</FormHelperText>
+                        </Flex>
+                        <Spacer/>
+                        <Flex paddingTop='20px' columnGap={'20px'} alignItems='center' justifyContent='center'>
+                            <Badge variant={isCollaborative==true ? 'subtle' : 'outline'} colorScheme={isCollaborative==true ? 'unset' : 'green'}>Solo</Badge>
+                            <Switch colorScheme={isCollaborative == false ? 'green':'green'} size='lg' onChange={()=>{
+                                setIsCollaborative(!isCollaborative)
+                            }}/>
+                            <Badge variant={isCollaborative==false ? 'subtle' : 'outline'} colorScheme={isCollaborative==false ? 'unset' : 'green'}>Social</Badge>
+                        </Flex>
+                    </Flex>
+                    
+                    
+                </FormControl>
+
+                
 
                 
                 </Stack>

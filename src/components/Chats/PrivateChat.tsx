@@ -474,7 +474,11 @@ export default function Chat() {
 
 
             {/* chat button */}
-            <Box position="fixed" bottom={4} right={4}>
+            <Box 
+            // position="fixed" 
+            // bottom={4} 
+            // right={4}
+            >
                 <IconButton aria-label="Chat" icon={<ChatIcon />} onClick={handleChatClick} />
                 <Box as={FaCircle} color="red.500" position={'absolute'} right={-1} bottom={-1} size={'.8em'} />
             </Box>
