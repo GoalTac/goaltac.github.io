@@ -27,20 +27,6 @@ export default function Dashboard() {
      * This NEEDS to be improved so we get both task and relations together and package them
      */
     React.useEffect(()=>{
-        const taskRelationChanges = useSupabase.channel('relations').on('postgres_changes',{
-                schema: 'public', // Subscribes to the "public" schema in Postgres
-                event: '*',       // Listen to all changes
-                table: 'task_user_relations'
-            },(payload: any) => {
-                fetchUserRelations()
-        }).subscribe()
-        const taskChanges = useSupabase.channel('tasks').on('postgres_changes',{
-            schema: 'public', // Subscribes to the "public" schema in Postgres
-            event: '*',       // Listen to all changes
-            table: 'tasks'
-        },(payload: any) => {
-            fetchUserRelations()
-    }).subscribe()
         async function fetchUserRelations() {
             if (user) {
                 const fetchedTasks = await _getUserTasksInfo(user?.['id'])
@@ -54,10 +40,6 @@ export default function Dashboard() {
             
         }
         fetchUserRelations()
-        return () => {
-            taskRelationChanges.unsubscribe();
-            taskChanges.unsubscribe();
-          };
     },[])
 
     return(
@@ -65,7 +47,8 @@ export default function Dashboard() {
     <Box marginX='auto' maxWidth={['unset', 'container.lg']} width='fit-content'>
         <Stack marginX='40px' paddingTop={'2rem'} columnGap='4px' marginBottom='12px' height='fit-content' alignItems={['center','']} flexDirection={['column','row']} flexWrap='wrap'>
             <ButtonGroup height='inherit' left='0'>
-                <Button leftIcon={<CalendarIcon/>}
+                {/**
+                 <Button leftIcon={<CalendarIcon/>}
                 colorScheme={view === 'Calendar' ? 'teal' : 'gray'}
                 onClick={() => {
                     setView('Calendar')
@@ -73,11 +56,14 @@ export default function Dashboard() {
                 }}>
                     Calendar
                 </Button>
+
+                 */}
+                
                 <Button leftIcon={<AiOutlineOrderedList/>}
                 colorScheme={view === 'List' ? 'teal' : 'gray'}
                 onClick={() => {
-                    setView('List')
-                    setDisplayedView(<ListView tasks={tasksInfo} />)
+                    //setView('List')
+                    //setDisplayedView(<ListView tasks={tasksInfo} />)
                 }}>
                     List
                 </Button>
