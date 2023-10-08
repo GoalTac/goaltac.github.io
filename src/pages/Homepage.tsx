@@ -80,6 +80,16 @@ export default function Homepage() {
                 return
             }
             const user_uuid = user?.['id']
+            if (poster_uuid == user_uuid) {
+                toast({
+                    title: "Warning",
+                    description: 'Cannot like your own post',
+                    status: 'warning',
+                    duration: 2000,
+                    isClosable: true,
+                })
+                return
+            }
 
             if (isLiked) {
                 const { data: data, error: error } = await supabase

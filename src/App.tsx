@@ -28,7 +28,7 @@ import { Spinner } from '@chakra-ui/react';
 import LandingPage from './pages/Landing';
 import Homepage from './pages/Homepage';
 import UpdatePassword from './pages/UpdatePassword';
-import Feedback from './pages/feedback';
+import Feedback from './pages/Feedback';
 
 export default function App() {
   function ProtectedRoute({ children, redirectPath }: any) {
