@@ -767,8 +767,8 @@ export const staffProfiles = [
         name: 'Jordan Hawkes',
         image: 'https://media.licdn.com/dms/image/C4E03AQExiSnNNp46ow/profile-displayphoto-shrink_400_400/0/1659480222501?e=1701907200&v=beta&t=wnravQ4xaS2WdeKoeFRov9PTR2Qa-_XcH9_crN38O10',
         title: 'Marketing',
-        desc: '',
-        badges: [''],
+        desc: 'I have multiple years of experience working with photo and video editing software',
+        badges: ['Video editing', 'Social Media', 'Camera Operation'],
         contact: 'https://www.linkedin.com/in/jordan-hawkes-252a45225/',
     },
 ];
