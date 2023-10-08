@@ -471,7 +471,7 @@ export default function TaskDrawer({children, preset}: any) {
                         <Spacer/>
                         <Flex paddingTop='20px' columnGap={'20px'} alignItems='center' justifyContent='center'>
                             <Badge variant={isCollaborative==true ? 'subtle' : 'outline'} colorScheme={isCollaborative==true ? 'unset' : 'green'}>Solo</Badge>
-                            <Switch colorScheme={isCollaborative == false ? 'green':'green'} size='lg' onChange={()=>{
+                            <Switch defaultChecked={difficulty} colorScheme={isCollaborative == false ? 'green':'green'} size='lg' onChange={()=>{
                                 setIsCollaborative(!isCollaborative)
                             }}/>
                             <Badge variant={isCollaborative==false ? 'subtle' : 'outline'} colorScheme={isCollaborative==false ? 'unset' : 'green'}>Social</Badge>
