@@ -305,7 +305,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                     
                     <Stack marginStart='10px' overflowY='auto' alignSelf={['center','start']}>
                     
-                        <Textarea onChange={(e)=>{
+                        <Textarea resize='none' onChange={(e)=>{
                             description = e.currentTarget.value
                             handleFieldSave()
                         }} variant='unstyled' size='xs' defaultValue={description} width='200px' fontWeight='500' fontSize='0.75rem' alignSelf={['center','start']} maxH='80px'/>
