@@ -299,8 +299,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                             name = e.currentTarget.value
                             handleFieldSave()
                         }} variant='unstyled' defaultValue={name} overflow='clip' noOfLines={1} maxW='inherit' fontWeight='500' fontSize='1.25rem' alignSelf={['center','start']} height='fit-content'/>
-                        <Spacer/>
-                        <TimeIndicator/>
+                        
                     </HStack>
                     
                     <Stack marginStart='10px' overflowY='auto' alignSelf={['center','start']}>

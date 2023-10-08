@@ -1,4 +1,4 @@
-import { Box, Button, Spacer, Flex, Spinner, ButtonGroup, ListIcon, Stack } from "@chakra-ui/react";
+import { Box, Button, Spacer, Flex, Spinner, ButtonGroup, ListIcon, Stack, useColorModeValue, SkeletonCircle, SkeletonText, Card } from "@chakra-ui/react";
 import Calendar from "./Calendar";
 
 import { Link, Outlet, useNavigate } from "react-router-dom";
@@ -42,11 +42,18 @@ export default function Dashboard() {
         fetchUserRelations()
     },[])
 
+    function SkeletonCard() {
+        return <Card marginY='20px' padding='6' boxShadow='lg' bg={useColorModeValue('white','gray.700')}>
+            <SkeletonCircle size='10' />
+            <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
+        </Card>
+    }
+
     return(
     
     <Box marginX='auto' maxWidth={['unset', 'container.lg']} width='fit-content'>
         <Stack marginX='40px' paddingTop={'2rem'} columnGap='4px' marginBottom='12px' height='fit-content' alignItems={['center','']} flexDirection={['column','row']} flexWrap='wrap'>
-            <ButtonGroup height='inherit' left='0'>
+            <ButtonGroup height='inherit' left='0' width='fit-content'>
                 {/**
                  <Button leftIcon={<CalendarIcon/>}
                 colorScheme={view === 'Calendar' ? 'teal' : 'gray'}
@@ -73,7 +80,7 @@ export default function Dashboard() {
                <TaskDrawer/> 
             </Flex>
         </Stack>
-        {loading ? <Spinner/> : displayedView}
+        {loading ? <SkeletonCard/> : displayedView}
         
     </Box>)
 }
