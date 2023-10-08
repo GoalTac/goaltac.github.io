@@ -417,16 +417,10 @@ export default function Homepage() {
             const taskChanges = useSupabase.channel('task').on('postgres_changes',{
                     schema: 'public', // Subscribes to the "public" schema in Postgres
                     event: '*',       // Listen to all changes
-                    table: 'task_user_relations'
+                    table: 'task_user_relations',
+                    filter: `user_id=eq.${user?.['id']}`
                 },(payload: any) => {
                     fetchUserTasks()
-            }).subscribe()
-            const postChanges = useSupabase.channel('post').on('postgres_changes',{
-                schema: 'public', // Subscribes to the "public" schema in Postgres
-                event: '*',       // Listen to all changes
-                table: 'posts'
-            },(payload: any) => {
-                fetchUserTasks()
             }).subscribe()
 
             async function fetchUserTasks() {
@@ -442,7 +436,6 @@ export default function Homepage() {
 
             return () => {
                 taskChanges.unsubscribe();
-                postChanges.unsubscribe()
               };
         },[])
 
