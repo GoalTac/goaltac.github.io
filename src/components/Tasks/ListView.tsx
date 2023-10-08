@@ -20,7 +20,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
     function Card_Module({task}: Task | any) {
         const isOwner = task.isOwner == true ? true : false
         const isCollaborative = task.isCollaborative ? task.isCollaborative : false
-        const collaborators = task.collaborators ? task.collaborators : null
+        let collaborators = task.collaborators ? task.collaborators : null
         let name = task.name ? task.name : 'Untitled'
         const created_at = task.created_at ? task.created_at : null
         const start_date = task.start_date ? new Date(task.start_date) : created_at
@@ -135,46 +135,47 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         
         function SwitchCompletion() {
 
+            const progress_cachedTimeout: any = useRef(null)
+            const handleProgressSave = (value: number) => {
+                if (progress_cachedTimeout) {
+                    clearTimeout(progress_cachedTimeout.current)
+                }
+                
+                progress_cachedTimeout.current = setTimeout(function() {
+                    collaborators.forEach((collaborator: any)=> {
+                        if (collaborator.user_id == user?.['id']) {
+                            collaborator.progress = value
+                        }
+                    })
+                    
+                    setProgress(value)
+                    _setProgress(task.user_id, task.task_id, value)
+                    toast({
+                        title: "Success",
+                        description: 'Successfully saved your progress!',
+                        colorScheme:'green',
+                        status: "success",
+                        duration: 2000,
+                        isClosable: true,
+                    })
+                }, 2000)
+                
+            }
+
             function SubTaskCompletion() {
                 return <Box></Box>
             }
         
             function SimpleCompletion() {
                 const [newProgress, setNewProgress ] = useState<number>(progress)
-                let newValue = progress
-                const fieldProgressTime = useRef(Date.now()) //keep track of last time fields have changed
-
-                const fieldSaveTimeout = () => {
-                    setTimeout(()=>{
-                        const timeElapsed = Date.now() - fieldProgressTime.current
-                        if(timeElapsed >= 2000) {
-                            setProgress(newValue)
-                            _setProgress(task.user_id, task.task_id, newValue)
-                            toast({
-                                title: "Success",
-                                description: 'Successfully saved your progress!',
-                                colorScheme:'green',
-                                status: "success",
-                                duration: 2000,
-                                isClosable: true,
-                            })
-                        }
-                    }, 2000)
-                }
-                const handleProgressSave = async() => {
-                    fieldProgressTime.current = Date.now()
-                    fieldSaveTimeout()
-                }
         
                 return <Flex onClick={()=>{
                         if (newProgress==0) {
                             setNewProgress(1)
-                            newValue = 1
-                            handleProgressSave()
+                            handleProgressSave(1)
                         } else {
                             setNewProgress(0)
-                            newValue = 0
-                            handleProgressSave()
+                            handleProgressSave(0)
                         }
                     }} cursor='pointer' borderRadius={8} width='60px' fontSize='8px' height='20px'  backgroundColor={newProgress>0 ? 'green.400' : 'red.400'}>
                         <Text marginX='auto' userSelect='none' alignSelf='center'>{newProgress>0 ? 'Complete': 'Incomplete'}</Text>
@@ -183,37 +184,12 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
         
             function ProgressCompletion() {
                 const [newProgress, setNewProgress ] = useState<number>(progress) //variably changes
-                let newValue = progress
-                const fieldProgressTime = useRef(Date.now()) //keep track of last time fields have changed
-
-                const fieldSaveTimeout = () => {
-                    setTimeout(()=>{
-                        const timeElapsed = Date.now() - fieldProgressTime.current
-                        if(timeElapsed >= 2000) {
-                            setProgress(newValue)
-                            _setProgress(task.user_id, task.task_id, newValue)
-                            toast({
-                                title: "Success",
-                                description: 'Successfully saved your progress!',
-                                colorScheme:'green',
-                                status: "success",
-                                duration: 2000,
-                                isClosable: true,
-                            })
-                        }
-                    }, 2000)
-                }
-                const handleProgressSave = async() => {
-                    fieldProgressTime.current = Date.now()
-                    fieldSaveTimeout()
-                }
 
                 return <Flex><FormControl textAlign={'center'}>
                     
                     <NumberInput width='100px' size='xs' allowMouseWheel min={0} defaultValue={newProgress} max={requirement-totalProgress} onChange={(value)=>{
                             setNewProgress(Number(value)) 
-                            newValue = Number(value)
-                            handleProgressSave()
+                            handleProgressSave(Number(value))
                         }} clampValueOnBlur={false}>
                         <NumberInputField />
                         <NumberInputStepper>
