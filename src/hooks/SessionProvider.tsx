@@ -61,7 +61,6 @@ export const SessionProvider = ({ children, supabase }: any) => {
     
 
     const { data: listener } = onAuthStateChange(async(event : any, newSession: any) => {
-        console.log(event)
         if (session) {
           const { 
             data: profileData, error: error
