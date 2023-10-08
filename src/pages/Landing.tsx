@@ -1,6 +1,6 @@
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import { Box, useColorMode, Spacer, Flex, Stack, VStack, HStack, Text, Button, Image, Avatar, Heading, useColorModeValue, Badge, IconButton, Divider, LinkBox, Link, FormControl, Input, InputGroup, InputLeftElement, InputRightElement, useToast, ButtonGroup, Card, Grid, GridItem, Textarea, Editable, EditablePreview, EditableTextarea, EditableInput, SimpleGrid, AvatarGroup, Tag, Tooltip } from "@chakra-ui/react";
+import { Box, useColorMode, Spacer, Flex, Stack, VStack, HStack, Text, Button, Image, Avatar, Heading, useColorModeValue, Badge, IconButton, Divider, LinkBox, Link, FormControl, Input, InputGroup, InputLeftElement, InputRightElement, useToast, ButtonGroup, Card, Grid, GridItem, Textarea, Editable, EditablePreview, EditableTextarea, EditableInput, SimpleGrid, AvatarGroup, Tag, Tooltip, AspectRatio } from "@chakra-ui/react";
 import {
     FaDiscord,
     FaFacebookSquare,
@@ -419,28 +419,30 @@ export default function LandingPage() {
             </Flex>
         }
 
-        function TaskCreateFeature() {
-
-            
-
-            return <Stack flexWrap={'wrap'} gap={['40px','20px']} justifyContent='space-evenly' flexDirection={['column','row']}>
-                <VStack textAlign={'center'} flexGrow={1} width={['fit-content','300px']} alignSelf='center'>
-                    <Heading fontSize='2rem'>
-                        Freedom to Create Tasks Your Way
-                    </Heading>
-                    <Text fontSize='1rem'>
-                        Create your tasks the way you vision it with our many flexible options!
-                    </Text>
-                    <Image maxWidth='600px' width='100%' height='auto' src={useColorModeValue(task_drawer, task_drawer_dark)}/>
-                </VStack>
-                
-            </Stack>
+        function Demo() {
+            return <Flex flexWrap='wrap' gap={['40px','20px']} justifyContent={['center','space-evenly']} flexDirection={['column','row']}>
+            <AspectRatio width='600px' boxShadow='lg' height='400px'>
+                <iframe
+                title='demonstration'
+                src='https://www.youtube.com/embed/7HXTc3EQsuE'
+                allowFullScreen
+                />
+            </AspectRatio>
+            <VStack textAlign='center' alignSelf={'center'} width={['fit-content','300px']} rowGap='1rem'>
+                <Heading width='80%' fontSize='1.75rem'>
+                    Check the Demo!
+                </Heading>
+                <Text fontSize='20px'>
+                    A social productivity app, the first of it's kind
+                </Text>
+            </VStack>
+        </Flex>
         }
 
         return (<Flex id='productivity' paddingY='50px' flexDirection='column' gap='100px' maxWidth={constants.maxWidth} marginX='auto'>
             <SimpleGrid marginX={['2px','50px']} spacing={['40px','100px']}>
                 <CalendarFeature/>
-
+                <Demo/>
             </SimpleGrid>
         </Flex>);
     }
