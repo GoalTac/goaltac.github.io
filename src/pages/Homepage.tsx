@@ -176,7 +176,16 @@ export default function Homepage() {
         }
 
         const handleTac = async() => {
-
+            if (poster_uuid == user?.['id']) {
+                toast({
+                    title: "Warning",
+                    description: 'Cannot give yourself tacs',
+                    status: 'warning',
+                    duration: 2000,
+                    isClosable: true,
+                })
+                return
+            }
             if (profile) {
                 if (profile?.['points'] >= 1) {
                     addPoints(poster_uuid, 1)

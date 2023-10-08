@@ -55,7 +55,11 @@ export default function Root() {
         event: '*',       // Listen to all changes
         table: 'profiles'
       },(payload: any) => {
-          setPoints(payload.new.points)
+          const isDonor = (payload.new.userid == user?.['id'])
+          if (isDonor) {
+            setPoints(payload.new.points)
+          }
+          
       }).subscribe()
 
       return () => {
