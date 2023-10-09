@@ -53,13 +53,9 @@ export default function Root() {
       const profileChange = useSupabase.channel('profileChanges').on('postgres_changes',{
         schema: 'public', // Subscribes to the "public" schema in Postgres
         event: '*',       // Listen to all changes
-        table: 'profiles'
+        table: 'profiles', filter: `userid=eq.${user?.['id']}`
       },(payload: any) => {
-          const isDonor = (payload.new.userid == user?.['id'])
-          if (isDonor) {
-            setPoints(payload.new.points)
-          }
-          
+          setPoints(payload.new.points)
       }).subscribe()
 
       return () => {
