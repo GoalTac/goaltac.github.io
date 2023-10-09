@@ -348,7 +348,7 @@ export default function Homepage() {
                     Task List
                 </CardHeader>
                 {tasksInfo.length > 0 && loading() ? 
-                <SimpleGrid paddingX='3px' paddingBottom='10px' columns={1} gap='3px' width='inherit' maxHeight='200px' overflowY='scroll'>
+                <SimpleGrid paddingX='3px' paddingBottom='10px' columns={1} gap='3px' width='inherit' maxHeight='800px' overflowY='scroll'>
                     {tasksInfo.map((taskInfo: any, id:number)=>{
                         return <TaskModule key={id} taskInfo={taskInfo}/>
                         
