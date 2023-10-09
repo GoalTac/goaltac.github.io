@@ -28,7 +28,6 @@ import { Spinner } from '@chakra-ui/react';
 import LandingPage from './pages/Landing';
 import Homepage from './pages/Homepage';
 import UpdatePassword from './pages/UpdatePassword';
-import Feedback from './pages/Feedback';
 
 export default function App() {
   function ProtectedRoute({ children, redirectPath }: any) {
@@ -76,7 +75,6 @@ export default function App() {
         <Route path="welcome" element={<Landing />} />
         <Route path="versions" element={<Versions />} />
         <Route path="agreements" element={<Agreements />} />
-        <Route path="feedback" element={<Feedback />} />
 
         {/* TODO: conditional on authentication routing  */}
         <Route element={<Root />}>
