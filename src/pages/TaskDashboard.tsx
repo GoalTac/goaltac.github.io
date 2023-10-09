@@ -40,6 +40,19 @@ export default function Dashboard() {
             
         }
         fetchUserRelations()
+
+        const taskChange = useSupabase.channel('profileChanges').on('postgres_changes',{
+            schema: 'public', // Subscribes to the "public" schema in Postgres
+            event: '*',       // Listen to all changes
+            table: 'task_user_relations', filter: `user_id=eq.${user?.['id']}`
+          },(payload: any) => {
+              fetchUserRelations()
+              console.log(payload)
+          }).subscribe()
+    
+          return () => {
+            taskChange.unsubscribe()
+        };
     },[])
 
     function SkeletonCard() {

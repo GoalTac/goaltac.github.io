@@ -536,7 +536,7 @@ export default function TaskDrawer({children, preset, tasks}: any) {
                         const deletedTask = _deleteUserTask(user_uuid, task_uuid).finally(()=>onClose())
                         toast({
                             title: "Success",
-                            description: 'Deleted the task. Refresh the page to see changes.',
+                            description: 'Deleted the task',
                             status: "success",
                             duration: 2000,
                             isClosable: true,
