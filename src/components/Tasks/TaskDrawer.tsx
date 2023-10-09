@@ -1,12 +1,13 @@
 import { AddIcon, CheckIcon, ChevronDownIcon, DeleteIcon, InfoOutlineIcon, UpDownIcon } from "@chakra-ui/icons"
-import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer, Tooltip, Divider } from "@chakra-ui/react"
+import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer, Tooltip, Divider, IconButton } from "@chakra-ui/react"
 import React, { useRef, useState } from "react"
-import { Task, _addTask, _addUserTask, _deleteUserTask, _getTaskLimit, _getUserTasks, _setTask } from "./TaskAPI"
+import { Task, _addPost, _addTask, _addUserTask, _deleteUserTask, _getTaskLimit, _getUserTasks, _setTask, removePoints } from "./TaskAPI"
 import { useSession } from "../../hooks/SessionProvider"
 import { RiInformationFill } from "react-icons/ri"
 import { start } from "repl"
 import { ReactElement } from "react-markdown/lib/react-markdown"
 import { FaTrash } from "react-icons/fa"
+import { SlShareAlt } from "react-icons/sl"
 
 /**
  * TODO:
@@ -15,9 +16,10 @@ import { FaTrash } from "react-icons/fa"
  * 
  * @returns Task Drawer component
  */
-export default function TaskDrawer({children, preset}: any) {    
+export default function TaskDrawer({children, preset, tasks}: any) {    
     const isEdit = preset?.name ? true : false
     
+    const { user: user, profile: profile } = useSession();
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [title, setTitle] = useState<string>(isEdit ? preset.name : 'New Task')
@@ -27,8 +29,6 @@ export default function TaskDrawer({children, preset}: any) {
     const [type, setType] = useState<any>(isEdit ? preset.type : 'Simple')
     const requirement = useRef(isEdit ? preset.requirement : 1)
     const [difficulty, setDifficulty] = useState<any>(isEdit ? preset.difficulty : 1)
-    const user = useSession().user //this rerenders the page tons of times
-    const [tasks, setTasks] = useState<any>([])
     const [selectedTasks, setSelectedTasks] = useState<any>([])
     const [reoccurence, setReoccurence] = useState<number>(isEdit ? preset.reoccurence : 1)
     const [isCollaborative, setIsCollaborative] = useState<boolean>(isEdit ? preset.isCollaborative : false)
@@ -36,19 +36,8 @@ export default function TaskDrawer({children, preset}: any) {
     const task_uuid = isEdit ? preset.task_id : null
     const user_uuid = isEdit ? preset.user_id : (user ? user?.['id'] : '')
     const toast = useToast()
-
-    /*
-    //gets rid of 4 re-renders
-    React.useEffect(()=>{
-        async function fetchTasks() {
-            const collectedTasks = await Promise.all(await _getUserTasks(uuid))
-
-            setTasks(collectedTasks)
-            return collectedTasks
-        }
-        
-        fetchTasks()
-    },[])*/
+    const hasPosted = (isEdit ? preset.hasPosted ? true : false : false)
+    const isOwner = (isEdit ? preset.isOwner ? true : false : false)
 
     const firstField = React.useRef(null)
 
@@ -163,6 +152,54 @@ export default function TaskDrawer({children, preset}: any) {
 
         
     } 
+    const handlePost = async() => {
+        onClose()
+
+        if (!profile) {
+            toast({
+                title: "Sorry!",
+                description: 'Unable to find your profile',
+                status: 'warning',
+                duration: 2000,
+                isClosable: true,
+            })
+            return
+        }
+        if (profile?.['points'] < 1) {
+            toast({
+                title: "Sorry!",
+                description: 'You do not have the funds to perform this action',
+                status: 'warning',
+                duration: 2000,
+                isClosable: true,
+            })
+            return
+        }
+        const postedTasks = tasks.filter((it_task: any)=>it_task.hasPosted).length
+        if (postedTasks>=5) {
+            toast({
+                title: "Sorry!",
+                description: 'You are limited to 5 posts',
+                status: 'warning',
+                duration: 2000,
+                isClosable: true,
+            })
+            return
+        }
+
+        removePoints(user?.['id'], 1)
+
+        const createdPost = await _addPost(preset.task_id, preset.user_id).finally(()=>{
+            toast({
+                title: "Success",
+                description: 'Successfully created your task!',
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            })
+            
+        })
+    }           
 
     function TypeSelect() {
         function RadioCard(props: any) {
@@ -482,29 +519,35 @@ export default function TaskDrawer({children, preset}: any) {
                     
                     
                 </FormControl>
-
-                
-
-                
                 </Stack>
             </DrawerBody>
 
             <DrawerFooter borderTopWidth='1px'>
-                {task_uuid && <><Button leftIcon={<FaTrash/>} variant='unstyled' onClick={()=>{
-                    const deletedTask = _deleteUserTask(user_uuid, task_uuid).finally(()=>onClose())
-                    toast({
-                        title: "Success",
-                        description: 'Deleted the task. Refresh the page to see changes.',
-                        status: "success",
-                        duration: 2000,
-                        isClosable: true,
-                    })
-                }}>Trash</Button><Spacer/></>}
-                <Button variant='outline' mr={3} onClick={onClose}>
-                Cancel
-                </Button>
-                <Button colorScheme='blue' onClick={handleSubmit}>{isEdit ? 'Save' : 'Submit'}</Button>
-            </DrawerFooter>
+                <Tooltip label='Delete your task'>
+                    <IconButton variant='unstyled' size='md' mr={3} aria-label='delete task' icon={<DeleteIcon/>} onClick={()=>{
+                        const deletedTask = _deleteUserTask(user_uuid, task_uuid).finally(()=>onClose())
+                        toast({
+                            title: "Success",
+                            description: 'Deleted the task. Refresh the page to see changes.',
+                            status: "success",
+                            duration: 2000,
+                            isClosable: true,
+                        })
+                    }}/>
+                </Tooltip>
+                <Button size='sm' isDisabled={hasPosted} onClick={handlePost} backgroundColor={hasPosted ? '' : 'purple.200'} leftIcon={<SlShareAlt/>}>Post</Button>
+
+                <Spacer/>
+                <ButtonGroup spacing='1rem' size='sm'>
+                   <Button variant='outline' onClick={onClose}>
+                        Cancel
+                    </Button>
+                    <Button colorScheme='blue' onClick={handleSubmit}>
+                        {isEdit ? 'Save' : 'Submit'}
+                    </Button>
+                
+                </ButtonGroup>
+                </DrawerFooter>
             </DrawerContent>
         </Drawer>
         </>
