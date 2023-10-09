@@ -1,6 +1,6 @@
 import { AddIcon, ChatIcon } from "@chakra-ui/icons"
-import { useColorModeValue, Link, Text, Card, Stack, Flex, HStack, Avatar, Heading, Tooltip, Progress, AvatarGroup, Divider, ButtonGroup, Button, Spacer, useToast, Box, Spinner } from "@chakra-ui/react"
-import React, { Suspense, useState } from "react"
+import { useColorModeValue, Link, Text, Card, Stack, Flex, HStack, Avatar, Heading, Tooltip, Progress, AvatarGroup, Divider, ButtonGroup, Button, Spacer, useToast, Box, Spinner, Icon } from "@chakra-ui/react"
+import React, { Suspense, useRef, useState } from "react"
 import { FaThumbsUp, FaThumbtack } from "react-icons/fa"
 import { GiSaveArrow } from "react-icons/gi"
 import { supabase } from "../../supabase"
@@ -29,6 +29,10 @@ export default function PostCard({taskInfo, user, profile}: any) {
     const [showComments, setShowComments] = useState<boolean>(false)
     const percentProgress: number = ((totalProgress/requirement) * 100)
     const post_uuid: string = taskInfo.post_id
+    const [cachedTacs, setCachedTacs] = useState<number>(0) //for display
+    let tacCount = useRef(0)
+    const cachedTimeout: any = useRef(null)
+
     const [isLiked, setIsLiked] = useState<boolean>(taskInfo.liked) //this shouldn't be true if the post hasn't been liked by the person!!
     const colorTheme = {
         inComplete: {
@@ -157,6 +161,8 @@ export default function PostCard({taskInfo, user, profile}: any) {
     }
 
     const handleTac = async() => {
+        setCachedTacs(cachedTacs+1)
+        tacCount.current = tacCount.current + 1
         if (poster_uuid == user?.['id']) {
             toast({
                 title: "Warning",
@@ -167,27 +173,7 @@ export default function PostCard({taskInfo, user, profile}: any) {
             })
             return
         }
-        if (profile) {
-            if (profile?.['points'] >= 1) {
-                addPoints(poster_uuid, 1)
-                removePoints(user?.['id'], 1)
-                toast({
-                    title: "Success",
-                    description: `Donated 1 tac to ${displayName}`,
-                    status: 'success',
-                    duration: 2000,
-                    isClosable: true,
-                })
-            } else {
-                toast({
-                    title: "Warning",
-                    description: 'You do not have enough tacs for this action',
-                    status: 'warning',
-                    duration: 2000,
-                    isClosable: true,
-                })
-            }
-        } else {
+        if (!profile) {
             toast({
                 title: "Warning",
                 description: 'Unable to find your profile',
@@ -196,6 +182,34 @@ export default function PostCard({taskInfo, user, profile}: any) {
                 isClosable: true,
             })
         }
+        if (profile?.['points'] < tacCount) {
+            toast({
+                title: "Warning",
+                description: 'You do not have enough tacs for this action',
+                status: 'warning',
+                duration: 2000,
+                isClosable: true,
+            })
+        }
+
+        if (cachedTimeout) {
+            clearTimeout(cachedTimeout.current)
+        }
+        console.log(tacCount)
+        
+        cachedTimeout.current = setTimeout(function() {
+            addPoints(poster_uuid, tacCount.current)
+            removePoints(user?.['id'], tacCount.current)
+            toast({
+                title: `Sent ${tacCount.current} tacs to ${displayName}`,
+                status: 'success',
+                duration: 2000,
+                isClosable: true,
+            })
+            setCachedTacs(0)
+            tacCount.current = 0
+        }, 2000)
+        
 
     }
 
@@ -269,8 +283,8 @@ export default function PostCard({taskInfo, user, profile}: any) {
                 {imports}
             </Button></Tooltip>
             <Tooltip label='Donate a tac'>
-            <Button color={useColorModeValue('red.400','red.200')} onClick={handleTac} aria-label='tac donation' variant={'ghost'} leftIcon={<FaThumbtack size='20px'/>}>
-                
+            <Button width='60px' color={useColorModeValue('red.500','red.200')} onClick={handleTac} aria-label='tac donation' variant={'ghost'} leftIcon={<FaThumbtack/>}>
+                {cachedTacs > 0 ? ` ${cachedTacs}` : ' +'}
             </Button></Tooltip>
             {/**
              <Menu>

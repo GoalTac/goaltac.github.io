@@ -37,7 +37,7 @@ export default function Homepage() {
     const toast = useToast()
     const [tasksLoaded, setTasksLoaded] = useState<Boolean>(false)
     const [postsLoaded, setPostsLoaded] = useState<Boolean>(false)
-    const loading = () => {return tasksLoaded && postsLoaded}
+    const loading = () => {return postsLoaded}
 
 
     function SocialFeed() {
