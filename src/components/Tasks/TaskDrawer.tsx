@@ -1,5 +1,5 @@
 import { AddIcon, CheckIcon, ChevronDownIcon, DeleteIcon, InfoOutlineIcon, UpDownIcon } from "@chakra-ui/icons"
-import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer, Tooltip, Divider, IconButton } from "@chakra-ui/react"
+import { useDisclosure,Icon, Button, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Input, DrawerFooter, Box, FormLabel, InputGroup, InputLeftAddon, InputRightAddon, Select, Stack, Textarea, Slider, SliderFilledTrack, SliderThumb, SliderTrack, SliderMark, Text, Menu, MenuButton, MenuItem, MenuList, RadioGroup, Radio, useRadio, useRadioGroup, HStack, FormHelperText, FormControl, Flex, VStack, Heading, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, InputRightElement, Spinner, Switch, Badge, ButtonGroup, useCheckboxGroup, Checkbox, useCheckbox, useToast, Spacer, Tooltip, Divider, IconButton, useColorModeValue } from "@chakra-ui/react"
 import React, { useRef, useState } from "react"
 import { Task, _addPost, _addTask, _addUserTask, _deleteUserTask, _getTaskLimit, _getUserTasks, _setTask, removePoints } from "./TaskAPI"
 import { useSession } from "../../hooks/SessionProvider"
@@ -33,7 +33,7 @@ export default function TaskDrawer({children, preset, tasks}: any) {
     const [reoccurence, setReoccurence] = useState<number>(isEdit ? preset.reoccurence : 1)
     const [isCollaborative, setIsCollaborative] = useState<boolean>(isEdit ? preset.isCollaborative : false)
     
-    const task_uuid = isEdit ? preset.task_id : null
+    var task_uuid = isEdit ? preset.task_id : null
     const user_uuid = isEdit ? preset.user_id : (user ? user?.['id'] : '')
     const toast = useToast()
     const hasPosted = (isEdit ? preset.hasPosted ? true : false : false)
@@ -138,7 +138,9 @@ export default function TaskDrawer({children, preset, tasks}: any) {
             const taskID = createdTask.uuid
 
             //Adds user as an owner of the task
-            await _addUserTask(user?.['id'], taskID)
+            const relation = await _addUserTask(user?.['id'], taskID)
+
+            return taskID
         }
 
        
@@ -175,30 +177,36 @@ export default function TaskDrawer({children, preset, tasks}: any) {
             })
             return
         }
-        const postedTasks = tasks.filter((it_task: any)=>it_task.hasPosted).length
-        if (postedTasks>=5) {
-            toast({
-                title: "Sorry!",
-                description: 'You are limited to 5 posts',
-                status: 'warning',
-                duration: 2000,
-                isClosable: true,
+
+        //if user creating task for first time 
+        if (!isEdit && user) {
+            task_uuid = await handleSubmit().then(async(task_id: any)=>{
+                await _addPost(task_id, user?.['id']).finally(()=>{
+                    toast({
+                        title: "Success",
+                        description: 'Posted your task!',
+                        status: "success",
+                        duration: 9000,
+                        isClosable: true,
+                    })
+                    
+                })
             })
-            return
+
+        } else {
+            await _addPost(task_uuid, preset.user_id).finally(()=>{
+                toast({
+                    title: "Success",
+                    description: 'Posted your task!',
+                    status: "success",
+                    duration: 9000,
+                    isClosable: true,
+                })
+                
+            })
         }
 
         removePoints(user?.['id'], 1)
-
-        const createdPost = await _addPost(preset.task_id, preset.user_id).finally(()=>{
-            toast({
-                title: "Success",
-                description: 'Successfully created your task!',
-                status: "success",
-                duration: 9000,
-                isClosable: true,
-            })
-            
-        })
     }           
 
     function TypeSelect() {
@@ -232,8 +240,7 @@ export default function TaskDrawer({children, preset, tasks}: any) {
 
         const options = [
             {value:'Progress', desc: 'Use numbers to make periodic updates'},
-            {value:'Simple', desc: 'Check task as done or leave it incomplete'},
-            {value:'Sub-Tasks', desc: 'Success dependent on status of tasks'}]
+            {value:'Simple', desc: 'Check task as done or leave it incomplete'}]
         const { getRootProps, getRadioProps } = useRadioGroup({
             name: 'Type',
             defaultValue: type,
@@ -241,7 +248,7 @@ export default function TaskDrawer({children, preset, tasks}: any) {
           })
         const group = getRootProps()
         
-        return <Stack alignItems='center' flexDirection={['column','row']} marginY='20px' {...group}>
+        return <Stack alignItems='center' justifyContent='center' flexDirection={['column','row']} marginY='20px' {...group}>
             {options.map((option) => {
                 const value = option.value
                 const radio = getRadioProps({ value })
@@ -523,6 +530,7 @@ export default function TaskDrawer({children, preset, tasks}: any) {
             </DrawerBody>
 
             <DrawerFooter borderTopWidth='1px'>
+                {isOwner && <>
                 <Tooltip label='Delete your task'>
                     <IconButton variant='unstyled' size='md' mr={3} aria-label='delete task' icon={<DeleteIcon/>} onClick={()=>{
                         const deletedTask = _deleteUserTask(user_uuid, task_uuid).finally(()=>onClose())
@@ -534,10 +542,13 @@ export default function TaskDrawer({children, preset, tasks}: any) {
                             isClosable: true,
                         })
                     }}/>
+                </Tooltip></>}
+                <Tooltip label='Post your task globally'>
+                    <Button size='sm' isDisabled={hasPosted} onClick={handlePost} backgroundColor={hasPosted ? '' : useColorModeValue('purple.200','purple.300')} leftIcon={<SlShareAlt/>}>Post</Button>
                 </Tooltip>
-                <Button size='sm' isDisabled={hasPosted} onClick={handlePost} backgroundColor={hasPosted ? '' : 'purple.200'} leftIcon={<SlShareAlt/>}>Post</Button>
 
                 <Spacer/>
+                
                 <ButtonGroup spacing='1rem' size='sm'>
                    <Button variant='outline' onClick={onClose}>
                         Cancel

@@ -888,6 +888,7 @@ export async function _addPost(taskID: string, userID: string) {
         task_uuid: taskID,
         user_uuid: userID
     }
+    console.log(taskID, userID)
 
 
     const { data: data, error } = await supabase
