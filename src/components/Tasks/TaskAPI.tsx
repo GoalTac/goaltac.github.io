@@ -34,7 +34,7 @@ export type Relation = {
 
 export type Profile = {
     id: number;
-    created_at: Date;
+    created_at: Date|null;
     name: string;
     biography: string;
     userid: string;
@@ -858,7 +858,6 @@ export const addImport = async(post_uuid: any) => {
     if (error) {
         throw new Error(error.message)
     }
-    console.log(data)
     const {data: dataImport, error: errorImport } = await supabase
         .from('posts')
         .update({imports: (data.imports + 1)})
@@ -1009,7 +1008,7 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
             start_date: task.start_date,
             type: task.type,
             likes: post.likes, liked: liked, 
-            comments: 0, isCollaborative: task.isCollaborative,
+            comments: post.comments, isCollaborative: task.isCollaborative,
             post_id: post.post_uuid, 
             avatarURL: profile.avatarurl,
             userName: profile.username, displayName: profile.name
@@ -1057,4 +1056,65 @@ export async function _getCollaboratorInfo(task_uuid: string) {
     //put progress, profile info, etc into an object and store that in an array
     //return that 
 
+}
+
+/**
+ * 
+ * @param offset in which range of posts to get
+ * @param post_uuid to fetch the related post
+ * @param user_uuid used to get comments user liked
+ */
+export async function _getComments(offset: number, post_uuid: string, user_uuid: string) {
+    const {data: comments, error: error} = await supabase
+        .from('posts_comments')
+        .select('*').eq('post_uuid', post_uuid)
+        .range(offset, offset + 24)
+    
+    if (error) {
+        throw new Error(error.message)
+    }
+    const packagedInfo = await _getCommentsInfo(comments, user_uuid);
+    return packagedInfo;
+}
+
+export async function _getCommentsInfo(comments: any[], user_uuid: string){
+
+    const batch = comments
+    const packagedData = [];
+
+    const usernames = batch.map(comment => comment.username);
+
+    // get all relations in batch with one api call
+    const {data: profiles, error: profileError} = await supabase
+        .from('profiles')
+        .select('*')
+        .in('username', usernames);
+
+    if(profileError) {
+        throw new Error(profileError.message)
+    }
+
+    const getPackagedInfo = async(profile: any, comment: any) => {     
+        const packaged = {
+            profile_created_at: profile.created_at, name: profile.name, 
+            biography: profile.biography, user_uuid: profile.userid, 
+            username: profile.username, avatarurl: profile.avatarurl,
+            points: profile.points, streak: profile.streak,
+            comment_uuid: comment.uuid, comment_created_at: comment.created_at,
+            updated_at: comment.updated_at, payload: comment.payload,
+            post_uuid: comment.post_uuid
+        }
+        return packaged
+    }
+
+    for (const comment of comments) {
+
+        const profile = profiles.find(profile => profile.username == comment.username)
+        
+        if (profile && comment) {
+            const packagedInfo = await getPackagedInfo(profile, comment);
+            packagedData.push(packagedInfo);
+        }
+    }
+    return packagedData
 }
