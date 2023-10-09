@@ -55,6 +55,10 @@ export default function PostComments({post_uuid, user_uuid, commentCount}: any) 
             let created_at = new Date(comment.comment_created_at).getTime() 
             let seconds = Math.abs(now - created_at)/1000;
 
+            if (!(seconds > 1)) {
+                seconds = 1
+            }
+
             // calculate (and subtract) whole minutes
             let years = Math.floor(seconds / 31536000);
             seconds -= years * 31536000;

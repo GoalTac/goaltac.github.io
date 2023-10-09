@@ -65,7 +65,7 @@ export default function Root() {
 
 
     return (<Flex bg={colorMode === "light" ? 'gray.50' : 'gray.700'}
-          p={1}
+          p={1} marginBottom='10px'
           pl={2}
           alignItems="center"
           position='sticky'
