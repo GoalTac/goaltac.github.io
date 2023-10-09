@@ -5,8 +5,8 @@ import React from "react";
 import { supabase } from "../../supabase";
 import { now } from "lodash";
 import { start } from "repl";
-import { CalendarIcon, CheckCircleIcon, InfoIcon, InfoOutlineIcon } from "@chakra-ui/icons";
-import { FaHourglass, FaHourglassHalf, FaHourglassStart } from "react-icons/fa";
+import { CalendarIcon, CheckCircleIcon, DeleteIcon, InfoIcon, InfoOutlineIcon } from "@chakra-ui/icons";
+import { FaHourglass, FaHourglassHalf, FaHourglassStart, FaTrash } from "react-icons/fa";
 import { Task, _addPost, _addProgress, _deleteProgress, _setProgress, _setTask } from "./TaskAPI";
 import TaskDrawer from "./TaskDrawer";
 import { useNavigate } from "react-router-dom";
@@ -264,7 +264,7 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
             </TaskDrawer> : 
             
             (isOwner ? <HStack height='30px' cursor='pointer' width='100%' backgroundColor={pickedColor} paddingY='auto'>
-                <TaskDrawer preset={task}>
+                <TaskDrawer preset={task} tasks={tasks}>
                     <HStack height='30px' width='280px'>                   
                         
                     </HStack>
@@ -286,10 +286,18 @@ export default function ListView({tasks}: Task[] | any, {relations}: any) {
                     })}
                 </AvatarGroup>
                 <Spacer/>
-                <Box onClick={infoOnOpen}>
-                    <IconButton variant='unstyled' aria-label='information' icon={<InfoOutlineIcon/>}/>
-                    <InfoModal/>
-                </Box>  
+                <HStack>
+                    <Tooltip label='Delete your task'>
+                        <IconButton aria-label='trash task' variant='unstyled' icon={<DeleteIcon/>}/>
+                    </Tooltip>
+                    <Box onClick={infoOnOpen}>
+                        <Tooltip label='Collaborator information'>
+                            <IconButton variant='unstyled' aria-label='information' icon={<InfoOutlineIcon/>}/>
+                        </Tooltip>
+                        <InfoModal/>
+                    </Box>  
+                </HStack>
+                
             </HStack>)}
             
             <Flex width='100%' flexDirection='column' padding='10px' height='inherit' alignItems={['center','start']}>

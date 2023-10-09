@@ -265,11 +265,11 @@ export default function PostCard({taskInfo, user, profile}: any) {
             </ButtonGroup>
             <Spacer/>
             <Tooltip label='Import'>
-            <Button _hover={{color: useColorModeValue('green.400','green.200')}} onClick={handleImport} aria-label='import_task' variant={'ghost'} leftIcon={<GiSaveArrow size='20px'/>}>
+            <Button onClick={handleImport} color={useColorModeValue('green.400','green.200')} aria-label='import_task' variant={'ghost'} leftIcon={<GiSaveArrow size='20px'/>}>
                 {imports}
             </Button></Tooltip>
             <Tooltip label='Donate a tac'>
-            <Button _hover={{color: useColorModeValue('green.400','green.200')}} onClick={handleTac} aria-label='tac donation' variant={'ghost'} leftIcon={<FaThumbtack size='20px'/>}>
+            <Button color={useColorModeValue('red.400','red.200')} onClick={handleTac} aria-label='tac donation' variant={'ghost'} leftIcon={<FaThumbtack size='20px'/>}>
                 
             </Button></Tooltip>
             {/**
