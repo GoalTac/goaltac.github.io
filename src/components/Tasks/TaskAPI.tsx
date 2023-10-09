@@ -1040,7 +1040,7 @@ export async function _getAllPostInfo(offset: number, user_uuid: string) {
     const {data: posts, error: postError} = await supabase
         .from('posts')
         .select('*')
-        .range(offset, offset + 9)
+        .range(offset, offset + 10)
     
     if (postError) {
         throw new Error(postError.message)

@@ -167,7 +167,7 @@ export default function TaskDrawer({children, preset, tasks}: any) {
             })
             return
         }
-        if (profile?.['points'] < 1) {
+        if (profile?.['points'] < 5) {
             toast({
                 title: "Sorry!",
                 description: 'You do not have the funds to perform this action',
@@ -206,7 +206,7 @@ export default function TaskDrawer({children, preset, tasks}: any) {
             })
         }
 
-        removePoints(user?.['id'], 1)
+        removePoints(user?.['id'], 5)
     }           
 
     function TypeSelect() {
@@ -543,7 +543,7 @@ export default function TaskDrawer({children, preset, tasks}: any) {
                         })
                     }}/>
                 </Tooltip></>}
-                <Tooltip label='Post your task globally'>
+                <Tooltip label='Post for 5 tacs'>
                     <Button size='sm' isDisabled={hasPosted} onClick={handlePost} backgroundColor={hasPosted ? '' : useColorModeValue('purple.200','purple.300')} leftIcon={<SlShareAlt/>}>Post</Button>
                 </Tooltip>
 
