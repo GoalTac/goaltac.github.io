@@ -41,7 +41,6 @@ export default function Homepage() {
 
 
     function SocialFeed() {
-
         const [filter, setFilter] = useState<string>('For you')
         
         function Header() {
@@ -80,8 +79,6 @@ export default function Homepage() {
          * @returns Render of max posts allowable
          */
         function Posts() {
-            
-
             const [posts, setPosts] = useState<any>([])
             const [offset, setOffset] = useState<number>(0)
 

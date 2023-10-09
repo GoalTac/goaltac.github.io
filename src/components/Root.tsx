@@ -1,4 +1,4 @@
-import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge, useColorModeValue, Stack, LightMode, Tooltip, HStack, Heading } from "@chakra-ui/react";
+import { useColorMode, Flex, Box, Image, Avatar, Menu, MenuButton, MenuList, MenuItem, Switch, IconButton, InputGroup, InputLeftElement, Input, Icon, useMediaQuery, Button, Badge, AvatarBadge, useColorModeValue, Stack, LightMode, Tooltip, HStack, Heading, useDisclosure, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Skeleton, SkeletonText, ModalContextProvider, ButtonGroup, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverFooter, PopoverHeader, PopoverTrigger, Text, List, ListIcon, ListItem } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { FaUser, FaSignOutAlt, FaRegNewspaper, FaSearch, FaUsers, FaShoppingBag, FaCircle, FaThumbtack } from "react-icons/fa";
 import { Link, Outlet, useNavigate } from "react-router-dom";
@@ -6,7 +6,7 @@ import { supabase } from '../supabase';
 import { SessionProvider, useSession, useSupabaseClient } from "../hooks/SessionProvider";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import logo from './../images/logo.png'
-import { RiDashboard2Fill, RiDashboardLine } from "react-icons/ri";
+import { RiDashboard2Fill, RiDashboardLine, RiFeedbackFill } from "react-icons/ri";
 import { AiFillDashboard, AiTwotoneDashboard } from "react-icons/ai";
 import { TbLayoutDashboard } from "react-icons/tb";
 
@@ -26,6 +26,8 @@ export default function Root() {
 
     // to search and open new link
     const navigate = useNavigate();
+
+    const { onOpen: help_OnOpen, onClose: help_onClose, isOpen: help_isOpen} = useDisclosure()
 
     const handleLogout = async () => {
       const { error } = await supabase.auth.signOut();
@@ -62,6 +64,44 @@ export default function Root() {
         profileChange.unsubscribe()
         };
       },[])
+    
+    function FeedbackModal() {
+      return <Modal isCentered scrollBehavior='inside' size='3xl' isOpen={help_isOpen} onClose={help_onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader fontSize='18px'>
+            <Flex>
+                <Text>
+                  Provide feedback to be rewarded up to 50
+                </Text>
+                <Flex marginTop='5px' marginX='6px'>
+                  <FaThumbtack color='#4299E1'/>
+                </Flex>
+                <Text>
+                  (repeatable)
+                </Text>
+              </Flex>
+            </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody marginX='auto' width='100%' justifyContent='center' alignItems='center'>
+            <Box maxWidth='full'>
+              <iframe onLoad={()=>console.log('hi')} width='100%' height='700px' src="https://docs.google.com/forms/d/e/1FAIpQLSdNIAaLRtEWnZq2w1lcSXVJPx1MhFJhIni8coTjK8WDFoZ7uw/viewform?embedded=true">
+                <Skeleton>
+                  <SkeletonText width='full' top='0'></SkeletonText>
+                </Skeleton>
+              </iframe>
+            </Box>
+            
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={help_onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    }
 
 
     return (<Flex bg={colorMode === "light" ? 'gray.50' : 'gray.700'}
@@ -117,11 +157,46 @@ export default function Root() {
           </Box>
            * 
            */}
-          
-          <HStack flexDir='row' ml='auto' marginRight='10px'>
-            <Heading fontSize='1rem'>{points ? points : 0}</Heading>
-            <FaThumbtack/>
-          </HStack>
+          <Popover>
+              <PopoverTrigger>
+                <HStack cursor='pointer' flexDir='row' ml='auto' marginRight='10px'>
+                  <Heading fontSize='1rem'>{points ? points : 0}</Heading>
+                  <FaThumbtack color='#4299E1'/>
+                </HStack>
+              </PopoverTrigger>
+              <PopoverContent borderColor='black' marginRight={['','50px']}>
+                <PopoverHeader pt={4} fontWeight='bold' border='0'>
+                  Tacs Economy
+                </PopoverHeader>
+                <PopoverCloseButton />
+                <PopoverBody>
+                <List spacing='0.75rem'>
+                  <ListItem>
+                    <ListIcon as={FaThumbtack} color='green.500' />
+                    Receive likes on your post
+                  </ListItem>
+                  <ListItem>
+                    <ListIcon as={FaThumbtack} color='green.500' />
+                    Receive donations from your post
+                  </ListItem>
+                  <ListItem>
+                    <ListIcon as={FaThumbtack} color='green.500' />
+                    Send feedback for up to 50 tacs
+                  </ListItem>
+                  <ListItem>
+                    <ListIcon as={FaThumbtack} color='red.500' />
+                    Post a task for 5 tacs
+                  </ListItem>
+                  {/* You can also use custom icons from react-icons */}
+                  <ListItem>
+                    <ListIcon as={FaThumbtack} color='red.500' />
+                    Encourage others by donating a tac to their post
+                  </ListItem>
+                </List>
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+
 
 
           {/* Profile */}
@@ -143,6 +218,9 @@ export default function Root() {
 
                   <MenuItem icon={<FaUser />} onClick={()=>navigate('/settings')} fontSize="sm">
                     Settings
+                  </MenuItem>
+                  <MenuItem icon={<RiFeedbackFill />} onClick={help_OnOpen} fontSize="sm">
+                    Feedback <FeedbackModal/>
                   </MenuItem>
 
                   <MenuItem icon={colorMode=='dark' ? <MoonIcon/> : <SunIcon/>} onClick={toggleColorMode} fontSize="sm">
