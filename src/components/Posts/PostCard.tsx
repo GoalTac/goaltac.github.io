@@ -161,8 +161,6 @@ export default function PostCard({taskInfo, user, profile}: any) {
     }
 
     const handleTac = async() => {
-        setCachedTacs(cachedTacs+1)
-        tacCount.current = tacCount.current + 1
         if (poster_uuid == user?.['id']) {
             toast({
                 title: "Warning",
@@ -171,6 +169,8 @@ export default function PostCard({taskInfo, user, profile}: any) {
                 duration: 2000,
                 isClosable: true,
             })
+            setCachedTacs(0)
+            tacCount.current = 0
             return
         }
         if (!profile) {
@@ -181,6 +181,9 @@ export default function PostCard({taskInfo, user, profile}: any) {
                 duration: 2000,
                 isClosable: true,
             })
+            setCachedTacs(0)
+            tacCount.current = 0
+            return
         }
         if (profile?.['points'] < tacCount) {
             toast({
@@ -190,7 +193,12 @@ export default function PostCard({taskInfo, user, profile}: any) {
                 duration: 2000,
                 isClosable: true,
             })
+            setCachedTacs(0)
+            tacCount.current = 0
+            return
         }
+        setCachedTacs(cachedTacs+1)
+        tacCount.current = tacCount.current + 1
 
         if (cachedTimeout) {
             clearTimeout(cachedTimeout.current)
@@ -283,7 +291,7 @@ export default function PostCard({taskInfo, user, profile}: any) {
                 {imports}
             </Button></Tooltip>
             <Tooltip label='Donate a tac'>
-            <Button width='60px' color={useColorModeValue('red.500','red.200')} onClick={handleTac} aria-label='tac donation' variant={'ghost'} leftIcon={<FaThumbtack/>}>
+            <Button width='60px' color='#4299E1' onClick={handleTac} aria-label='tac donation' variant={'ghost'} leftIcon={<FaThumbtack/>}>
                 {cachedTacs > 0 ? ` ${cachedTacs}` : ' +'}
             </Button></Tooltip>
             {/**
