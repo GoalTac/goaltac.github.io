@@ -102,7 +102,7 @@ export default function PostComments({post_uuid, user_uuid, commentCount}: any) 
             if (minutes >= 1) {
                 return `${Math.ceil(minutes)} minutes ago`
             } else {
-                return `${Math.ceil(seconds)} seconds ago`
+                return `${Math.floor(seconds)+1} seconds ago`
             }
 
         }
@@ -138,17 +138,13 @@ export default function PostComments({post_uuid, user_uuid, commentCount}: any) 
             setComments(newComments)
             return deletedComment
         }
-        //we are using set state here because avatarurl and time diff take some time to load
-        const [duration, setDuration] = useState<string>(timeDifference())
-        const [username, setUsername] = useState<string>(comment.username)
-        const [avatarurl, setAvatarurl] = useState<string>(comment.avatarurl)
 
         return <Stack flexDirection='row' paddingY='10px'>
-            <Avatar size='sm' name={username} src={avatarurl}/>
+            <Avatar size='sm' name={comment.username} src={comment.avatarurl}/>
             <Stack width='full'>
                 <HStack fontSize='12px' spacing='1rem'>
-                    <Text>@{username}</Text>
-                    <Text>{duration}</Text>
+                    <Text>@{comment.username}</Text>
+                    <Text>{timeDifference()}</Text>
                 </HStack>
                 <Text>
                     {comment.payload}
