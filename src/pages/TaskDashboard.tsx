@@ -64,9 +64,9 @@ export default function Dashboard() {
     return(
     
     <Box marginX='auto' maxWidth={['unset', 'container.lg']} width='fit-content'>
-        <Stack marginX='40px' paddingTop={'2rem'} columnGap='4px' marginBottom='12px' height='fit-content' alignItems={['center','']} flexDirection={['column','row']} flexWrap='wrap'>
-            <ButtonGroup height='inherit' left='0' width='fit-content'>
-                {/**
+        <Stack marginX='40px' justifyContent='center' paddingTop={'2rem'} columnGap='4px' marginBottom='12px' height='fit-content' alignItems={['center','']} flexDirection={['column','row']} flexWrap='wrap'>
+            {/**<ButtonGroup height='inherit' left='0' width='fit-content'>
+                
                  <Button leftIcon={<CalendarIcon/>}
                 colorScheme={view === 'Calendar' ? 'teal' : 'gray'}
                 onClick={() => {
@@ -76,7 +76,7 @@ export default function Dashboard() {
                     Calendar
                 </Button>
 
-                 */}
+                 
                 
                 <Button leftIcon={<AiOutlineOrderedList/>}
                 colorScheme={view === 'List' ? 'teal' : 'gray'}
@@ -87,7 +87,7 @@ export default function Dashboard() {
                     List
                 </Button>
             </ButtonGroup>
-            <Spacer />
+            <Spacer />*/}
             <Flex width='fit-content'>
                <TaskDrawer/> 
             </Flex>
