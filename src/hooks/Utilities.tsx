@@ -69,6 +69,12 @@ export function twoColumns(ElementOne : ReactElement, ElementTwo : ReactElement)
     </Flex>
 }
 
+export function getAvatar(user_uuid: string) {
+    return process.env.VITE_REACT_APP_SUPABASE_URL + `/storage/v1/object/public/profiles/user-avatar-${user_uuid}`
+}
+
+
+
 // Toast System ----------------------------------------------------------------
 /**
  * Thisjust doesn't work
