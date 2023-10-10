@@ -47,7 +47,6 @@ export default function Dashboard() {
             table: 'task_user_relations', filter: `user_id=eq.${user?.['id']}`
           },(payload: any) => {
               fetchUserRelations()
-              console.log(payload)
           }).subscribe()
     
           return () => {
