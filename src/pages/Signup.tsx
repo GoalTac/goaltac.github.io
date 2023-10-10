@@ -1,4 +1,4 @@
-import { FormEvent, MouseEventHandler, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, MouseEventHandler, useRef, useState } from 'react';
 import { Text, Center, Link, Flex, Image, Input, Button, InputGroup, Stack, InputLeftElement, chakra, Box, FormControl, InputRightElement, useToast, Spinner, useColorModeValue, Checkbox, LinkBox, Heading, Card, useColorMode, Collapse, Slide, Step, StepDescription, StepIcon, StepIndicator, StepNumber, StepSeparator, StepStatus, StepTitle, useSteps, Stepper, Divider, FormHelperText, FormLabel, Avatar, IconButton, Textarea, Tag, TagLabel, TagCloseButton, CheckboxGroup, Badge } from '@chakra-ui/react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaLock, FaUserAlt } from 'react-icons/fa';
@@ -13,6 +13,7 @@ import logo from './../images/logo.png'
 import bubble from './../images/bubble.svg'
 import { useSession } from '../hooks/SessionProvider';
 import { RiShieldCheckFill, RiShieldUserFill, RiShieldUserLine, RiUserLocationLine } from 'react-icons/ri';
+import AvatarUploader from '../components/Profile/AvatarUploader';
 
 const CFaLock = chakra(FaLock);
 
@@ -33,7 +34,7 @@ export default function SignUpPage() {
     //(Must check that account has been made) Insert username and other data into profiles table
     // Supabase
     const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const inputRef = useRef<HTMLInputElement>(null);    const [password, setPassword] = useState('')
     const [agreementStatus, setAgreementStatus] = useState(false)
     const [signupSuccess, setSignupSuccess] = useState(false)
     const { toggleColorMode, colorMode } = useColorMode();
@@ -42,7 +43,7 @@ export default function SignUpPage() {
     const [biography, setBiography] = useState('');
     const [interests, setInterests] = useState<any>([]);
 
-    const userID = useRef(null)
+    const userID = useRef("")
 
     const [isLoading, setIsLoading] = useState(false); //for login loading
     const loading = () => {
@@ -63,7 +64,7 @@ export default function SignUpPage() {
 
     // Functions ----------------------------------------------------------------------
     const handleShowClick = () => setShowPassword(!showPassword);
-
+    
     const handleProfileSubmit = () => {        
         async function profileUpdate() {
             //need to create a row level security for this
@@ -361,9 +362,7 @@ export default function SignUpPage() {
          <Card padding={signupSuccess ? '20px' : '0px'}>
          <Collapse in={signupSuccess} transition={{exit: {delay: 0.5}, enter: {duration: 1.5}}}>
          <Flex flexDirection='column' rowGap='10px' alignItems='center'>
-            <Button marginBottom='10px' borderRadius='full' width='80px' height='80px'>
-                <Avatar size='lg' src='' icon={<IoMdPersonAdd />}/>
-            </Button>
+         <AvatarUploader signedUp={false} id={userID.current}/>
             <Stack padding='1rem' alignItems='center' width='300px' backgroundColor={useColorModeValue('gray.50','blackAlpha.200')}>
                 
                 <FormControl isRequired>
