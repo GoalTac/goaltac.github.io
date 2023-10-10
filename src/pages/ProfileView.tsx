@@ -32,9 +32,8 @@ export default function ProfileView() {
                 .single();
 
             if (error) {
-                console.log(error);
+                throw new Error(error.message)
             } else {
-                console.log(data);
                 setPerson({
                     name: data.name,
                     username: data.username,
@@ -72,7 +71,6 @@ export default function ProfileView() {
                 .eq('status', 1);
             if (error) {
                 throw new Error(error.message)
-                // console.log(error.message);
             } 
         
             const communities = await Promise.all(data.map(async(id) => {
@@ -80,7 +78,6 @@ export default function ProfileView() {
             }))
             
             // Get the whole array of communities
-            console.log(communities);
             // return all the communities that the user is a part of
 
             return communities;
@@ -97,7 +94,6 @@ export default function ProfileView() {
     //             .eq('user_id', person.id);
 
     //         if (error) {
-    //             console.log(error.message);
     //         }
     //         else {
     //             console.log(data);
@@ -131,10 +127,10 @@ export default function ProfileView() {
                 .select('*')
                 .eq('user_uuid', person.id);
             if (error) {
-                console.log(error.message);
+                throw new Error(error.message)
             }
             else {
-                console.log(data);
+                
             }
         };
         getPosts();
@@ -159,7 +155,7 @@ export default function ProfileView() {
                 .eq('related_user', person?.id)
                 .eq('status', 2);
             if (error1 || error2) {
-                console.log("Error determining friend count: \n", error1, error2);
+                throw new Error(`Error determining friend count: \n ${error1} ${error2}`);
             }
             else {
                 setFriendCount(data1.length + data2.length);
@@ -192,7 +188,7 @@ export default function ProfileView() {
                     .eq('related_user', person.id)
                     .eq('relating_user', user.id);
                 if (error1 || error2) {
-                    console.log("Error determining friend status: \n", error1, error2);
+                    throw new Error(`Error determining friend status: \n ${error1} ${error2}`);
                 }
 
                 else {
@@ -208,7 +204,7 @@ export default function ProfileView() {
                             setIsFriendRequestSentByUser(true);
                         }
                     }
-                    console.log("Friend Status is: \n", friendStatus);
+                    throw new Error(`Friend Status is: \n ${friendStatus}`);
                 }
             }
         };
@@ -301,7 +297,7 @@ export default function ProfileView() {
             });
     
         if (error1 || error2) {
-            console.log(error1, error2);
+            
             toast({
                 title: "An error occurred.",
                 description: "Unable to remove friend",
@@ -309,7 +305,7 @@ export default function ProfileView() {
                 duration: 9000,
                 isClosable: true,
             });
-            return;
+            throw new Error(`${error1?.message} ${error2?.message}`);
         }
         else {
             toast({
