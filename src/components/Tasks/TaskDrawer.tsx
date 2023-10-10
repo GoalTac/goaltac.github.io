@@ -6,8 +6,13 @@ import { useSession } from "../../hooks/SessionProvider"
 import { RiInformationFill } from "react-icons/ri"
 import { start } from "repl"
 import { ReactElement } from "react-markdown/lib/react-markdown"
-import { FaTrash } from "react-icons/fa"
-import { SlShareAlt } from "react-icons/sl"
+import { FaSuitcase, FaTrash, FaWeight } from "react-icons/fa"
+import { SlPeople, SlShareAlt } from "react-icons/sl"
+import { TiPointOfInterest } from "react-icons/ti"
+import { Interests } from "./TaskAPI"
+import { IoIosSchool, IoMdPeople } from "react-icons/io"
+import { GiWeightLiftingUp } from "react-icons/gi"
+import { BsGearFill } from "react-icons/bs"
 
 /**
  * TODO:
@@ -29,6 +34,8 @@ export default function TaskDrawer({children, preset, tasks}: any) {
     const [type, setType] = useState<any>(isEdit ? preset.type : 'Simple')
     const requirement = useRef(isEdit ? preset.requirement : 1)
     const [difficulty, setDifficulty] = useState<any>(isEdit ? preset.difficulty : 1)
+    const [interest, setInterest] = useState<number | null>(isEdit ? preset.interest : null)
+
     const [selectedTasks, setSelectedTasks] = useState<any>([])
     const [reoccurence, setReoccurence] = useState<number>(isEdit ? preset.reoccurence : 1)
     const [isCollaborative, setIsCollaborative] = useState<boolean>(isEdit ? preset.isCollaborative : false)
@@ -47,7 +54,7 @@ export default function TaskDrawer({children, preset, tasks}: any) {
             setTitle('')
             setDescription('')
             setIsCollaborative(false)
-
+            setInterest(null)
             setStartDate('')
             setEndDate('')
             setType('Simple')
@@ -105,7 +112,7 @@ export default function TaskDrawer({children, preset, tasks}: any) {
             description: description,
             requirement: type=='Simple' ? 1 : requirement.current,
             difficulty: difficulty,
-            type: type,
+            type: type, interest: interest,
             reoccurence: reoccurence,
             isCollaborative: isCollaborative
         }
@@ -491,6 +498,33 @@ export default function TaskDrawer({children, preset, tasks}: any) {
                 </FormControl>
                  */}
                 <Divider/>
+                <FormControl>
+                    <Flex flexDir='row'>
+                        <Flex flexDir='column' width='200px'>
+                            <FormLabel htmlFor='interests'>Interests</FormLabel>
+                            <FormHelperText>What category is the task?</FormHelperText>
+                        </Flex>
+                        <Spacer/>
+                        <Menu isLazy>
+                            <MenuButton as={Button} rightIcon={<TiPointOfInterest />} variant='outline'>
+                                {interest ? Interests[interest] : 'Unselected'}
+                            </MenuButton> 
+                            
+                            <MenuList maxHeight='300px' overflowY='scroll'>
+                                <MenuItem icon={<IoIosSchool/>} onClick={(e)=>setInterest(0)} 
+                                    value={0}>{Interests[0]}</MenuItem>
+                                <MenuItem icon={<GiWeightLiftingUp/>} onClick={(e)=>setInterest(1)} 
+                                    value={1}>{Interests[1]}</MenuItem>
+                                <MenuItem icon={<IoMdPeople/>} onClick={(e)=>setInterest(2)} 
+                                    value={2}>{Interests[2]}</MenuItem>
+                                <MenuItem icon={<FaSuitcase/>} onClick={(e)=>setInterest(3)} 
+                                    value={3}>{Interests[3]}</MenuItem>
+                                <MenuItem icon={<BsGearFill/>} onClick={(e)=>setInterest(4)} 
+                                    value={4}>{Interests[4]}</MenuItem>
+                            </MenuList>
+                        </Menu>
+                    </Flex>
+                </FormControl>
                 <FormControl>
                     <FormLabel htmlFor='difficulty'>Difficulty: {difficulty}</FormLabel>
                     

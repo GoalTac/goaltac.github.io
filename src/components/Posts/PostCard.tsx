@@ -234,7 +234,7 @@ export default function PostCard({taskInfo, user, profile}: any) {
             <Flex flexDirection='column' gap='1rem'>
                 <HStack flexDir={'row'} marginRight='auto'>
                     <Text fontWeight='500'>
-                        {taskInfo.interests}
+                        {taskInfo.interest}
                     </Text>
                     <Text fontWeight='200'>
                         - {userName}

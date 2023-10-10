@@ -12,6 +12,7 @@ export type Task = {
     requirement: number;
     difficulty: number;
     type: string;
+    interest: number | null
     reoccurence: number;
 };
 
@@ -333,6 +334,7 @@ export async function _addTask(task: any) {
     const isCollaborative = task.isCollaborative ? task.isCollaborative : false
     const difficulty = task.difficulty ? task.difficulty : 1
     const type = task.type ? task.type : 'Boolean'
+    const interest = task.interest ? task.interest : null
 
     const newTask = {
         start_date: start_date,
@@ -340,7 +342,7 @@ export async function _addTask(task: any) {
         name: name,
         description: description,
         requirement: requirement,
-        difficulty: difficulty,
+        difficulty: difficulty, interest: interest,
         type: type, reoccurence: reoccurence, isCollaborative: isCollaborative
     }
     //console.log(newTask)
@@ -585,7 +587,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
             progress: relation.progress, isOwner: relation.isOwner, all_progress: totalProgress, 
             task_id: relation.task_id, isCollaborative: task.isCollaborative,
             user_id: relation.user_id, collaborators: collaborators,
-            description: task.description,
+            description: task.description, interest: task.interest,
             end_date: task.end_date,
             name: task.name,
             reoccurence: task.reoccurence,
@@ -995,7 +997,6 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
         }
        
             
-            
         const packaged = {
             created_at: post.created_at, all_progress: totalProgress, 
             progress: relation.progress, collaborators: collaborators, 
@@ -1003,7 +1004,7 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
             user_id: relation.user_id,
             description: task.description,
             end_date: task.end_date,
-            name: task.name,
+            name: task.name, interest: Interests[task.interest],
             reoccurence: task.reoccurence,
             difficulty: task.difficulty,
             requirement: task.requirement,
@@ -1119,4 +1120,12 @@ export async function _getCommentsInfo(comments: any[], user_uuid: string){
         }
     }
     return packagedData
+}
+
+export enum Interests {
+    Academics = 0,
+    Fitness = 1,
+    Social = 2,
+    Career = 3,
+    Other = 4
 }
