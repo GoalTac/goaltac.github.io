@@ -48,7 +48,7 @@ export default function ProfileView() {
         getProfile();
     }, []);
 
-    async function getCommunityNameByID(communityID: any)  {
+    /*async function getCommunityNameByID(communityID: any)  {
         const { data: data, error } = await supabase
             .from('communities')
             .select('name')
@@ -67,8 +67,7 @@ export default function ProfileView() {
             const { data: data, error } = await supabase
                 .from('community_relations')
                 .select('*')
-                .eq('user_id', userID)
-                .eq('status', 1);
+                .match({'user_uuid': userID, 'status': 'Accepted'});
             if (error) {
                 throw new Error(error.message)
             } 
@@ -83,7 +82,7 @@ export default function ProfileView() {
             return communities;
         }
         _getJoinedCommunities(person.id);
-    });
+    });*/
 
 
     // useEffect(() => {
@@ -120,21 +119,6 @@ export default function ProfileView() {
     // });
 
     // Get posts from Social.tsx
-    useEffect(() => {
-        const getPosts = async () => {
-            const { data, error } = await supabase
-                .from('posts')
-                .select('*')
-                .eq('user_uuid', person.id);
-            if (error) {
-                throw new Error(error.message)
-            }
-            else {
-                
-            }
-        };
-        getPosts();
-    });
 
 
     // Find the number of friends the user has and update the friendCount state, both as the user and as the profile being viewed
@@ -251,7 +235,7 @@ export default function ProfileView() {
             .insert({
                 relating_user: user?.id,
                 related_user: friend.userid ,
-                status: 1,
+                status: 'Accepted',
             });
 
         if (error){
