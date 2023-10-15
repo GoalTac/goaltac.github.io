@@ -73,9 +73,10 @@ export default function SignUpPage() {
                 username: userName,
                 biography: biography
             };
+            console.log(updateInfo)
             const { error } = await supabase
                 .from('profiles')
-                .update(updateInfo)
+                .upsert(updateInfo)
                 .eq('userid', userID.current)
             if (error) {
             toast({
@@ -401,7 +402,7 @@ export default function SignUpPage() {
                 </FormControl>
                 <Button marginTop='18px' onClick={handleProfileSubmit} isDisabled={displayName && userName ? false : true}
                     rightIcon={<ArrowRightIcon paddingLeft='5px'/>}
-                    borderRadius={5} textColor={useColorModeValue('white','black')}
+                    borderRadius={5} textColor={useColorModeValue('black','white')}
                     type='submit'
                     variant={useColorModeValue('outline','solid')}
                     width='full'
