@@ -126,8 +126,7 @@ export default function LandingPage() {
                             Collaborate with others to achieve your goals
                         </Heading>
                         <Text maxWidth={[null, '80%']} lineHeight='1.4' fontWeight='200' fontSize={['1.25rem','1.75rem']} marginBottom='50px'>
-                            Why use GoalTac? Because GoalTac is the only website to effectively
-                            target procrastination at it's source with socialized productivity
+                            Why use GoalTac? Because you're the most motivated when you're held accountable for the goals you want to accomplish
                             {/* Replace: Find your community now! */}
                         </Text>
                         <Flex flexDirection={['column','row']} gap='30px'>
@@ -639,7 +638,7 @@ export default function LandingPage() {
                         <Box backgroundImage={bubble} backgroundSize='cover' maxWidth='100%' backgroundColor={useColorModeValue(constants.lightMode, constants.darkMode)}>
                             <Box maxW={constants.maxWidth} marginX='auto'>
                                 <Header />
-                                <IntroPreLaunch/>
+                                <Intro/>
                             </Box>
                         </Box>
                         <Box backgroundColor={useColorModeValue('blue.50','blackAlpha.300')}>
@@ -731,7 +730,7 @@ export const goalTacDesc = [
 export const staffProfiles = [
     {
         name: 'My Phung',
-        image: 'https://media.licdn.com/dms/image/D4E03AQGzcOT2TD9yeg/profile-displayphoto-shrink_400_400/0/1680054603274?e=1700697600&v=beta&t=Ezzap2gNI0qwtsjfN8vnvbNpfor2HSYWBHSuyaNpo3Q',
+        image: 'https://media.licdn.com/dms/image/D4E03AQGusDkk3vuooA/profile-displayphoto-shrink_400_400/0/1697342653931?e=1703116800&v=beta&t=i5Np8KkrC0lFTWQtXQ9QcW4N-dhBBkJ7QvyjK8yp724',
         title: 'Founder',
         desc: 'Ambitious and hyper-active student entrepreneur studying Economics at UConn with a CS minor',
         badges: [
