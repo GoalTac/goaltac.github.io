@@ -1,4 +1,4 @@
-import { Avatar, Box, Heading, Stack, Text, Badge, Textarea, Flex, useToast, Button, useColorModeValue, HStack, Image, VStack, Card, Spacer, Menu, MenuButton, IconButton, MenuList, MenuItem, CardBody} from "@chakra-ui/react";
+import { Avatar, Box, Heading, Stack, Text, Badge, Textarea, Flex, useToast, Button, useColorModeValue, HStack, Image, VStack, Card, Spacer, Menu, MenuButton, IconButton, MenuList, MenuItem, CardBody, CardHeader, StackDivider} from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from '../supabase';
@@ -353,155 +353,117 @@ export default function ProfileView() {
     }
 
     return (
-        <HStack 
+        <HStack
         overflow='hidden' 
-        padding='20px' 
-        // borderRadius='20px'
-        // borderWidth={'10px'} 
-        backgroundColor={useColorModeValue('white','blackAlpha.200')}
-        // borderWidth={useColorModeValue('1px','0px')} 
+        padding='20px'  
+        direction='row'
+        spacing='4'
+        backgroundColor={useColorModeValue('white','blackAlpha.200')} 
         marginY={measurements.general.rowGap}>
-            <Box 
-            // width={['375px','700px']} 
-            // width={['700px', '375px']}
-            w='75vw'
-            // borderWidth={'10px'}
+            <Card
+            w='65vw'
+            overflow='hidden'
             >
-            <Stack>
-                <Flex 
+                <Stack>
+                <Card
                 backgroundImage={ProfileBackground}
-                backgroundClip={'content-box'}
+                overflow='hidden' 
                 >
                     <Image 
                     height={'20%'} 
                     objectFit={'cover'}
                     width={'20%'} 
                     src={ProfileBackground} 
+                    overflow={'hidden'}
                     />
-                </Flex>
+                </Card>
                     <HStack 
-                    // borderWidth={'10px'}
-                    // alignSelf={'flex-start'}
+                    padding={'20px'}
                     spacing={20}
+                    alignSelf={'flex-start'}
                     >
-                        <VStack 
-                        // borderWidth={'10px'}
-                        // justify={'left'}
-                        // align={'flex-start'}
+                        <Avatar size='2xl' name={person.name} src={person.avatarurl} />
+                        <VStack
+                        spacing={3}
+                        align={'left'}
                         >
-                            <Avatar size='2xl' name={person.name} src={person.avatarurl} />
-                            <Heading size='lg'>{person.name}</Heading>
-                            <Text fontSize="lg">{person.username}</Text>
-                            {/* <HStack>
+                            <HStack>
+                                <Heading size='lg'>{person.name}</Heading>
+                                <Spacer/>
                                 <Button 
-                                // w='50%'
-                                // p={4}
                                 colorScheme="blue" 
                                 fontSize="md" 
-                                // mb={1}
                                 onClick={
                                 friendStatus==2 ? handleRemoveFriend : 
                                 friendStatus==1 && isFriendRequestSentByUser ? handleCancelFriendRequest : 
                                 friendStatus==1 ? handleAcceptFriendRequest : 
-                                friendStatus==0 ? handleAddFriend : () => {}}>
+                                friendStatus==0 ? handleAddFriend : () => {}}
+                                >
                                     {friendStatus==2 ? "Remove Friend" : 
                                     friendStatus==1  && isFriendRequestSentByUser ? "Cancel Friend Request" : 
                                     friendStatus==1 ? "Accept Friend Request from " + person.name :
                                     friendStatus==0 ? "Add Friend" : "You can't friend yourself"}
                                 </Button>
-                                <Box>
-                                    <Badge fontSize='xl' fontWeight='bold'>
-                                        {friendCount} Friends
-                                    </Badge>
-                                </Box>
-                            </HStack> */}
-                        </VStack>
-                        <VStack 
-                        spacing={4}>  
-                           
-                             <Box>
+                                {friendStatus==2 ? <Chat/> : <Box/>}
+                                <Menu isLazy>
+                                    <MenuButton
+                                        as={IconButton}
+                                        aria-label='Options'
+                                        icon={<HamburgerIcon />}
+                                        variant='outline'
+                                    />
+                                    <MenuList>
+                                        <MenuItem>
+                                            New Tab
+                                        </MenuItem>
+                                        <MenuItem>
+                                            New Window
+                                        </MenuItem>
+                                        <MenuItem>
+                                            Open Closed Tab
+                                        </MenuItem>
+                                        <MenuItem>
+                                            Open File...
+                                        </MenuItem>
+                                    </MenuList>
+                                </Menu>
+                            </HStack>
+                            <Box>
                                 <Badge fontSize='xl' fontWeight='bold'>
-                                    {friendCount} {friendCount == 1 ? 'Friend' : 'Friends'}
+                                        {friendCount} {friendCount == 1 ? 'Friend' : 'Friends'}
                                 </Badge>
-                            </Box> 
-                             <Button 
-                            colorScheme="blue" 
-                            fontSize="md" 
-                            onClick={
-                            friendStatus==2 ? handleRemoveFriend : 
-                            friendStatus==1 && isFriendRequestSentByUser ? handleCancelFriendRequest : 
-                            friendStatus==1 ? handleAcceptFriendRequest : 
-                            friendStatus==0 ? handleAddFriend : () => {}}
+                            </Box>
+                            
+                            <Text fontSize="lg">{person.username}</Text>
+                            <Text
+                            fontSize="md"
                             >
-                                {friendStatus==2 ? "Remove Friend" : 
-                                friendStatus==1  && isFriendRequestSentByUser ? "Cancel Friend Request" : 
-                                friendStatus==1 ? "Accept Friend Request from " + person.name :
-                                friendStatus==0 ? "Add Friend" : "You can't friend yourself"}
-                            </Button>
-                         </VStack>
+                                {person.biography}
+                            </Text>
+                        </VStack>
 
                 </HStack>
-                {/* Bring this back later: */}
-                <Textarea
-                    fontSize="sm"
-                    color="gray.500"
-                    p={4}
-                    mb={4}
-                    value={person.biography}
-                    maxW={'75%'}
-                    readOnly
-                    />
                 <Box textAlign={'center'}>
                     <Text fontSize={'3xl'} as='b'>
                     Wish to add posts here!
                     </Text>
                 </Box>
         </Stack>            
-        </Box>
-        <Box 
-            // width={['375px','700px']} 
-            // width={['700px', '375px']}
-            w='25vw'
-            // borderWidth={'10px'}
+        </Card>
+        <Card 
+            w='35vw'
             alignSelf={'flex-start'}
-            // justifyItems={'top'}
-            // justifyContent={'top'}
-            // justifySelf={'top'}
-            // alignSelf={'top'}
-            // alignContent={'top'}
         >
             <HStack
             justifyContent={'right'}
             >
-                {friendStatus==2 ? <Chat/> : <Box/>}
-                <Menu isLazy>
-                    <MenuButton
-                        as={IconButton}
-                        aria-label='Options'
-                        icon={<HamburgerIcon />}
-                        variant='outline'
-                    />
-                    <MenuList>
-                        <MenuItem>
-                            New Tab
-                        </MenuItem>
-                        <MenuItem>
-                            New Window
-                        </MenuItem>
-                        <MenuItem>
-                            Open Closed Tab
-                        </MenuItem>
-                        <MenuItem>
-                            Open File...
-                        </MenuItem>
-                    </MenuList>
-                </Menu>
+                
                 
             </HStack>
             <Box textAlign={'center'}>
                 <Text fontSize='3xl' as='b' >Wish to add communities here!</Text>  
             </Box>
-        </Box>
+        </Card>
     </HStack>
     );
 }
