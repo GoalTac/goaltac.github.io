@@ -70,7 +70,7 @@ export function twoColumns(ElementOne : ReactElement, ElementTwo : ReactElement)
 }
 
 export function getAvatar(user_uuid: string) {
-    return process.env.VITE_REACT_APP_SUPABASE_URL + `/storage/v1/object/public/profiles/user-avatar-${user_uuid}`
+    return `https://taabyxlbdchdekaofdzv.supabase.co/storage/v1/object/public/profiles/user-avatar-${user_uuid}?${Date.now()}`
 }
 
 

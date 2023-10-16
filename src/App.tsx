@@ -1,6 +1,5 @@
 import Dashboard from './pages/TaskDashboard';
 import Landing from './pages/Landing';
-import Feed from './pages/Social';
 import Login from './pages/Login';
 import Settings from './pages/Settings';
 import SignUp from './pages/Signup';
@@ -86,7 +85,6 @@ export default function App() {
             <Route path="dashboard" element={<Dashboard />} />
 
             <Route path="home" element={<Homepage />} />
-            <Route path="social" element={<Feed />} />
             <Route path="settings" element={<Settings />} />
             <Route path="market" element={<Market />} />
             <Route path="community">

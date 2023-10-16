@@ -1,6 +1,7 @@
 import { error } from "console";
 import { supabase } from "../../supabase";
 import { useToast } from "@chakra-ui/react";
+import { getAvatar } from "../../hooks/Utilities";
 
 export type Task = {
     uuid?: string;
@@ -570,7 +571,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
             const getCollaboratorObject = (profile: any, relation: any) => {
                 totalProgress += relation.progress
                 return {
-                    displayName: profile.name, avatarURL: profile.avatarurl,
+                    displayName: profile.name, avatarURL: getAvatar(user_uuid),
                     userName: profile.username, progress: relation.progress, user_id: relation.user_id
                 }
             }
@@ -595,7 +596,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
             requirement: task.requirement,
             start_date: task.start_date,
             type: task.type, hasPosted: (post ? true : false),
-            avatarURL: profile.avatarurl,
+            avatarURL: getAvatar(user_uuid),
             userName: profile.username, displayName: profile.name
         }
     }
@@ -983,7 +984,7 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
             const getCollaboratorObject = (profile: any, relation: any) => {
                 totalProgress += relation.progress
                 return {
-                    displayName: profile.name, avatarURL: profile.avatarurl,
+                    displayName: profile.name, avatarURL: getAvatar(user_uuid),
                     userName: profile.username, progress: relation.progress, user_id: relation.user_id
                 }
             }
@@ -1013,7 +1014,7 @@ export async function _getPostInfo(posts: any[], user_uuid: string){
             likes: post.likes, liked: liked, 
             comments: post.comments, isCollaborative: task.isCollaborative,
             post_id: post.post_uuid, 
-            avatarURL: profile.avatarurl,
+            avatarURL: getAvatar(user_uuid),
             userName: profile.username, displayName: profile.name
         }
         return packaged
@@ -1101,7 +1102,7 @@ export async function _getCommentsInfo(comments: any[], user_uuid: string){
         const packaged = {
             profile_created_at: profile.created_at, name: profile.name, 
             biography: profile.biography, user_uuid: profile.userid, 
-            username: profile.username, avatarurl: profile.avatarurl,
+            username: profile.username, avatarurl: getAvatar(user_uuid),
             points: profile.points, streak: profile.streak,
             comment_uuid: comment.uuid, comment_created_at: comment.created_at,
             updated_at: comment.updated_at, payload: comment.payload,

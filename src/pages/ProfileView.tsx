@@ -7,6 +7,7 @@ import { _getJoinedCommunities, getCommunityByID, measurements } from "../compon
 import { HamburgerIcon } from "@chakra-ui/icons";
 import ProfileBackground from '../images/ProfileBackground.svg'
 import Header from "../components/Communities/Community/Information";
+import { getAvatar } from "../hooks/Utilities";
 
 export default function ProfileView() {
 
@@ -38,7 +39,7 @@ export default function ProfileView() {
                     name: data.name,
                     username: data.username,
                     biography: data.biography,
-                    avatarurl: data.avatarurl,
+                    avatarurl: getAvatar(data.userid),
                     streak: data.streak,
                     points: data.points,
                     id: data.userid,
