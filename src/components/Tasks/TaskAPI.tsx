@@ -571,7 +571,7 @@ export async function _getUserTasksInfo(user_uuid: string) {
             const getCollaboratorObject = (profile: any, relation: any) => {
                 totalProgress += relation.progress
                 return {
-                    displayName: profile.name, avatarURL: getAvatar(user_uuid),
+                    displayName: profile.name, avatarURL: getAvatar(relation.user_id),
                     userName: profile.username, progress: relation.progress, user_id: relation.user_id
                 }
             }

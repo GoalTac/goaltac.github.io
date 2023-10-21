@@ -273,7 +273,7 @@ export default function PostCard({taskInfo, user, profile}: any) {
         {isCollaborative && <Flex width='100%'>
             <AvatarGroup size='sm' max={3} spacing='-5px'>
                 {collaborators.map((collaborator: any)=>{
-                    return <Avatar _hover={{borderColor:'ActiveBorder'}} borderWidth='1px' borderColor='-moz-initial' cursor='pointer' key={collaborator.userName} onClick={()=>navigate(`/profile/${collaborator.userName}`)} name={collaborator.displayName} src={collaborator.avatarURL} />
+                    return <Avatar _hover={{borderColor:'ActiveBorder'}} borderWidth='1px' borderColor='-moz-initial' cursor='pointer' key={collaborator.userName} onClick={()=>navigate(`/profile/${collaborator.userName}`)} name={collaborator.displayName} src={getAvatar(collaborator.user_id)} />
                 })}
                 <Tooltip fontSize='12px' hasArrow label='Click to contribute to this task!'>
                     <Avatar size='sm' src='' backgroundColor="green.400" icon={<AddIcon />} onClick={handleCollaborate} _hover={{borderColor:'ActiveBorder'}} borderWidth='1px' borderColor='-moz-initial' cursor='pointer'/>
