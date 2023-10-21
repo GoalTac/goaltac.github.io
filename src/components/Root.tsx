@@ -21,7 +21,7 @@ export default function Root() {
     const { colorMode, toggleColorMode } = useColorMode();
     const [inputValue, setInputValue] = useState('');
     const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
-    const [avatarUrl, setAvatarUrl] = useState(profile?.['avatarurl']);
+    const [avatarUrl, setAvatarUrl] = useState(user ? user : "");
     const [points, setPoints] = useState(profile?.['points']);
 
     // to search and open new link
@@ -206,7 +206,7 @@ export default function Root() {
             <Menu>
               <MenuButton as={Avatar} size="sm" cursor="pointer" src={avatarUrl}/>
               <MenuList>
-                  <MenuItem icon={<Avatar src={profile?.['avatarurl']} />} onClick={()=>navigate(`/profile/${userName}`)} fontSize="md" fontWeight='500'>
+                  <MenuItem icon={<Avatar src={avatarUrl} />} onClick={()=>navigate(`/profile/${userName}`)} fontSize="md" fontWeight='500'>
                     Your Profile
                   </MenuItem>
                   {/**

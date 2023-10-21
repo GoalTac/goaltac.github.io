@@ -4,6 +4,7 @@ import { FaCircle, FaRegPaperPlane, } from 'react-icons/fa';
 import { supabase } from '../../supabase';
 import { ChatIcon } from '@chakra-ui/icons';
 import { useLocation } from 'react-router-dom';
+import { getAvatar } from '../../hooks/Utilities';
 
 interface Message {
     text: string;
@@ -124,12 +125,7 @@ export default function Chat() {
 
     // Gets the avatar url for a single user
     async function getSingleAvatarUrl(userId: string) {
-        const { data: user, error } = await supabase.from('profiles').select('avatarurl').eq('userid', userId).single();
-        if (error) {
-            console.log(error);
-        } else {
-            return user.avatarurl;
-        }
+        return getAvatar(userId)
     }
 
 

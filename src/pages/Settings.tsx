@@ -27,6 +27,8 @@ import {
 import { supabase } from '../supabase';
 import { Link } from 'react-router-dom';
 import { CloseIcon } from '@chakra-ui/icons';
+import { getAvatar } from '../hooks/Utilities';
+import AvatarUploader from '../components/Profile/AvatarUploader';
 
 type PersonType = {
     name: string,
@@ -82,7 +84,7 @@ export default function Profile() {
                     name: data.name,
                     username: data.username,
                     biography: data.biography,
-                    avatarurl: data.avatarurl,
+                    avatarurl: getAvatar(data.userid),
                     userid: data.userid,
                 });
             }
@@ -198,9 +200,7 @@ export default function Profile() {
             .from('profiles')
             .update({
                 name: person.name,
-                biography: person.biography,
-                avatarurl: person.avatarurl,
-            })
+                biography: person.biography,            })
             .eq('userid', user?.id);
 
         if (error) {
@@ -209,6 +209,8 @@ export default function Profile() {
             console.log(data);
             setShowNameModal(false);
         }
+
+        location.reload()
     };
 
     //friends functions
@@ -487,11 +489,7 @@ export default function Profile() {
                                 </FormControl>
                                 <FormControl mt={4}>
                                     <FormLabel>Avatar</FormLabel>
-                                    <Input
-                                        placeholder="put a url here"
-                                        value={person.avatarurl}
-                                        onChange={(e) => setPerson((prev) => ({ ...prev, avatarurl: e.target.value }))}
-                                    />
+                                    <AvatarUploader signedUp={true} id={person.userid}/>
                                 </FormControl>
                             </ModalBody>
                             <ModalFooter>
