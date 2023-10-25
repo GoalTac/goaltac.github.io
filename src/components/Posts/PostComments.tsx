@@ -1,7 +1,7 @@
 import { Avatar, Button, ButtonGroup, Card, CardHeader, HStack, IconButton, Input, Spacer, Spinner, Stack, Text, Tooltip, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Profile, _getComments } from "../Tasks/TaskAPI";
-import { getUser } from "../../hooks/Utilities";
+import { getAvatar, getUser } from "../../hooks/Utilities";
 import { supabase } from "../../supabase";
 import { FaTrash } from "react-icons/fa";
 import { DeleteIcon } from "@chakra-ui/icons";
@@ -236,7 +236,7 @@ function SubmitComment({post_uuid, user_uuid, handleFetchProfile, handleIncremen
 
     return <Stack height='40px' marginBottom='40px'>
         <HStack>
-           <Avatar size='sm' name={userProfile.username} src={userProfile.avatarurl}/>
+           <Avatar size='sm' name={userProfile.username} src={getAvatar(user_uuid)}/>
             <Input onFocus={()=>setCommentClicked(true)} 
                 variant='flushed' placeholder='Add a comment...' value={payload} onChange={(e)=>setPayload(e.currentTarget.value)} />
         </HStack>

@@ -64,7 +64,7 @@ import { uniqueId } from 'lodash';
 import Chat from '../../Chats/CommunityChat';
 import GoalDashboard from './Goals';
 import Calendar from './Calender';
-import { formatNumber, getUser, twoColumns } from '../../../hooks/Utilities';
+import { formatNumber, getAvatar, getUser, twoColumns } from '../../../hooks/Utilities';
 import { useSession } from '../../../hooks/SessionProvider';
 import { GiArrowhead, GiFastArrow } from 'react-icons/gi';
 /**
@@ -379,7 +379,7 @@ export default function InsideView() {
         },[])
         
         return (profile ? <Box as={Link} to={`/profile/${profile.username}`}>
-          <Avatar name={`${profile.name}`} src={profile.avatarurl}  />
+          <Avatar name={`${profile.name}`} src={getAvatar(user ? user : "")}  />
         </Box> : <Avatar src='' />)
       }
 
@@ -426,7 +426,7 @@ export default function InsideView() {
         return (profile ? <Flex as={Link} to={`/profile/${profile.username}`}
         flexDirection='column' rowGap={measurements.general.rowGap}>
           <HStack>
-            <Avatar name={`${profile.name}`} src={profile.avatarurl}  />
+            <Avatar name={`${profile.name}`} src={getAvatar(getAvatar(user ? user : ""))}  />
             <Box>
               <Heading size='md'>
                 {profile.name}

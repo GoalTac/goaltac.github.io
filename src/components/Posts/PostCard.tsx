@@ -7,6 +7,7 @@ import { supabase } from "../../supabase"
 import { decrement, increment, _addUserTask, _importTaskFromUser, addPoints, removePoints } from "../Tasks/TaskAPI"
 import { useSession } from "../../hooks/SessionProvider"
 import { useNavigate } from "react-router"
+import { getAvatar } from "../../hooks/Utilities"
 
 export default function PostCard({taskInfo, user, profile}: any) {
     const toast = useToast()
@@ -21,7 +22,7 @@ export default function PostCard({taskInfo, user, profile}: any) {
     const [commentCount, setCommentCount] = useState<number>(taskInfo.comments ? taskInfo.comments : 0)
     const requirement: number = taskInfo.requirement
     const userName: string = taskInfo.userName
-    const avatarURL: string = taskInfo.avatarURL
+    const avatarURL: string = getAvatar(taskInfo.user_id)
     const displayName: string = taskInfo.displayName
     const [likes, setLikes] = useState<number>(taskInfo.likes)
     const [imports, setImports] = useState<number>(taskInfo.imports)
@@ -272,7 +273,7 @@ export default function PostCard({taskInfo, user, profile}: any) {
         {isCollaborative && <Flex width='100%'>
             <AvatarGroup size='sm' max={3} spacing='-5px'>
                 {collaborators.map((collaborator: any)=>{
-                    return <Avatar _hover={{borderColor:'ActiveBorder'}} borderWidth='1px' borderColor='-moz-initial' cursor='pointer' key={collaborator.userName} onClick={()=>navigate(`/profile/${collaborator.userName}`)} name={collaborator.displayName} src={collaborator.avatarURL} />
+                    return <Avatar _hover={{borderColor:'ActiveBorder'}} borderWidth='1px' borderColor='-moz-initial' cursor='pointer' key={collaborator.userName} onClick={()=>navigate(`/profile/${collaborator.userName}`)} name={collaborator.displayName} src={getAvatar(collaborator.user_id)} />
                 })}
                 <Tooltip fontSize='12px' hasArrow label='Click to contribute to this task!'>
                     <Avatar size='sm' src='' backgroundColor="green.400" icon={<AddIcon />} onClick={handleCollaborate} _hover={{borderColor:'ActiveBorder'}} borderWidth='1px' borderColor='-moz-initial' cursor='pointer'/>

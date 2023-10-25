@@ -10,7 +10,7 @@ const SessionContext = createContext({
 });
 
 export const SessionProvider = ({ children, supabase }: any) => {
-  const [user, setUser] = useState<any>();
+  const [user, setUser] = useState<any>("");
   const [session, setSession] = useState<any>();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>();
