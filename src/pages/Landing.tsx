@@ -357,11 +357,6 @@ export default function LandingPage() {
                             43/100
                         </Badge>
                     </Tooltip>
-                    <Tooltip label="Points rewarded to community" aria-label='A tooltip'>
-                        <Badge colorScheme='green' borderRadius='5px' padding='10px'>
-                            {task ? task.reward : 0} pts
-                        </Badge>
-                    </Tooltip>
                 </Flex>
 
                 <Flex position='absolute' right='20px' bottom='20px'>
@@ -403,21 +398,6 @@ export default function LandingPage() {
 
     function ProductiveFeature() {
 
-        function CalendarFeature() {
-            return <Flex flexWrap='wrap' gap={['40px','20px']} justifyContent={['center','space-evenly']} flexDirection={['column','row']}>
-                <VStack textAlign='center' alignSelf={'center'} width={['fit-content','300px']} rowGap='1rem'>
-                    <Heading width='80%' fontSize='1.75rem'>
-                        Expansive Customization
-                    </Heading>
-                    <Text fontSize='20px'>
-                        Pivot from a top-level view to a focused view, or anything in between, with ease
-                    </Text>
-                </VStack>
-                <Image maxWidth='600px' width='100%' height='auto' src={useColorModeValue(calendar, calendar_dark)}/>
-
-            </Flex>
-        }
-
         function Demo() {
             return <Flex flexWrap='wrap' gap={['40px','20px']} justifyContent={['center','space-evenly']} flexDirection={['column','row']}>
             <AspectRatio width='600px' boxShadow='lg' height='400px'>
@@ -427,20 +407,12 @@ export default function LandingPage() {
                 allowFullScreen
                 />
             </AspectRatio>
-            <VStack textAlign='center' alignSelf={'center'} width={['fit-content','300px']} rowGap='1rem'>
-                <Heading width='80%' fontSize='1.75rem'>
-                    Check the Demo!
-                </Heading>
-                <Text fontSize='20px'>
-                    A social productivity app, the first of it's kind
-                </Text>
-            </VStack>
+            
         </Flex>
         }
 
         return (<Flex id='productivity' paddingY='50px' flexDirection='column' gap='100px' maxWidth={constants.maxWidth} marginX='auto'>
             <SimpleGrid marginX={['2px','50px']} spacing={['40px','100px']}>
-                <CalendarFeature/>
                 <Demo/>
             </SimpleGrid>
         </Flex>);
@@ -739,14 +711,6 @@ export const staffProfiles = [
             'entrepreneurship',
         ],
         contact: 'https://www.linkedin.com/in/my-phung/',
-    },
-    {
-        name: 'Aditya Chandraker',
-        image: 'https://images.squarespace-cdn.com/content/v1/5ba2831e3c3a53f00bb1dc9f/52b5d5b7-2a7b-46a9-ac59-8733e893105d/ProfilePicture.jpg?format=1500w',
-        title: 'Developer',
-        desc: 'Premed student, CS minor, Pianist, and a fan of spicy food',
-        badges: ['tabletennis', 'chess', 'art', 'taekwondo', 'academics'],
-        contact: 'https://www.linkedin.com/in/aditya-chandraker-68081822a/',
     },
     {
         name: 'Mayur Somalinga',
